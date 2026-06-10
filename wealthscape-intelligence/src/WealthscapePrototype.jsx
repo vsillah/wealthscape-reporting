@@ -623,11 +623,35 @@ function MorningBrief({ bp }) {
 // ─── LAYER 2: Report Builder ──────────────────────────────────────────────────
 function ReportBuilder({ bp }) {
   const { isMobile } = bp;
+  const [reportTab, setReportTab]     = useState("build");
   const [step, setStep]               = useState(1);
   const [template, setTemplate]       = useState("quarterly");
   const [selected, setSelected]       = useState([1,4]);
   const [aiNarrative, setAiNarrative] = useState(false);
   const [showConfig, setShowConfig]   = useState(!isMobile);
+
+  const reportTabs = [
+    { id:"build",     label:"Build",     desc:"3-step wizard" },
+    { id:"generate",  label:"Generate",  desc:"Pipeline" },
+    { id:"customize", label:"Customize", desc:"Template editor" },
+  ];
+
+  if (reportTab === "generate")  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
+        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+      </div>
+      <ReportGeneration bp={bp}/>
+    </div>
+  );
+  if (reportTab === "customize") return (
+    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
+        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+      </div>
+      <ReportCustomize bp={bp}/>
+    </div>
+  );
 
   const templates = [
     { id:"quarterly", label:"Quarterly Review",  desc:"Performance, allocation, goals" },
@@ -638,6 +662,9 @@ function ReportBuilder({ bp }) {
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
+        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+      </div>
       {isMobile && (
         <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 16px", fontSize:13, fontWeight:600, color:T.gray900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", minHeight:48 }} onClick={()=>setShowConfig(!showConfig)}>
           <span>Report Configuration</span>
@@ -1000,6 +1027,496 @@ function SettingsLayer() {
   );
 }
 
+// ─── Report Generation Pipeline ───────────────────────────────────────────────
+const PIPELINE_STAGES = [
+  { id:"sync",       icon:Activity,  label:"Data Sync",         desc:"Pulling positions, transactions & pricing from custodian",  duration:1300, result:"47 positions · 312 txns · $4.28M AUM reconciled" },
+  { id:"validate",   icon:Eye,       label:"Data Validation",   desc:"Checking completeness, stale prices & corporate actions",   duration:900,  result:"0 errors · 1 warning: INTL ETF price 4h stale" },
+  { id:"assemble",   icon:Layers,    label:"Report Assembly",   desc:"Building sections from validated data & applying template", duration:1400, result:"8 sections · 6 charts rendered · 2 tables built" },
+  { id:"narrative",  icon:Sparkles,  label:"AI Narrative",      desc:"Generating plain-language commentary from performance data", duration:1900, result:"348 words · Formal tone · 1 compliance flag added" },
+  { id:"compliance", icon:Check,     label:"Compliance Review", desc:"Running disclosure rules and appending audit trail",        duration:800,  result:"12 rules passed · 1 auto-disclosure appended" },
+  { id:"delivery",   icon:Mail,      label:"Delivery",          desc:"Publishing to client portal and sending email notification",duration:600,  result:"Portal updated · Email queued to 2 recipients" },
+];
+
+function ReportGeneration({ bp }) {
+  const { isMobile } = bp;
+  const [running, setRunning]           = useState(false);
+  const [done, setDone]                 = useState(false);
+  const [currentStage, setCurrentStage] = useState(null);
+  const [completedIds, setCompletedIds] = useState([]);
+
+  useEffect(() => {
+    if (!running) return;
+    const timers = [];
+    let delay = 0;
+    PIPELINE_STAGES.forEach((stage, i) => {
+      timers.push(setTimeout(() => setCurrentStage(stage.id), delay));
+      delay += stage.duration;
+      timers.push(setTimeout(() => {
+        setCompletedIds(prev => [...prev, stage.id]);
+        if (i === PIPELINE_STAGES.length - 1) { setCurrentStage(null); setRunning(false); setDone(true); }
+      }, delay - 80));
+    });
+    return () => timers.forEach(clearTimeout);
+  }, [running]);
+
+  const start = () => {
+    if (running) return;
+    setDone(false); setCompletedIds([]); setCurrentStage(null); setRunning(true);
+  };
+
+  const totalMs = PIPELINE_STAGES.reduce((s, st) => s + st.duration, 0);
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
+        <div>
+          <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:3 }}>Report Generation Pipeline</div>
+          <div style={{ fontSize:12, color:T.slate }}>Sarah & Michael Chen · Quarterly Review · Q2 2025</div>
+        </div>
+        <button onClick={start} disabled={running} style={{ background:running?T.gray100:T.green, color:running?T.gray400:T.white, border:"none", borderRadius:8, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:running?"default":"pointer", display:"flex", alignItems:"center", gap:8, minHeight:40, transition:"all 0.2s" }}>
+          <PlayCircle size={15}/> {running?"Generating…":done?"Re-Generate":"Generate Report"}
+        </button>
+      </div>
+
+      <div style={{ display:"flex", flexDirection:"column", gap:0 }}>
+        {PIPELINE_STAGES.map((stage, i) => {
+          const Icon = stage.icon;
+          const isActive = currentStage === stage.id;
+          const isDone   = completedIds.includes(stage.id);
+          const isLast   = i === PIPELINE_STAGES.length - 1;
+          return (
+            <div key={stage.id} style={{ display:"flex", gap:0, alignItems:"stretch" }}>
+              <div style={{ display:"flex", flexDirection:"column", alignItems:"center", width:52, flexShrink:0 }}>
+                <div style={{ width:38, height:38, borderRadius:"50%", background:isDone?T.emeraldLt:isActive?T.indigoLt:T.gray100, border:`2px solid ${isDone?T.emerald:isActive?T.indigo:T.gray200}`, display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.3s", zIndex:1 }}>
+                  {isDone ? <Check size={15} color={T.emerald}/> : <Icon size={14} color={isActive?T.indigo:T.gray400}/>}
+                </div>
+                {!isLast && <div style={{ width:2, flex:1, minHeight:8, background:isDone?T.emerald:T.gray200, transition:"background 0.4s", margin:"3px 0" }}/>}
+              </div>
+              <div style={{ flex:1, paddingBottom:isLast?0:12, paddingLeft:12 }}>
+                <div style={{ background:T.white, border:`1px solid ${isDone?T.emerald+"50":isActive?T.indigo+"50":T.gray100}`, borderRadius:10, padding:"12px 16px", transition:"border-color 0.3s" }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:3 }}>
+                    <span style={{ fontSize:13, fontWeight:700, color:isDone?T.gray900:isActive?T.indigo:T.gray400 }}>{stage.label}</span>
+                    {isActive && <span style={{ fontSize:11, color:T.indigo, fontWeight:600, display:"flex", alignItems:"center", gap:5 }}><div style={{ width:6,height:6,borderRadius:"50%",background:T.indigo }}/>Processing</span>}
+                    {isDone   && <span style={{ fontSize:11, color:T.emerald, fontWeight:600 }}>Complete</span>}
+                    {!isActive && !isDone && <span style={{ fontSize:11, color:T.gray300 }}>Pending</span>}
+                  </div>
+                  <div style={{ fontSize:12, color:T.slate, lineHeight:1.4 }}>{stage.desc}</div>
+                  {isActive && (
+                    <div style={{ height:3, background:T.gray100, borderRadius:99, marginTop:10, overflow:"hidden" }}>
+                      <div style={{ height:"100%", width:"55%", background:`linear-gradient(90deg,${T.indigo},${T.emerald})`, borderRadius:99, animation:"progress-sweep 1.1s ease-in-out infinite" }}/>
+                    </div>
+                  )}
+                  {isDone && <div style={{ marginTop:8, background:T.gray50, borderRadius:6, padding:"6px 10px", fontSize:11, color:T.gray600 }}>{stage.result}</div>}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {done && (
+        <div style={{ background:T.emeraldLt, border:`1px solid ${T.emerald}50`, borderRadius:12, padding:"16px 20px", display:"flex", gap:14, alignItems:"center", flexWrap:"wrap" }}>
+          <div style={{ width:40, height:40, borderRadius:"50%", background:T.emerald, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Check size={20} color={T.white}/></div>
+          <div style={{ flex:1, minWidth:160 }}>
+            <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:2 }}>Report Ready</div>
+            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · Delivered to portal + email</div>
+          </div>
+          <div style={{ display:"flex", gap:8 }}>
+            <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
+            <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer" }}>View in Portal</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Report Customization Studio ─────────────────────────────────────────────
+const REPORT_SECTIONS = [
+  { id:"header",      label:"Report Header",       required:true,  type:"layout" },
+  { id:"summary",     label:"Portfolio Summary",   required:true,  type:"metrics" },
+  { id:"narrative",   label:"AI Narrative",        required:false, type:"ai" },
+  { id:"performance", label:"Performance Chart",   required:false, type:"chart",  chartTypes:["Bar","Line","Area"] },
+  { id:"allocation",  label:"Asset Allocation",    required:false, type:"chart",  chartTypes:["Donut","Pie","Bar"] },
+  { id:"holdings",    label:"Holdings Table",      required:false, type:"table" },
+  { id:"drift",       label:"Drift Alerts",        required:false, type:"alert" },
+  { id:"notes",       label:"Advisor Notes",       required:false, type:"text" },
+];
+const COLOR_THEMES = [
+  { id:"navy",  primary:"#1C2B3A", accent:"#0B5D2E", label:"Midnight" },
+  { id:"slate", primary:"#334155", accent:"#5B4FBE", label:"Slate"    },
+  { id:"warm",  primary:"#1C1917", accent:"#B45309", label:"Warm"     },
+  { id:"teal",  primary:"#134E4A", accent:"#0EA5E9", label:"Teal"     },
+];
+
+function ReportCustomize({ bp }) {
+  const { isMobile } = bp;
+  const [sections,   setSections]   = useState({ header:true, summary:true, narrative:true, performance:true, allocation:true, holdings:false, drift:true, notes:false });
+  const [chartType,  setChartType]  = useState({ performance:"Bar", allocation:"Donut" });
+  const [theme,      setTheme]      = useState("navy");
+  const [benchmark,  setBenchmark]  = useState("60/40 Blend");
+  const [dateRange,  setDateRange]  = useState("YTD");
+  const [firmName,   setFirmName]   = useState("Williams Wealth Management");
+
+  const activeTheme = COLOR_THEMES.find(t => t.id === theme);
+
+  const toggleSection = id => {
+    if (REPORT_SECTIONS.find(s => s.id === id)?.required) return;
+    setSections(p => ({ ...p, [id]: !p[id] }));
+  };
+
+  return (
+    <div style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:16 }}>
+
+      {/* Left: controls */}
+      <div style={{ width:isMobile?"100%":290, flexShrink:0, display:"flex", flexDirection:"column", gap:12 }}>
+
+        {/* Sections */}
+        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+          <div style={{ padding:"12px 16px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <span>Report Sections</span>
+            <span style={{ fontSize:11, color:T.slate, fontWeight:400 }}>{Object.values(sections).filter(Boolean).length} active</span>
+          </div>
+          {REPORT_SECTIONS.map(sec => (
+            <div key={sec.id} style={{ padding:"10px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", gap:10, background:T.white }}>
+              <div onClick={() => toggleSection(sec.id)} style={{ width:18, height:18, borderRadius:4, border:`2px solid ${sections[sec.id]?T.green:T.gray300}`, background:sections[sec.id]?T.green:T.white, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, cursor:sec.required?"default":"pointer" }}>
+                {sections[sec.id] && <Check size={10} color={T.white}/>}
+              </div>
+              <span style={{ flex:1, fontSize:12, fontWeight:500, color:sections[sec.id]?T.gray900:T.gray400 }}>{sec.label}</span>
+              <div style={{ display:"flex", gap:5, alignItems:"center" }}>
+                {sec.required && <span style={{ fontSize:10, color:T.gray400 }}>Required</span>}
+                {sec.type==="ai" && <span style={{ fontSize:9, fontWeight:700, background:T.indigoLt, color:T.indigo, padding:"2px 6px", borderRadius:99 }}>AI</span>}
+                {sec.type==="chart" && sections[sec.id] && (
+                  <select value={chartType[sec.id]} onChange={e => setChartType(p=>({...p,[sec.id]:e.target.value}))} style={{ fontSize:10, border:`1px solid ${T.gray200}`, borderRadius:4, padding:"2px 5px", color:T.gray600, background:T.white, cursor:"pointer" }}>
+                    {sec.chartTypes.map(t=><option key={t}>{t}</option>)}
+                  </select>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Branding */}
+        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+          <div style={{ padding:"12px 16px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900 }}>Branding</div>
+          <div style={{ padding:"12px 16px", display:"flex", flexDirection:"column", gap:12 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:600, color:T.slate, marginBottom:8 }}>Color Theme</div>
+              <div style={{ display:"flex", gap:8 }}>
+                {COLOR_THEMES.map(t => (
+                  <div key={t.id} onClick={()=>setTheme(t.id)} style={{ cursor:"pointer", textAlign:"center" }}>
+                    <div style={{ width:36, height:36, borderRadius:8, background:t.primary, border:`3px solid ${theme===t.id?T.indigo:"transparent"}`, display:"flex", alignItems:"center", justifyContent:"center", transition:"border 0.15s" }}>
+                      <div style={{ width:10, height:10, borderRadius:"50%", background:t.accent }}/>
+                    </div>
+                    <div style={{ fontSize:9, color:T.slate, marginTop:3 }}>{t.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:600, color:T.slate, marginBottom:5 }}>Firm Name</div>
+              <input value={firmName} onChange={e=>setFirmName(e.target.value)} style={{ width:"100%", border:`1px solid ${T.gray200}`, borderRadius:6, padding:"7px 10px", fontSize:12, color:T.gray900, outline:"none", boxSizing:"border-box" }}/>
+            </div>
+            <div style={{ background:T.gray50, borderRadius:8, padding:"10px 12px", display:"flex", alignItems:"center", gap:10, cursor:"pointer" }}>
+              <div style={{ width:32, height:32, borderRadius:6, background:T.gray200, display:"flex", alignItems:"center", justifyContent:"center" }}><FileText size={14} color={T.slate}/></div>
+              <div><div style={{ fontSize:12, fontWeight:600, color:T.gray900 }}>Upload Logo</div><div style={{ fontSize:11, color:T.slate }}>PNG or SVG · max 2MB</div></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Data settings */}
+        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+          <div style={{ padding:"12px 16px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900 }}>Data & Benchmarks</div>
+          <div style={{ padding:"12px 16px", display:"flex", flexDirection:"column", gap:10 }}>
+            {[
+              { label:"Date Range", value:dateRange, set:setDateRange, opts:["YTD","QTD","MTD","1Y","3Y","5Y"] },
+              { label:"Benchmark",  value:benchmark, set:setBenchmark, opts:["60/40 Blend","S&P 500","MSCI World","Barclays Agg","Russell 2000"] },
+            ].map(f => (
+              <div key={f.label}>
+                <div style={{ fontSize:11, fontWeight:600, color:T.slate, marginBottom:5 }}>{f.label}</div>
+                <select value={f.value} onChange={e=>f.set(e.target.value)} style={{ width:"100%", border:`1px solid ${T.gray200}`, borderRadius:6, padding:"7px 10px", fontSize:12, color:T.gray900, background:T.white, cursor:"pointer" }}>
+                  {f.opts.map(o=><option key={o}>{o}</option>)}
+                </select>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:13, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:44 }}>
+          <Check size={14}/> Save as Template
+        </button>
+      </div>
+
+      {/* Right: live preview */}
+      <div style={{ flex:1 }}>
+        <div style={{ background:T.white, borderRadius:12, boxShadow:"0 2px 12px rgba(0,0,0,0.06)", overflow:"hidden" }}>
+          <div style={{ background:activeTheme.primary, padding:"20px 22px" }}>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:10 }}>
+              <div>
+                <div style={{ fontSize:9, fontWeight:700, color:activeTheme.accent, letterSpacing:"0.12em", textTransform:"uppercase", marginBottom:5 }}>Quarterly Review</div>
+                <div style={{ fontSize:15, fontWeight:700, color:T.white }}>{firmName || "Your Firm"}</div>
+                <div style={{ fontSize:11, color:"#94A3B8", marginTop:3 }}>Sarah & Michael Chen · Q2 2025</div>
+              </div>
+              <div style={{ textAlign:"right" }}>
+                <div style={{ fontSize:10, color:"#94A3B8" }}>Portfolio Value</div>
+                <div style={{ fontSize:20, fontWeight:700, color:T.white }}>$4,284,500</div>
+                <div style={{ fontSize:11, color:T.emerald, marginTop:2 }}>+8.4% {dateRange} vs {benchmark}</div>
+              </div>
+            </div>
+          </div>
+
+          <div style={{ padding:"14px 16px", display:"flex", flexDirection:"column", gap:12 }}>
+            {sections.narrative && (
+              <div style={{ background:T.indigoLt, borderLeft:`3px solid ${T.indigo}`, borderRadius:"0 8px 8px 0", padding:"10px 13px" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:5, marginBottom:4 }}><Sparkles size={11} color={T.indigo}/><span style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.06em", textTransform:"uppercase" }}>AI Summary</span></div>
+                <div style={{ fontSize:11, color:T.navyMid, lineHeight:1.6 }}>Your portfolio delivered strong performance this period, advancing relative to the {benchmark} benchmark. US equity and healthcare led gains; bond holdings provided stability through volatility.</div>
+              </div>
+            )}
+
+            <div style={{ display:"grid", gridTemplateColumns:sections.performance&&sections.allocation?"1fr 1fr":"1fr", gap:14 }}>
+              {sections.performance && (
+                <div>
+                  <div style={{ fontSize:9, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:8 }}>Performance · {chartType.performance}</div>
+                  <ResponsiveContainer width="100%" height={110}>
+                    {chartType.performance==="Line" ? (
+                      <LineChart data={perfData}><CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/><XAxis dataKey="month" tick={{fontSize:9,fill:T.slate}} axisLine={false} tickLine={false}/><YAxis tick={{fontSize:9,fill:T.slate}} axisLine={false} tickLine={false} tickFormatter={v=>`${v}%`}/><Tooltip contentStyle={{borderRadius:8,fontSize:10}}/><Line type="monotone" dataKey="portfolio" stroke={activeTheme.accent} strokeWidth={2} dot={false}/><Line type="monotone" dataKey="benchmark" stroke={T.gray300} strokeWidth={1.5} strokeDasharray="4 4" dot={false}/></LineChart>
+                    ) : chartType.performance==="Area" ? (
+                      <AreaChart data={perfData}><defs><linearGradient id="custGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={activeTheme.accent} stopOpacity={0.25}/><stop offset="95%" stopColor={activeTheme.accent} stopOpacity={0}/></linearGradient></defs><CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/><XAxis dataKey="month" tick={{fontSize:9,fill:T.slate}} axisLine={false} tickLine={false}/><YAxis tick={{fontSize:9,fill:T.slate}} axisLine={false} tickLine={false} tickFormatter={v=>`${v}%`}/><Tooltip contentStyle={{borderRadius:8,fontSize:10}}/><Area type="monotone" dataKey="portfolio" stroke={activeTheme.accent} strokeWidth={2} fill="url(#custGrad)"/></AreaChart>
+                    ) : (
+                      <BarChart data={perfData} barSize={8}><CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/><XAxis dataKey="month" tick={{fontSize:9,fill:T.slate}} axisLine={false} tickLine={false}/><YAxis tick={{fontSize:9,fill:T.slate}} axisLine={false} tickLine={false} tickFormatter={v=>`${v}%`}/><Tooltip contentStyle={{borderRadius:8,fontSize:10}}/><Bar dataKey="portfolio" fill={activeTheme.accent} radius={[3,3,0,0]}/><Bar dataKey="benchmark" fill={T.gray200} radius={[3,3,0,0]}/></BarChart>
+                    )}
+                  </ResponsiveContainer>
+                </div>
+              )}
+              {sections.allocation && (
+                <div>
+                  <div style={{ fontSize:9, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:8 }}>Allocation · {chartType.allocation}</div>
+                  <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+                    <PieChart width={80} height={80}><Pie data={allocationData} cx={35} cy={35} innerRadius={chartType.allocation!=="Pie"?22:0} outerRadius={36} dataKey="value">{allocationData.map((e,i)=><Cell key={i} fill={e.color}/>)}</Pie></PieChart>
+                    <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
+                      {allocationData.slice(0,4).map(a=>(
+                        <div key={a.name} style={{ display:"flex", alignItems:"center", gap:5 }}>
+                          <div style={{ width:6, height:6, borderRadius:2, background:a.color }}/>
+                          <span style={{ fontSize:10, color:T.gray600 }}>{a.name}</span>
+                          <span style={{ fontSize:10, fontWeight:700, color:T.gray900, marginLeft:4 }}>{a.value}%</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {sections.drift && (
+              <div style={{ background:T.amberLt, border:`1px solid ${T.amber}40`, borderRadius:8, padding:"9px 12px", display:"flex", gap:8 }}>
+                <AlertTriangle size={12} color={T.amber} style={{flexShrink:0,marginTop:1}}/>
+                <div style={{ fontSize:11, color:T.gray600 }}>US Equity 6.2pts above target. Rebalancing recommended before Q3.</div>
+              </div>
+            )}
+            {sections.notes && (
+              <div style={{ background:T.gray50, borderRadius:8, padding:"10px 12px", fontSize:11, color:T.gray600, fontStyle:"italic", borderLeft:`3px solid ${T.gray300}` }}>
+                "Reviewed July 15th. Client expressed interest in increasing fixed income allocation given current rate environment."
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Integration Hub ──────────────────────────────────────────────────────────
+const INTEGRATIONS = [
+  { id:"fidelity",     cat:"custodian", name:"Fidelity Institutional",  desc:"Primary custodian · Positions, transactions & pricing",   status:"connected", lastSync:"4 min ago",   fields:18 },
+  { id:"schwab",       cat:"custodian", name:"Schwab Advisor Services",  desc:"Secondary custodian · Positions & billing data",           status:"connected", lastSync:"11 min ago",  fields:14 },
+  { id:"pershing",     cat:"custodian", name:"Pershing / BNY Mellon",    desc:"Alternative assets · Private equity & hedge fund feeds",   status:"available", lastSync:null,          fields:0  },
+  { id:"ibkr",         cat:"custodian", name:"Interactive Brokers",       desc:"Margin accounts · Options, futures & international",       status:"available", lastSync:null,          fields:0  },
+  { id:"redtail",      cat:"crm",       name:"Redtail CRM",              desc:"Client records, tasks, workflows & advisor notes",         status:"connected", lastSync:"1 hr ago",    fields:22 },
+  { id:"salesforce",   cat:"crm",       name:"Salesforce Financial Services", desc:"Enterprise CRM · Household & relationship mapping",   status:"available", lastSync:null,          fields:0  },
+  { id:"wealthbox",    cat:"crm",       name:"Wealthbox",                desc:"Client profiles, pipelines & task management",             status:"available", lastSync:null,          fields:0  },
+  { id:"nitrogen",     cat:"portfolio", name:"Riskalyze / Nitrogen",     desc:"Risk scoring, proposals & client risk tolerance",          status:"connected", lastSync:"Yesterday",   fields:8  },
+  { id:"orion",        cat:"portfolio", name:"Orion Portfolio",           desc:"Rebalancing, trading, billing & performance",              status:"available", lastSync:null,          fields:0  },
+  { id:"blackdiamond", cat:"portfolio", name:"Black Diamond",             desc:"Performance reporting, analytics & client portal",         status:"available", lastSync:null,          fields:0  },
+  { id:"emoney",       cat:"planning",  name:"eMoney Advisor",            desc:"Full financial plans, cash flow & goals tracking",         status:"connected", lastSync:"2 days ago",  fields:12 },
+  { id:"mgp",          cat:"planning",  name:"MoneyGuidePro",             desc:"Goals-based planning & retirement income modelling",       status:"available", lastSync:null,          fields:0  },
+  { id:"rightcapital", cat:"planning",  name:"RightCapital",              desc:"Tax planning, Roth conversion & estate modelling",         status:"available", lastSync:null,          fields:0  },
+];
+const FIELD_MAPS = {
+  fidelity:    [
+    { src:"ACCT_VAL",      tgt:"portfolio.totalValue",    type:"Decimal" },
+    { src:"POSITION_QTY",  tgt:"holdings.quantity",       type:"Decimal" },
+    { src:"MKTVAL",        tgt:"holdings.marketValue",    type:"Decimal" },
+    { src:"UNREALIZED_GL", tgt:"holdings.unrealizedGain", type:"Decimal" },
+    { src:"LAST_PRICE",    tgt:"securities.price",        type:"Decimal" },
+    { src:"TRADE_DATE",    tgt:"transactions.date",       type:"Date"    },
+  ],
+  schwab:     [
+    { src:"accountValue",  tgt:"portfolio.totalValue",    type:"Decimal" },
+    { src:"symbol",        tgt:"securities.ticker",       type:"String"  },
+    { src:"quantity",      tgt:"holdings.quantity",       type:"Decimal" },
+    { src:"marketValue",   tgt:"holdings.marketValue",    type:"Decimal" },
+  ],
+  redtail:     [
+    { src:"contact.fullName",   tgt:"client.name",        type:"String"  },
+    { src:"contact.email",      tgt:"client.email",       type:"String"  },
+    { src:"contact.dob",        tgt:"client.dateOfBirth", type:"Date"    },
+    { src:"account.id",         tgt:"client.accountId",   type:"String"  },
+    { src:"notes.body",         tgt:"advisor.notes",      type:"Text"    },
+  ],
+  nitrogen:    [
+    { src:"risk_score",    tgt:"client.riskScore",        type:"Integer" },
+    { src:"risk_label",    tgt:"client.riskCategory",     type:"String"  },
+    { src:"portfolio_risk",tgt:"portfolio.targetRisk",    type:"Decimal" },
+  ],
+  emoney:      [
+    { src:"netWorth",      tgt:"client.netWorth",         type:"Decimal" },
+    { src:"cashFlow",      tgt:"planning.annualCashFlow", type:"Decimal" },
+    { src:"goalProb",      tgt:"planning.goalProbability",type:"Percent" },
+    { src:"retireAge",     tgt:"planning.retirementAge",  type:"Integer" },
+  ],
+};
+const CAT_LABELS = { all:"All", custodian:"Custodians", crm:"CRM & Client Data", portfolio:"Portfolio Mgmt", planning:"Financial Planning" };
+
+function IntegrationHub({ bp }) {
+  const { isMobile } = bp;
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [selected,   setSelected]   = useState(null);
+  const [connecting, setConnecting] = useState(null);
+
+  const filtered  = activeCategory === "all" ? INTEGRATIONS : INTEGRATIONS.filter(i => i.cat === activeCategory);
+  const connCount = INTEGRATIONS.filter(i => i.status === "connected").length;
+  const selInteg  = INTEGRATIONS.find(i => i.id === selected);
+
+  const simulateConnect = id => {
+    setConnecting(id);
+    setTimeout(() => setConnecting(null), 2200);
+  };
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+
+      {/* Header */}
+      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
+        <div>
+          <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:3 }}>Integration Hub</div>
+          <div style={{ fontSize:12, color:T.slate }}>{connCount} connected · {INTEGRATIONS.length - connCount} available</div>
+        </div>
+        <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:5, background:T.emeraldLt, borderRadius:99, padding:"4px 10px" }}>
+            <div style={{ width:6, height:6, borderRadius:"50%", background:T.emerald }}/>
+            <span style={{ fontSize:11, fontWeight:700, color:T.emerald }}>All systems live</span>
+          </div>
+          <button style={{ background:T.greenLt, color:T.green, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:700, cursor:"pointer" }}>+ Add</button>
+        </div>
+      </div>
+
+      {/* Category filter */}
+      <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+        {Object.entries(CAT_LABELS).map(([k, label]) => (
+          <button key={k} onClick={()=>{ setActiveCategory(k); setSelected(null); }} style={{ background:activeCategory===k?T.navy:T.white, color:activeCategory===k?T.white:T.gray600, border:`1px solid ${activeCategory===k?T.navy:T.gray200}`, borderRadius:8, padding:"6px 14px", fontSize:12, fontWeight:600, cursor:"pointer", transition:"all 0.15s" }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display:(selected&&!isMobile)?"grid":"block", gridTemplateColumns:"1fr 360px", gap:16, alignItems:"start" }}>
+
+        {/* Provider grid */}
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
+          {filtered.map(integ => {
+            const isConn   = integ.status === "connected";
+            const isCon    = connecting === integ.id;
+            const isSel    = selected   === integ.id;
+            return (
+              <div key={integ.id} onClick={()=>isConn&&setSelected(isSel?null:integ.id)} style={{ background:T.white, border:`1px solid ${isSel?T.indigo:isConn?T.emerald+"60":T.gray200}`, borderRadius:12, padding:"14px 16px", cursor:isConn?"pointer":"default", transition:"border 0.2s" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
+                  <div style={{ width:38, height:38, borderRadius:9, background:isConn?T.greenLt:T.gray100, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                    <Zap size={16} color={isConn?T.green:T.gray400}/>
+                  </div>
+                  <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:3 }}>
+                    <span style={{ fontSize:10, fontWeight:700, padding:"2px 8px", borderRadius:99, background:isConn?T.emeraldLt:T.gray100, color:isConn?T.emerald:T.gray400 }}>{isConn?"Connected":"Available"}</span>
+                    {integ.lastSync && <span style={{ fontSize:10, color:T.slate }}>{integ.lastSync}</span>}
+                  </div>
+                </div>
+                <div style={{ fontSize:13, fontWeight:700, color:T.gray900, marginBottom:3 }}>{integ.name}</div>
+                <div style={{ fontSize:11, color:T.slate, lineHeight:1.45, marginBottom:10 }}>{integ.desc}</div>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  {isConn ? (
+                    <>
+                      <span style={{ fontSize:11, color:T.slate }}>{integ.fields} fields mapped</span>
+                      <button style={{ background:"transparent", border:`1px solid ${isSel?T.indigo:T.gray200}`, borderRadius:6, padding:"4px 10px", fontSize:11, fontWeight:600, color:isSel?T.indigo:T.gray600, cursor:"pointer" }}>{isSel?"Hide":"View Mapping"}</button>
+                    </>
+                  ) : (
+                    <>
+                      <span style={{ fontSize:11, color:T.slate }}>OAuth 2.0</span>
+                      <button onClick={e=>{e.stopPropagation();simulateConnect(integ.id);}} disabled={!!isCon} style={{ background:isCon?T.gray100:T.green, color:isCon?T.gray400:T.white, border:"none", borderRadius:6, padding:"5px 12px", fontSize:11, fontWeight:700, cursor:isCon?"default":"pointer" }}>
+                        {isCon?"Connecting…":"Connect"}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Field mapping detail panel */}
+        {selected && selInteg && (
+          <div style={{ background:T.white, border:`1px solid ${T.indigo}40`, borderRadius:12, overflow:"hidden", marginTop:isMobile?16:0 }}>
+            <div style={{ background:T.navy, padding:"14px 18px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <div>
+                <div style={{ fontSize:13, fontWeight:700, color:T.white }}>{selInteg.name}</div>
+                <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>Data Field Mapping</div>
+              </div>
+              <button onClick={()=>setSelected(null)} style={{ background:"rgba(255,255,255,0.1)", border:"none", borderRadius:6, padding:6, cursor:"pointer", color:T.gray400, display:"flex" }}><X size={15}/></button>
+            </div>
+
+            <div style={{ padding:"12px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", gap:12, flexWrap:"wrap" }}>
+              {[
+                { label:"Status",    value:"Live",               color:T.emerald },
+                { label:"Last Sync", value:selInteg.lastSync,    color:T.gray900 },
+                { label:"Frequency", value:"Every 5 min",        color:T.gray900 },
+                { label:"Fields",    value:`${selInteg.fields} mapped`, color:T.gray900 },
+              ].map(m => (
+                <div key={m.label} style={{ minWidth:72 }}>
+                  <div style={{ fontSize:9, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:2 }}>{m.label}</div>
+                  <div style={{ fontSize:12, fontWeight:600, color:m.color }}>{m.value}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ padding:"12px 16px" }}>
+              <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>Field Mapping</div>
+              <div style={{ overflowX:"auto" }}>
+                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
+                  <thead><tr style={{ background:T.gray50 }}>
+                    {["Source Field","","Wealthscape Field","Type"].map(h=><th key={h} style={{ padding:"7px 10px", textAlign:"left", fontWeight:700, color:T.slate, borderBottom:`1px solid ${T.gray200}`, whiteSpace:"nowrap" }}>{h}</th>)}
+                  </tr></thead>
+                  <tbody>
+                    {(FIELD_MAPS[selected]||[]).map((row,i)=>(
+                      <tr key={i} style={{ borderBottom:`1px solid ${T.gray100}` }}>
+                        <td style={{ padding:"7px 10px", fontFamily:"monospace", color:T.indigo, fontWeight:600, fontSize:10 }}>{row.src}</td>
+                        <td style={{ padding:"7px 6px", color:T.gray400, fontSize:12 }}>→</td>
+                        <td style={{ padding:"7px 10px", fontFamily:"monospace", color:T.green, fontWeight:600, fontSize:10 }}>{row.tgt}</td>
+                        <td style={{ padding:"7px 10px" }}><span style={{ background:T.gray100, color:T.slate, fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:4 }}>{row.type}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div style={{ marginTop:12, display:"flex", gap:8, flexWrap:"wrap" }}>
+                <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"7px 12px", fontSize:11, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Edit Mapping</button>
+                <button style={{ background:T.indigoLt, border:"none", borderRadius:7, padding:"7px 12px", fontSize:11, fontWeight:600, color:T.indigo, cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}><Activity size={12}/>Test Connection</button>
+                <button style={{ background:T.greenLt, border:"none", borderRadius:7, padding:"7px 12px", fontSize:11, fontWeight:600, color:T.green, cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}><Download size={12}/>Force Sync</button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── App Shell ─────────────────────────────────────────────────────────────────
 export default function WealthscapePrototype() {
   const bp = useBreakpoint();
@@ -1016,7 +1533,7 @@ export default function WealthscapePrototype() {
     if (!document.getElementById(id)) {
       const s = document.createElement("style");
       s.id = id;
-      s.textContent = `@keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 4px #EEF0FF, 0 0 0 6px rgba(91,79,190,0.25)} 50%{box-shadow:0 0 0 8px #EEF0FF, 0 0 0 12px rgba(91,79,190,0.15)} }`;
+      s.textContent = `@keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 4px #EEF0FF, 0 0 0 6px rgba(91,79,190,0.25)} 50%{box-shadow:0 0 0 8px #EEF0FF, 0 0 0 12px rgba(91,79,190,0.15)} } @keyframes progress-sweep { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} }`;
       document.head.appendChild(s);
     }
   }, []);
@@ -1040,13 +1557,14 @@ export default function WealthscapePrototype() {
   const closeDemo = () => setDemoActive(false);
 
   const navItems = [
-    { id:"morning",  icon:Home,     label:"Morning Brief",  badge:4    },
-    { id:"reports",  icon:FileText, label:"Report Builder", badge:null },
-    { id:"portal",   icon:Users,    label:"Client Portal",  badge:1    },
-    { id:"insights", icon:Activity, label:"Analytics",      badge:null },
-    { id:"settings", icon:Settings, label:"Settings",       badge:null },
+    { id:"morning",      icon:Home,     label:"Morning Brief",  badge:4    },
+    { id:"reports",      icon:FileText, label:"Report Builder", badge:null },
+    { id:"portal",       icon:Users,    label:"Client Portal",  badge:1    },
+    { id:"integrations", icon:Zap,      label:"Integrations",   badge:null },
+    { id:"insights",     icon:Activity, label:"Analytics",      badge:null },
+    { id:"settings",     icon:Settings, label:"Settings",       badge:null },
   ];
-  const layerLabels = { morning:"Morning Brief", reports:"Report Builder", portal:"Client Portal", insights:"Analytics", settings:"Settings" };
+  const layerLabels = { morning:"Morning Brief", reports:"Report Builder", portal:"Client Portal", integrations:"Integrations", insights:"Analytics", settings:"Settings" };
 
   const SidebarContent = () => (
     <>
@@ -1127,11 +1645,12 @@ export default function WealthscapePrototype() {
         </div>
 
         <div style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          {activeLayer==="morning"  && <MorningBrief  bp={bp}/>}
-          {activeLayer==="reports"  && <ReportBuilder bp={bp}/>}
-          {activeLayer==="portal"   && <ClientPortal  bp={bp}/>}
-          {activeLayer==="insights" && <Analytics     bp={bp}/>}
-          {activeLayer==="settings" && <SettingsLayer/>}
+          {activeLayer==="morning"       && <MorningBrief    bp={bp}/>}
+          {activeLayer==="reports"       && <ReportBuilder   bp={bp}/>}
+          {activeLayer==="portal"        && <ClientPortal    bp={bp}/>}
+          {activeLayer==="integrations"  && <IntegrationHub  bp={bp}/>}
+          {activeLayer==="insights"      && <Analytics       bp={bp}/>}
+          {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
 
         {isMobile && (
