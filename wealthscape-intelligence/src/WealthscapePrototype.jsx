@@ -2106,7 +2106,7 @@ export default function WealthscapePrototype() {
           <div style={{ width:26, height:26, borderRadius:7, background:T.green, display:"flex", alignItems:"center", justifyContent:"center" }}><BarChart2 size={14} color={T.white}/></div>
           <div>
             <div style={{ fontSize:13, fontWeight:800, color:T.white, letterSpacing:"-0.01em" }}>Wealthscape</div>
-            <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Intelligence</div>
+            <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Reporting 2.0</div>
           </div>
         </div>
         {!isDesktop && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:4, color:T.gray400 }} onClick={()=>setSidebarOpen(false)}><X size={18}/></button>}
@@ -2128,7 +2128,7 @@ export default function WealthscapePrototype() {
       </nav>
       <div style={{ margin:"0 8px 14px", background:"rgba(238,240,255,0.12)", border:`1px solid rgba(91,79,190,0.25)`, borderRadius:8, padding:"10px 12px" }}>
         <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3 }}><Sparkles size={11} color={T.indigo}/><span style={{ fontSize:10, fontWeight:700, color:"#A78BFA", letterSpacing:"0.06em", textTransform:"uppercase" }}>AI Active</span></div>
-        <div style={{ fontSize:11, color:"#94A3B8", lineHeight:1.4 }}>Intelligence is analyzing your book</div>
+        <div style={{ fontSize:11, color:"#94A3B8", lineHeight:1.4 }}>AI is analyzing your book</div>
       </div>
     </>
   );
