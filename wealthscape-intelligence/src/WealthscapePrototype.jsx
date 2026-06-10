@@ -298,7 +298,7 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile, spotlightRec
   // to the top; otherwise keep it at the bottom. Falls back to bottom-centre when
   // there is no spotlight (intro / outro steps are always centred instead).
   const placeAbove = !isCenter && spotlightRect &&
-    (spotlightRect.top + spotlightRect.height / 2) > (typeof window !== "undefined" ? window.innerHeight : 800) * 0.5;
+    spotlightRect.bottom > (typeof window !== "undefined" ? window.innerHeight : 800) * 0.65;
 
   const panelStyle = isCenter ? {
     position: "fixed",
@@ -1806,27 +1806,32 @@ function IntegrationHub({ bp, deepLink }) {
 const SCENARIO_STEPS = [
   {
     id: "alert",
+    targetId: "insights-feed",
     title: "Step 1 · Drift Alert Fires",
     instruction: "A US Equity drift alert just fired for Sarah & Michael Chen. Expand the insight card in the Active Insights feed and click 'Build Rebalance Report'.",
   },
   {
     id: "generate",
+    targetId: "report-config",
     title: "Step 2 · Generate the Report",
     instruction: "You're in the Report Builder. Click 'Generate Report' to run the AI pipeline — it will sync data, build 8 sections, and write the client narrative.",
   },
   {
     id: "send",
+    targetId: "report-pipeline",
     title: "Step 3 · Deliver to Client",
     instruction: "Report ready. Review the delivery email and click 'Send & Deliver' to publish to the portal and notify Sarah & Michael.",
   },
   {
     id: "portal",
+    targetId: "portal-header",
     title: "Step 4 · Client Experience",
     instruction: "Delivered. This is exactly what Sarah & Michael see in their portal — the Q2 report with your advisor message. Explore the Documents and Messages tabs.",
     showComplete: true,
   },
   {
     id: "complete",
+    targetId: null,
     title: "Full Loop Complete",
     instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Wealthscape Reporting 2.0 workflow.",
     isComplete: true,
@@ -1835,11 +1840,31 @@ const SCENARIO_STEPS = [
 
 function ScenarioGuide({ step, onNext, onSkip, isMobile }) {
   const s = SCENARIO_STEPS[step];
+  const [pos, setPos] = useState({ top: 68, right: 16 });
+
+  useEffect(() => {
+    if (!s) return;
+    const compute = () => {
+      const el = s.targetId ? document.querySelector(`[data-demo="${s.targetId}"]`) : null;
+      if (!el) { setPos(isMobile ? { top: 60 } : { top: 68, right: 16 }); return; }
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width  / 2;
+      const cy = rect.top  + rect.height / 2;
+      const goTop   = cy > window.innerHeight * 0.55;
+      const goRight = cx < window.innerWidth  * 0.55;
+      const p = goTop ? { top: isMobile ? 60 : 68 } : { bottom: isMobile ? 70 : 24 };
+      if (!isMobile) p[goRight ? "right" : "left"] = 16;
+      setPos(p);
+    };
+    const t = setTimeout(compute, 80);
+    return () => clearTimeout(t);
+  }, [step, isMobile]);
+
   if (!s) return null;
   const progressPct = (step / (SCENARIO_STEPS.length - 1)) * 100;
 
   return (
-    <div style={{ position:"fixed", bottom:isMobile?70:24, right:isMobile?8:16, left:isMobile?8:"auto", width:isMobile?"auto":340, background:s.isComplete?T.emerald:T.navy, borderRadius:14, boxShadow:"0 20px 60px rgba(0,0,0,0.35)", zIndex:85, overflow:"hidden", animation:"fade-in-up 0.3s ease" }}>
+    <div style={{ position:"fixed", ...pos, ...(isMobile ? { left:8, right:8, width:"auto" } : { width:340 }), background:s.isComplete?T.emerald:T.navy, borderRadius:14, boxShadow:"0 20px 60px rgba(0,0,0,0.35)", zIndex:85, overflow:"hidden", animation:"fade-in-up 0.3s ease" }}>
       <div style={{ height:3, background:"rgba(255,255,255,0.15)" }}>
         <div style={{ height:"100%", width:`${progressPct}%`, background:s.isComplete?T.white:T.green, transition:"width 0.5s ease" }}/>
       </div>
@@ -2081,7 +2106,7 @@ export default function WealthscapePrototype() {
           <div style={{ width:26, height:26, borderRadius:7, background:T.green, display:"flex", alignItems:"center", justifyContent:"center" }}><BarChart2 size={14} color={T.white}/></div>
           <div>
             <div style={{ fontSize:13, fontWeight:800, color:T.white, letterSpacing:"-0.01em" }}>Wealthscape</div>
-            <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Intelligence</div>
+            <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Reporting 2.0</div>
           </div>
         </div>
         {!isDesktop && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:4, color:T.gray400 }} onClick={()=>setSidebarOpen(false)}><X size={18}/></button>}
@@ -2103,7 +2128,7 @@ export default function WealthscapePrototype() {
       </nav>
       <div style={{ margin:"0 8px 14px", background:"rgba(238,240,255,0.12)", border:`1px solid rgba(91,79,190,0.25)`, borderRadius:8, padding:"10px 12px" }}>
         <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3 }}><Sparkles size={11} color={T.indigo}/><span style={{ fontSize:10, fontWeight:700, color:"#A78BFA", letterSpacing:"0.06em", textTransform:"uppercase" }}>AI Active</span></div>
-        <div style={{ fontSize:11, color:"#94A3B8", lineHeight:1.4 }}>Intelligence is analyzing your book</div>
+        <div style={{ fontSize:11, color:"#94A3B8", lineHeight:1.4 }}>AI is analyzing your book</div>
       </div>
     </>
   );
