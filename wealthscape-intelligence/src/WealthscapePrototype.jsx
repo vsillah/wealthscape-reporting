@@ -560,7 +560,7 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
 }
 
 // ─── LAYER 1: Morning Brief ────────────────────────────────────────────────────
-function MorningBrief({ bp, alerts, onAction, onDismiss }) {
+function MorningBrief({ bp, alerts, onAction, onDismiss, scenarioStep }) {
   const [expanded, setExpanded] = useState(null);
   const { isMobile } = bp;
   const feed = alerts.filter(a => a.type !== "report");
@@ -604,8 +604,10 @@ function MorningBrief({ bp, alerts, onAction, onDismiss }) {
             </div>
           </div>
           {feed.length===0 && <div style={{ padding:"24px 18px", textAlign:"center", fontSize:12, color:T.slate }}>No active insights — you're all caught up.</div>}
-          {feed.map((ins,i)=>(
-            <div key={ins.id} style={{ padding:"14px 18px", borderBottom:i<feed.length-1?`1px solid ${T.gray100}`:"none", cursor:"pointer", background:expanded===ins.id?T.gray50:T.white }} onClick={()=>setExpanded(expanded===ins.id?null:ins.id)}>
+          {feed.map((ins,i)=>{
+            const isTarget = scenarioStep===0 && ins.id===1;
+            return (
+            <div key={ins.id} style={{ padding:"14px 18px", borderBottom:i<feed.length-1?`1px solid ${T.gray100}`:"none", cursor:"pointer", background:expanded===ins.id?T.gray50:T.white, outline:isTarget?`2px solid ${T.green}`:"none", outlineOffset:-2, transition:"outline 0.2s", animation:isTarget&&expanded!==ins.id?"scenario-pulse 2s ease-in-out infinite":"none" }} onClick={()=>setExpanded(expanded===ins.id?null:ins.id)}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:5 }}>
                 <div style={{ display:"flex", gap:7, alignItems:"center" }}>
                   <InsightChip type={ins.type}/>
@@ -623,7 +625,7 @@ function MorningBrief({ bp, alerts, onAction, onDismiss }) {
                 </div>
               )}
             </div>
-          ))}
+          );})}
         </div>
 
         <div data-demo="aua-chart" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
@@ -709,7 +711,7 @@ function MorningBrief({ bp, alerts, onAction, onDismiss }) {
 }
 
 // ─── LAYER 2: Report Builder ──────────────────────────────────────────────────
-function ReportBuilder({ bp, deepLink }) {
+function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
   const { isMobile } = bp;
   const [reportTab, setReportTab]     = useState("build");
   const [step, setStep]               = useState(1);
@@ -731,7 +733,7 @@ function ReportBuilder({ bp, deepLink }) {
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
         {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
-      <ReportGeneration bp={bp}/>
+      <ReportGeneration bp={bp} onScenarioAdvance={onScenarioAdvance} onSendToClient={onSendToClient}/>
     </div>
   );
   if (reportTab === "customize") return (
@@ -923,7 +925,7 @@ function ReportBuilder({ bp, deepLink }) {
 }
 
 // ─── LAYER 3: Client Portal ────────────────────────────────────────────────────
-function ClientPortal({ bp, deepLink }) {
+function ClientPortal({ bp, deepLink, reportDelivered }) {
   const { isMobile } = bp;
   const [tab, setTab] = useState("overview");
   useEffect(() => { if (deepLink?.portalTab) setTab(deepLink.portalTab); }, [deepLink]);
@@ -1031,11 +1033,17 @@ function ClientPortal({ bp, deepLink }) {
         )}
         {tab==="documents" && (
           <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            {reportDelivered && (
+              <div style={{ background:T.emeraldLt, border:`1px solid ${T.emerald}50`, borderRadius:10, padding:"11px 16px", display:"flex", alignItems:"center", gap:10, animation:"fade-in-up 0.4s ease" }}>
+                <Check size={15} color={T.emerald}/>
+                <span style={{ fontSize:13, fontWeight:700, color:T.emerald }}>Q2 Report just delivered · Portal updated · Email sent to 2 recipients</span>
+              </div>
+            )}
             {[{name:"Q2 2025 Performance Report",date:"Jun 9, 2025",isNew:true},{name:"Q1 2025 Performance Report",date:"Mar 12, 2025",isNew:false},{name:"2024 Annual Review",date:"Jan 8, 2025",isNew:false},{name:"Investment Policy Statement",date:"Aug 14, 2024",isNew:false},{name:"Account Opening Documents",date:"May 2, 2023",isNew:false}].map(doc=>(
               <div key={doc.name} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 16px", display:"flex", alignItems:"center", gap:12 }}>
                 <div style={{ width:34, height:34, borderRadius:8, background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><FileText size={15} color={T.green}/></div>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{doc.name}</span>{doc.isNew&&<Badge color={T.green} bg={T.greenLt}>NEW</Badge>}</div>
+                  <div style={{ display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{doc.name}</span>{doc.isNew&&<Badge color={T.green} bg={T.greenLt}>{reportDelivered?"JUST DELIVERED":"NEW"}</Badge>}</div>
                   <div style={{ fontSize:11, color:T.slate, marginTop:2 }}>{doc.date}</div>
                 </div>
                 <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, color:T.gray600, cursor:"pointer", display:"flex", gap:5, alignItems:"center", flexShrink:0, minHeight:34 }}><Download size={11}/> {isMobile?"":"Download"}</button>
@@ -1128,7 +1136,7 @@ const PIPELINE_STAGES = [
   { id:"delivery",   icon:Mail,      label:"Delivery",          desc:"Publishing to client portal and sending email notification",duration:600,  result:"Portal updated · Email queued to 2 recipients" },
 ];
 
-function ReportGeneration({ bp }) {
+function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
   const { isMobile } = bp;
   const [running, setRunning]           = useState(false);
   const [done, setDone]                 = useState(false);
@@ -1144,7 +1152,7 @@ function ReportGeneration({ bp }) {
       delay += stage.duration;
       timers.push(setTimeout(() => {
         setCompletedIds(prev => [...prev, stage.id]);
-        if (i === PIPELINE_STAGES.length - 1) { setCurrentStage(null); setRunning(false); setDone(true); }
+        if (i === PIPELINE_STAGES.length - 1) { setCurrentStage(null); setRunning(false); setDone(true); onScenarioAdvance?.(); }
       }, delay - 80));
     });
     return () => timers.forEach(clearTimeout);
@@ -1210,11 +1218,13 @@ function ReportGeneration({ bp }) {
           <div style={{ width:40, height:40, borderRadius:"50%", background:T.emerald, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Check size={20} color={T.white}/></div>
           <div style={{ flex:1, minWidth:160 }}>
             <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:2 }}>Report Ready</div>
-            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · Delivered to portal + email</div>
+            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · AI narrative + compliance cleared</div>
           </div>
-          <div style={{ display:"flex", gap:8 }}>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
             <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
-            <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer" }}>View in Portal</button>
+            <button onClick={onSendToClient} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, boxShadow:onSendToClient?"0 0 0 3px rgba(11,93,46,0.25)":"none" }}>
+              <Mail size={13}/> Send to Client
+            </button>
           </div>
         </div>
       )}
@@ -1615,26 +1625,205 @@ function IntegrationHub({ bp, deepLink }) {
   );
 }
 
+// ─── End-to-End Scenario ─────────────────────────────────────────────────────
+const SCENARIO_STEPS = [
+  {
+    id: "alert",
+    title: "Step 1 · Drift Alert Fires",
+    instruction: "A US Equity drift alert just fired for Sarah & Michael Chen. Expand the insight card in the Active Insights feed and click 'Build Rebalance Report'.",
+  },
+  {
+    id: "generate",
+    title: "Step 2 · Generate the Report",
+    instruction: "You're in the Report Builder. Click 'Generate Report' to run the AI pipeline — it will sync data, build 8 sections, and write the client narrative.",
+  },
+  {
+    id: "send",
+    title: "Step 3 · Deliver to Client",
+    instruction: "Report ready. Review the delivery email and click 'Send & Deliver' to publish to the portal and notify Sarah & Michael.",
+  },
+  {
+    id: "portal",
+    title: "Step 4 · Client Experience",
+    instruction: "Delivered. This is exactly what Sarah & Michael see in their portal — the Q2 report with your advisor message. Explore the Documents and Messages tabs.",
+    showComplete: true,
+  },
+  {
+    id: "complete",
+    title: "Full Loop Complete",
+    instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Wealthscape Intelligence workflow.",
+    isComplete: true,
+  },
+];
+
+function ScenarioGuide({ step, onNext, onSkip, isMobile }) {
+  const s = SCENARIO_STEPS[step];
+  if (!s) return null;
+  const progressPct = (step / (SCENARIO_STEPS.length - 1)) * 100;
+
+  return (
+    <div style={{ position:"fixed", bottom:isMobile?70:24, right:isMobile?8:16, left:isMobile?8:"auto", width:isMobile?"auto":340, background:s.isComplete?T.emerald:T.navy, borderRadius:14, boxShadow:"0 20px 60px rgba(0,0,0,0.35)", zIndex:85, overflow:"hidden", animation:"fade-in-up 0.3s ease" }}>
+      <div style={{ height:3, background:"rgba(255,255,255,0.15)" }}>
+        <div style={{ height:"100%", width:`${progressPct}%`, background:s.isComplete?T.white:T.green, transition:"width 0.5s ease" }}/>
+      </div>
+      <div style={{ padding:"14px 16px" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+            {s.isComplete
+              ? <div style={{ width:18, height:18, borderRadius:"50%", background:"rgba(255,255,255,0.25)", display:"flex", alignItems:"center", justifyContent:"center" }}><Check size={10} color={T.white}/></div>
+              : <div style={{ width:18, height:18, borderRadius:"50%", background:T.green, display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, fontWeight:700, color:T.white }}>{step+1}</div>}
+            <span style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.55)", letterSpacing:"0.08em", textTransform:"uppercase" }}>
+              {s.isComplete?"Scenario Complete":`Scenario · ${step+1} of ${SCENARIO_STEPS.length}`}
+            </span>
+          </div>
+          <button onClick={onSkip} style={{ background:"transparent", border:"none", cursor:"pointer", color:"rgba(255,255,255,0.4)", fontSize:11, fontWeight:600 }}>{s.isComplete?"Close":"Skip"}</button>
+        </div>
+        <div style={{ fontSize:13, fontWeight:700, color:T.white, marginBottom:5, lineHeight:1.3 }}>{s.title}</div>
+        <div style={{ fontSize:12, color:"rgba(255,255,255,0.72)", lineHeight:1.6 }}>{s.instruction}</div>
+        {!s.isComplete && (
+          <div style={{ display:"flex", gap:4, marginTop:12, alignItems:"center" }}>
+            {SCENARIO_STEPS.map((_,i)=><div key={i} style={{ width:i===step?14:5, height:5, borderRadius:99, background:i<step?T.green:i===step?"#86EFAC":"rgba(255,255,255,0.2)", transition:"all 0.25s" }}/>)}
+          </div>
+        )}
+        {s.isComplete && (
+          <div style={{ marginTop:12, display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
+            {[{label:"Data Sources",value:"3"},{label:"Gen Time",value:"7.0s"},{label:"Sections",value:"8"}].map(m=>(
+              <div key={m.label} style={{ background:"rgba(255,255,255,0.15)", borderRadius:8, padding:"8px 10px", textAlign:"center" }}>
+                <div style={{ fontSize:16, fontWeight:700, color:T.white }}>{m.value}</div>
+                <div style={{ fontSize:9, color:"rgba(255,255,255,0.65)", marginTop:2 }}>{m.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {s.showComplete && (
+          <button onClick={onNext} style={{ marginTop:12, width:"100%", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+            <Check size={13}/> Complete Scenario
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function EmailModal({ onSend, onClose, isMobile }) {
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [deliverPortal, setDeliverPortal] = useState(true);
+  const [deliverEmail, setDeliverEmail]   = useState(true);
+  const [body, setBody] = useState("Hi Sarah and Michael,\n\nYour Q2 2025 Quarterly Review is ready in your client portal. Your portfolio delivered +8.4% year-to-date — outpacing the 60/40 benchmark by 2.2 points.\n\nI've flagged a small US equity rebalancing opportunity that I'd like to discuss at our July 15th meeting. The full report covers performance drivers, your current allocation, and next steps.\n\nPlease review at your convenience and don't hesitate to reach out with any questions.\n\nWarm regards,\nJordan Williams, CFP®\nWilliams Wealth Management");
+
+  const handleSend = () => {
+    setSending(true);
+    setTimeout(() => { setSent(true); setTimeout(onSend, 1100); }, 1500);
+  };
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.6)", zIndex:86, backdropFilter:"blur(2px)" }}/>
+      <div style={{ position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:isMobile?"calc(100vw - 20px)":560, maxHeight:"calc(100vh - 40px)", background:T.white, borderRadius:16, boxShadow:"0 24px 64px rgba(0,0,0,0.35)", zIndex:87, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+        <div style={{ background:T.navy, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div style={{ width:32, height:32, borderRadius:8, background:T.green, display:"flex", alignItems:"center", justifyContent:"center" }}><Mail size={15} color={T.white}/></div>
+            <div>
+              <div style={{ fontSize:14, fontWeight:700, color:T.white }}>Deliver Report to Client</div>
+              <div style={{ fontSize:11, color:"#94A3B8" }}>Q2 2025 Quarterly Review · Sarah & Michael Chen</div>
+            </div>
+          </div>
+          <button onClick={onClose} style={{ background:"rgba(255,255,255,0.1)", border:"none", borderRadius:6, padding:6, cursor:"pointer", color:T.gray400, display:"flex" }}><X size={16}/></button>
+        </div>
+
+        {sent ? (
+          <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:40, gap:12 }}>
+            <div style={{ width:56, height:56, borderRadius:"50%", background:T.emeraldLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Check size={24} color={T.emerald}/></div>
+            <div style={{ fontSize:16, fontWeight:700, color:T.gray900 }}>Delivered!</div>
+            <div style={{ fontSize:13, color:T.slate, textAlign:"center", lineHeight:1.6 }}>Report published to client portal · Email sent to 2 recipients<br/><span style={{ color:T.green, fontWeight:600 }}>Navigating to portal…</span></div>
+          </div>
+        ) : (
+          <div style={{ flex:1, overflowY:"auto", padding:"16px 20px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>To</div>
+              <div style={{ display:"flex", gap:7, flexWrap:"wrap" }}>
+                {["sarah.chen@email.com","michael.chen@email.com"].map(e=>(
+                  <div key={e} style={{ display:"flex", alignItems:"center", gap:6, background:T.gray100, borderRadius:99, padding:"5px 12px" }}>
+                    <div style={{ width:18, height:18, borderRadius:"50%", background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", fontSize:8, fontWeight:700, color:T.green }}>{e[0].toUpperCase()}</div>
+                    <span style={{ fontSize:12, color:T.gray900 }}>{e}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>Subject</div>
+              <div style={{ fontSize:13, fontWeight:600, color:T.gray900, background:T.gray50, borderRadius:8, padding:"10px 12px", border:`1px solid ${T.gray200}` }}>Q2 2025 Quarterly Review – Sarah & Michael Chen</div>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>Attachment</div>
+              <div style={{ display:"flex", alignItems:"center", gap:10, background:T.greenLt, border:`1px solid ${T.green}30`, borderRadius:8, padding:"10px 14px" }}>
+                <div style={{ width:32, height:32, borderRadius:7, background:T.green, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><FileText size={14} color={T.white}/></div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:12, fontWeight:700, color:T.gray900 }}>Chen_Q2_2025_Quarterly_Review.pdf</div>
+                  <div style={{ fontSize:11, color:T.slate }}>8 sections · 6 charts · AI narrative · Compliance cleared</div>
+                </div>
+                <Badge color={T.green} bg={T.greenLt}>Ready</Badge>
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>Message</div>
+              <textarea value={body} onChange={e=>setBody(e.target.value)} rows={7} style={{ width:"100%", border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, color:T.gray900, resize:"vertical", outline:"none", fontFamily:"inherit", lineHeight:1.65, boxSizing:"border-box" }}/>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:7, letterSpacing:"0.04em", textTransform:"uppercase" }}>Delivery Channels</div>
+              <div style={{ display:"flex", gap:10 }}>
+                {[{key:"portal",label:"Client Portal",desc:"Publish + NEW badge",val:deliverPortal,set:setDeliverPortal},{key:"email",label:"Email",desc:"2 recipients",val:deliverEmail,set:setDeliverEmail}].map(ch=>(
+                  <div key={ch.key} onClick={()=>ch.set(!ch.val)} style={{ flex:1, background:ch.val?T.greenLt:T.gray50, border:`1px solid ${ch.val?T.green:T.gray200}`, borderRadius:10, padding:"10px 12px", cursor:"pointer", transition:"all 0.15s" }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:3 }}>
+                      <span style={{ fontSize:12, fontWeight:700, color:ch.val?T.green:T.gray600 }}>{ch.label}</span>
+                      <div style={{ width:15, height:15, borderRadius:4, border:`2px solid ${ch.val?T.green:T.gray300}`, background:ch.val?T.green:T.white, display:"flex", alignItems:"center", justifyContent:"center" }}>{ch.val&&<Check size={8} color={T.white}/>}</div>
+                    </div>
+                    <div style={{ fontSize:11, color:T.slate }}>{ch.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!sent && (
+          <div style={{ padding:"13px 20px", borderTop:`1px solid ${T.gray100}`, display:"flex", gap:9, justifyContent:"flex-end", flexShrink:0 }}>
+            <button onClick={onClose} style={{ background:T.gray100, border:"none", borderRadius:8, padding:"10px 18px", fontSize:13, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Cancel</button>
+            <button onClick={handleSend} disabled={sending} style={{ background:sending?T.gray300:T.green, color:T.white, border:"none", borderRadius:8, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:sending?"default":"pointer", display:"flex", alignItems:"center", gap:8, minHeight:42, transition:"background 0.2s" }}>
+              {sending?<><Activity size={14}/> Sending…</>:<><Mail size={14}/> Send & Deliver</>}
+            </button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 // ─── App Shell ─────────────────────────────────────────────────────────────────
 export default function WealthscapePrototype() {
   const bp = useBreakpoint();
   const { isMobile, isTablet, isDesktop } = bp;
 
-  const [activeLayer,   setActiveLayer]   = useState("morning");
-  const [sidebarOpen,   setSidebarOpen]   = useState(false);
-  const [alerts,        setAlerts]        = useState(ALERTS);
-  const [alertsOpen,    setAlertsOpen]    = useState(false);
-  const [deepLink,      setDeepLink]      = useState(null);
-  const [demoActive,    setDemoActive]    = useState(false);
-  const [demoStep,      setDemoStep]      = useState(0);
-  const [spotlightRect, setSpotlightRect] = useState(null);
+  const [activeLayer,    setActiveLayer]    = useState("morning");
+  const [sidebarOpen,    setSidebarOpen]    = useState(false);
+  const [alerts,         setAlerts]         = useState(ALERTS);
+  const [alertsOpen,     setAlertsOpen]     = useState(false);
+  const [deepLink,       setDeepLink]       = useState(null);
+  const [demoActive,     setDemoActive]     = useState(false);
+  const [demoStep,       setDemoStep]       = useState(0);
+  const [spotlightRect,  setSpotlightRect]  = useState(null);
+  const [scenarioActive, setScenarioActive] = useState(false);
+  const [scenarioStep,   setScenarioStep]   = useState(0);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [reportDelivered,setReportDelivered]= useState(false);
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
     if (!document.getElementById(id)) {
       const s = document.createElement("style");
       s.id = id;
-      s.textContent = `@keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 4px #EEF0FF, 0 0 0 6px rgba(91,79,190,0.25)} 50%{box-shadow:0 0 0 8px #EEF0FF, 0 0 0 12px rgba(91,79,190,0.15)} } @keyframes progress-sweep { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} }`;
+      s.textContent = `@keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 4px #EEF0FF, 0 0 0 6px rgba(91,79,190,0.25)} 50%{box-shadow:0 0 0 8px #EEF0FF, 0 0 0 12px rgba(91,79,190,0.15)} } @keyframes progress-sweep { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} } @keyframes scenario-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(11,93,46,0.6)} 50%{box-shadow:0 0 0 10px rgba(11,93,46,0)} } @keyframes fade-in-up { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }`;
       document.head.appendChild(s);
     }
   }, []);
@@ -1657,14 +1846,46 @@ export default function WealthscapePrototype() {
     const { layer, ...sub } = alert.action;
     setAlerts(prev => prev.map(a => a.id === alert.id ? { ...a, read:true } : a));
     setActiveLayer(layer);
-    setDeepLink({ ...sub, _ts: Date.now() }); // _ts forces child effects to re-run on repeat clicks
+    setDeepLink({ ...sub, _ts: Date.now() });
     setAlertsOpen(false);
+    // Advance scenario when the Chen drift alert is acted on (step 0 → 1)
+    if (scenarioActive && scenarioStep === 0 && alert.id === 1) {
+      setScenarioStep(1);
+    }
   };
   const dismissAlert  = (id) => setAlerts(prev => prev.filter(a => a.id !== id));
   const markAllRead   = ()   => setAlerts(prev => prev.map(a => ({ ...a, read:true })));
   const unreadAlerts  = alerts.filter(a => !a.read).length;
 
-  const startDemo = () => { setDemoStep(0); setSpotlightRect(null); setDemoActive(true); };
+  // Advance scenario step (called by pipeline completion)
+  const advanceScenario = useCallback(() => {
+    setScenarioStep(prev => Math.min(prev + 1, SCENARIO_STEPS.length - 1));
+  }, []);
+
+  // Email sent → advance to portal view
+  const handleEmailSent = () => {
+    setEmailModalOpen(false);
+    if (scenarioActive) {
+      setScenarioStep(prev => Math.min(prev + 1, SCENARIO_STEPS.length - 1));
+      setActiveLayer("portal");
+      setDeepLink({ portalTab:"documents", _ts:Date.now() });
+      setReportDelivered(true);
+    } else {
+      setActiveLayer("portal");
+      setDeepLink({ portalTab:"documents", _ts:Date.now() });
+      setReportDelivered(true);
+    }
+  };
+
+  const startScenario = () => {
+    setScenarioStep(0); setScenarioActive(true); setReportDelivered(false);
+    setActiveLayer("morning"); setDeepLink(null); setDemoActive(false);
+    // Reset alerts so Chen drift is unread
+    setAlerts(prev => prev.map(a => a.id===1 ? { ...a, read:false } : a));
+  };
+  const endScenario = () => setScenarioActive(false);
+
+  const startDemo = () => { setDemoStep(0); setSpotlightRect(null); setDemoActive(true); setScenarioActive(false); };
   const nextStep  = () => setDemoStep(s => Math.min(s + 1, TOUR_STEPS.length - 1));
   const prevStep  = () => setDemoStep(s => Math.max(s - 1, 0));
   const closeDemo = () => setDemoActive(false);
@@ -1747,8 +1968,11 @@ export default function WealthscapePrototype() {
               </div>
             )}
             {isMobile && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
+            <button onClick={startScenario} style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
+              <Target size={14}/>{!isMobile&&(scenarioActive?" Restart":" Scenario")}
+            </button>
             <button onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
-              <PlayCircle size={14}/>{!isMobile&&" Take Tour"}
+              <PlayCircle size={14}/>{!isMobile&&" Tour"}
             </button>
             <button onClick={()=>setAlertsOpen(o=>!o)} style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
               <Bell size={18} color={alertsOpen?T.gray900:T.slate}/>
@@ -1766,9 +1990,9 @@ export default function WealthscapePrototype() {
         )}
 
         <div style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          {activeLayer==="morning"       && <MorningBrief    bp={bp} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert}/>}
-          {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink}/>}
-          {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink}/>}
+          {activeLayer==="morning"       && <MorningBrief    bp={bp} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} scenarioStep={scenarioActive?scenarioStep:null}/>}
+          {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>}
+          {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
@@ -1798,6 +2022,19 @@ export default function WealthscapePrototype() {
           {currentStep.spotlightId && <Spotlight targetId={currentStep.spotlightId} onClose={closeDemo} onRectChange={setSpotlightRect}/>}
           <DemoTour step={demoStep} total={TOUR_STEPS.length} onNext={nextStep} onPrev={prevStep} onClose={closeDemo} isMobile={isMobile} spotlightRect={spotlightRect}/>
         </>
+      )}
+
+      {scenarioActive && (
+        <ScenarioGuide
+          step={scenarioStep}
+          onNext={()=>setScenarioStep(s=>Math.min(s+1,SCENARIO_STEPS.length-1))}
+          onSkip={endScenario}
+          isMobile={isMobile}
+        />
+      )}
+
+      {emailModalOpen && (
+        <EmailModal onSend={handleEmailSent} onClose={()=>setEmailModalOpen(false)} isMobile={isMobile}/>
       )}
     </div>
   );
