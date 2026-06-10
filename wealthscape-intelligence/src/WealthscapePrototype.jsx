@@ -247,8 +247,8 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile }) {
 
   return (
     <>
-      {/* Backdrop */}
-      <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.65)", zIndex: 999, backdropFilter: "blur(2px)" }} onClick={onClose} />
+      {/* Backdrop — only for centered (modal) steps; spotlight steps dim via the cut-out instead */}
+      {isCenter && <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.65)", zIndex: 999, backdropFilter: "blur(2px)" }} onClick={onClose} />}
 
       {/* Panel */}
       <div style={{ ...panelStyle, background: T.white, borderRadius: isCenter ? 16 : (isMobile ? "16px 16px 0 0" : 16), boxShadow: "0 24px 64px rgba(0,0,0,0.35)", overflow: "hidden" }}>
@@ -362,8 +362,10 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile }) {
   );
 }
 
-// ─── Spotlight ring around a targeted element ─────────────────────────────────
-function Spotlight({ targetId }) {
+// ─── Spotlight cut-out around a targeted element ──────────────────────────────
+// Dims the whole viewport EXCEPT the targeted element, so the section under
+// discussion stays at full brightness and lines up with the tour commentary.
+function Spotlight({ targetId, onClose }) {
   const [rect, setRect] = useState(null);
 
   useEffect(() => {
@@ -378,13 +380,21 @@ function Spotlight({ targetId }) {
     const obs = new ResizeObserver(update);
     obs.observe(el);
     window.addEventListener("scroll", update, true);
-    return () => { obs.disconnect(); window.removeEventListener("scroll", update, true); };
+    window.addEventListener("resize", update);
+    return () => { obs.disconnect(); window.removeEventListener("scroll", update, true); window.removeEventListener("resize", update); };
   }, [targetId]);
 
   if (!rect) return null;
 
   return (
-    <div style={{ position: "fixed", top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: 12, border: `2.5px solid ${T.indigo}`, boxShadow: `0 0 0 4px ${T.indigoLt}, 0 0 0 6px ${T.indigo}40`, zIndex: 998, pointerEvents: "none", transition: "all 0.35s cubic-bezier(0.4,0,0.2,1)", animation: "pulse-ring 2s infinite" }} />
+    <>
+      {/* Full-screen click-catcher — dismisses the tour when the dimmed area is clicked */}
+      <div onClick={onClose} style={{ position: "fixed", inset: 0, zIndex: 995 }} />
+      {/* Dimmer: a transparent box over the target whose huge box-shadow darkens everything around it, leaving the target itself clear */}
+      <div style={{ position: "fixed", top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: 12, boxShadow: "0 0 0 9999px rgba(15,23,42,0.55)", zIndex: 996, pointerEvents: "none", transition: "all 0.35s cubic-bezier(0.4,0,0.2,1)" }} />
+      {/* Pulsing highlight ring on top of the bright cut-out */}
+      <div style={{ position: "fixed", top: rect.top, left: rect.left, width: rect.width, height: rect.height, borderRadius: 12, border: `2.5px solid ${T.indigo}`, zIndex: 997, pointerEvents: "none", transition: "all 0.35s cubic-bezier(0.4,0,0.2,1)", animation: "pulse-ring 2s infinite" }} />
+    </>
   );
 }
 
@@ -1123,7 +1133,7 @@ export default function WealthscapePrototype() {
 
       {demoActive && (
         <>
-          {currentStep.spotlightId && <Spotlight targetId={currentStep.spotlightId}/>}
+          {currentStep.spotlightId && <Spotlight targetId={currentStep.spotlightId} onClose={closeDemo}/>}
           <DemoTour step={demoStep} total={TOUR_STEPS.length} onNext={nextStep} onPrev={prevStep} onClose={closeDemo} isMobile={isMobile}/>
         </>
       )}
