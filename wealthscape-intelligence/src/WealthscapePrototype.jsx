@@ -293,40 +293,45 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile, spotlightRec
   const isLast  = step === total - 1;
   const isCenter = s.position === "center";
 
-  // Place the panel away from the spotlighted section so it never blocks it.
-  // Rule: if spotlight centre is in the bottom half of the viewport → float panel
-  // to the top; otherwise keep it at the bottom. Falls back to bottom-centre when
-  // there is no spotlight (intro / outro steps are always centred instead).
-  const placeAbove = !isCenter && spotlightRect &&
-    spotlightRect.bottom > (typeof window !== "undefined" ? window.innerHeight : 800) * 0.65;
+  // Place the panel in the corner farthest from the spotlight element so it
+  // never overlaps what it's describing. Intro/outro steps keep the centred modal.
+  const cornerPos = !isCenter && !isMobile && spotlightRect ? (() => {
+    const cx = spotlightRect.left + spotlightRect.width  / 2;
+    const cy = spotlightRect.top  + spotlightRect.height / 2;
+    const goTop   = cy > (typeof window !== "undefined" ? window.innerHeight : 800) * 0.5;
+    const goRight = cx < (typeof window !== "undefined" ? window.innerWidth  : 1200) * 0.5;
+    return {
+      ...(goTop ? { top: 16 } : { bottom: 24 }),
+      ...(goRight ? { right: 16 } : { left: 16 }),
+    };
+  })() : null;
 
   const panelStyle = isCenter ? {
     position: "fixed",
     top: "50%", left: "50%",
     transform: "translate(-50%, -50%)",
-    width: isMobile ? "calc(100vw - 32px)" : 560,
+    width: isMobile ? "calc(100vw - 32px)" : 520,
     zIndex: 1000,
-  } : placeAbove ? {
+  } : isMobile ? {
     position: "fixed",
-    top: isMobile ? 0 : 16,
-    left: isMobile ? 0 : "50%",
-    transform: isMobile ? "none" : "translateX(-50%)",
-    width: isMobile ? "100%" : 600,
-    borderRadius: isMobile ? "0 0 16px 16px" : 16,
+    bottom: 0, left: 0, right: 0,
+    width: "100%",
+    zIndex: 1000,
+  } : cornerPos ? {
+    position: "fixed",
+    ...cornerPos,
+    width: 420,
     zIndex: 1000,
   } : {
+    // fallback: no spotlight yet — bottom-centre
     position: "fixed",
-    bottom: isMobile ? 0 : 24,
-    left: isMobile ? 0 : "50%",
-    transform: isMobile ? "none" : "translateX(-50%)",
-    width: isMobile ? "100%" : 600,
-    borderRadius: isMobile ? "16px 16px 0 0" : 16,
+    bottom: 24, left: "50%",
+    transform: "translateX(-50%)",
+    width: 520,
     zIndex: 1000,
   };
 
-  const panelRadius = isCenter ? 16 : placeAbove
-    ? (isMobile ? "0 0 16px 16px" : 16)
-    : (isMobile ? "16px 16px 0 0" : 16);
+  const panelRadius = isCenter ? 16 : isMobile ? "16px 16px 0 0" : 16;
 
   const progressPct = ((step) / (total - 1)) * 100;
 
