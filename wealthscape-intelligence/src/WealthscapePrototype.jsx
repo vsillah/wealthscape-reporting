@@ -901,8 +901,8 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
               )}
 
               {step>=2 && (
-                <button style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:14, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:48 }}>
-                  <FileText size={15}/> Generate Report
+                <button onClick={()=>setReportTab("generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:14, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:48 }}>
+                  <Zap size={15}/> Generate Report <ChevronRight size={16}/>
                 </button>
               )}
             </div>
@@ -984,9 +984,11 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
                 </div>
               </div>
 
-              <div style={{ background:T.gray50, borderTop:`1px solid ${T.gray200}`, padding:"14px 18px", display:"flex", justifyContent:"flex-end", gap:8, flexWrap:"wrap" }}>
-                <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:36 }}>Schedule Review</button>
-                <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", minHeight:36 }}>Send to Client</button>
+              <div style={{ background:T.gray50, borderTop:`1px solid ${T.gray200}`, padding:"14px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+                <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:36 }}>Schedule Review</button>
+                <button onClick={()=>setReportTab("generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, minHeight:36 }}>
+                  <Zap size={12}/> Generate &amp; Send <ChevronRight size={13}/>
+                </button>
               </div>
             </div>
           </div>
