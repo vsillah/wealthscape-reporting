@@ -448,22 +448,100 @@ const clients = [
   { id:5, name:"Eleanor Vasquez",        aum:"2.8M",  change:"+0.6%", up:true,  risk:"Conservative", alert:"review", lastReview:"61", advisor:"M. Torres"   },
   { id:6, name:"Kingston Capital LLC",   aum:"6.1M",  change:"-1.4%", up:false, risk:"Moderate",     alert:"risk",   lastReview:"34", advisor:"J. Williams" },
 ];
-const insights = [
-  { id:1, type:"drift",  client:"Sarah & Michael Chen",  body:"US Equity 6.2pts above target. Rebalance recommended before quarter-end.", priority:"high",   action:"Rebalance Now"   },
-  { id:2, type:"tax",    client:"Robert Okafor",          body:"INTL position down 8.4% — tax-loss harvesting opportunity before Dec 31.", priority:"high",   action:"Review Position" },
-  { id:3, type:"risk",   client:"Kingston Capital LLC",   body:"Login activity declined 80% over 30 days. No response to last 2 touchpoints.", priority:"medium", action:"Send Check-In"   },
-  { id:4, type:"review", client:"Eleanor Vasquez",        body:"Annual review is 61 days overdue. Regulatory threshold is 90 days.",        priority:"medium", action:"Schedule Now"    },
+// ─── Central alert store ──────────────────────────────────────────────────────
+// Single source of truth. Every scattered alert across the app feeds from here,
+// surfaces in the top-right bell, and carries a "next best action" deep-link that
+// routes the advisor to the exact screen (and sub-tab) where they resolve it.
+const ALERTS = [
+  { id:1, type:"drift",  severity:"high",   client:"Sarah & Michael Chen", source:"Portfolio Monitor", time:"8:02 AM",  read:false,
+    body:"US Equity 6.2pts above target. Rebalance recommended before quarter-end.",
+    action:{ label:"Build Rebalance Report", layer:"reports", reportTab:"generate" } },
+  { id:2, type:"tax",    severity:"high",   client:"Robert Okafor", source:"Portfolio Monitor", time:"8:02 AM",  read:false,
+    body:"INTL position down 8.4% — tax-loss harvesting opportunity before Dec 31.",
+    action:{ label:"Model Tax-Loss Report", layer:"reports", reportTab:"customize" } },
+  { id:3, type:"risk",   severity:"high",   client:"Kingston Capital LLC", source:"Engagement AI", time:"7:45 AM",  read:false,
+    body:"Login activity declined 80% over 30 days. No response to last 2 touchpoints.",
+    action:{ label:"Message Client", layer:"portal", portalTab:"messages" } },
+  { id:4, type:"review", severity:"medium", client:"Eleanor Vasquez", source:"Compliance", time:"Yesterday", read:false,
+    body:"Annual review is 61 days overdue. Regulatory threshold is 90 days.",
+    action:{ label:"Open Client Portal", layer:"portal", portalTab:"overview" } },
+  { id:5, type:"integration", severity:"medium", client:"Fidelity Institutional", source:"Integration Hub", time:"6:30 AM", read:false,
+    body:"INTL ETF price feed is 4h stale. Re-sync before generating client reports.",
+    action:{ label:"Resolve Integration", layer:"integrations", integrationId:"fidelity" } },
+  { id:6, type:"report", severity:"low", client:"Patel Wealth Group", source:"Report Engine", time:"Mon", read:true,
+    body:"Q2 performance report generated and delivered to the client portal.",
+    action:{ label:"View in Portal", layer:"portal", portalTab:"documents" } },
 ];
 
 // ─── Shared micro-components ──────────────────────────────────────────────────
 const Badge = ({ color, bg, children }) => (
   <span style={{ background:bg, color, fontSize:11, fontWeight:600, padding:"2px 8px", borderRadius:99, letterSpacing:"0.03em", whiteSpace:"nowrap" }}>{children}</span>
 );
+const CHIP_MAP = {
+  drift:{label:"DRIFT",bg:T.amberLt,color:T.amber}, tax:{label:"TAX-LOSS",bg:T.indigoLt,color:T.indigo},
+  risk:{label:"AT-RISK",bg:T.redLt,color:T.red}, review:{label:"OVERDUE",bg:T.gray100,color:T.slate},
+  integration:{label:"DATA SYNC",bg:T.amberLt,color:T.amber}, report:{label:"DELIVERED",bg:T.emeraldLt,color:T.emerald},
+};
 const InsightChip = ({ type }) => {
-  const map = { drift:{label:"DRIFT",bg:T.amberLt,color:T.amber}, tax:{label:"TAX-LOSS",bg:T.indigoLt,color:T.indigo}, risk:{label:"AT-RISK",bg:T.redLt,color:T.red}, review:{label:"OVERDUE",bg:T.gray100,color:T.slate} };
-  const s = map[type] || { label:type, bg:T.gray100, color:T.gray600 };
+  const s = CHIP_MAP[type] || { label:type, bg:T.gray100, color:T.gray600 };
   return <Badge color={s.color} bg={s.bg}>{s.label}</Badge>;
 };
+const SEVERITY = { high:{ color:T.red, label:"High" }, medium:{ color:T.amber, label:"Medium" }, low:{ color:T.slate, label:"Low" } };
+
+// ─── Alert Center (bell dropdown) ─────────────────────────────────────────────
+function AlertCenter({ alerts, onAction, onDismiss, onMarkAllRead, onClose, isMobile }) {
+  const unread = alerts.filter(a => !a.read).length;
+  const sorted = [...alerts].sort((a,b) => (a.read - b.read) || ("high medium low".indexOf(a.severity) - "high medium low".indexOf(b.severity)));
+  return (
+    <>
+      <div style={{ position:"fixed", inset:0, zIndex:60 }} onClick={onClose} />
+      <div style={{ position:"fixed", top:isMobile?52:56, right:isMobile?8:12, left:isMobile?8:"auto", width:isMobile?"auto":380, maxHeight:"calc(100vh - 80px)", background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, boxShadow:"0 16px 48px rgba(0,0,0,0.18)", zIndex:61, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+        <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray100}`, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+            <span style={{ fontSize:14, fontWeight:700, color:T.gray900 }}>Notifications</span>
+            {unread > 0 && <span style={{ background:T.red, color:T.white, fontSize:10, fontWeight:700, padding:"2px 7px", borderRadius:99 }}>{unread} new</span>}
+          </div>
+          <button onClick={onMarkAllRead} disabled={!unread} style={{ background:"transparent", border:"none", fontSize:12, fontWeight:600, color:unread?T.indigo:T.gray300, cursor:unread?"pointer":"default" }}>Mark all read</button>
+        </div>
+        <div style={{ overflowY:"auto" }}>
+          {sorted.length === 0 && (
+            <div style={{ padding:"40px 20px", textAlign:"center" }}>
+              <Check size={28} color={T.emerald} style={{ marginBottom:8 }}/>
+              <div style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>All clear</div>
+              <div style={{ fontSize:12, color:T.slate, marginTop:2 }}>No alerts need your attention.</div>
+            </div>
+          )}
+          {sorted.map(a => {
+            const sev = SEVERITY[a.severity];
+            return (
+              <div key={a.id} style={{ padding:"13px 18px", borderBottom:`1px solid ${T.gray100}`, background:a.read?T.white:`${T.indigoLt}55`, display:"flex", gap:11 }}>
+                <div style={{ width:8, height:8, borderRadius:"50%", background:a.read?T.gray200:sev.color, flexShrink:0, marginTop:5 }}/>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7, marginBottom:4, flexWrap:"wrap" }}>
+                    <InsightChip type={a.type}/>
+                    <span style={{ fontSize:10, color:T.slate }}>{a.source}</span>
+                    <span style={{ fontSize:10, color:T.gray400, marginLeft:"auto" }}>{a.time}</span>
+                  </div>
+                  <div style={{ fontSize:13, fontWeight:600, color:T.gray900, marginBottom:2 }}>{a.client}</div>
+                  <div style={{ fontSize:12, color:T.gray600, lineHeight:1.5, marginBottom:9 }}>{a.body}</div>
+                  <div style={{ display:"flex", gap:8, alignItems:"center" }}>
+                    <button onClick={()=>onAction(a)} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:5, minHeight:32 }}>
+                      <Zap size={11}/> {a.action.label} <ChevronRight size={12}/>
+                    </button>
+                    <button onClick={()=>onDismiss(a.id)} style={{ background:"transparent", border:"none", fontSize:11, fontWeight:600, color:T.slate, cursor:"pointer" }}>Dismiss</button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ padding:"10px 18px", borderTop:`1px solid ${T.gray100}`, textAlign:"center", flexShrink:0 }}>
+          <span style={{ fontSize:11, color:T.slate }}>Next best action routes you straight to the fix</span>
+        </div>
+      </div>
+    </>
+  );
+}
 function MetricCard({ label, value, delta, up, sub, accent }) {
   return (
     <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px", flex:1, minWidth:140 }}>
@@ -482,9 +560,14 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
 }
 
 // ─── LAYER 1: Morning Brief ────────────────────────────────────────────────────
-function MorningBrief({ bp }) {
+function MorningBrief({ bp, alerts, onAction, onDismiss }) {
   const [expanded, setExpanded] = useState(null);
   const { isMobile } = bp;
+  const feed = alerts.filter(a => a.type !== "report");
+  const highCount   = alerts.filter(a => a.severity === "high"   && !a.read).length;
+  const taxCount    = alerts.filter(a => a.type === "tax"        && !a.read).length;
+  const reviewCount = alerts.filter(a => a.type === "review"     && !a.read).length;
+  const openCount   = alerts.filter(a => !a.read).length;
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
 
@@ -494,9 +577,9 @@ function MorningBrief({ bp }) {
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.1em", color:T.indigo, textTransform:"uppercase", marginBottom:4 }}>Morning Brief</div>
             <div style={{ fontSize:isMobile?15:18, fontWeight:700, color:T.white, marginBottom:8, lineHeight:1.3 }}>Good morning, Jordan. Here's what needs your attention today.</div>
-            <div style={{ fontSize:13, color:"#A8BCCF", lineHeight:1.5, marginBottom:12 }}>4 active insights across your book. AUA up 2.3% MTD to $1.57B.</div>
+            <div style={{ fontSize:13, color:"#A8BCCF", lineHeight:1.5, marginBottom:12 }}>{openCount} active alert{openCount!==1?"s":""} across your book. AUA up 2.3% MTD to $1.57B.</div>
             <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-              {[{label:"2 High Priority",c:T.red,bg:"rgba(239,68,68,0.2)"},{label:"1 Tax Opportunity",c:"#A78BFA",bg:"rgba(91,79,190,0.3)"},{label:"1 Review Overdue",c:T.amber,bg:"rgba(245,158,11,0.2)"}].map(c=>(
+              {[{label:`${highCount} High Priority`,c:T.red,bg:"rgba(239,68,68,0.2)"},{label:`${taxCount} Tax Opportunity`,c:"#A78BFA",bg:"rgba(91,79,190,0.3)"},{label:`${reviewCount} Review Overdue`,c:T.amber,bg:"rgba(245,158,11,0.2)"}].map(c=>(
                 <span key={c.label} style={{ background:c.bg, color:c.c, fontSize:11, fontWeight:600, padding:"3px 9px", borderRadius:99 }}>{c.label}</span>
               ))}
             </div>
@@ -508,21 +591,26 @@ function MorningBrief({ bp }) {
         <MetricCard label="Total AUA"       value="$1.57B" delta="+2.3%"   up={true}  sub="vs last month"  accent={T.green}  />
         <MetricCard label="Active Clients"  value="134"    delta="+3"       up={true}  sub="this quarter"   accent={T.indigo} />
         <MetricCard label="Avg Performance" value="+8.4%"  delta="+2.2pts"  up={true}  sub="vs benchmark"   accent={T.emerald}/>
-        <MetricCard label="Open Insights"   value="4"      delta="2 urgent" up={false}                      accent={T.amber}  />
+        <MetricCard label="Open Alerts"     value={String(openCount)} delta={`${highCount} urgent`} up={false}            accent={T.amber}  />
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:16 }}>
         <div data-demo="insights-feed" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
           <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray200}`, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>Active Insights</div>
-            <Badge color={T.indigo} bg={T.indigoLt}>AI-Generated</Badge>
+            <div style={{ display:"flex", gap:6, alignItems:"center" }}>
+              <Bell size={12} color={T.slate}/>
+              <Badge color={T.indigo} bg={T.indigoLt}>Synced to Alerts</Badge>
+            </div>
           </div>
-          {insights.map((ins,i)=>(
-            <div key={ins.id} style={{ padding:"14px 18px", borderBottom:i<insights.length-1?`1px solid ${T.gray100}`:"none", cursor:"pointer", background:expanded===ins.id?T.gray50:T.white }} onClick={()=>setExpanded(expanded===ins.id?null:ins.id)}>
+          {feed.length===0 && <div style={{ padding:"24px 18px", textAlign:"center", fontSize:12, color:T.slate }}>No active insights — you're all caught up.</div>}
+          {feed.map((ins,i)=>(
+            <div key={ins.id} style={{ padding:"14px 18px", borderBottom:i<feed.length-1?`1px solid ${T.gray100}`:"none", cursor:"pointer", background:expanded===ins.id?T.gray50:T.white }} onClick={()=>setExpanded(expanded===ins.id?null:ins.id)}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:5 }}>
                 <div style={{ display:"flex", gap:7, alignItems:"center" }}>
                   <InsightChip type={ins.type}/>
-                  {ins.priority==="high" && <div style={{ width:6, height:6, borderRadius:"50%", background:T.red, flexShrink:0 }}/>}
+                  {ins.severity==="high" && <div style={{ width:6, height:6, borderRadius:"50%", background:T.red, flexShrink:0 }}/>}
+                  {!ins.read && <span style={{ fontSize:10, color:T.indigo, fontWeight:600 }}>New</span>}
                 </div>
                 <ChevronDown size={13} color={T.gray400} style={{ transform:expanded===ins.id?"rotate(180deg)":"none", transition:"transform 0.2s", flexShrink:0 }}/>
               </div>
@@ -530,8 +618,8 @@ function MorningBrief({ bp }) {
               <div style={{ fontSize:12, color:T.gray600, lineHeight:1.5 }}>{ins.body}</div>
               {expanded===ins.id && (
                 <div style={{ display:"flex", gap:8, marginTop:10 }}>
-                  <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:5, minHeight:36 }}><Zap size={12}/> {ins.action}</button>
-                  <button style={{ background:T.gray100, color:T.gray600, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, cursor:"pointer", minHeight:36 }}>Dismiss</button>
+                  <button onClick={e=>{e.stopPropagation();onAction(ins);}} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:5, minHeight:36 }}><Zap size={12}/> {ins.action.label} <ChevronRight size={13}/></button>
+                  <button onClick={e=>{e.stopPropagation();onDismiss(ins.id);}} style={{ background:T.gray100, color:T.gray600, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, cursor:"pointer", minHeight:36 }}>Dismiss</button>
                 </div>
               )}
             </div>
@@ -621,7 +709,7 @@ function MorningBrief({ bp }) {
 }
 
 // ─── LAYER 2: Report Builder ──────────────────────────────────────────────────
-function ReportBuilder({ bp }) {
+function ReportBuilder({ bp, deepLink }) {
   const { isMobile } = bp;
   const [reportTab, setReportTab]     = useState("build");
   const [step, setStep]               = useState(1);
@@ -629,6 +717,8 @@ function ReportBuilder({ bp }) {
   const [selected, setSelected]       = useState([1,4]);
   const [aiNarrative, setAiNarrative] = useState(false);
   const [showConfig, setShowConfig]   = useState(!isMobile);
+
+  useEffect(() => { if (deepLink?.reportTab) setReportTab(deepLink.reportTab); }, [deepLink]);
 
   const reportTabs = [
     { id:"build",     label:"Build",     desc:"3-step wizard" },
@@ -833,9 +923,10 @@ function ReportBuilder({ bp }) {
 }
 
 // ─── LAYER 3: Client Portal ────────────────────────────────────────────────────
-function ClientPortal({ bp }) {
+function ClientPortal({ bp, deepLink }) {
   const { isMobile } = bp;
   const [tab, setTab] = useState("overview");
+  useEffect(() => { if (deepLink?.portalTab) setTab(deepLink.portalTab); }, [deepLink]);
   const tabs = [{id:"overview",label:"Overview"},{id:"performance",label:"Performance"},{id:"documents",label:"Documents"},{id:"messages",label:"Messages"}];
 
   return (
@@ -1377,11 +1468,18 @@ const FIELD_MAPS = {
 };
 const CAT_LABELS = { all:"All", custodian:"Custodians", crm:"CRM & Client Data", portfolio:"Portfolio Mgmt", planning:"Financial Planning" };
 
-function IntegrationHub({ bp }) {
+function IntegrationHub({ bp, deepLink }) {
   const { isMobile } = bp;
   const [activeCategory, setActiveCategory] = useState("all");
   const [selected,   setSelected]   = useState(null);
   const [connecting, setConnecting] = useState(null);
+
+  useEffect(() => {
+    if (deepLink?.integrationId) {
+      setActiveCategory("all");
+      setSelected(deepLink.integrationId);
+    }
+  }, [deepLink]);
 
   const filtered  = activeCategory === "all" ? INTEGRATIONS : INTEGRATIONS.filter(i => i.cat === activeCategory);
   const connCount = INTEGRATIONS.filter(i => i.status === "connected").length;
@@ -1524,6 +1622,9 @@ export default function WealthscapePrototype() {
 
   const [activeLayer,   setActiveLayer]   = useState("morning");
   const [sidebarOpen,   setSidebarOpen]   = useState(false);
+  const [alerts,        setAlerts]        = useState(ALERTS);
+  const [alertsOpen,    setAlertsOpen]    = useState(false);
+  const [deepLink,      setDeepLink]      = useState(null);
   const [demoActive,    setDemoActive]    = useState(false);
   const [demoStep,      setDemoStep]      = useState(0);
   const [spotlightRect, setSpotlightRect] = useState(null);
@@ -1550,6 +1651,18 @@ export default function WealthscapePrototype() {
       }, 250);
     }
   }, [demoStep, demoActive]);
+
+  // Route an alert's next-best-action to the right screen + sub-tab, mark it read.
+  const handleAlertAction = (alert) => {
+    const { layer, ...sub } = alert.action;
+    setAlerts(prev => prev.map(a => a.id === alert.id ? { ...a, read:true } : a));
+    setActiveLayer(layer);
+    setDeepLink({ ...sub, _ts: Date.now() }); // _ts forces child effects to re-run on repeat clicks
+    setAlertsOpen(false);
+  };
+  const dismissAlert  = (id) => setAlerts(prev => prev.filter(a => a.id !== id));
+  const markAllRead   = ()   => setAlerts(prev => prev.map(a => ({ ...a, read:true })));
+  const unreadAlerts  = alerts.filter(a => !a.read).length;
 
   const startDemo = () => { setDemoStep(0); setSpotlightRect(null); setDemoActive(true); };
   const nextStep  = () => setDemoStep(s => Math.min(s + 1, TOUR_STEPS.length - 1));
@@ -1586,7 +1699,7 @@ export default function WealthscapePrototype() {
         {navItems.map(item=>{
           const Icon = item.icon; const active = activeLayer===item.id;
           return (
-            <button key={item.id} onClick={()=>{setActiveLayer(item.id);if(!isDesktop)setSidebarOpen(false);}} style={{ width:"100%", display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:8, background:active?`${T.green}40`:"transparent", border:active?`1px solid ${T.green}60`:"1px solid transparent", color:active?T.white:"#94A3B8", fontSize:13, fontWeight:active?600:400, cursor:"pointer", marginBottom:2, transition:"all 0.15s", textAlign:"left", minHeight:44 }}>
+            <button key={item.id} onClick={()=>{setActiveLayer(item.id);setDeepLink(null);if(!isDesktop)setSidebarOpen(false);}} style={{ width:"100%", display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:8, background:active?`${T.green}40`:"transparent", border:active?`1px solid ${T.green}60`:"1px solid transparent", color:active?T.white:"#94A3B8", fontSize:13, fontWeight:active?600:400, cursor:"pointer", marginBottom:2, transition:"all 0.15s", textAlign:"left", minHeight:44 }}>
               <Icon size={16}/>{item.label}
               {item.badge && <span style={{ marginLeft:"auto", background:item.id==="morning"?T.red:T.green, color:T.white, fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:99, minWidth:18, textAlign:"center" }}>{item.badge}</span>}
             </button>
@@ -1637,18 +1750,26 @@ export default function WealthscapePrototype() {
             <button onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
               <PlayCircle size={14}/>{!isMobile&&" Take Tour"}
             </button>
-            <button style={{ position:"relative", background:"transparent", border:"none", cursor:"pointer", padding:6 }}>
-              <Bell size={18} color={T.slate}/>
-              <div style={{ position:"absolute", top:4, right:4, width:7, height:7, borderRadius:"50%", background:T.red, border:`2px solid ${T.white}` }}/>
+            <button onClick={()=>setAlertsOpen(o=>!o)} style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
+              <Bell size={18} color={alertsOpen?T.gray900:T.slate}/>
+              {unreadAlerts > 0 && (
+                <div style={{ position:"absolute", top:-1, right:-1, minWidth:16, height:16, padding:"0 3px", borderRadius:99, background:T.red, border:`2px solid ${T.white}`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  <span style={{ fontSize:9, fontWeight:700, color:T.white }}>{unreadAlerts}</span>
+                </div>
+              )}
             </button>
           </div>
         </div>
 
+        {alertsOpen && (
+          <AlertCenter alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onMarkAllRead={markAllRead} onClose={()=>setAlertsOpen(false)} isMobile={isMobile}/>
+        )}
+
         <div style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          {activeLayer==="morning"       && <MorningBrief    bp={bp}/>}
-          {activeLayer==="reports"       && <ReportBuilder   bp={bp}/>}
-          {activeLayer==="portal"        && <ClientPortal    bp={bp}/>}
-          {activeLayer==="integrations"  && <IntegrationHub  bp={bp}/>}
+          {activeLayer==="morning"       && <MorningBrief    bp={bp} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert}/>}
+          {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink}/>}
+          {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink}/>}
+          {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
@@ -1658,7 +1779,7 @@ export default function WealthscapePrototype() {
             {navItems.map(item=>{
               const Icon = item.icon; const active = activeLayer===item.id;
               return (
-                <button key={item.id} onClick={()=>setActiveLayer(item.id)} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3, padding:"8px 4px 10px", background:"transparent", border:"none", cursor:"pointer", position:"relative", minHeight:54 }}>
+                <button key={item.id} onClick={()=>{setActiveLayer(item.id);setDeepLink(null);}} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3, padding:"8px 4px 10px", background:"transparent", border:"none", cursor:"pointer", position:"relative", minHeight:54 }}>
                   <div style={{ color:active?T.green:T.gray400, position:"relative" }}>
                     <Icon size={20}/>
                     {item.badge && <div style={{ position:"absolute", top:-4, right:-6, width:14, height:14, borderRadius:"50%", background:T.red, border:`2px solid ${T.white}`, display:"flex", alignItems:"center", justifyContent:"center" }}><span style={{ fontSize:8, fontWeight:700, color:T.white }}>{item.badge}</span></div>}
