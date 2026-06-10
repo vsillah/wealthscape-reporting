@@ -783,6 +783,38 @@ function MorningBrief({ bp, alerts, onAction, onDismiss, scenarioStep }) {
 }
 
 // ─── LAYER 2: Report Builder ──────────────────────────────────────────────────
+// Per-template preview mockups, so the Build preview reflects the selected
+// template instead of always showing the Quarterly Review.
+const PROPOSED_ALLOCATION = [
+  { name:"US Equity",    value:38, color:T.green   },
+  { name:"Intl Equity",  value:22, color:T.greenMid},
+  { name:"Fixed Income", value:30, color:T.indigo  },
+  { name:"Alternatives", value:7,  color:T.amber   },
+  { name:"Cash",         value:3,  color:T.gray400 },
+];
+const PROJECTION_DATA = [
+  { yr:"Now", val:2500 },{ yr:"Yr 3", val:2960 },{ yr:"Yr 5", val:3375 },{ yr:"Yr 10", val:4530 },
+];
+const ANNUAL_GOALS = [
+  { name:"Retirement · 2042",   pct:78, note:"On track" },
+  { name:"College Fund · 2030", pct:64, note:"On track" },
+  { name:"Legacy / Estate",     pct:91, note:"Ahead"    },
+];
+const TEMPLATE_CONFIG = {
+  quarterly: { label:"Quarterly Review", eyebrow:"Quarterly Review", period:"Q2 2025 · Prepared Jun 9, 2025", heroLabel:"Portfolio Value", heroValue:"$4,284,500", heroDelta:"+8.4% YTD",
+    narrative:"Your portfolio delivered strong performance this quarter, advancing 8.4% year-to-date versus a 6.2% benchmark return — driven by US equity and healthcare exposures. Bond holdings provided stability during March volatility.",
+    sections:["performance","allocation","drift"], cta:"Generate & Send" },
+  annual:    { label:"Annual Report", eyebrow:"Annual Report", period:"FY 2024 · Prepared Jan 8, 2025", heroLabel:"Year-End Value", heroValue:"$4,108,200", heroDelta:"+14.2% FY",
+    narrative:"Over the full year your portfolio returned 14.2%, outpacing the blended benchmark by 3.1 points. Gains were broad-based across equities while fixed income cushioned the Q1 drawdown. All three long-term goals remain on track.",
+    sections:["performance","allocation","goals"], cta:"Generate & Send" },
+  adhoc:     { label:"Ad-Hoc Update", eyebrow:"Ad-Hoc Snapshot", period:"As of Jun 9, 2025", heroLabel:"Current Value", heroValue:"$4,284,500", heroDelta:"+2.4% MTD",
+    narrative:"A point-in-time snapshot of current holdings and month-to-date performance, prepared on request ahead of our call.",
+    sections:["metrics","performance"], cta:"Generate & Send" },
+  proposal:  { label:"Client Proposal", eyebrow:"New Account Proposal", period:"Proposal · Jun 2025", heroLabel:"Proposed Investment", heroValue:"$2,500,000", heroDelta:"Projected +7.8% / yr",
+    narrative:"This proposal outlines a recommended allocation for a new $2.5M account, targeting a 7.8% annualized return at a moderate risk profile, with an all-in advisory fee of 0.85%.",
+    sections:["proposed","projection","fees"], cta:"Send Proposal" },
+};
+
 function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
   const { isMobile } = bp;
   const [reportTab, setReportTab]     = useState("build");
@@ -823,6 +855,9 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
     { id:"adhoc",     label:"Ad-Hoc Update",      desc:"Custom snapshot" },
     { id:"proposal",  label:"Client Proposal",    desc:"New account proposal" },
   ];
+
+  const cfg = TEMPLATE_CONFIG[template] || TEMPLATE_CONFIG.quarterly;
+  const chartCount = cfg.sections.filter(s => ["performance","allocation","proposed","projection"].includes(s)).length;
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
@@ -912,7 +947,7 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
         {/* Preview */}
         <div style={{ flex:1, background:T.gray50, borderRadius:12, border:`1px solid ${T.gray200}`, overflow:"hidden" }}>
           <div style={{ background:T.white, borderBottom:`1px solid ${T.gray200}`, padding:"12px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
-            <div style={{ display:"flex", gap:8, alignItems:"center" }}><Badge color={T.green} bg={T.greenLt}>PREVIEW</Badge><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>Quarterly Review · {selected.length} client{selected.length!==1?"s":""}</span></div>
+            <div style={{ display:"flex", gap:8, alignItems:"center" }}><Badge color={T.green} bg={T.greenLt}>PREVIEW</Badge><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{cfg.label} · {selected.length} client{selected.length!==1?"s":""}</span></div>
             <div style={{ display:"flex", gap:8 }}>
               <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:34 }}>Review</button>
               <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", gap:5, alignItems:"center", minHeight:34 }}><Download size={12}/> PDF</button>
@@ -924,15 +959,15 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
               <div style={{ background:T.navy, padding:isMobile?"20px 18px":"24px 28px" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:isMobile?"flex-start":"center", flexDirection:isMobile?"column":"row", gap:12 }}>
                   <div>
-                    <div style={{ fontSize:10, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:5 }}>Quarterly Review</div>
+                    <div style={{ fontSize:10, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:5 }}>{cfg.eyebrow}</div>
                     <div style={{ fontSize:isMobile?16:18, fontWeight:700, color:T.white }}>Sarah & Michael Chen</div>
-                    <div style={{ fontSize:12, color:"#94A3B8", marginTop:3 }}>Q2 2025 · Prepared Jun 9, 2025</div>
+                    <div style={{ fontSize:12, color:"#94A3B8", marginTop:3 }}>{cfg.period}</div>
                   </div>
                   <div style={{ textAlign:isMobile?"left":"right" }}>
-                    <div style={{ fontSize:11, color:"#94A3B8", marginBottom:3 }}>Portfolio Value</div>
-                    <div style={{ fontSize:isMobile?22:26, fontWeight:700, color:T.white, fontVariantNumeric:"tabular-nums" }}>$4,284,500</div>
+                    <div style={{ fontSize:11, color:"#94A3B8", marginBottom:3 }}>{cfg.heroLabel}</div>
+                    <div style={{ fontSize:isMobile?22:26, fontWeight:700, color:T.white, fontVariantNumeric:"tabular-nums" }}>{cfg.heroValue}</div>
                     <div style={{ display:"flex", alignItems:"center", gap:4, justifyContent:isMobile?"flex-start":"flex-end", marginTop:3 }}>
-                      <ArrowUpRight size={12} color={T.emerald}/><span style={{ fontSize:12, color:T.emerald, fontWeight:600 }}>+8.4% YTD</span>
+                      <ArrowUpRight size={12} color={T.emerald}/><span style={{ fontSize:12, color:T.emerald, fontWeight:600 }}>{cfg.heroDelta}</span>
                     </div>
                   </div>
                 </div>
@@ -941,53 +976,121 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
               {aiNarrative && (
                 <div style={{ margin:"18px 18px 0", background:T.indigoLt, borderLeft:`3px solid ${T.indigo}`, borderRadius:"0 8px 8px 0", padding:"12px 14px" }}>
                   <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:6 }}><Sparkles size={12} color={T.indigo}/><span style={{ fontSize:10, fontWeight:700, color:T.indigo, letterSpacing:"0.06em", textTransform:"uppercase" }}>AI Summary · Pending Review</span></div>
-                  <div style={{ fontSize:13, color:T.navyMid, lineHeight:1.6 }}>Your portfolio delivered strong performance this quarter, advancing 8.4% year-to-date versus a 6.2% benchmark return — driven by US equity and healthcare exposures. Bond holdings provided stability during March volatility.</div>
+                  <div style={{ fontSize:13, color:T.navyMid, lineHeight:1.6 }}>{cfg.narrative}</div>
                 </div>
               )}
 
-              <div style={{ padding:"18px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:18 }}>
-                <div>
-                  <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>Performance vs Benchmark</div>
-                  <ResponsiveContainer width="100%" height={130}>
-                    <BarChart data={perfData} barSize={10}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/>
-                      <XAxis dataKey="month" tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
-                      <YAxis tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={v=>`${v}%`}/>
-                      <Tooltip contentStyle={{ borderRadius:8, fontSize:11 }}/>
-                      <Bar dataKey="portfolio" fill={T.green}   radius={[3,3,0,0]} name="Portfolio"/>
-                      <Bar dataKey="benchmark" fill={T.gray200} radius={[3,3,0,0]} name="Benchmark"/>
-                    </BarChart>
-                  </ResponsiveContainer>
+              {/* Ad-Hoc snapshot metric strip */}
+              {cfg.sections.includes("metrics") && (
+                <div style={{ padding:"18px 18px 0", display:"flex", gap:10, flexWrap:"wrap" }}>
+                  <MetricCard label="Current Value"   value="$4,284,500" delta="+2.4% MTD"  up={true}  accent={T.green}  />
+                  <MetricCard label="Cash Available"  value="$171,380"   delta="4.0% of port" up={true} accent={T.indigo} />
+                  <MetricCard label="Unrealized Gain" value="$312,400"   delta="+18.2%"      up={true}  accent={T.emerald}/>
                 </div>
-                <div>
-                  <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>Asset Allocation</div>
-                  <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                    <PieChart width={100} height={100}><Pie data={allocationData} cx={45} cy={45} innerRadius={28} outerRadius={44} dataKey="value">{allocationData.map((e,i)=><Cell key={i} fill={e.color}/>)}</Pie></PieChart>
-                    <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
-                      {allocationData.map(a=>(
-                        <div key={a.name} style={{ display:"flex", alignItems:"center", gap:6 }}>
-                          <div style={{ width:7, height:7, borderRadius:2, background:a.color, flexShrink:0 }}/>
-                          <span style={{ fontSize:11, color:T.gray600 }}>{a.name}</span>
-                          <span style={{ fontSize:11, fontWeight:700, color:T.gray900, marginLeft:"auto", paddingLeft:8 }}>{a.value}%</span>
-                        </div>
-                      ))}
+              )}
+
+              <div style={{ padding:"18px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":(chartCount>1?"1fr 1fr":"1fr"), gap:18 }}>
+                {cfg.sections.includes("performance") && (
+                  <div>
+                    <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>Performance vs Benchmark</div>
+                    <ResponsiveContainer width="100%" height={130}>
+                      <BarChart data={perfData} barSize={10}>
+                        <CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/>
+                        <XAxis dataKey="month" tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
+                        <YAxis tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={v=>`${v}%`}/>
+                        <Tooltip contentStyle={{ borderRadius:8, fontSize:11 }}/>
+                        <Bar dataKey="portfolio" fill={T.green}   radius={[3,3,0,0]} name="Portfolio"/>
+                        <Bar dataKey="benchmark" fill={T.gray200} radius={[3,3,0,0]} name="Benchmark"/>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+                {(cfg.sections.includes("allocation") || cfg.sections.includes("proposed")) && (
+                  <div>
+                    <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>{cfg.sections.includes("proposed")?"Proposed Allocation":"Asset Allocation"}</div>
+                    <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                      <PieChart width={100} height={100}><Pie data={cfg.sections.includes("proposed")?PROPOSED_ALLOCATION:allocationData} cx={45} cy={45} innerRadius={28} outerRadius={44} dataKey="value">{(cfg.sections.includes("proposed")?PROPOSED_ALLOCATION:allocationData).map((e,i)=><Cell key={i} fill={e.color}/>)}</Pie></PieChart>
+                      <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
+                        {(cfg.sections.includes("proposed")?PROPOSED_ALLOCATION:allocationData).map(a=>(
+                          <div key={a.name} style={{ display:"flex", alignItems:"center", gap:6 }}>
+                            <div style={{ width:7, height:7, borderRadius:2, background:a.color, flexShrink:0 }}/>
+                            <span style={{ fontSize:11, color:T.gray600 }}>{a.name}</span>
+                            <span style={{ fontSize:11, fontWeight:700, color:T.gray900, marginLeft:"auto", paddingLeft:8 }}>{a.value}%</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+                {cfg.sections.includes("projection") && (
+                  <div>
+                    <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>Projected Growth · 10yr</div>
+                    <ResponsiveContainer width="100%" height={130}>
+                      <AreaChart data={PROJECTION_DATA}>
+                        <defs><linearGradient id="projGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={T.green} stopOpacity={0.25}/><stop offset="95%" stopColor={T.green} stopOpacity={0}/></linearGradient></defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/>
+                        <XAxis dataKey="yr" tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
+                        <YAxis tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={v=>`$${(v/1000).toFixed(1)}M`}/>
+                        <Tooltip contentStyle={{ borderRadius:8, fontSize:11 }} formatter={v=>[`$${(v/1000).toFixed(2)}M`,"Projected"]}/>
+                        <Area type="monotone" dataKey="val" stroke={T.green} strokeWidth={2.5} fill="url(#projGrad)"/>
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
               </div>
 
-              <div data-demo="drift-alert" style={{ margin:"0 18px 18px", background:T.amberLt, border:`1px solid ${T.amber}40`, borderRadius:8, padding:"11px 14px", display:"flex", gap:9, alignItems:"flex-start" }}>
-                <AlertTriangle size={15} color={T.amber} style={{ flexShrink:0, marginTop:1 }}/>
-                <div>
-                  <div style={{ fontSize:12, fontWeight:700, color:T.gray900, marginBottom:2 }}>Allocation Drift Detected</div>
-                  <div style={{ fontSize:11, color:T.gray600, lineHeight:1.5 }}>US Equity is 6.2pts above target allocation of 36%. Rebalancing recommended before Q3.</div>
+              {/* Annual planning / goals summary */}
+              {cfg.sections.includes("goals") && (
+                <div style={{ margin:"0 18px 18px" }}>
+                  <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>Goal Progress</div>
+                  <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+                    {ANNUAL_GOALS.map(g=>(
+                      <div key={g.name}>
+                        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:5 }}>
+                          <span style={{ fontSize:12, fontWeight:600, color:T.gray900 }}>{g.name}</span>
+                          <span style={{ fontSize:11, fontWeight:700, color:g.pct>=85?T.emerald:T.green }}>{g.pct}% · {g.note}</span>
+                        </div>
+                        <div style={{ height:7, background:T.gray100, borderRadius:99, overflow:"hidden" }}>
+                          <div style={{ height:"100%", width:`${g.pct}%`, background:g.pct>=85?T.emerald:T.green, borderRadius:99 }}/>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
+
+              {/* Proposal fee summary */}
+              {cfg.sections.includes("fees") && (
+                <div style={{ margin:"0 18px 18px", background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"14px 16px", display:"flex", gap:18, flexWrap:"wrap" }}>
+                  {[
+                    { label:"Advisory Fee",      value:"0.85%"     },
+                    { label:"Est. Annual Fee",   value:"$21,250"   },
+                    { label:"Target Return",     value:"7.8% / yr" },
+                    { label:"Risk Profile",      value:"Moderate"  },
+                  ].map(f=>(
+                    <div key={f.label}>
+                      <div style={{ fontSize:9, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:3 }}>{f.label}</div>
+                      <div style={{ fontSize:15, fontWeight:700, color:T.gray900 }}>{f.value}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Quarterly drift alert */}
+              {cfg.sections.includes("drift") && (
+                <div data-demo="drift-alert" style={{ margin:"0 18px 18px", background:T.amberLt, border:`1px solid ${T.amber}40`, borderRadius:8, padding:"11px 14px", display:"flex", gap:9, alignItems:"flex-start" }}>
+                  <AlertTriangle size={15} color={T.amber} style={{ flexShrink:0, marginTop:1 }}/>
+                  <div>
+                    <div style={{ fontSize:12, fontWeight:700, color:T.gray900, marginBottom:2 }}>Allocation Drift Detected</div>
+                    <div style={{ fontSize:11, color:T.gray600, lineHeight:1.5 }}>US Equity is 6.2pts above target allocation of 36%. Rebalancing recommended before Q3.</div>
+                  </div>
+                </div>
+              )}
 
               <div style={{ background:T.gray50, borderTop:`1px solid ${T.gray200}`, padding:"14px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
-                <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:36 }}>Schedule Review</button>
+                <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:36 }}>{template==="proposal"?"Schedule Call":"Schedule Review"}</button>
                 <button onClick={()=>setReportTab("generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, minHeight:36 }}>
-                  <Zap size={12}/> Generate &amp; Send <ChevronRight size={13}/>
+                  <Zap size={12}/> {cfg.cta} <ChevronRight size={13}/>
                 </button>
               </div>
             </div>
