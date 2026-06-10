@@ -221,17 +221,32 @@ const TOUR_STEPS = [
 ];
 
 // ─── Demo Tour Overlay ────────────────────────────────────────────────────────
-function DemoTour({ step, total, onNext, onPrev, onClose, isMobile }) {
+function DemoTour({ step, total, onNext, onPrev, onClose, isMobile, spotlightRect }) {
   const s = TOUR_STEPS[step];
   const isFirst = step === 0;
   const isLast  = step === total - 1;
   const isCenter = s.position === "center";
+
+  // Place the panel away from the spotlighted section so it never blocks it.
+  // Rule: if spotlight centre is in the bottom half of the viewport → float panel
+  // to the top; otherwise keep it at the bottom. Falls back to bottom-centre when
+  // there is no spotlight (intro / outro steps are always centred instead).
+  const placeAbove = !isCenter && spotlightRect &&
+    (spotlightRect.top + spotlightRect.height / 2) > (typeof window !== "undefined" ? window.innerHeight : 800) * 0.5;
 
   const panelStyle = isCenter ? {
     position: "fixed",
     top: "50%", left: "50%",
     transform: "translate(-50%, -50%)",
     width: isMobile ? "calc(100vw - 32px)" : 560,
+    zIndex: 1000,
+  } : placeAbove ? {
+    position: "fixed",
+    top: isMobile ? 0 : 16,
+    left: isMobile ? 0 : "50%",
+    transform: isMobile ? "none" : "translateX(-50%)",
+    width: isMobile ? "100%" : 600,
+    borderRadius: isMobile ? "0 0 16px 16px" : 16,
     zIndex: 1000,
   } : {
     position: "fixed",
@@ -243,6 +258,10 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile }) {
     zIndex: 1000,
   };
 
+  const panelRadius = isCenter ? 16 : placeAbove
+    ? (isMobile ? "0 0 16px 16px" : 16)
+    : (isMobile ? "16px 16px 0 0" : 16);
+
   const progressPct = ((step) / (total - 1)) * 100;
 
   return (
@@ -251,7 +270,7 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile }) {
       {isCenter && <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.65)", zIndex: 999, backdropFilter: "blur(2px)" }} onClick={onClose} />}
 
       {/* Panel */}
-      <div style={{ ...panelStyle, background: T.white, borderRadius: isCenter ? 16 : (isMobile ? "16px 16px 0 0" : 16), boxShadow: "0 24px 64px rgba(0,0,0,0.35)", overflow: "hidden" }}>
+      <div style={{ ...panelStyle, background: T.white, borderRadius: panelRadius, boxShadow: "0 24px 64px rgba(0,0,0,0.35)", overflow: "hidden" }}>
 
         {/* Progress bar */}
         <div style={{ height: 3, background: T.gray100 }}>
@@ -365,16 +384,18 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile }) {
 // ─── Spotlight cut-out around a targeted element ──────────────────────────────
 // Dims the whole viewport EXCEPT the targeted element, so the section under
 // discussion stays at full brightness and lines up with the tour commentary.
-function Spotlight({ targetId, onClose }) {
+function Spotlight({ targetId, onClose, onRectChange }) {
   const [rect, setRect] = useState(null);
 
   useEffect(() => {
-    if (!targetId) { setRect(null); return; }
+    if (!targetId) { setRect(null); onRectChange?.(null); return; }
     const el = document.querySelector(`[data-demo="${targetId}"]`);
-    if (!el) { setRect(null); return; }
+    if (!el) { setRect(null); onRectChange?.(null); return; }
     const update = () => {
       const r = el.getBoundingClientRect();
-      setRect({ top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12 });
+      const next = { top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12 };
+      setRect(next);
+      onRectChange?.(next);
     };
     update();
     const obs = new ResizeObserver(update);
@@ -984,10 +1005,11 @@ export default function WealthscapePrototype() {
   const bp = useBreakpoint();
   const { isMobile, isTablet, isDesktop } = bp;
 
-  const [activeLayer, setActiveLayer] = useState("morning");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [demoActive,  setDemoActive]  = useState(false);
-  const [demoStep,    setDemoStep]    = useState(0);
+  const [activeLayer,   setActiveLayer]   = useState("morning");
+  const [sidebarOpen,   setSidebarOpen]   = useState(false);
+  const [demoActive,    setDemoActive]    = useState(false);
+  const [demoStep,      setDemoStep]      = useState(0);
+  const [spotlightRect, setSpotlightRect] = useState(null);
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
@@ -1012,7 +1034,7 @@ export default function WealthscapePrototype() {
     }
   }, [demoStep, demoActive]);
 
-  const startDemo = () => { setDemoStep(0); setDemoActive(true); };
+  const startDemo = () => { setDemoStep(0); setSpotlightRect(null); setDemoActive(true); };
   const nextStep  = () => setDemoStep(s => Math.min(s + 1, TOUR_STEPS.length - 1));
   const prevStep  = () => setDemoStep(s => Math.max(s - 1, 0));
   const closeDemo = () => setDemoActive(false);
@@ -1133,8 +1155,8 @@ export default function WealthscapePrototype() {
 
       {demoActive && (
         <>
-          {currentStep.spotlightId && <Spotlight targetId={currentStep.spotlightId} onClose={closeDemo}/>}
-          <DemoTour step={demoStep} total={TOUR_STEPS.length} onNext={nextStep} onPrev={prevStep} onClose={closeDemo} isMobile={isMobile}/>
+          {currentStep.spotlightId && <Spotlight targetId={currentStep.spotlightId} onClose={closeDemo} onRectChange={setSpotlightRect}/>}
+          <DemoTour step={demoStep} total={TOUR_STEPS.length} onNext={nextStep} onPrev={prevStep} onClose={closeDemo} isMobile={isMobile} spotlightRect={spotlightRect}/>
         </>
       )}
     </div>
