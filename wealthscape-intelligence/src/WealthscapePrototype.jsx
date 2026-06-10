@@ -1256,6 +1256,293 @@ function ClientPortal({ bp, deepLink, reportDelivered }) {
   );
 }
 
+// ─── Strategy / Business Case ────────────────────────────────────────────────
+// The research-to-prototype story: market + customer research → desired outcomes
+// → job map → opportunity matrix → priorities → recommendations, each wired back
+// to the live prototype surface that delivers it.
+const STRAT_STATS = [
+  { value:"11",        label:"High-opportunity outcomes" },
+  { value:"13.0–17.0", label:"ODI opportunity scores" },
+  { value:"5",         label:"Product layers shipped" },
+  { value:"8-step",    label:"Universal job map covered" },
+];
+
+const MARKET_SIGNALS = [
+  { tag:"Tool Sprawl",        stat:"12 apps",  source:"Kitces 2025",            icon:Layers,         body:"The average advisor stitches together 12 disconnected apps with no shared field mapping. Stale or mismatched data stays invisible until it corrupts a client report." },
+  { tag:"NBA Capability Gap", stat:"1 / 10",   source:"vs Envestnet 25M/day",   icon:Zap,            body:"Wealthscape scored 1/10 on portfolio-level next-best-actions against Envestnet's 25M NBAs/day. Advisors rebuilt the logic by hand in spreadsheets." },
+  { tag:"Portal Expectation", stat:"78%",      source:"Schwab 2024",            icon:Users,          body:"78% of clients now expect an interactive portal, not a static PDF. Wealthscape Investor had balances but no advisor-communication surface." },
+  { tag:"Branded Output",     stat:"Advyzon",  source:"T3 Tech Survey",         icon:FileText,       body:"The highest-rated reporting tool was bundled into Wealthscape specifically because native reporting couldn't produce client-ready branded output." },
+  { tag:"Shadow IT",          stat:"41%",      source:"Compliance exposure",    icon:AlertTriangle,  body:"41% of advisors already use ChatGPT/Claude outside the platform to write report narratives — an unaudited, off-platform compliance risk." },
+  { tag:"Digital Sales Rooms",stat:"#1 growth",source:"InvestSuite 2025",       icon:Mail,           body:"Contextual advisor-client communication hubs are the fastest-growing wealthtech category. No equivalent existed in Wealthscape's client experience." },
+];
+
+const CUSTOMER_PAINS = [
+  { metric:"~2 hrs",   pain:"Per client report — scheduling, running, reconciling, then rebuilding in Excel/PowerPoint just to add firm branding." },
+  { metric:"12+",      pain:"Separate logins every morning to reconstruct a book-level view of what needs attention before market open." },
+  { metric:"Manual",   pain:"Spreadsheet watchlists to track allocation drift, tax-loss windows, and at-risk clients — with no automated detection." },
+  { metric:"Black box", pain:"Report exports with no validation trail; stale prices and missing corporate actions surfaced only after the client noticed." },
+  { metric:"Fidelity", pain:"The client app carried the custodian's brand, not the advisor's — undercutting the independent RIA relationship." },
+];
+
+// imp = importance, sat = current satisfaction (both /10). Opportunity score per
+// Ulwick ODI: Opp = Imp + max(Imp − Sat, 0). Layer = prototype surface that serves it.
+const OUTCOMES = [
+  { id:"ODI #5.1", imp:9.5, sat:2.0, text:"Generate a branded, client-ready report in a single tool",          layer:"reports",      sub:{reportTab:"generate"} },
+  { id:"ODI #5.3", imp:9.4, sat:2.0, text:"Minimize the number of separate tools required to finish the job",   layer:"integrations", sub:null },
+  { id:"ODI #13",  imp:9.3, sat:2.0, text:"Move from an insight to execution in one continuous motion",         layer:"morning",      sub:null },
+  { id:"ODI #7",   imp:9.2, sat:2.1, text:"Know which clients are affected by an event before they call",        layer:"morning",      sub:null },
+  { id:"ODI #8",   imp:9.0, sat:2.2, text:"Detect drift, tax-loss windows & rebalance triggers automatically",   layer:"morning",      sub:null },
+  { id:"ODI #8.2", imp:8.8, sat:2.6, text:"Let clients interact with reports in a portal, not a static PDF",     layer:"portal",       sub:null },
+  { id:"ODI #1",   imp:8.7, sat:2.8, text:"Know what needs attention right now, every morning",                 layer:"morning",      sub:null },
+  { id:"ODI #12",  imp:8.6, sat:2.8, text:"Detect at-risk clients from behavioral patterns early",               layer:"morning",      sub:null },
+  { id:"ODI #15",  imp:8.5, sat:2.8, text:"Produce an end-to-end audit trail as a by-product of the work",       layer:"reports",      sub:{reportTab:"generate"} },
+  { id:"ODI #8.1", imp:8.0, sat:3.0, text:"Let clients reply to and contact their advisor in context",           layer:"portal",       sub:null },
+  { id:"ODI #8.4", imp:8.1, sat:3.2, text:"Notify the advisor automatically when a client views a report",       layer:"portal",       sub:null },
+];
+const oppScore = o => o.imp + Math.max(o.imp - o.sat, 0);
+const oppColor = v => v >= 16 ? T.green : v >= 14 ? T.indigo : T.slate;
+const LAYER_NAMES = { morning:"Morning Brief", reports:"Report Builder", portal:"Client Portal", integrations:"Integration Hub", insights:"Analytics" };
+const layerName = id => LAYER_NAMES[id] || id;
+
+const JOB_MAP = [
+  { n:1, step:"Define",   goal:"Determine what needs attention today",        layer:"morning"      },
+  { n:2, step:"Locate",   goal:"Gather the signals & affected clients",       layer:"morning"      },
+  { n:3, step:"Prepare",  goal:"Assemble clean, reconciled custody data",     layer:"integrations" },
+  { n:4, step:"Confirm",  goal:"Validate completeness & compliance",          layer:"reports"      },
+  { n:5, step:"Execute",  goal:"Generate the branded client report",          layer:"reports"      },
+  { n:6, step:"Monitor",  goal:"Track delivery, performance & drift",         layer:"insights"     },
+  { n:7, step:"Modify",   goal:"Act on drift & rebalance triggers",           layer:"reports"      },
+  { n:8, step:"Conclude", goal:"Deliver to & engage the client",              layer:"portal"       },
+];
+
+const RECOMMENDATIONS = [
+  { n:1, title:"Lead every morning with a prioritized, AI-generated brief", surface:"Morning Brief",   layer:"morning",      sub:null,                      outcomes:["ODI #1","ODI #7","ODI #12"],   body:"One digest that ranks drift, tax windows, at-risk clients and overdue reviews — each with a one-click next-best-action." },
+  { n:2, title:"Unify every signal into one alert store with action routing", surface:"Alert Center",  layer:"morning",      sub:null,                      outcomes:["ODI #13"],                      body:"A single inbox where every alert deep-links the advisor straight to the screen and sub-tab that resolves it." },
+  { n:3, title:"Generate branded, compliance-resident reports in one tool",   surface:"Report Builder",layer:"reports",      sub:{reportTab:"generate"},    outcomes:["ODI #5.1","ODI #15"],           body:"A six-stage observable pipeline with inline AI narrative and compliance review — no Excel rebuild, full audit trail." },
+  { n:4, title:"Consolidate the fragmented stack behind one data layer",      surface:"Integration Hub",layer:"integrations",sub:null,                      outcomes:["ODI #5.3"],                     body:"OAuth provider connections with explicit, inspectable field mapping feeding every report and alert." },
+  { n:5, title:"Give clients an advisor-branded, interactive portal",         surface:"Client Portal", layer:"portal",       sub:null,                      outcomes:["ODI #8.2","ODI #8.1","ODI #8.4"],body:"Interactive reporting, in-context advisor messaging, and the firm's own brand — not the custodian's." },
+];
+
+function StratSection({ eyebrow, title, intro, children }) {
+  return (
+    <section style={{ display:"flex", flexDirection:"column", gap:14 }}>
+      <div>
+        <div style={{ fontSize:10, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase", marginBottom:5 }}>{eyebrow}</div>
+        <div style={{ fontSize:18, fontWeight:800, color:T.gray900, letterSpacing:"-0.01em" }}>{title}</div>
+        {intro && <div style={{ fontSize:13, color:T.slate, lineHeight:1.6, marginTop:6, maxWidth:760 }}>{intro}</div>}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
+  const { isMobile } = bp;
+  const ranked = [...OUTCOMES].sort((a,b)=>oppScore(b)-oppScore(a));
+  const maxOpp = oppScore(ranked[0]);
+  const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>
+
+      {/* Hero */}
+      <div style={{ background:`linear-gradient(135deg, ${T.navy} 0%, ${T.navyMid} 100%)`, borderRadius:16, padding:isMobile?"22px 18px":"30px 32px", color:T.white }}>
+        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+          <div style={{ background:T.indigo, borderRadius:7, padding:"4px 9px", display:"flex", alignItems:"center", gap:6 }}>
+            <BookOpen size={12} color={T.white}/><span style={{ fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>Business Case</span>
+          </div>
+          <span style={{ fontSize:11, color:"rgba(255,255,255,0.55)" }}>Outcome-Driven Innovation · Jobs-to-be-Done</span>
+        </div>
+        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>From research to a working prototype</div>
+        <div style={{ fontSize:isMobile?13:15, color:"rgba(255,255,255,0.78)", lineHeight:1.65, maxWidth:720 }}>
+          We studied the independent-RIA advisor's job, measured 11 high-opportunity outcomes against what Wealthscape delivers today, and mapped every gap to a shippable surface. This is the evidence trail behind every screen in this prototype.
+        </div>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:isMobile?10:14, marginTop:22 }}>
+          {STRAT_STATS.map(s=>(
+            <div key={s.label} style={{ background:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, padding:"13px 14px" }}>
+              <div style={{ fontSize:isMobile?20:24, fontWeight:800, letterSpacing:"-0.01em" }}>{s.value}</div>
+              <div style={{ fontSize:10.5, color:"rgba(255,255,255,0.6)", marginTop:3, lineHeight:1.4 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 1 · Market research */}
+      <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr", gap:12 }}>
+          {MARKET_SIGNALS.map(m=>{
+            const Icon = m.icon;
+            return (
+              <div key={m.tag} style={{ ...card, padding:"15px 16px", display:"flex", flexDirection:"column", gap:8 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
+                  <div style={{ width:32, height:32, borderRadius:8, background:T.indigoLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Icon size={16} color={T.indigo}/></div>
+                  <div style={{ fontSize:19, fontWeight:800, color:T.gray900, letterSpacing:"-0.02em" }}>{m.stat}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>{m.tag}</div>
+                  <div style={{ fontSize:10, color:T.slate, fontWeight:600, marginTop:1 }}>{m.source}</div>
+                </div>
+                <div style={{ fontSize:12, color:T.gray600, lineHeight:1.55 }}>{m.body}</div>
+              </div>
+            );
+          })}
+        </div>
+      </StratSection>
+
+      {/* 2 · Customer research */}
+      <StratSection eyebrow="02 · Customer Research" title="Who we studied & what hurt" intro="Primary research with independent RIA advisors managing 30–150 client households — the persona embodied by Jordan Williams in this prototype.">
+        <div style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:14 }}>
+          <div style={{ ...card, padding:"18px 20px", width:isMobile?"auto":260, flexShrink:0, background:T.navy, border:"none", color:T.white }}>
+            <div style={{ width:44, height:44, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:700, marginBottom:12 }}>JW</div>
+            <div style={{ fontSize:15, fontWeight:700 }}>Jordan Williams</div>
+            <div style={{ fontSize:12, color:"rgba(255,255,255,0.6)", marginBottom:14 }}>Senior Advisor · Independent RIA</div>
+            {[["Book","~$1.57B AUA"],["Households","134 active"],["Goal","Scale client reporting past 30 clients without losing the personal touch"]].map(([k,v])=>(
+              <div key={k} style={{ marginBottom:10 }}>
+                <div style={{ fontSize:9.5, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:"0.06em", textTransform:"uppercase" }}>{k}</div>
+                <div style={{ fontSize:12.5, color:"rgba(255,255,255,0.92)", lineHeight:1.45, marginTop:2 }}>{v}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ flex:1, display:"flex", flexDirection:"column", gap:10 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Top pains, in their words</div>
+            {CUSTOMER_PAINS.map((p,i)=>(
+              <div key={i} style={{ ...card, padding:"12px 16px", display:"flex", gap:14, alignItems:"center" }}>
+                <div style={{ minWidth:74, fontSize:15, fontWeight:800, color:T.green, letterSpacing:"-0.01em" }}>{p.metric}</div>
+                <div style={{ fontSize:12.5, color:T.gray600, lineHeight:1.5 }}>{p.pain}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </StratSection>
+
+      {/* 3 · Desired outcomes */}
+      <StratSection eyebrow="03 · Desired Outcomes" title="The outcomes the advisor is trying to achieve" intro="Each outcome statement was rated for importance and current satisfaction. The opportunity score = Importance + max(Importance − Satisfaction, 0).">
+        <div style={{ ...card, overflow:"hidden" }}>
+          {ranked.map((o,i)=>{
+            const v = oppScore(o);
+            return (
+              <div key={o.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"12px 16px", borderTop:i?`1px solid ${T.gray100}`:"none" }}>
+                <div style={{ fontSize:11, fontWeight:700, color:T.slate, minWidth:56 }}>{o.id}</div>
+                <div style={{ flex:1, fontSize:13, color:T.gray900, fontWeight:500, lineHeight:1.45 }}>{o.text}</div>
+                <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
+                  <div style={{ width:isMobile?40:120, height:6, background:T.gray100, borderRadius:99, overflow:"hidden", display:isMobile?"none":"block" }}>
+                    <div style={{ height:"100%", width:`${(v/maxOpp)*100}%`, background:oppColor(v), borderRadius:99 }}/>
+                  </div>
+                  <div style={{ fontSize:13, fontWeight:800, color:oppColor(v), minWidth:34, textAlign:"right" }}>{v.toFixed(1)}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </StratSection>
+
+      {/* 4 · Job map */}
+      <StratSection eyebrow="04 · Job Map" title="The universal job, step by step" intro="The advisor's core job — 'deliver a clear, timely account of how my clients' money is doing' — decomposed into the eight universal job steps. Each step is owned by a prototype layer.">
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
+          {JOB_MAP.map(j=>(
+            <button key={j.n} onClick={()=>onNavigate(j.layer)} style={{ ...card, padding:"14px", textAlign:"left", cursor:"pointer", display:"flex", flexDirection:"column", gap:7, position:"relative" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                <div style={{ width:24, height:24, borderRadius:"50%", background:T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{j.n}</div>
+                <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>{j.step}</div>
+              </div>
+              <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.5 }}>{j.goal}</div>
+              <div style={{ fontSize:10, fontWeight:700, color:T.indigo, display:"flex", alignItems:"center", gap:3, marginTop:"auto" }}>{layerName(j.layer)} <ChevronRight size={11}/></div>
+            </button>
+          ))}
+        </div>
+      </StratSection>
+
+      {/* 5 · Opportunity matrix */}
+      <StratSection eyebrow="05 · Opportunity Matrix" title="Where to invest first" intro="Plotting every outcome by importance against current satisfaction. The upper-left band — high importance, low satisfaction — is underserved and where the highest opportunity scores cluster.">
+        <div style={{ ...card, padding:isMobile?"16px":"22px" }}>
+          <div style={{ display:"flex", gap:18, flexDirection:isMobile?"column":"row" }}>
+            {/* Plot */}
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ position:"relative", height:isMobile?280:340, marginLeft:30, marginBottom:26 }}>
+                {/* underserved diagonal band */}
+                <div style={{ position:"absolute", inset:0, borderRadius:8, background:`linear-gradient(135deg, ${T.green}1F 0%, ${T.green}14 38%, transparent 46%)`, border:`1px solid ${T.gray200}` }}/>
+                {/* grid lines */}
+                {[25,50,75].map(p=>(
+                  <div key={"h"+p} style={{ position:"absolute", left:0, right:0, top:`${p}%`, borderTop:`1px dashed ${T.gray200}` }}/>
+                ))}
+                {[25,50,75].map(p=>(
+                  <div key={"v"+p} style={{ position:"absolute", top:0, bottom:0, left:`${p}%`, borderLeft:`1px dashed ${T.gray200}` }}/>
+                ))}
+                {/* zone label */}
+                <div style={{ position:"absolute", top:10, left:10, fontSize:9.5, fontWeight:800, color:T.green, letterSpacing:"0.06em", textTransform:"uppercase", lineHeight:1.3 }}>Underserved<br/>Opportunity Zone</div>
+                {/* points */}
+                {OUTCOMES.map(o=>{
+                  const v = oppScore(o);
+                  const left = Math.max(2, Math.min(96, (o.sat/6)*100));
+                  const top  = Math.max(2, Math.min(94, (1-(o.imp-7.5)/(10-7.5))*100));
+                  return (
+                    <div key={o.id} title={`${o.id} · Opp ${v.toFixed(1)}`} style={{ position:"absolute", left:`${left}%`, top:`${top}%`, transform:"translate(-50%,-50%)", display:"flex", alignItems:"center", gap:4 }}>
+                      <div style={{ width:13, height:13, borderRadius:"50%", background:oppColor(v), border:`2px solid ${T.white}`, boxShadow:"0 1px 4px rgba(0,0,0,0.2)", flexShrink:0 }}/>
+                      <span style={{ fontSize:8.5, fontWeight:700, color:T.gray600, whiteSpace:"nowrap" }}>{o.id.replace("ODI ","")}</span>
+                    </div>
+                  );
+                })}
+                {/* Y axis label */}
+                <div style={{ position:"absolute", left:-30, top:0, bottom:0, display:"flex", alignItems:"center" }}>
+                  <span style={{ fontSize:9.5, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", transform:"rotate(-90deg)", whiteSpace:"nowrap" }}>Importance →</span>
+                </div>
+                {/* X axis label */}
+                <div style={{ position:"absolute", left:0, right:0, bottom:-22, textAlign:"center", fontSize:9.5, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Current Satisfaction →</div>
+              </div>
+            </div>
+            {/* Legend */}
+            <div style={{ width:isMobile?"auto":170, flexShrink:0, display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Opportunity Tier</div>
+              {[["Critical · ≥16",T.green],["High · 14–16",T.indigo],["Moderate · <14",T.slate]].map(([l,c])=>(
+                <div key={l} style={{ display:"flex", alignItems:"center", gap:8 }}>
+                  <div style={{ width:11, height:11, borderRadius:"50%", background:c, flexShrink:0 }}/>
+                  <span style={{ fontSize:12, color:T.gray600, fontWeight:600 }}>{l}</span>
+                </div>
+              ))}
+              <div style={{ background:T.greenLt, borderRadius:8, padding:"10px 12px", marginTop:4 }}>
+                <div style={{ fontSize:11, color:T.gray600, lineHeight:1.5 }}>Nine of eleven outcomes land in the underserved zone — confirming a real, fundable gap rather than incremental polish.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </StratSection>
+
+      {/* 6 · Recommendations → prototype */}
+      <StratSection eyebrow="06 · Recommendations" title="Five moves — and where to see each one live" intro="Every recommendation traces to the outcomes it serves and the prototype surface that delivers it. Open any surface to see the recommendation in action.">
+        <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+          {RECOMMENDATIONS.map(r=>(
+            <div key={r.n} style={{ ...card, padding:isMobile?"16px":"18px 20px", display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center" }}>
+              <div style={{ width:34, height:34, borderRadius:9, background:T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:800, flexShrink:0 }}>{r.n}</div>
+              <div style={{ flex:1 }}>
+                <div style={{ fontSize:14.5, fontWeight:700, color:T.gray900, marginBottom:4, lineHeight:1.35 }}>{r.title}</div>
+                <div style={{ fontSize:12.5, color:T.gray600, lineHeight:1.55, marginBottom:8 }}>{r.body}</div>
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {r.outcomes.map(id=><span key={id} style={{ fontSize:10, fontWeight:700, color:T.indigo, background:T.indigoLt, borderRadius:99, padding:"3px 9px" }}>{id}</span>)}
+                </div>
+              </div>
+              <button onClick={()=>onNavigate(r.layer, r.sub)} style={{ flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 16px", fontSize:12.5, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
+                <Zap size={13}/> Open {r.surface} <ChevronRight size={14}/>
+              </button>
+            </div>
+          ))}
+        </div>
+      </StratSection>
+
+      {/* Closing CTA */}
+      <div style={{ background:`linear-gradient(135deg, ${T.green} 0%, ${T.greenMid} 100%)`, borderRadius:14, padding:isMobile?"20px 18px":"24px 28px", color:T.white, display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center", justifyContent:"space-between" }}>
+        <div>
+          <div style={{ fontSize:isMobile?16:18, fontWeight:800, marginBottom:4 }}>See the research come to life</div>
+          <div style={{ fontSize:13, color:"rgba(255,255,255,0.85)", lineHeight:1.55, maxWidth:560 }}>Take the guided tour to walk every component and its outcome, or run the end-to-end scenario to watch one alert become a delivered client report.</div>
+        </div>
+        <div style={{ display:"flex", gap:10, flexShrink:0 }}>
+          <button onClick={onStartScenario} style={{ display:"flex", alignItems:"center", gap:6, background:T.white, color:T.green, border:"none", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><Target size={15}/> Run Scenario</button>
+          <button onClick={onStartTour} style={{ display:"flex", alignItems:"center", gap:6, background:"rgba(255,255,255,0.15)", color:T.white, border:"1px solid rgba(255,255,255,0.3)", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><PlayCircle size={15}/> Take Tour</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Analytics ─────────────────────────────────────────────────────────────────
 function Analytics({ bp }) {
   return (
@@ -2111,9 +2398,10 @@ export default function WealthscapePrototype() {
     { id:"portal",       icon:Users,    label:"Client Portal",  badge:1    },
     { id:"integrations", icon:Zap,      label:"Integrations",   badge:null },
     { id:"insights",     icon:Activity, label:"Analytics",      badge:null },
+    { id:"strategy",     icon:Layers,   label:"Strategy",       badge:null },
     { id:"settings",     icon:Settings, label:"Settings",       badge:null },
   ];
-  const layerLabels = { morning:"Morning Brief", reports:"Report Builder", portal:"Client Portal", integrations:"Integrations", insights:"Analytics", settings:"Settings" };
+  const layerLabels = { morning:"Morning Brief", reports:"Report Builder", portal:"Client Portal", integrations:"Integrations", insights:"Analytics", strategy:"Strategy", settings:"Settings" };
 
   const SidebarContent = () => (
     <>
@@ -2210,6 +2498,7 @@ export default function WealthscapePrototype() {
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp}/>}
+          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
 
