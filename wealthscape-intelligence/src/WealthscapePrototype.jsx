@@ -43,7 +43,7 @@ const TOUR_STEPS = [
   {
     id: "intro",
     layer: "morning",
-    title: "Welcome to Wealthscape Intelligence",
+    title: "Welcome to Wealthscape Reporting 2.0",
     component: "Interactive Prototype Tour",
     description: "This is a working prototype of the redesigned Wealthscape experience — built around five ODI-driven layers: Morning Brief, Report Builder, Integration Hub, Client Portal, and Analytics. Alerts surface from a single store, every alert carries a next-best-action, and a guided end-to-end scenario stitches the whole workflow together. This tour explains every component and the customer outcome it addresses.",
     outcome: null,
@@ -56,7 +56,7 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Morning Brief Banner",
     component: "Layer 1 · AI Intelligence Surface",
-    description: "The highest-priority surface in the entire platform. Every morning, Wealthscape Intelligence surfaces a prioritized digest of what needs the advisor's attention before market open — drift alerts, tax windows, at-risk clients, and overdue reviews.",
+    description: "The highest-priority surface in the entire platform. Every morning, Wealthscape Reporting 2.0 surfaces a prioritized digest of what needs the advisor's attention before market open — drift alerts, tax windows, at-risk clients, and overdue reviews.",
     outcome: "Know what needs attention right now each morning",
     outcomeScore: "ODI #1 · Opportunity Score 14.6",
     gap: "Wealthscape had no native morning digest. Advisors were logging into 12+ apps to reconstruct this view manually.",
@@ -141,7 +141,7 @@ const TOUR_STEPS = [
     layer: "reports",
     title: "AI Narrative Toggle",
     component: "Compliance-Resident Report Commentary",
-    description: "When enabled, Wealthscape Intelligence generates a plain-language client summary directly from custody data — performance drivers, risk context, and key actions. The generated block appears inline in the report preview with a 'Pending Compliance Review' flag, keeping it in the audit trail. Toggle tone between Formal, Conversational, and Concise.",
+    description: "When enabled, Wealthscape Reporting 2.0 generates a plain-language client summary directly from custody data — performance drivers, risk context, and key actions. The generated block appears inline in the report preview with a 'Pending Compliance Review' flag, keeping it in the audit trail. Toggle tone between Formal, Conversational, and Concise.",
     outcome: "Ensure AI-generated narrative summaries are accurate and compliance-safe",
     outcomeScore: "ODI #5.5 · Execute Step · Critical Gap",
     gap: "41% of advisors are already using ChatGPT/Claude outside the platform to generate report narratives — a direct shadow-IT compliance risk. This brings that workflow inside Wealthscape with an auditable chain.",
@@ -266,7 +266,7 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Navigation & AI Status",
     component: "Shell · Persistent Sidebar with AI Indicator",
-    description: "The left sidebar provides persistent navigation across all five experience layers. The AI Active badge at the bottom signals that Wealthscape Intelligence is running background analysis on the advisor's book — normalizing the expectation that AI is always on, not an opt-in feature.",
+    description: "The left sidebar provides persistent navigation across all five experience layers. The AI Active badge at the bottom signals that Wealthscape Reporting 2.0 is running background analysis on the advisor's book — normalizing the expectation that AI is always on, not an opt-in feature.",
     outcome: "Minimize the number of apps required to complete a full advisory workflow",
     outcomeScore: "ODI #5.3 · Score 17 / Competitive: 12 apps/advisor (Kitces 2025)",
     gap: "The average Wealthscape advisor uses 12 separate apps. This shell is designed to consolidate Morning Brief, Reporting, Client Portal, and Analytics into a single login surface — directly competing with Jump AI's 'workflow OS' positioning.",
@@ -1725,7 +1725,7 @@ const SCENARIO_STEPS = [
   {
     id: "complete",
     title: "Full Loop Complete",
-    instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Wealthscape Intelligence workflow.",
+    instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Wealthscape Reporting 2.0 workflow.",
     isComplete: true,
   },
 ];
@@ -2027,7 +2027,7 @@ export default function WealthscapePrototype() {
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             {!isDesktop && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600, display:"flex", alignItems:"center" }} onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>}
             <div>
-              {!isMobile && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Wealthscape Intelligence</div>}
+              {!isMobile && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Wealthscape Reporting 2.0</div>}
               <div style={{ fontSize:14, fontWeight:700, color:T.gray900 }}>{layerLabels[activeLayer]}</div>
             </div>
           </div>
