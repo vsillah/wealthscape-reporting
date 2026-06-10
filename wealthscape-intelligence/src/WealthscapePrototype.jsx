@@ -1344,7 +1344,7 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
 
   return (
     <div data-demo="report-pipeline" style={{ display:"flex", flexDirection:"column", gap:16 }}>
-      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
+      <div data-demo="generate-action" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
         <div>
           <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:3 }}>Report Generation Pipeline</div>
           <div style={{ fontSize:12, color:T.slate }}>Sarah & Michael Chen · Quarterly Review · Q2 2025</div>
@@ -1391,7 +1391,7 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
       </div>
 
       {done && (
-        <div style={{ background:T.emeraldLt, border:`1px solid ${T.emerald}50`, borderRadius:12, padding:"16px 20px", display:"flex", gap:14, alignItems:"center", flexWrap:"wrap" }}>
+        <div data-demo="deliver-action" style={{ background:T.emeraldLt, border:`1px solid ${T.emerald}50`, borderRadius:12, padding:"16px 20px", display:"flex", gap:14, alignItems:"center", flexWrap:"wrap" }}>
           <div style={{ width:40, height:40, borderRadius:"50%", background:T.emerald, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Check size={20} color={T.white}/></div>
           <div style={{ flex:1, minWidth:160 }}>
             <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:2 }}>Report Ready</div>
@@ -1812,13 +1812,13 @@ const SCENARIO_STEPS = [
   },
   {
     id: "generate",
-    targetId: "report-config",
+    targetId: "generate-action",
     title: "Step 2 · Generate the Report",
     instruction: "You're in the Report Builder. Click 'Generate Report' to run the AI pipeline — it will sync data, build 8 sections, and write the client narrative.",
   },
   {
     id: "send",
-    targetId: "report-pipeline",
+    targetId: "deliver-action",
     title: "Step 3 · Deliver to Client",
     instruction: "Report ready. Review the delivery email and click 'Send & Deliver' to publish to the portal and notify Sarah & Michael.",
   },
@@ -1844,20 +1844,31 @@ function ScenarioGuide({ step, onNext, onSkip, isMobile }) {
 
   useEffect(() => {
     if (!s) return;
+    // Place the guide in the corner farthest from the step's target element.
+    // The target may mount after the step changes (e.g. the Report Ready banner
+    // appears only once generation finishes), so poll a few times until found.
+    let ticks = 0;
     const compute = () => {
       const el = s.targetId ? document.querySelector(`[data-demo="${s.targetId}"]`) : null;
-      if (!el) { setPos(isMobile ? { top: 60 } : { top: 68, right: 16 }); return; }
+      if (!el) {
+        if (++ticks < 10) return;            // keep polling for a late mount
+        clearInterval(poll);
+        setPos(isMobile ? { top: 60 } : { top: 68, right: 16 });
+        return;
+      }
+      clearInterval(poll);
       const rect = el.getBoundingClientRect();
       const cx = rect.left + rect.width  / 2;
       const cy = rect.top  + rect.height / 2;
-      const goTop   = cy > window.innerHeight * 0.55;
-      const goRight = cx < window.innerWidth  * 0.55;
+      const goTop   = cy > window.innerHeight * 0.5;
+      const goRight = cx < window.innerWidth  * 0.5;
       const p = goTop ? { top: isMobile ? 60 : 68 } : { bottom: isMobile ? 70 : 24 };
       if (!isMobile) p[goRight ? "right" : "left"] = 16;
       setPos(p);
     };
-    const t = setTimeout(compute, 80);
-    return () => clearTimeout(t);
+    const poll = setInterval(compute, 70);
+    compute();
+    return () => clearInterval(poll);
   }, [step, isMobile]);
 
   if (!s) return null;
