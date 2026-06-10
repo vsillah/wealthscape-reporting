@@ -45,7 +45,7 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Welcome to Wealthscape Intelligence",
     component: "Interactive Prototype Tour",
-    description: "This is a working prototype of the redesigned Wealthscape experience — built around three ODI-driven experience layers: Morning Brief, Report Builder, and Client Portal. This guided tour explains every component and the customer outcome it was designed to address.",
+    description: "This is a working prototype of the redesigned Wealthscape experience — built around five ODI-driven layers: Morning Brief, Report Builder, Integration Hub, Client Portal, and Analytics. Alerts surface from a single store, every alert carries a next-best-action, and a guided end-to-end scenario stitches the whole workflow together. This tour explains every component and the customer outcome it addresses.",
     outcome: null,
     outcomeScore: null,
     position: "center",
@@ -80,12 +80,24 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Active Insights Feed",
     component: "AI-Generated Prioritized Actions",
-    description: "Each insight is AI-generated from custody data, ranked by urgency, and expandable to a one-click action. Types include allocation drift, tax-loss windows, at-risk client signals, and overdue compliance reviews. The action button closes the insight-to-execution loop inside the platform.",
+    description: "Each insight is AI-generated from custody data, ranked by urgency, and expandable to a one-click next-best-action. Types include allocation drift, tax-loss windows, at-risk client signals, and overdue reviews. Crucially, this feed and the bell notification center read from a single alert store — nothing lives in a silo. Acting here marks the alert read everywhere.",
     outcome: "Know which clients are affected by events BEFORE they call / Insight to execution in one motion",
     outcomeScore: "ODI #7 · Score 16.3 / ODI #13 · Score 16.6 (highest in entire map)",
     gap: "Wealthscape had zero portfolio-level NBA capability (scored 1/10 vs Envestnet's 25M NBAs/day). Advisors were building manual watchlists in spreadsheets.",
     position: "bottom",
     spotlightId: "insights-feed",
+  },
+  {
+    id: "alert-center",
+    layer: "morning",
+    title: "Unified Alert Center",
+    component: "Single Alert Store · Next-Best-Action Routing",
+    description: "The bell is the firm's single source of truth for everything that needs attention. Every scattered signal — drift, tax windows, at-risk clients, stale data feeds, delivered reports — flows here with a severity, a source, and a next-best-action that deep-links the advisor to the exact screen and sub-tab where it's resolved. Click 'Build Rebalance Report' and you land on the Report Builder's Generate tab, already scoped to that client.",
+    outcome: "Consolidate every signal into one prioritized queue / Route directly from alert to resolution",
+    outcomeScore: "ODI #13 · Score 16.6 · Insight-to-execution loop",
+    gap: "Alerts in legacy Wealthscape were fragmented across modules with no shared inbox and no path from notification to action. Advisors triaged the same issue in three places.",
+    position: "bottom",
+    spotlightId: "alert-bell",
   },
   {
     id: "aua-chart",
@@ -122,6 +134,7 @@ const TOUR_STEPS = [
     gap: "Wealthscape native reporting was operationally oriented (AUA, billing, money movement). Client-facing performance reports required exporting to Excel and manually rebuilding with branding. Not scalable beyond ~30 clients.",
     position: "right",
     spotlightId: "report-config",
+    deepLink: { reportTab: "build" },
   },
   {
     id: "ai-narrative",
@@ -134,6 +147,7 @@ const TOUR_STEPS = [
     gap: "41% of advisors are already using ChatGPT/Claude outside the platform to generate report narratives — a direct shadow-IT compliance risk. This brings that workflow inside Wealthscape with an auditable chain.",
     position: "right",
     spotlightId: "ai-narrative",
+    deepLink: { reportTab: "build" },
   },
   {
     id: "report-preview",
@@ -146,6 +160,7 @@ const TOUR_STEPS = [
     gap: "Advyzon (highest-rated reporting tool per T3) was bundled into Wealthscape specifically because native reporting couldn't produce client-ready branded output. This prototype closes that gap natively.",
     position: "left",
     spotlightId: "report-preview",
+    deepLink: { reportTab: "build" },
   },
   {
     id: "drift-alert",
@@ -158,6 +173,45 @@ const TOUR_STEPS = [
     gap: "Drift detection existed in Wealthscape Analytics, but was siloed from the reporting workflow. Advisors had to cross-reference two separate modules.",
     position: "left",
     spotlightId: "drift-alert",
+    deepLink: { reportTab: "build" },
+  },
+  {
+    id: "report-pipeline",
+    layer: "reports",
+    title: "Report Generation Pipeline",
+    component: "Report Builder · Generate Tab",
+    description: "This is what actually happens when you hit 'Generate'. The report moves through six observable stages — data sync from the custodian, validation, assembly, AI narrative, compliance review, and delivery — each with a live status and a concrete result line. The advisor sees exactly what the system did and where the data came from, turning a black-box export into an auditable chain.",
+    outcome: "Trust that a generated report is complete, accurate, and compliance-safe before it ships",
+    outcomeScore: "ODI #4.3 · Confirm Step / ODI #5.5 · Compliance-resident",
+    gap: "Legacy report runs were opaque — advisors clicked 'export' and hoped. Stale prices and missing corporate actions surfaced only after the client noticed. Validation and compliance now run inline.",
+    position: "top",
+    spotlightId: "report-pipeline",
+    deepLink: { reportTab: "generate" },
+  },
+  {
+    id: "report-customize",
+    layer: "reports",
+    title: "Report Customization Studio",
+    component: "Report Builder · Customize Tab",
+    description: "A two-panel template editor with a live preview. Toggle sections on and off, swap chart types per section (bar / line / area, donut / pie), apply a color theme, set firm branding and logo, and choose the date range and benchmark — all reflected instantly in the rendered report on the right. Save it as a reusable template so the whole book inherits one consistent, branded format.",
+    outcome: "Produce branded, client-ready output without leaving the platform / Standardize formatting across the book",
+    outcomeScore: "ODI #5.1 · Score 17 / ODI #5.3 · Score 17",
+    gap: "Branding and layout previously meant exporting to Excel or PowerPoint and rebuilding by hand. There was no template system, so every advisor's reports looked different and nothing was reusable.",
+    position: "top",
+    spotlightId: "report-customize",
+    deepLink: { reportTab: "customize" },
+  },
+  {
+    id: "integration-hub",
+    layer: "integrations",
+    title: "Integration Hub",
+    component: "Layer · Third-Party Provider Connections",
+    description: "Where the data actually comes from. Custodians, CRMs, portfolio management, and financial planning tools connect here over OAuth, each with an explicit field-mapping table showing how the provider's raw fields map into Wealthscape's data model. Click a connected provider to inspect its mapping, sync frequency, and last-sync status — and connect new providers in a click. This is the supply chain that feeds every report and alert.",
+    outcome: "Consolidate the advisor's fragmented tool stack behind one data layer / Make data lineage transparent",
+    outcomeScore: "ODI #5.3 · Score 17 · 12 apps/advisor (Kitces 2025)",
+    gap: "The average advisor stitches together 12 disconnected apps with no shared field mapping. Stale or mismatched data was invisible until it corrupted a client report.",
+    position: "top",
+    spotlightId: "integration-hub",
   },
   {
     id: "portal-header",
@@ -196,6 +250,18 @@ const TOUR_STEPS = [
     spotlightId: "advisor-message",
   },
   {
+    id: "scenario-button",
+    layer: "morning",
+    title: "Guided End-to-End Scenario",
+    component: "Shell · Run the Full Workflow Live",
+    description: "Press this button to run the complete loop as a scripted, interactive walkthrough: a drift alert fires for the Chen portfolio, you act on its next-best-action, the report pipeline generates the Q2 review, a delivery email composes itself with the client's address and the PDF attached, and you land in the client's own portal watching the report arrive with a 'Just Delivered' badge. It's the entire value story — alert to outcome — in under ten seconds.",
+    outcome: "Demonstrate the end-to-end audit trail: data → insight → action → report → delivery → client",
+    outcomeScore: "ODI #15 · Score 14.2 · Compliance-as-byproduct",
+    gap: "No competitor demonstrates the full alert-to-delivery loop as one continuous motion — most stitch it across separate tools and logins. This scenario makes the consolidated workflow tangible.",
+    position: "bottom",
+    spotlightId: "scenario-button",
+  },
+  {
     id: "nav-sidebar",
     layer: "morning",
     title: "Navigation & AI Status",
@@ -212,8 +278,8 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Prototype Complete",
     component: "Summary · ODI Coverage",
-    description: "This prototype addresses all 11 high-opportunity customer outcomes identified in the ODI analysis (scores 13.5–16.6). The three experience layers map to the full reporting job map: Morning Brief covers Steps 1–2 (Define, Locate); Report Builder covers Steps 3–6 (Prepare through Execute); Client Portal covers Steps 7–8 (Modify, Conclude).",
-    outcome: "End-to-end audit trail: data → insight → action → outcome",
+    description: "This prototype addresses all 11 high-opportunity customer outcomes identified in the ODI analysis (scores 13.5–16.6) across five layers. Morning Brief and the unified Alert Center cover Steps 1–2 (Define, Locate); the Integration Hub feeds clean data into Steps 3–4 (Prepare, Confirm); the Report Builder's generation pipeline and customization studio cover Steps 5–6 (Execute); the Client Portal covers Steps 7–8 (Modify, Conclude). Run the guided scenario any time to see the whole loop end to end.",
+    outcome: "End-to-end audit trail: data → insight → action → report → delivery → outcome",
     outcomeScore: "ODI #15 · Score 14.2 · Compliance-as-byproduct",
     position: "center",
     spotlightId: null,
@@ -389,20 +455,26 @@ function Spotlight({ targetId, onClose, onRectChange }) {
 
   useEffect(() => {
     if (!targetId) { setRect(null); onRectChange?.(null); return; }
-    const el = document.querySelector(`[data-demo="${targetId}"]`);
-    if (!el) { setRect(null); onRectChange?.(null); return; }
+    setRect(null); onRectChange?.(null);
+    let obs = null, scrolled = false;
+    // Re-measure the target. The element may not exist yet when the step changes
+    // a sub-tab (e.g. Report Builder → Generate), so we poll briefly until it
+    // mounts, then keep tracking it via a ResizeObserver + scroll/resize.
     const update = () => {
+      const el = document.querySelector(`[data-demo="${targetId}"]`);
+      if (!el) return;
+      if (!scrolled) { el.scrollIntoView({ behavior:"smooth", block:"nearest" }); scrolled = true; }
       const r = el.getBoundingClientRect();
-      const next = { top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12 };
-      setRect(next);
-      onRectChange?.(next);
+      setRect({ top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12 });
+      onRectChange?.({ top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12 });
+      if (!obs) { obs = new ResizeObserver(update); obs.observe(el); }
     };
+    let ticks = 0;
+    const poll = setInterval(() => { update(); if (++ticks >= 24) clearInterval(poll); }, 60);
     update();
-    const obs = new ResizeObserver(update);
-    obs.observe(el);
     window.addEventListener("scroll", update, true);
     window.addEventListener("resize", update);
-    return () => { obs.disconnect(); window.removeEventListener("scroll", update, true); window.removeEventListener("resize", update); };
+    return () => { clearInterval(poll); if (obs) obs.disconnect(); window.removeEventListener("scroll", update, true); window.removeEventListener("resize", update); };
   }, [targetId]);
 
   if (!rect) return null;
@@ -1166,7 +1238,7 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
   const totalMs = PIPELINE_STAGES.reduce((s, st) => s + st.duration, 0);
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+    <div data-demo="report-pipeline" style={{ display:"flex", flexDirection:"column", gap:16 }}>
       <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
         <div>
           <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:3 }}>Report Generation Pipeline</div>
@@ -1267,7 +1339,7 @@ function ReportCustomize({ bp }) {
   };
 
   return (
-    <div style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:16 }}>
+    <div data-demo="report-customize" style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:16 }}>
 
       {/* Left: controls */}
       <div style={{ width:isMobile?"100%":290, flexShrink:0, display:"flex", flexDirection:"column", gap:12 }}>
@@ -1501,7 +1573,7 @@ function IntegrationHub({ bp, deepLink }) {
   };
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+    <div data-demo="integration-hub" style={{ display:"flex", flexDirection:"column", gap:16 }}>
 
       {/* Header */}
       <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
@@ -1833,12 +1905,9 @@ export default function WealthscapePrototype() {
   useEffect(() => {
     if (!demoActive) return;
     if (currentStep.layer) setActiveLayer(currentStep.layer);
-    if (currentStep.spotlightId) {
-      setTimeout(() => {
-        const el = document.querySelector(`[data-demo="${currentStep.spotlightId}"]`);
-        if (el) el.scrollIntoView({ behavior:"smooth", block:"nearest" });
-      }, 250);
-    }
+    // Steps can target a sub-tab (e.g. Report Builder → Generate). Drive it via
+    // the same deepLink mechanism the alert NBAs use. Spotlight handles scroll.
+    setDeepLink(currentStep.deepLink ? { ...currentStep.deepLink, _ts: Date.now() } : null);
   }, [demoStep, demoActive]);
 
   // Route an alert's next-best-action to the right screen + sub-tab, mark it read.
@@ -1968,13 +2037,13 @@ export default function WealthscapePrototype() {
               </div>
             )}
             {isMobile && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
-            <button onClick={startScenario} style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
+            <button onClick={startScenario} data-demo="scenario-button" style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
               <Target size={14}/>{!isMobile&&(scenarioActive?" Restart":" Scenario")}
             </button>
             <button onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
               <PlayCircle size={14}/>{!isMobile&&" Tour"}
             </button>
-            <button onClick={()=>setAlertsOpen(o=>!o)} style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
+            <button onClick={()=>setAlertsOpen(o=>!o)} data-demo="alert-bell" style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
               <Bell size={18} color={alertsOpen?T.gray900:T.slate}/>
               {unreadAlerts > 0 && (
                 <div style={{ position:"absolute", top:-1, right:-1, minWidth:16, height:16, padding:"0 3px", borderRadius:99, background:T.red, border:`2px solid ${T.white}`, display:"flex", alignItems:"center", justifyContent:"center" }}>
