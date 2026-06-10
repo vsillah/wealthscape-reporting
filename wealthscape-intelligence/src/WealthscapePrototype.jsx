@@ -43,9 +43,9 @@ const TOUR_STEPS = [
   {
     id: "intro",
     layer: "morning",
-    title: "Welcome to Wealthscape Intelligence",
+    title: "Welcome to Wealthscape Reporting 2.0",
     component: "Interactive Prototype Tour",
-    description: "This is a working prototype of the redesigned Wealthscape experience — built around three ODI-driven experience layers: Morning Brief, Report Builder, and Client Portal. This guided tour explains every component and the customer outcome it was designed to address.",
+    description: "This is a working prototype of the redesigned Wealthscape experience — built around five ODI-driven layers: Morning Brief, Report Builder, Integration Hub, Client Portal, and Analytics. Alerts surface from a single store, every alert carries a next-best-action, and a guided end-to-end scenario stitches the whole workflow together. This tour explains every component and the customer outcome it addresses.",
     outcome: null,
     outcomeScore: null,
     position: "center",
@@ -56,7 +56,7 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Morning Brief Banner",
     component: "Layer 1 · AI Intelligence Surface",
-    description: "The highest-priority surface in the entire platform. Every morning, Wealthscape Intelligence surfaces a prioritized digest of what needs the advisor's attention before market open — drift alerts, tax windows, at-risk clients, and overdue reviews.",
+    description: "The highest-priority surface in the entire platform. Every morning, Wealthscape Reporting 2.0 surfaces a prioritized digest of what needs the advisor's attention before market open — drift alerts, tax windows, at-risk clients, and overdue reviews.",
     outcome: "Know what needs attention right now each morning",
     outcomeScore: "ODI #1 · Opportunity Score 14.6",
     gap: "Wealthscape had no native morning digest. Advisors were logging into 12+ apps to reconstruct this view manually.",
@@ -80,12 +80,24 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Active Insights Feed",
     component: "AI-Generated Prioritized Actions",
-    description: "Each insight is AI-generated from custody data, ranked by urgency, and expandable to a one-click action. Types include allocation drift, tax-loss windows, at-risk client signals, and overdue compliance reviews. The action button closes the insight-to-execution loop inside the platform.",
+    description: "Each insight is AI-generated from custody data, ranked by urgency, and expandable to a one-click next-best-action. Types include allocation drift, tax-loss windows, at-risk client signals, and overdue reviews. Crucially, this feed and the bell notification center read from a single alert store — nothing lives in a silo. Acting here marks the alert read everywhere.",
     outcome: "Know which clients are affected by events BEFORE they call / Insight to execution in one motion",
     outcomeScore: "ODI #7 · Score 16.3 / ODI #13 · Score 16.6 (highest in entire map)",
     gap: "Wealthscape had zero portfolio-level NBA capability (scored 1/10 vs Envestnet's 25M NBAs/day). Advisors were building manual watchlists in spreadsheets.",
     position: "bottom",
     spotlightId: "insights-feed",
+  },
+  {
+    id: "alert-center",
+    layer: "morning",
+    title: "Unified Alert Center",
+    component: "Single Alert Store · Next-Best-Action Routing",
+    description: "The bell is the firm's single source of truth for everything that needs attention. Every scattered signal — drift, tax windows, at-risk clients, stale data feeds, delivered reports — flows here with a severity, a source, and a next-best-action that deep-links the advisor to the exact screen and sub-tab where it's resolved. Click 'Build Rebalance Report' and you land on the Report Builder's Generate tab, already scoped to that client.",
+    outcome: "Consolidate every signal into one prioritized queue / Route directly from alert to resolution",
+    outcomeScore: "ODI #13 · Score 16.6 · Insight-to-execution loop",
+    gap: "Alerts in legacy Wealthscape were fragmented across modules with no shared inbox and no path from notification to action. Advisors triaged the same issue in three places.",
+    position: "bottom",
+    spotlightId: "alert-bell",
   },
   {
     id: "aua-chart",
@@ -122,18 +134,20 @@ const TOUR_STEPS = [
     gap: "Wealthscape native reporting was operationally oriented (AUA, billing, money movement). Client-facing performance reports required exporting to Excel and manually rebuilding with branding. Not scalable beyond ~30 clients.",
     position: "right",
     spotlightId: "report-config",
+    deepLink: { reportTab: "build" },
   },
   {
     id: "ai-narrative",
     layer: "reports",
     title: "AI Narrative Toggle",
     component: "Compliance-Resident Report Commentary",
-    description: "When enabled, Wealthscape Intelligence generates a plain-language client summary directly from custody data — performance drivers, risk context, and key actions. The generated block appears inline in the report preview with a 'Pending Compliance Review' flag, keeping it in the audit trail. Toggle tone between Formal, Conversational, and Concise.",
+    description: "When enabled, Wealthscape Reporting 2.0 generates a plain-language client summary directly from custody data — performance drivers, risk context, and key actions. The generated block appears inline in the report preview with a 'Pending Compliance Review' flag, keeping it in the audit trail. Toggle tone between Formal, Conversational, and Concise.",
     outcome: "Ensure AI-generated narrative summaries are accurate and compliance-safe",
     outcomeScore: "ODI #5.5 · Execute Step · Critical Gap",
     gap: "41% of advisors are already using ChatGPT/Claude outside the platform to generate report narratives — a direct shadow-IT compliance risk. This brings that workflow inside Wealthscape with an auditable chain.",
     position: "right",
     spotlightId: "ai-narrative",
+    deepLink: { reportTab: "build" },
   },
   {
     id: "report-preview",
@@ -146,6 +160,7 @@ const TOUR_STEPS = [
     gap: "Advyzon (highest-rated reporting tool per T3) was bundled into Wealthscape specifically because native reporting couldn't produce client-ready branded output. This prototype closes that gap natively.",
     position: "left",
     spotlightId: "report-preview",
+    deepLink: { reportTab: "build" },
   },
   {
     id: "drift-alert",
@@ -158,6 +173,45 @@ const TOUR_STEPS = [
     gap: "Drift detection existed in Wealthscape Analytics, but was siloed from the reporting workflow. Advisors had to cross-reference two separate modules.",
     position: "left",
     spotlightId: "drift-alert",
+    deepLink: { reportTab: "build" },
+  },
+  {
+    id: "report-pipeline",
+    layer: "reports",
+    title: "Report Generation Pipeline",
+    component: "Report Builder · Generate Tab",
+    description: "This is what actually happens when you hit 'Generate'. The report moves through six observable stages — data sync from the custodian, validation, assembly, AI narrative, compliance review, and delivery — each with a live status and a concrete result line. The advisor sees exactly what the system did and where the data came from, turning a black-box export into an auditable chain.",
+    outcome: "Trust that a generated report is complete, accurate, and compliance-safe before it ships",
+    outcomeScore: "ODI #4.3 · Confirm Step / ODI #5.5 · Compliance-resident",
+    gap: "Legacy report runs were opaque — advisors clicked 'export' and hoped. Stale prices and missing corporate actions surfaced only after the client noticed. Validation and compliance now run inline.",
+    position: "top",
+    spotlightId: "report-pipeline",
+    deepLink: { reportTab: "generate" },
+  },
+  {
+    id: "report-customize",
+    layer: "reports",
+    title: "Report Customization Studio",
+    component: "Report Builder · Customize Tab",
+    description: "A two-panel template editor with a live preview. Toggle sections on and off, swap chart types per section (bar / line / area, donut / pie), apply a color theme, set firm branding and logo, and choose the date range and benchmark — all reflected instantly in the rendered report on the right. Save it as a reusable template so the whole book inherits one consistent, branded format.",
+    outcome: "Produce branded, client-ready output without leaving the platform / Standardize formatting across the book",
+    outcomeScore: "ODI #5.1 · Score 17 / ODI #5.3 · Score 17",
+    gap: "Branding and layout previously meant exporting to Excel or PowerPoint and rebuilding by hand. There was no template system, so every advisor's reports looked different and nothing was reusable.",
+    position: "top",
+    spotlightId: "report-customize",
+    deepLink: { reportTab: "customize" },
+  },
+  {
+    id: "integration-hub",
+    layer: "integrations",
+    title: "Integration Hub",
+    component: "Layer · Third-Party Provider Connections",
+    description: "Where the data actually comes from. Custodians, CRMs, portfolio management, and financial planning tools connect here over OAuth, each with an explicit field-mapping table showing how the provider's raw fields map into Wealthscape's data model. Click a connected provider to inspect its mapping, sync frequency, and last-sync status — and connect new providers in a click. This is the supply chain that feeds every report and alert.",
+    outcome: "Consolidate the advisor's fragmented tool stack behind one data layer / Make data lineage transparent",
+    outcomeScore: "ODI #5.3 · Score 17 · 12 apps/advisor (Kitces 2025)",
+    gap: "The average advisor stitches together 12 disconnected apps with no shared field mapping. Stale or mismatched data was invisible until it corrupted a client report.",
+    position: "top",
+    spotlightId: "integration-hub",
   },
   {
     id: "portal-header",
@@ -196,11 +250,23 @@ const TOUR_STEPS = [
     spotlightId: "advisor-message",
   },
   {
+    id: "scenario-button",
+    layer: "morning",
+    title: "Guided End-to-End Scenario",
+    component: "Shell · Run the Full Workflow Live",
+    description: "Press this button to run the complete loop as a scripted, interactive walkthrough: a drift alert fires for the Chen portfolio, you act on its next-best-action, the report pipeline generates the Q2 review, a delivery email composes itself with the client's address and the PDF attached, and you land in the client's own portal watching the report arrive with a 'Just Delivered' badge. It's the entire value story — alert to outcome — in under ten seconds.",
+    outcome: "Demonstrate the end-to-end audit trail: data → insight → action → report → delivery → client",
+    outcomeScore: "ODI #15 · Score 14.2 · Compliance-as-byproduct",
+    gap: "No competitor demonstrates the full alert-to-delivery loop as one continuous motion — most stitch it across separate tools and logins. This scenario makes the consolidated workflow tangible.",
+    position: "bottom",
+    spotlightId: "scenario-button",
+  },
+  {
     id: "nav-sidebar",
     layer: "morning",
     title: "Navigation & AI Status",
     component: "Shell · Persistent Sidebar with AI Indicator",
-    description: "The left sidebar provides persistent navigation across all five experience layers. The AI Active badge at the bottom signals that Wealthscape Intelligence is running background analysis on the advisor's book — normalizing the expectation that AI is always on, not an opt-in feature.",
+    description: "The left sidebar provides persistent navigation across all five experience layers. The AI Active badge at the bottom signals that Wealthscape Reporting 2.0 is running background analysis on the advisor's book — normalizing the expectation that AI is always on, not an opt-in feature.",
     outcome: "Minimize the number of apps required to complete a full advisory workflow",
     outcomeScore: "ODI #5.3 · Score 17 / Competitive: 12 apps/advisor (Kitces 2025)",
     gap: "The average Wealthscape advisor uses 12 separate apps. This shell is designed to consolidate Morning Brief, Reporting, Client Portal, and Analytics into a single login surface — directly competing with Jump AI's 'workflow OS' positioning.",
@@ -212,8 +278,8 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Prototype Complete",
     component: "Summary · ODI Coverage",
-    description: "This prototype addresses all 11 high-opportunity customer outcomes identified in the ODI analysis (scores 13.5–16.6). The three experience layers map to the full reporting job map: Morning Brief covers Steps 1–2 (Define, Locate); Report Builder covers Steps 3–6 (Prepare through Execute); Client Portal covers Steps 7–8 (Modify, Conclude).",
-    outcome: "End-to-end audit trail: data → insight → action → outcome",
+    description: "This prototype addresses all 11 high-opportunity customer outcomes identified in the ODI analysis (scores 13.5–16.6) across five layers. Morning Brief and the unified Alert Center cover Steps 1–2 (Define, Locate); the Integration Hub feeds clean data into Steps 3–4 (Prepare, Confirm); the Report Builder's generation pipeline and customization studio cover Steps 5–6 (Execute); the Client Portal covers Steps 7–8 (Modify, Conclude). Run the guided scenario any time to see the whole loop end to end.",
+    outcome: "End-to-end audit trail: data → insight → action → report → delivery → outcome",
     outcomeScore: "ODI #15 · Score 14.2 · Compliance-as-byproduct",
     position: "center",
     spotlightId: null,
@@ -389,20 +455,26 @@ function Spotlight({ targetId, onClose, onRectChange }) {
 
   useEffect(() => {
     if (!targetId) { setRect(null); onRectChange?.(null); return; }
-    const el = document.querySelector(`[data-demo="${targetId}"]`);
-    if (!el) { setRect(null); onRectChange?.(null); return; }
+    setRect(null); onRectChange?.(null);
+    let obs = null, scrolled = false;
+    // Re-measure the target. The element may not exist yet when the step changes
+    // a sub-tab (e.g. Report Builder → Generate), so we poll briefly until it
+    // mounts, then keep tracking it via a ResizeObserver + scroll/resize.
     const update = () => {
+      const el = document.querySelector(`[data-demo="${targetId}"]`);
+      if (!el) return;
+      if (!scrolled) { el.scrollIntoView({ behavior:"smooth", block:"nearest" }); scrolled = true; }
       const r = el.getBoundingClientRect();
-      const next = { top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12 };
-      setRect(next);
-      onRectChange?.(next);
+      setRect({ top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12 });
+      onRectChange?.({ top: r.top - 6, left: r.left - 6, width: r.width + 12, height: r.height + 12 });
+      if (!obs) { obs = new ResizeObserver(update); obs.observe(el); }
     };
+    let ticks = 0;
+    const poll = setInterval(() => { update(); if (++ticks >= 24) clearInterval(poll); }, 60);
     update();
-    const obs = new ResizeObserver(update);
-    obs.observe(el);
     window.addEventListener("scroll", update, true);
     window.addEventListener("resize", update);
-    return () => { obs.disconnect(); window.removeEventListener("scroll", update, true); window.removeEventListener("resize", update); };
+    return () => { clearInterval(poll); if (obs) obs.disconnect(); window.removeEventListener("scroll", update, true); window.removeEventListener("resize", update); };
   }, [targetId]);
 
   if (!rect) return null;
@@ -560,7 +632,7 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
 }
 
 // ─── LAYER 1: Morning Brief ────────────────────────────────────────────────────
-function MorningBrief({ bp, alerts, onAction, onDismiss }) {
+function MorningBrief({ bp, alerts, onAction, onDismiss, scenarioStep }) {
   const [expanded, setExpanded] = useState(null);
   const { isMobile } = bp;
   const feed = alerts.filter(a => a.type !== "report");
@@ -604,8 +676,10 @@ function MorningBrief({ bp, alerts, onAction, onDismiss }) {
             </div>
           </div>
           {feed.length===0 && <div style={{ padding:"24px 18px", textAlign:"center", fontSize:12, color:T.slate }}>No active insights — you're all caught up.</div>}
-          {feed.map((ins,i)=>(
-            <div key={ins.id} style={{ padding:"14px 18px", borderBottom:i<feed.length-1?`1px solid ${T.gray100}`:"none", cursor:"pointer", background:expanded===ins.id?T.gray50:T.white }} onClick={()=>setExpanded(expanded===ins.id?null:ins.id)}>
+          {feed.map((ins,i)=>{
+            const isTarget = scenarioStep===0 && ins.id===1;
+            return (
+            <div key={ins.id} style={{ padding:"14px 18px", borderBottom:i<feed.length-1?`1px solid ${T.gray100}`:"none", cursor:"pointer", background:expanded===ins.id?T.gray50:T.white, outline:isTarget?`2px solid ${T.green}`:"none", outlineOffset:-2, transition:"outline 0.2s", animation:isTarget&&expanded!==ins.id?"scenario-pulse 2s ease-in-out infinite":"none" }} onClick={()=>setExpanded(expanded===ins.id?null:ins.id)}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:5 }}>
                 <div style={{ display:"flex", gap:7, alignItems:"center" }}>
                   <InsightChip type={ins.type}/>
@@ -623,7 +697,7 @@ function MorningBrief({ bp, alerts, onAction, onDismiss }) {
                 </div>
               )}
             </div>
-          ))}
+          );})}
         </div>
 
         <div data-demo="aua-chart" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
@@ -709,7 +783,7 @@ function MorningBrief({ bp, alerts, onAction, onDismiss }) {
 }
 
 // ─── LAYER 2: Report Builder ──────────────────────────────────────────────────
-function ReportBuilder({ bp, deepLink }) {
+function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
   const { isMobile } = bp;
   const [reportTab, setReportTab]     = useState("build");
   const [step, setStep]               = useState(1);
@@ -731,7 +805,7 @@ function ReportBuilder({ bp, deepLink }) {
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
         {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
-      <ReportGeneration bp={bp}/>
+      <ReportGeneration bp={bp} onScenarioAdvance={onScenarioAdvance} onSendToClient={onSendToClient}/>
     </div>
   );
   if (reportTab === "customize") return (
@@ -827,8 +901,8 @@ function ReportBuilder({ bp, deepLink }) {
               )}
 
               {step>=2 && (
-                <button style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:14, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:48 }}>
-                  <FileText size={15}/> Generate Report
+                <button onClick={()=>setReportTab("generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:14, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:48 }}>
+                  <Zap size={15}/> Generate Report <ChevronRight size={16}/>
                 </button>
               )}
             </div>
@@ -910,9 +984,11 @@ function ReportBuilder({ bp, deepLink }) {
                 </div>
               </div>
 
-              <div style={{ background:T.gray50, borderTop:`1px solid ${T.gray200}`, padding:"14px 18px", display:"flex", justifyContent:"flex-end", gap:8, flexWrap:"wrap" }}>
-                <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:36 }}>Schedule Review</button>
-                <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", minHeight:36 }}>Send to Client</button>
+              <div style={{ background:T.gray50, borderTop:`1px solid ${T.gray200}`, padding:"14px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+                <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:36 }}>Schedule Review</button>
+                <button onClick={()=>setReportTab("generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, minHeight:36 }}>
+                  <Zap size={12}/> Generate &amp; Send <ChevronRight size={13}/>
+                </button>
               </div>
             </div>
           </div>
@@ -923,7 +999,7 @@ function ReportBuilder({ bp, deepLink }) {
 }
 
 // ─── LAYER 3: Client Portal ────────────────────────────────────────────────────
-function ClientPortal({ bp, deepLink }) {
+function ClientPortal({ bp, deepLink, reportDelivered }) {
   const { isMobile } = bp;
   const [tab, setTab] = useState("overview");
   useEffect(() => { if (deepLink?.portalTab) setTab(deepLink.portalTab); }, [deepLink]);
@@ -1031,11 +1107,17 @@ function ClientPortal({ bp, deepLink }) {
         )}
         {tab==="documents" && (
           <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            {reportDelivered && (
+              <div style={{ background:T.emeraldLt, border:`1px solid ${T.emerald}50`, borderRadius:10, padding:"11px 16px", display:"flex", alignItems:"center", gap:10, animation:"fade-in-up 0.4s ease" }}>
+                <Check size={15} color={T.emerald}/>
+                <span style={{ fontSize:13, fontWeight:700, color:T.emerald }}>Q2 Report just delivered · Portal updated · Email sent to 2 recipients</span>
+              </div>
+            )}
             {[{name:"Q2 2025 Performance Report",date:"Jun 9, 2025",isNew:true},{name:"Q1 2025 Performance Report",date:"Mar 12, 2025",isNew:false},{name:"2024 Annual Review",date:"Jan 8, 2025",isNew:false},{name:"Investment Policy Statement",date:"Aug 14, 2024",isNew:false},{name:"Account Opening Documents",date:"May 2, 2023",isNew:false}].map(doc=>(
               <div key={doc.name} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 16px", display:"flex", alignItems:"center", gap:12 }}>
                 <div style={{ width:34, height:34, borderRadius:8, background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><FileText size={15} color={T.green}/></div>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{doc.name}</span>{doc.isNew&&<Badge color={T.green} bg={T.greenLt}>NEW</Badge>}</div>
+                  <div style={{ display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{doc.name}</span>{doc.isNew&&<Badge color={T.green} bg={T.greenLt}>{reportDelivered?"JUST DELIVERED":"NEW"}</Badge>}</div>
                   <div style={{ fontSize:11, color:T.slate, marginTop:2 }}>{doc.date}</div>
                 </div>
                 <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, color:T.gray600, cursor:"pointer", display:"flex", gap:5, alignItems:"center", flexShrink:0, minHeight:34 }}><Download size={11}/> {isMobile?"":"Download"}</button>
@@ -1128,7 +1210,7 @@ const PIPELINE_STAGES = [
   { id:"delivery",   icon:Mail,      label:"Delivery",          desc:"Publishing to client portal and sending email notification",duration:600,  result:"Portal updated · Email queued to 2 recipients" },
 ];
 
-function ReportGeneration({ bp }) {
+function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
   const { isMobile } = bp;
   const [running, setRunning]           = useState(false);
   const [done, setDone]                 = useState(false);
@@ -1144,7 +1226,7 @@ function ReportGeneration({ bp }) {
       delay += stage.duration;
       timers.push(setTimeout(() => {
         setCompletedIds(prev => [...prev, stage.id]);
-        if (i === PIPELINE_STAGES.length - 1) { setCurrentStage(null); setRunning(false); setDone(true); }
+        if (i === PIPELINE_STAGES.length - 1) { setCurrentStage(null); setRunning(false); setDone(true); onScenarioAdvance?.(); }
       }, delay - 80));
     });
     return () => timers.forEach(clearTimeout);
@@ -1158,7 +1240,7 @@ function ReportGeneration({ bp }) {
   const totalMs = PIPELINE_STAGES.reduce((s, st) => s + st.duration, 0);
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+    <div data-demo="report-pipeline" style={{ display:"flex", flexDirection:"column", gap:16 }}>
       <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
         <div>
           <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:3 }}>Report Generation Pipeline</div>
@@ -1210,11 +1292,13 @@ function ReportGeneration({ bp }) {
           <div style={{ width:40, height:40, borderRadius:"50%", background:T.emerald, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Check size={20} color={T.white}/></div>
           <div style={{ flex:1, minWidth:160 }}>
             <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:2 }}>Report Ready</div>
-            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · Delivered to portal + email</div>
+            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · AI narrative + compliance cleared</div>
           </div>
-          <div style={{ display:"flex", gap:8 }}>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
             <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
-            <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer" }}>View in Portal</button>
+            <button onClick={onSendToClient} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, boxShadow:onSendToClient?"0 0 0 3px rgba(11,93,46,0.25)":"none" }}>
+              <Mail size={13}/> Send to Client
+            </button>
           </div>
         </div>
       )}
@@ -1257,7 +1341,7 @@ function ReportCustomize({ bp }) {
   };
 
   return (
-    <div style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:16 }}>
+    <div data-demo="report-customize" style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:16 }}>
 
       {/* Left: controls */}
       <div style={{ width:isMobile?"100%":290, flexShrink:0, display:"flex", flexDirection:"column", gap:12 }}>
@@ -1491,7 +1575,7 @@ function IntegrationHub({ bp, deepLink }) {
   };
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+    <div data-demo="integration-hub" style={{ display:"flex", flexDirection:"column", gap:16 }}>
 
       {/* Header */}
       <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
@@ -1615,26 +1699,205 @@ function IntegrationHub({ bp, deepLink }) {
   );
 }
 
+// ─── End-to-End Scenario ─────────────────────────────────────────────────────
+const SCENARIO_STEPS = [
+  {
+    id: "alert",
+    title: "Step 1 · Drift Alert Fires",
+    instruction: "A US Equity drift alert just fired for Sarah & Michael Chen. Expand the insight card in the Active Insights feed and click 'Build Rebalance Report'.",
+  },
+  {
+    id: "generate",
+    title: "Step 2 · Generate the Report",
+    instruction: "You're in the Report Builder. Click 'Generate Report' to run the AI pipeline — it will sync data, build 8 sections, and write the client narrative.",
+  },
+  {
+    id: "send",
+    title: "Step 3 · Deliver to Client",
+    instruction: "Report ready. Review the delivery email and click 'Send & Deliver' to publish to the portal and notify Sarah & Michael.",
+  },
+  {
+    id: "portal",
+    title: "Step 4 · Client Experience",
+    instruction: "Delivered. This is exactly what Sarah & Michael see in their portal — the Q2 report with your advisor message. Explore the Documents and Messages tabs.",
+    showComplete: true,
+  },
+  {
+    id: "complete",
+    title: "Full Loop Complete",
+    instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Wealthscape Reporting 2.0 workflow.",
+    isComplete: true,
+  },
+];
+
+function ScenarioGuide({ step, onNext, onSkip, isMobile }) {
+  const s = SCENARIO_STEPS[step];
+  if (!s) return null;
+  const progressPct = (step / (SCENARIO_STEPS.length - 1)) * 100;
+
+  return (
+    <div style={{ position:"fixed", bottom:isMobile?70:24, right:isMobile?8:16, left:isMobile?8:"auto", width:isMobile?"auto":340, background:s.isComplete?T.emerald:T.navy, borderRadius:14, boxShadow:"0 20px 60px rgba(0,0,0,0.35)", zIndex:85, overflow:"hidden", animation:"fade-in-up 0.3s ease" }}>
+      <div style={{ height:3, background:"rgba(255,255,255,0.15)" }}>
+        <div style={{ height:"100%", width:`${progressPct}%`, background:s.isComplete?T.white:T.green, transition:"width 0.5s ease" }}/>
+      </div>
+      <div style={{ padding:"14px 16px" }}>
+        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:8 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+            {s.isComplete
+              ? <div style={{ width:18, height:18, borderRadius:"50%", background:"rgba(255,255,255,0.25)", display:"flex", alignItems:"center", justifyContent:"center" }}><Check size={10} color={T.white}/></div>
+              : <div style={{ width:18, height:18, borderRadius:"50%", background:T.green, display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, fontWeight:700, color:T.white }}>{step+1}</div>}
+            <span style={{ fontSize:10, fontWeight:700, color:"rgba(255,255,255,0.55)", letterSpacing:"0.08em", textTransform:"uppercase" }}>
+              {s.isComplete?"Scenario Complete":`Scenario · ${step+1} of ${SCENARIO_STEPS.length}`}
+            </span>
+          </div>
+          <button onClick={onSkip} style={{ background:"transparent", border:"none", cursor:"pointer", color:"rgba(255,255,255,0.4)", fontSize:11, fontWeight:600 }}>{s.isComplete?"Close":"Skip"}</button>
+        </div>
+        <div style={{ fontSize:13, fontWeight:700, color:T.white, marginBottom:5, lineHeight:1.3 }}>{s.title}</div>
+        <div style={{ fontSize:12, color:"rgba(255,255,255,0.72)", lineHeight:1.6 }}>{s.instruction}</div>
+        {!s.isComplete && (
+          <div style={{ display:"flex", gap:4, marginTop:12, alignItems:"center" }}>
+            {SCENARIO_STEPS.map((_,i)=><div key={i} style={{ width:i===step?14:5, height:5, borderRadius:99, background:i<step?T.green:i===step?"#86EFAC":"rgba(255,255,255,0.2)", transition:"all 0.25s" }}/>)}
+          </div>
+        )}
+        {s.isComplete && (
+          <div style={{ marginTop:12, display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8 }}>
+            {[{label:"Data Sources",value:"3"},{label:"Gen Time",value:"7.0s"},{label:"Sections",value:"8"}].map(m=>(
+              <div key={m.label} style={{ background:"rgba(255,255,255,0.15)", borderRadius:8, padding:"8px 10px", textAlign:"center" }}>
+                <div style={{ fontSize:16, fontWeight:700, color:T.white }}>{m.value}</div>
+                <div style={{ fontSize:9, color:"rgba(255,255,255,0.65)", marginTop:2 }}>{m.label}</div>
+              </div>
+            ))}
+          </div>
+        )}
+        {s.showComplete && (
+          <button onClick={onNext} style={{ marginTop:12, width:"100%", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}>
+            <Check size={13}/> Complete Scenario
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function EmailModal({ onSend, onClose, isMobile }) {
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [deliverPortal, setDeliverPortal] = useState(true);
+  const [deliverEmail, setDeliverEmail]   = useState(true);
+  const [body, setBody] = useState("Hi Sarah and Michael,\n\nYour Q2 2025 Quarterly Review is ready in your client portal. Your portfolio delivered +8.4% year-to-date — outpacing the 60/40 benchmark by 2.2 points.\n\nI've flagged a small US equity rebalancing opportunity that I'd like to discuss at our July 15th meeting. The full report covers performance drivers, your current allocation, and next steps.\n\nPlease review at your convenience and don't hesitate to reach out with any questions.\n\nWarm regards,\nJordan Williams, CFP®\nWilliams Wealth Management");
+
+  const handleSend = () => {
+    setSending(true);
+    setTimeout(() => { setSent(true); setTimeout(onSend, 1100); }, 1500);
+  };
+
+  return (
+    <>
+      <div onClick={onClose} style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.6)", zIndex:86, backdropFilter:"blur(2px)" }}/>
+      <div style={{ position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:isMobile?"calc(100vw - 20px)":560, maxHeight:"calc(100vh - 40px)", background:T.white, borderRadius:16, boxShadow:"0 24px 64px rgba(0,0,0,0.35)", zIndex:87, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+        <div style={{ background:T.navy, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+            <div style={{ width:32, height:32, borderRadius:8, background:T.green, display:"flex", alignItems:"center", justifyContent:"center" }}><Mail size={15} color={T.white}/></div>
+            <div>
+              <div style={{ fontSize:14, fontWeight:700, color:T.white }}>Deliver Report to Client</div>
+              <div style={{ fontSize:11, color:"#94A3B8" }}>Q2 2025 Quarterly Review · Sarah & Michael Chen</div>
+            </div>
+          </div>
+          <button onClick={onClose} style={{ background:"rgba(255,255,255,0.1)", border:"none", borderRadius:6, padding:6, cursor:"pointer", color:T.gray400, display:"flex" }}><X size={16}/></button>
+        </div>
+
+        {sent ? (
+          <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:40, gap:12 }}>
+            <div style={{ width:56, height:56, borderRadius:"50%", background:T.emeraldLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Check size={24} color={T.emerald}/></div>
+            <div style={{ fontSize:16, fontWeight:700, color:T.gray900 }}>Delivered!</div>
+            <div style={{ fontSize:13, color:T.slate, textAlign:"center", lineHeight:1.6 }}>Report published to client portal · Email sent to 2 recipients<br/><span style={{ color:T.green, fontWeight:600 }}>Navigating to portal…</span></div>
+          </div>
+        ) : (
+          <div style={{ flex:1, overflowY:"auto", padding:"16px 20px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>To</div>
+              <div style={{ display:"flex", gap:7, flexWrap:"wrap" }}>
+                {["sarah.chen@email.com","michael.chen@email.com"].map(e=>(
+                  <div key={e} style={{ display:"flex", alignItems:"center", gap:6, background:T.gray100, borderRadius:99, padding:"5px 12px" }}>
+                    <div style={{ width:18, height:18, borderRadius:"50%", background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", fontSize:8, fontWeight:700, color:T.green }}>{e[0].toUpperCase()}</div>
+                    <span style={{ fontSize:12, color:T.gray900 }}>{e}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>Subject</div>
+              <div style={{ fontSize:13, fontWeight:600, color:T.gray900, background:T.gray50, borderRadius:8, padding:"10px 12px", border:`1px solid ${T.gray200}` }}>Q2 2025 Quarterly Review – Sarah & Michael Chen</div>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>Attachment</div>
+              <div style={{ display:"flex", alignItems:"center", gap:10, background:T.greenLt, border:`1px solid ${T.green}30`, borderRadius:8, padding:"10px 14px" }}>
+                <div style={{ width:32, height:32, borderRadius:7, background:T.green, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><FileText size={14} color={T.white}/></div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontSize:12, fontWeight:700, color:T.gray900 }}>Chen_Q2_2025_Quarterly_Review.pdf</div>
+                  <div style={{ fontSize:11, color:T.slate }}>8 sections · 6 charts · AI narrative · Compliance cleared</div>
+                </div>
+                <Badge color={T.green} bg={T.greenLt}>Ready</Badge>
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>Message</div>
+              <textarea value={body} onChange={e=>setBody(e.target.value)} rows={7} style={{ width:"100%", border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, color:T.gray900, resize:"vertical", outline:"none", fontFamily:"inherit", lineHeight:1.65, boxSizing:"border-box" }}/>
+            </div>
+            <div>
+              <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:7, letterSpacing:"0.04em", textTransform:"uppercase" }}>Delivery Channels</div>
+              <div style={{ display:"flex", gap:10 }}>
+                {[{key:"portal",label:"Client Portal",desc:"Publish + NEW badge",val:deliverPortal,set:setDeliverPortal},{key:"email",label:"Email",desc:"2 recipients",val:deliverEmail,set:setDeliverEmail}].map(ch=>(
+                  <div key={ch.key} onClick={()=>ch.set(!ch.val)} style={{ flex:1, background:ch.val?T.greenLt:T.gray50, border:`1px solid ${ch.val?T.green:T.gray200}`, borderRadius:10, padding:"10px 12px", cursor:"pointer", transition:"all 0.15s" }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:3 }}>
+                      <span style={{ fontSize:12, fontWeight:700, color:ch.val?T.green:T.gray600 }}>{ch.label}</span>
+                      <div style={{ width:15, height:15, borderRadius:4, border:`2px solid ${ch.val?T.green:T.gray300}`, background:ch.val?T.green:T.white, display:"flex", alignItems:"center", justifyContent:"center" }}>{ch.val&&<Check size={8} color={T.white}/>}</div>
+                    </div>
+                    <div style={{ fontSize:11, color:T.slate }}>{ch.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!sent && (
+          <div style={{ padding:"13px 20px", borderTop:`1px solid ${T.gray100}`, display:"flex", gap:9, justifyContent:"flex-end", flexShrink:0 }}>
+            <button onClick={onClose} style={{ background:T.gray100, border:"none", borderRadius:8, padding:"10px 18px", fontSize:13, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Cancel</button>
+            <button onClick={handleSend} disabled={sending} style={{ background:sending?T.gray300:T.green, color:T.white, border:"none", borderRadius:8, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:sending?"default":"pointer", display:"flex", alignItems:"center", gap:8, minHeight:42, transition:"background 0.2s" }}>
+              {sending?<><Activity size={14}/> Sending…</>:<><Mail size={14}/> Send & Deliver</>}
+            </button>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 // ─── App Shell ─────────────────────────────────────────────────────────────────
 export default function WealthscapePrototype() {
   const bp = useBreakpoint();
   const { isMobile, isTablet, isDesktop } = bp;
 
-  const [activeLayer,   setActiveLayer]   = useState("morning");
-  const [sidebarOpen,   setSidebarOpen]   = useState(false);
-  const [alerts,        setAlerts]        = useState(ALERTS);
-  const [alertsOpen,    setAlertsOpen]    = useState(false);
-  const [deepLink,      setDeepLink]      = useState(null);
-  const [demoActive,    setDemoActive]    = useState(false);
-  const [demoStep,      setDemoStep]      = useState(0);
-  const [spotlightRect, setSpotlightRect] = useState(null);
+  const [activeLayer,    setActiveLayer]    = useState("morning");
+  const [sidebarOpen,    setSidebarOpen]    = useState(false);
+  const [alerts,         setAlerts]         = useState(ALERTS);
+  const [alertsOpen,     setAlertsOpen]     = useState(false);
+  const [deepLink,       setDeepLink]       = useState(null);
+  const [demoActive,     setDemoActive]     = useState(false);
+  const [demoStep,       setDemoStep]       = useState(0);
+  const [spotlightRect,  setSpotlightRect]  = useState(null);
+  const [scenarioActive, setScenarioActive] = useState(false);
+  const [scenarioStep,   setScenarioStep]   = useState(0);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
+  const [reportDelivered,setReportDelivered]= useState(false);
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
     if (!document.getElementById(id)) {
       const s = document.createElement("style");
       s.id = id;
-      s.textContent = `@keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 4px #EEF0FF, 0 0 0 6px rgba(91,79,190,0.25)} 50%{box-shadow:0 0 0 8px #EEF0FF, 0 0 0 12px rgba(91,79,190,0.15)} } @keyframes progress-sweep { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} }`;
+      s.textContent = `@keyframes pulse-ring { 0%,100%{box-shadow:0 0 0 4px #EEF0FF, 0 0 0 6px rgba(91,79,190,0.25)} 50%{box-shadow:0 0 0 8px #EEF0FF, 0 0 0 12px rgba(91,79,190,0.15)} } @keyframes progress-sweep { 0%{transform:translateX(-100%)} 100%{transform:translateX(250%)} } @keyframes scenario-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(11,93,46,0.6)} 50%{box-shadow:0 0 0 10px rgba(11,93,46,0)} } @keyframes fade-in-up { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }`;
       document.head.appendChild(s);
     }
   }, []);
@@ -1644,12 +1907,9 @@ export default function WealthscapePrototype() {
   useEffect(() => {
     if (!demoActive) return;
     if (currentStep.layer) setActiveLayer(currentStep.layer);
-    if (currentStep.spotlightId) {
-      setTimeout(() => {
-        const el = document.querySelector(`[data-demo="${currentStep.spotlightId}"]`);
-        if (el) el.scrollIntoView({ behavior:"smooth", block:"nearest" });
-      }, 250);
-    }
+    // Steps can target a sub-tab (e.g. Report Builder → Generate). Drive it via
+    // the same deepLink mechanism the alert NBAs use. Spotlight handles scroll.
+    setDeepLink(currentStep.deepLink ? { ...currentStep.deepLink, _ts: Date.now() } : null);
   }, [demoStep, demoActive]);
 
   // Route an alert's next-best-action to the right screen + sub-tab, mark it read.
@@ -1657,14 +1917,46 @@ export default function WealthscapePrototype() {
     const { layer, ...sub } = alert.action;
     setAlerts(prev => prev.map(a => a.id === alert.id ? { ...a, read:true } : a));
     setActiveLayer(layer);
-    setDeepLink({ ...sub, _ts: Date.now() }); // _ts forces child effects to re-run on repeat clicks
+    setDeepLink({ ...sub, _ts: Date.now() });
     setAlertsOpen(false);
+    // Advance scenario when the Chen drift alert is acted on (step 0 → 1)
+    if (scenarioActive && scenarioStep === 0 && alert.id === 1) {
+      setScenarioStep(1);
+    }
   };
   const dismissAlert  = (id) => setAlerts(prev => prev.filter(a => a.id !== id));
   const markAllRead   = ()   => setAlerts(prev => prev.map(a => ({ ...a, read:true })));
   const unreadAlerts  = alerts.filter(a => !a.read).length;
 
-  const startDemo = () => { setDemoStep(0); setSpotlightRect(null); setDemoActive(true); };
+  // Advance scenario step (called by pipeline completion)
+  const advanceScenario = useCallback(() => {
+    setScenarioStep(prev => Math.min(prev + 1, SCENARIO_STEPS.length - 1));
+  }, []);
+
+  // Email sent → advance to portal view
+  const handleEmailSent = () => {
+    setEmailModalOpen(false);
+    if (scenarioActive) {
+      setScenarioStep(prev => Math.min(prev + 1, SCENARIO_STEPS.length - 1));
+      setActiveLayer("portal");
+      setDeepLink({ portalTab:"documents", _ts:Date.now() });
+      setReportDelivered(true);
+    } else {
+      setActiveLayer("portal");
+      setDeepLink({ portalTab:"documents", _ts:Date.now() });
+      setReportDelivered(true);
+    }
+  };
+
+  const startScenario = () => {
+    setScenarioStep(0); setScenarioActive(true); setReportDelivered(false);
+    setActiveLayer("morning"); setDeepLink(null); setDemoActive(false);
+    // Reset alerts so Chen drift is unread
+    setAlerts(prev => prev.map(a => a.id===1 ? { ...a, read:false } : a));
+  };
+  const endScenario = () => setScenarioActive(false);
+
+  const startDemo = () => { setDemoStep(0); setSpotlightRect(null); setDemoActive(true); setScenarioActive(false); };
   const nextStep  = () => setDemoStep(s => Math.min(s + 1, TOUR_STEPS.length - 1));
   const prevStep  = () => setDemoStep(s => Math.max(s - 1, 0));
   const closeDemo = () => setDemoActive(false);
@@ -1735,7 +2027,7 @@ export default function WealthscapePrototype() {
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             {!isDesktop && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600, display:"flex", alignItems:"center" }} onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>}
             <div>
-              {!isMobile && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Wealthscape Intelligence</div>}
+              {!isMobile && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Wealthscape Reporting 2.0</div>}
               <div style={{ fontSize:14, fontWeight:700, color:T.gray900 }}>{layerLabels[activeLayer]}</div>
             </div>
           </div>
@@ -1747,10 +2039,13 @@ export default function WealthscapePrototype() {
               </div>
             )}
             {isMobile && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
-            <button onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
-              <PlayCircle size={14}/>{!isMobile&&" Take Tour"}
+            <button onClick={startScenario} data-demo="scenario-button" style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
+              <Target size={14}/>{!isMobile&&(scenarioActive?" Restart":" Scenario")}
             </button>
-            <button onClick={()=>setAlertsOpen(o=>!o)} style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
+            <button onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
+              <PlayCircle size={14}/>{!isMobile&&" Tour"}
+            </button>
+            <button onClick={()=>setAlertsOpen(o=>!o)} data-demo="alert-bell" style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
               <Bell size={18} color={alertsOpen?T.gray900:T.slate}/>
               {unreadAlerts > 0 && (
                 <div style={{ position:"absolute", top:-1, right:-1, minWidth:16, height:16, padding:"0 3px", borderRadius:99, background:T.red, border:`2px solid ${T.white}`, display:"flex", alignItems:"center", justifyContent:"center" }}>
@@ -1766,9 +2061,9 @@ export default function WealthscapePrototype() {
         )}
 
         <div style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          {activeLayer==="morning"       && <MorningBrief    bp={bp} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert}/>}
-          {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink}/>}
-          {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink}/>}
+          {activeLayer==="morning"       && <MorningBrief    bp={bp} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} scenarioStep={scenarioActive?scenarioStep:null}/>}
+          {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>}
+          {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
@@ -1798,6 +2093,19 @@ export default function WealthscapePrototype() {
           {currentStep.spotlightId && <Spotlight targetId={currentStep.spotlightId} onClose={closeDemo} onRectChange={setSpotlightRect}/>}
           <DemoTour step={demoStep} total={TOUR_STEPS.length} onNext={nextStep} onPrev={prevStep} onClose={closeDemo} isMobile={isMobile} spotlightRect={spotlightRect}/>
         </>
+      )}
+
+      {scenarioActive && (
+        <ScenarioGuide
+          step={scenarioStep}
+          onNext={()=>setScenarioStep(s=>Math.min(s+1,SCENARIO_STEPS.length-1))}
+          onSkip={endScenario}
+          isMobile={isMobile}
+        />
+      )}
+
+      {emailModalOpen && (
+        <EmailModal onSend={handleEmailSent} onClose={()=>setEmailModalOpen(false)} isMobile={isMobile}/>
       )}
     </div>
   );
