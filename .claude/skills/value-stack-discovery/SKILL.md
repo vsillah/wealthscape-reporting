@@ -39,12 +39,14 @@ Read @methodology.md for the full method. The orchestration:
 
 3. **Synthesize & score.** Give both research briefs to the **odi-synthesis** agent.
    It returns, in the exact shapes from @data-schema.md: outcome statements with
-   importance / satisfaction / opportunity scores, the 8-step job map, and ranked
-   recommendations.
+   importance / satisfaction / opportunity scores, the 8-step job map, ranked
+   recommendations, and a **`BUILD_BUY` resolution** (build / buy / partner / wrap) for
+   each key capability gap (see @methodology.md §7).
 
 4. **Report.** Present the strategy report inline, in this order: market signals →
    capability comparison (Fidelity vs the field) → customer pains → ranked desired
-   outcomes → job map → opportunity-matrix read → recommendations. Cite every figure.
+   outcomes → job map → opportunity-matrix read → recommendations → build-vs-buy
+   resolution. Cite every figure.
 
 5. **Prototype** (skip if `--report-only`). Scaffold a deployable prototype + Strategy
    tab per @prototype-kit.md, reusing the `T` design tokens, `StratSection`, and
