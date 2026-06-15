@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useLayoutEffect, useRef, useCallback } from "react";
 import {
   Bell, Search, BarChart2, FileText, Users, Settings, Home,
   Download, Filter, ArrowUpRight, ArrowDownRight, Zap,
@@ -629,13 +629,36 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
 function AltsDesk({ bp, items, onAction }) {
   const { isMobile } = bp;
   // Paginate the queue so one page lines up with the bottom of the right-hand
-  // chart column (allocation + AUM cards ≈ 3 action items tall).
-  const PER_PAGE = 3;
+  // chart column. The page size is measured (not fixed): we fit as many action
+  // items as the side column is tall, and recompute on every resize.
+  const sideRef = useRef(null);   // the right-hand chart column
+  const itemRef = useRef(null);   // first action card — the unit height
+  const [perPage, setPerPage] = useState(3);
   const [page, setPage] = useState(0);
-  const maxPage = Math.max(0, Math.ceil(items.length / PER_PAGE) - 1);
+
+  useLayoutEffect(() => {
+    // On mobile the columns stack, so there's no right column to line up with.
+    if (isMobile) { setPerPage(items.length); return; }
+    const GAP = 10, TITLE_H = 16, PAGER_H = 33; // queue column gap + label + pager
+    const compute = () => {
+      const side = sideRef.current, item = itemRef.current;
+      if (!side || !item) return;
+      const avail = side.offsetHeight - TITLE_H - PAGER_H - GAP * 2;
+      const fit = Math.floor((avail + GAP) / (item.offsetHeight + GAP));
+      setPerPage(Math.max(1, Math.min(items.length, fit)));
+    };
+    compute();
+    const ro = new ResizeObserver(compute);
+    if (sideRef.current) ro.observe(sideRef.current);
+    if (itemRef.current) ro.observe(itemRef.current);
+    window.addEventListener("resize", compute);
+    return () => { ro.disconnect(); window.removeEventListener("resize", compute); };
+  }, [isMobile, items.length]);
+
+  const maxPage = Math.max(0, Math.ceil(items.length / perPage) - 1);
   const curPage = Math.min(page, maxPage);
-  const start = curPage * PER_PAGE;
-  const pageItems = items.slice(start, start + PER_PAGE);
+  const start = curPage * perPage;
+  const pageItems = items.slice(start, start + perPage);
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {/* Brief banner */}
@@ -659,10 +682,10 @@ function AltsDesk({ bp, items, onAction }) {
         {/* Queue */}
         <div style={{ flex:1, minWidth:0, display:"flex", flexDirection:"column", gap:10 }}>
           <div style={{ fontSize:11, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Unified action queue</div>
-          {pageItems.map(it=>{
+          {pageItems.map((it, idx)=>{
             const Icon = it.icon;
             return (
-              <div key={it.id} style={{ ...card, padding:"14px 16px", display:"flex", gap:12, alignItems:"flex-start", opacity:it.read?0.55:1 }}>
+              <div key={it.id} ref={idx===0?itemRef:null} style={{ ...card, padding:"14px 16px", display:"flex", gap:12, alignItems:"flex-start", opacity:it.read?0.55:1 }}>
                 <div style={{ width:34, height:34, borderRadius:9, background:T.indigoLt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Icon size={16} color={T.indigo}/></div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
@@ -682,9 +705,9 @@ function AltsDesk({ bp, items, onAction }) {
               </div>
             );
           })}
-          {items.length > PER_PAGE && (
+          {items.length > perPage && (
             <div style={{ marginTop:"auto", paddingTop:6, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-              <span style={{ fontSize:11, fontWeight:600, color:T.slate }}>{start + 1}–{Math.min(start + PER_PAGE, items.length)} of {items.length}</span>
+              <span style={{ fontSize:11, fontWeight:600, color:T.slate }}>{start + 1}–{Math.min(start + perPage, items.length)} of {items.length}</span>
               <div style={{ display:"flex", gap:6 }}>
                 <button onClick={()=>setPage(curPage - 1)} disabled={curPage === 0} style={{ display:"flex", alignItems:"center", gap:4, background:T.white, color:curPage===0?T.gray300:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"6px 11px", fontSize:11.5, fontWeight:700, cursor:curPage===0?"default":"pointer" }}><ChevronLeft size={13}/> Prev</button>
                 <button onClick={()=>setPage(curPage + 1)} disabled={curPage >= maxPage} style={{ display:"flex", alignItems:"center", gap:4, background:T.white, color:curPage>=maxPage?T.gray300:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"6px 11px", fontSize:11.5, fontWeight:700, cursor:curPage>=maxPage?"default":"pointer" }}>Next <ChevronRight size={13}/></button>
@@ -694,7 +717,7 @@ function AltsDesk({ bp, items, onAction }) {
         </div>
 
         {/* Side: allocation mix + private AUM trend */}
-        <div style={{ width:isMobile?"auto":300, flexShrink:0, display:"flex", flexDirection:"column", gap:14 }}>
+        <div ref={sideRef} style={{ width:isMobile?"auto":300, flexShrink:0, display:"flex", flexDirection:"column", gap:14 }}>
           <div style={{ ...card, padding:"16px 18px" }}>
             <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:8 }}>Private allocation by class ($M)</div>
             <ResponsiveContainer width="100%" height={170}>
