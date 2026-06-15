@@ -8,6 +8,14 @@ components of Fidelity's value stack.
 - **Prototype source:** [`wealthscape-intelligence/`](wealthscape-intelligence/) — a
   single-file Vite + React app (`src/WealthscapePrototype.jsx`). Vercel auto-deploys
   on merge to `main`.
+- **Alternative Investments prototype:** [`alts-intelligence/`](alts-intelligence/) — a
+  second Vite + React app (`src/AltsPrototype.jsx`) produced by a
+  `/value-stack-discovery alternative-investments` run, with a Strategy tab that adds a
+  capability comparison (current Fidelity tech vs the field) and a build-vs-buy
+  resolution. Because it lives in its own directory, it needs its **own Vercel project
+  with Root Directory `alts-intelligence`** (Vite · `npm run build` · output `dist`) —
+  the `wealthscape-intelligence` project does not build it. Run locally with the steps
+  below (swap the directory).
 
 ## The prototype
 
@@ -17,9 +25,9 @@ Portal, and Analytics — plus a **Strategy** tab that tells the full business c
 recommendations, each linking into the live surface that delivers it).
 
 ```bash
-cd wealthscape-intelligence
+cd wealthscape-intelligence   # or: cd alts-intelligence
 npm install
-npm run dev      # local dev server
+npm run dev      # local dev server → http://localhost:5173
 npm run build    # production build (must pass before committing)
 ```
 
