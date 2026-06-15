@@ -186,9 +186,18 @@ const BUILD_BUY = [
     rationale:"License the document-AI extraction (the bought engine above) and build the Alts Desk alerting and funding-window workflow on top — the differentiated experience that prevents a missed call." },
 ];
 
-// External acquisition / funding / partnership comps — populated from web research.
-// Real, sourced market figures (not invented) that anchor the buy-vs-partner economics.
-const COMPS = [];
+// External acquisition / funding / partnership comps — sourced market figures
+// (not invented) that anchor the buy-vs-partner economics.
+const COMPS = [
+  { vendor:"iCapital",            fact:"$820M raised Jul 2025; valuation >$7.5B; services $945B ($257B alts AUA).",                 implication:"The category acquirer, not the acquiree — partner / distribute, don't try to buy.",                 source:"iCapital · InvestmentNews 2025" },
+  { vendor:"Parallel Markets",    fact:"Acquired by iCapital Jan 2025 (terms undisclosed) — digital KYC / accreditation identity.", implication:"iCapital now owns the eligibility layer natively; partnering imports it, building it is multi-year.", source:"iCapital · Latham & Watkins 2025" },
+  { vendor:"CAIS",                fact:"~$325M raised; ~$1.1B valuation (2022); Apollo holds a strategic stake.",                     implication:"Apollo on the cap table makes acquisition messy — white-label / partner is the clean path.",        source:"Apollo · BusinessWire 2022" },
+  { vendor:"Addepar",             fact:"$230M Series G May 2025 at $3.25B; $7T+ AUA; $171M ARR (2024).",                            implication:"Acquirable in principle, but buying the reporting layer cedes the franchise — build instead.",      source:"PRNewswire · WealthMgmt 2025" },
+  { vendor:"Canoe Intelligence",  fact:"$36M Series C Jul 2024 (~$72.8M total); valuation undisclosed, likely sub-$200M; 3× in 18 mo.", implication:"The most realistically acquirable asset — buy to own document-AI extraction outright.",          source:"Canoe · RIABiz 2024" },
+  { vendor:"Arch",                fact:"$52M Series B Sep 2025; $250B private assets, 450+ allocators; EV ~$150–400M (ASSUMED).",     implication:"A bite-sized private-markets ops layer — acquisition target, or a competitive threat if it grows.",  source:"BusinessWire · Oak HC/FT 2025" },
+  { vendor:"WealthForge / Altigo",fact:"Acquired by SEI for $12.5M, Dec 2023 — alts e-subscription platform.",                     implication:"Anchors the floor: point-solution sub-doc tools transact in single-digit millions — a product-budget buy.", source:"SEI · PRNewswire 2023" },
+  { vendor:"Moonfare",            fact:"$125M Series C Jan 2022 (€3.8B AUM); Fidelity Intl already holds a minority stake.",          implication:"Fidelity already chose passive capital here; control would need a negotiated process.",           source:"Moonfare · FinTech Futures 2022" },
+];
 
 // ─── Demo book data ─────────────────────────────────────────────────────────────
 const ADVISOR = { name:"Jordan Williams", firm:"Meridian Wealth Partners", initials:"JW" };
@@ -591,6 +600,9 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
                   </div>
                 </div>
               ))}
+            </div>
+            <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.55, marginTop:12, paddingTop:12, borderTop:`1px solid ${T.gray200}` }}>
+              <strong style={{ color:T.gray900 }}>Read:</strong> the leaders (iCapital $7.5B, Addepar $3.25B, CAIS ~$1.1B) are partner-only — acquisition means a multi-billion premium and tangled cap tables. The realistic buy window is the infrastructure / point-solution layer: Canoe (sub-$200M) and Arch (~$150–400M), with SEI/Altigo at $12.5M anchoring the floor. This is exactly why reconciliation is a <em>buy</em>, the eligibility & DD rails are a <em>partner</em>, and the reporting franchise stays a <em>build</em>.
             </div>
           </div>
         )}
