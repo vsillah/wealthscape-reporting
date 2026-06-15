@@ -30,7 +30,9 @@ Read @methodology.md for the full method. The orchestration:
    Confirm with the user if the scope is ambiguous.
 
 2. **Research (parallel).** In a *single message*, spawn two subagents concurrently:
-   - the **market-research** agent → competitive, market, and regulatory signals
+   - the **market-research** agent → competitive/market/regulatory signals **and a
+     `CAPABILITY_MATRIX` comparing current Fidelity technology to best-in-class
+     competitors** (see @methodology.md §1b)
    - the **customer-research** agent → persona, pains, current workarounds
    Pass each the framed job + component. First read any internal docs the user
    supplied and hand their paths + summaries to the agents so findings are grounded.
@@ -41,8 +43,8 @@ Read @methodology.md for the full method. The orchestration:
    recommendations.
 
 4. **Report.** Present the strategy report inline, in this order: market signals →
-   customer pains → ranked desired outcomes → job map → opportunity-matrix read →
-   recommendations. Cite every figure.
+   capability comparison (Fidelity vs the field) → customer pains → ranked desired
+   outcomes → job map → opportunity-matrix read → recommendations. Cite every figure.
 
 5. **Prototype** (skip if `--report-only`). Scaffold a deployable prototype + Strategy
    tab per @prototype-kit.md, reusing the `T` design tokens, `StratSection`, and

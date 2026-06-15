@@ -23,6 +23,28 @@ Each signal = a tag, a hard stat, a source, and 1–2 sentences. Look for:
 - tool-sprawl / workflow-fragmentation data,
 - shadow-IT or off-platform behavior signaling an unmet need.
 
+## 1b · Capability comparison (→ market-research agent)
+
+Signals establish *that* the category is moving; the capability comparison shows
+*where the current Fidelity technology stands against it*. Build a
+**`CAPABILITY_MATRIX`** of 5–7 rows that contrasts the incumbent (the current
+Fidelity stack for this component — e.g. AIX for alternatives, Wealthscape Reporting
+for reporting) against best-in-class competitors (iCapital, CAIS, Addepar, Envestnet,
+Schwab, etc.).
+
+Each row carries:
+- the **capability**,
+- **Fidelity's current state** (one phrase, sourced),
+- a **rating** of how well the current Fidelity stack does it today — `strong` /
+  `partial` / `none`,
+- the **best-in-class competitor** and how they do it (sourced),
+- the measurable **gap**.
+
+Rate honestly: `strong` only where Fidelity is at or near parity. Every row should
+line up with a market signal and with an underserved outcome — the matrix is the
+"can't do it today" view of the same gap the opportunity scores quantify. This is
+the credibility bridge between external pressure and the internal investment case.
+
 ## 2 · Customer research (→ customer-research agent)
 
 Goal: the persona card + the top 4–6 pains in the executor's own words, each tied
