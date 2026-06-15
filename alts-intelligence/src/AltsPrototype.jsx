@@ -628,6 +628,14 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
 // ════════════════════════════════════════════════════════════════════════════════
 function AltsDesk({ bp, items, onAction }) {
   const { isMobile } = bp;
+  // Paginate the queue so one page lines up with the bottom of the right-hand
+  // chart column (allocation + AUM cards ≈ 3 action items tall).
+  const PER_PAGE = 3;
+  const [page, setPage] = useState(0);
+  const maxPage = Math.max(0, Math.ceil(items.length / PER_PAGE) - 1);
+  const curPage = Math.min(page, maxPage);
+  const start = curPage * PER_PAGE;
+  const pageItems = items.slice(start, start + PER_PAGE);
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {/* Brief banner */}
@@ -635,7 +643,7 @@ function AltsDesk({ bp, items, onAction }) {
         <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
           <Sparkles size={15} color={T.indigo}/><span style={{ fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:"rgba(255,255,255,0.7)" }}>Alts Morning Brief · {ADVISOR.firm}</span>
         </div>
-        <div style={{ fontSize:isMobile?16:19, fontWeight:800, lineHeight:1.35 }}>7 items need attention before you place a trade today</div>
+        <div style={{ fontSize:isMobile?16:19, fontWeight:800, lineHeight:1.35 }}>{items.length} items need attention before you place a trade today</div>
         <div style={{ fontSize:13, color:"rgba(255,255,255,0.78)", lineHeight:1.6, marginTop:6, maxWidth:680 }}>
           $4.6M in capital calls fall due in the next 30 days, one subscription came back NIGO, a fresh KKR NAV just posted, and three eligible households still have no alts allocation. Every item routes to the screen that resolves it.
         </div>
@@ -651,7 +659,7 @@ function AltsDesk({ bp, items, onAction }) {
         {/* Queue */}
         <div style={{ flex:1, minWidth:0, display:"flex", flexDirection:"column", gap:10 }}>
           <div style={{ fontSize:11, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Unified action queue</div>
-          {items.map(it=>{
+          {pageItems.map(it=>{
             const Icon = it.icon;
             return (
               <div key={it.id} style={{ ...card, padding:"14px 16px", display:"flex", gap:12, alignItems:"flex-start", opacity:it.read?0.55:1 }}>
@@ -674,6 +682,15 @@ function AltsDesk({ bp, items, onAction }) {
               </div>
             );
           })}
+          {items.length > PER_PAGE && (
+            <div style={{ marginTop:"auto", paddingTop:6, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+              <span style={{ fontSize:11, fontWeight:600, color:T.slate }}>{start + 1}–{Math.min(start + PER_PAGE, items.length)} of {items.length}</span>
+              <div style={{ display:"flex", gap:6 }}>
+                <button onClick={()=>setPage(curPage - 1)} disabled={curPage === 0} style={{ display:"flex", alignItems:"center", gap:4, background:T.white, color:curPage===0?T.gray300:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"6px 11px", fontSize:11.5, fontWeight:700, cursor:curPage===0?"default":"pointer" }}><ChevronLeft size={13}/> Prev</button>
+                <button onClick={()=>setPage(curPage + 1)} disabled={curPage >= maxPage} style={{ display:"flex", alignItems:"center", gap:4, background:T.white, color:curPage>=maxPage?T.gray300:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"6px 11px", fontSize:11.5, fontWeight:700, cursor:curPage>=maxPage?"default":"pointer" }}>Next <ChevronRight size={13}/></button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Side: allocation mix + private AUM trend */}
