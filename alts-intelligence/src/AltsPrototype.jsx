@@ -134,6 +134,8 @@ const oppScore = o => o.imp + Math.max(o.imp - o.sat, 0);
 const oppColor = v => v >= 16 ? T.green : v >= 14 ? T.indigo : T.slate;
 const ratingColor = r => r === "strong" ? T.green : r === "partial" ? T.amber : T.red;
 const ratingLabel = r => r === "strong" ? "Has it" : r === "partial" ? "Partial" : "Gap";
+const callColor = c => ({ build:T.green, buy:T.indigo, partner:T.amber, wrap:T.emerald }[c] || T.slate);
+const callLabel = c => ({ build:"Build", buy:"Buy", partner:"Partner", wrap:"Wrap" }[c] || c);
 const LAYER_NAMES = { desk:"Alts Desk", marketplace:"Fund Marketplace", subscribe:"Subscription Studio", lifecycle:"Capital Activity", reporting:"Consolidated Reporting", portal:"Client Portal" };
 const layerName = id => LAYER_NAMES[id] || id;
 
@@ -156,6 +158,37 @@ const RECOMMENDATIONS = [
   { n:5, title:"Deliver Consolidated Reporting across public & private holdings",       surface:"Consolidated Reporting",layer:"reporting",   sub:null,                    outcomes:["ODI-03","ODI-05"],                   body:"Ingests NAVs and capital-account statements as they arrive, shows freshness timestamps so stale values are visible rather than silent, and produces one performance-attribution view across public and private — closing the ~5× wirehouse gap." },
   { n:6, title:"Extend the consolidated view to a branded Client Portal",               surface:"Client Portal",         layer:"portal",      sub:null,                    outcomes:["ODI-09","ODI-12"],                   body:"The same public-plus-private view, wrapped in the RIA's brand and available to the client on demand, with subscription e-sign routed through the portal — the most direct lever to lift the 41% HNW discussion rate." },
 ];
+
+// Build-vs-buy resolution for each capability gap. call ∈ build|buy|partner|wrap.
+// Calls are judgment (role × maturity × urgency), not arithmetic. The incumbent
+// pattern: buy/partner the rails, build the experience, wrap them together.
+const BUILD_BUY = [
+  { gap:"Consolidated public + private reporting", role:"core", maturity:"high", urgency:"high",
+    call:"build", outcomes:["ODI-03","ODI-05"],
+    rationale:"This is the Wealthscape Reporting franchise — the custodian's strategic turf. Owning the consolidated view is the differentiator; routing it through Addepar would cede the layer to a competitor." },
+  { gap:"Client-facing alts portal", role:"core", maturity:"med", urgency:"med",
+    call:"build", outcomes:["ODI-09","ODI-12"],
+    rationale:"The client relationship and advisor brand are core. Build the alts views on Fidelity's existing client-portal infrastructure rather than surfacing a competitor-branded portal." },
+  { gap:"Data reconciliation across managers", role:"context", maturity:"high", urgency:"med",
+    call:"buy", outcomes:["ODI-04"],
+    rationale:"Acquiring a document-AI extraction engine (Canoe-class) vertically integrates the data layer that feeds the reporting franchise and the capital-call Desk — owned infrastructure, not a per-fund dependency." },
+  { gap:"Eligibility / accreditation & Reg BI workflow", role:"context", maturity:"high", urgency:"high",
+    call:"partner", outcomes:["ODI-06"],
+    rationale:"KYC/AML/accreditation is table-stakes plumbing that purpose-built vendors already own (iCapital's Investor Passport). License a reusable identity/accreditation passport — don't build compliance infra from scratch." },
+  { gap:"Fund marketplace & independent due diligence", role:"context", maturity:"high", urgency:"med",
+    call:"partner", outcomes:["ODI-07"],
+    rationale:"Independence can't be built in-house by definition. Partner an independent ODD provider (Mercer-style) for the validated badge institutional buyers expect; keep Fidelity's proprietary research as a complement." },
+  { gap:"Digital subscription & good-order automation", role:"core", maturity:"high", urgency:"high",
+    call:"wrap", outcomes:["ODI-01"],
+    rationale:"Deepen the existing STP partnerships so form-completion, e-sign and validation happen inside Wealthscape. Partner the subscription rails; build the good-order validation UX that owns the advisor workflow." },
+  { gap:"Capital-call & distribution lifecycle", role:"core", maturity:"high", urgency:"high",
+    call:"wrap", outcomes:["ODI-02","ODI-10"],
+    rationale:"License the document-AI extraction (the bought engine above) and build the Alts Desk alerting and funding-window workflow on top — the differentiated experience that prevents a missed call." },
+];
+
+// External acquisition / funding / partnership comps — populated from web research.
+// Real, sourced market figures (not invented) that anchor the buy-vs-partner economics.
+const COMPS = [];
 
 // ─── Demo book data ─────────────────────────────────────────────────────────────
 const ADVISOR = { name:"Jordan Williams", firm:"Meridian Wealth Partners", initials:"JW" };
@@ -501,6 +534,66 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
             </div>
           ))}
         </div>
+      </StratSection>
+
+      {/* 8 · Build vs buy resolution */}
+      <StratSection eyebrow="08 · Resolution Strategy" title="Build, buy, partner — how to close each gap" intro="Each capability gap resolved into an action by strategic role × external-solution maturity × urgency. The calls are judgment, not arithmetic — the comps below anchor the economics, but no internal cost or deal price is assumed.">
+        {/* Thesis */}
+        <div style={{ background:T.navy, borderRadius:12, padding:isMobile?"16px":"18px 22px", color:T.white }}>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", color:T.indigo, marginBottom:5 }}>The thesis</div>
+          <div style={{ fontSize:isMobile?14:15.5, fontWeight:800, lineHeight:1.4 }}>Buy / partner the rails. Build the experience. Wrap them together.</div>
+          <div style={{ fontSize:12.5, color:"rgba(255,255,255,0.78)", lineHeight:1.6, marginTop:6 }}>
+            The data and infra layer (identity, document-AI extraction, subscription rails, independent DD) is commoditized — Canoe, iCapital and CAIS already win there, so building it burns time on undifferentiated work. The experience and franchise layer (consolidated reporting, the Alts Desk, the client portal) is where a custodian differentiates and protects the client relationship. Fidelity already partners via STP — deepening that beats owning the plumbing.
+          </div>
+        </div>
+
+        {/* Call legend */}
+        <div style={{ display:"flex", gap:14, flexWrap:"wrap" }}>
+          {[["build","Core + no strong vendor"],["buy","Core — own a mature vendor"],["partner","Context — license the rails"],["wrap","Build experience over a bought core"]].map(([c,desc])=>(
+            <div key={c} style={{ display:"flex", alignItems:"center", gap:6, fontSize:11, color:T.gray600 }}>
+              <span style={{ width:11, height:11, borderRadius:3, background:callColor(c), flexShrink:0 }}/>
+              <strong style={{ color:T.gray900 }}>{callLabel(c)}</strong> — {desc}
+            </div>
+          ))}
+        </div>
+
+        {/* Rows */}
+        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+          {BUILD_BUY.map(b=>(
+            <div key={b.gap} style={{ ...card, padding:isMobile?"14px":"16px 18px", borderLeft:`4px solid ${callColor(b.call)}` }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8, flexWrap:"wrap" }}>
+                <div style={{ flex:1, fontSize:13.5, fontWeight:700, color:T.gray900, lineHeight:1.3, minWidth:150 }}>{b.gap}</div>
+                <span style={{ fontSize:10.5, fontWeight:800, color:T.white, background:callColor(b.call), borderRadius:7, padding:"4px 12px", textTransform:"uppercase", letterSpacing:"0.04em" }}>{callLabel(b.call)}</span>
+              </div>
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:8 }}>
+                {[["Role",b.role],["Vendor maturity",b.maturity],["Urgency",b.urgency]].map(([k,v])=>(
+                  <span key={k} style={{ fontSize:10, fontWeight:600, color:T.slate, background:T.gray100, borderRadius:6, padding:"3px 8px" }}>{k}: <strong style={{ color:T.gray900, textTransform:"capitalize" }}>{v}</strong></span>
+                ))}
+              </div>
+              <div style={{ fontSize:12, color:T.gray600, lineHeight:1.55, marginBottom:8 }}>{b.rationale}</div>
+              <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                {b.outcomes.map(id=><span key={id} style={{ fontSize:10, fontWeight:700, color:T.indigo, background:T.indigoLt, borderRadius:99, padding:"3px 9px" }}>{id}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Comps */}
+        {COMPS.length > 0 && (
+          <div style={{ ...card, padding:"16px 18px", background:T.gray50 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>Acquisition & partnership comps · external sources</div>
+            <div style={{ display:"flex", flexDirection:"column", gap:9 }}>
+              {COMPS.map(c=>(
+                <div key={c.vendor} style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:isMobile?2:12, paddingBottom:9, borderBottom:`1px solid ${T.gray200}` }}>
+                  <div style={{ width:isMobile?"auto":110, flexShrink:0, fontSize:12, fontWeight:700, color:T.gray900 }}>{c.vendor}</div>
+                  <div style={{ flex:1, fontSize:11.5, color:T.gray600, lineHeight:1.5 }}>
+                    <strong style={{ color:T.gray900 }}>{c.fact}</strong> — {c.implication} <span style={{ color:T.slate }}>· {c.source}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </StratSection>
 
       {/* Closing CTA */}
