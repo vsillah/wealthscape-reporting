@@ -23,6 +23,28 @@ Each signal = a tag, a hard stat, a source, and 1–2 sentences. Look for:
 - tool-sprawl / workflow-fragmentation data,
 - shadow-IT or off-platform behavior signaling an unmet need.
 
+## 1b · Capability comparison (→ market-research agent)
+
+Signals establish *that* the category is moving; the capability comparison shows
+*where the current Fidelity technology stands against it*. Build a
+**`CAPABILITY_MATRIX`** of 5–7 rows that contrasts the incumbent (the current
+Fidelity stack for this component — e.g. AIX for alternatives, Wealthscape Reporting
+for reporting) against best-in-class competitors (iCapital, CAIS, Addepar, Envestnet,
+Schwab, etc.).
+
+Each row carries:
+- the **capability**,
+- **Fidelity's current state** (one phrase, sourced),
+- a **rating** of how well the current Fidelity stack does it today — `strong` /
+  `partial` / `none`,
+- the **best-in-class competitor** and how they do it (sourced),
+- the measurable **gap**.
+
+Rate honestly: `strong` only where Fidelity is at or near parity. Every row should
+line up with a market signal and with an underserved outcome — the matrix is the
+"can't do it today" view of the same gap the opportunity scores quantify. This is
+the credibility bridge between external pressure and the internal investment case.
+
 ## 2 · Customer research (→ customer-research agent)
 
 Goal: the persona card + the top 4–6 pains in the executor's own words, each tied
@@ -83,3 +105,35 @@ Group the top outcomes into 4–6 recommendations. Each recommendation names:
 
 Recommendations become the prototype's layers/tabs. The Strategy tab then closes
 the loop by showing each recommendation reflected in a live surface.
+
+## 7 · Resolution strategy — build vs buy (→ odi-synthesis agent)
+
+A recommendation says *what* to deliver; the resolution strategy says *how to source
+it*. For each key capability gap (from the `CAPABILITY_MATRIX`), choose one of four
+calls and record it in `BUILD_BUY`:
+
+- **Build** — develop in-house. For *core* differentiators where no strong external
+  solution exists, or where owning it protects the client relationship.
+- **Buy** — acquire a vendor/asset. For *core* capabilities under time pressure where a
+  mature target exists.
+- **Partner / License** — integrate a third party. For *context* (table-stakes)
+  capabilities where a mature vendor already wins; don't reinvent the rails.
+- **Wrap** — build a differentiated experience layer on top of a bought/partnered
+  engine. The hybrid that usually wins for an incumbent platform.
+
+Score each gap on **strategic role** (core ↔ context), **external-solution maturity**
+(sourced from the capability comparison), and **urgency** (the competitive/regulatory
+clock — usually tracks the opportunity score). The 2×2 that anchors the call:
+
+```
+            Strong vendor exists        No strong vendor
+   CORE     BUY / WRAP                  BUILD
+   CONTEXT  PARTNER / LICENSE           BUILD MINIMAL / wait
+```
+
+The recurring incumbent pattern: **buy/partner the rails, build the experience, wrap
+them together** — own the differentiated workflow and the data/infra plumbing is
+licensed. Sequence the calls by urgency so the highest-opportunity gaps resolve first.
+Every call is judgment, not arithmetic; state the rationale and flag where a real cost
+or acquisition figure would change the call (the discovery sources capabilities, not
+deal comps — say so rather than inventing a price).

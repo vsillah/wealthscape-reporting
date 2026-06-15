@@ -11,10 +11,16 @@ From the reference file, these are component-agnostic and should be copied as-is
 - The **`T` design-token object** (colors).
 - **`useBreakpoint()`** hook.
 - **`StratSection({ eyebrow, title, intro, children })`** — section wrapper.
-- **`StrategyLayer`** — the full eight-section Strategy tab (hero, market research,
-  customer research, ranked outcomes, job map, opportunity matrix, recommendations,
-  closing CTA). It is already data-driven by the schema shapes, so for a new
-  component you swap the data constants and the component renders unchanged.
+- **`StrategyLayer`** — the full Strategy tab (hero, market research, **capability
+  comparison**, customer research, ranked outcomes, job map, opportunity matrix,
+  recommendations, closing CTA). It is already data-driven by the schema shapes, so for
+  a new component you swap the data constants and the component renders unchanged.
+- The **capability-comparison block** inside `StrategyLayer` — a Fidelity-vs-best-in-class
+  table driven by `CAPABILITY_MATRIX`, with the `ratingColor()` / `ratingLabel()` chip
+  showing where the current Fidelity stack has a gap. Lift it verbatim; swap the data.
+- The **build-vs-buy block** inside `StrategyLayer` — one row per `BUILD_BUY` entry with a
+  `callColor()` / `callLabel()` chip (build / buy / partner / wrap) and the role × maturity
+  × urgency rationale. Renders right after the recommendations section.
 - The **opportunity-matrix block** inside `StrategyLayer` (the absolutely-positioned
   scatter with the underserved-zone gradient and tiered legend).
 - The **deep-link mechanism**: shell owns `deepLink` state; `onNavigate(layer, sub)`
@@ -31,8 +37,9 @@ From the reference file, these are component-agnostic and should be copied as-is
 
 2. **Port the kit**: copy `T`, `useBreakpoint`, `StratSection`, and `StrategyLayer`
    into a single `*Prototype.jsx`. Replace the data constants (`MARKET_SIGNALS`,
-   `CUSTOMER_PAINS`, `OUTCOMES`, `JOB_MAP`, `RECOMMENDATIONS`, `STRAT_STATS`) with the
-   synthesized values for this component.
+   `CAPABILITY_MATRIX`, `CUSTOMER_PAINS`, `OUTCOMES`, `JOB_MAP`, `RECOMMENDATIONS`,
+   `STRAT_STATS`, `BUILD_BUY`) with the synthesized values for this component, and bring
+   the `ratingColor()` / `ratingLabel()` and `callColor()` / `callLabel()` helpers.
 
 3. **Build the recommended layers**: each `RECOMMENDATIONS[].surface` becomes a nav
    layer/tab. Start with a stub per layer, then flesh out the 1–2 highest-opportunity

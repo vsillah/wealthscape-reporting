@@ -23,14 +23,24 @@ data that drives the strategy report and prototype.
    serves and the surface/`layer` that delivers it.
 6. Emit **STRAT_STATS** headline metrics (e.g. count of outcomes, opportunity-score
    range, number of layers, "8-step job map").
+7. Build the **build-vs-buy resolution** (`BUILD_BUY`): one row per key capability gap
+   from the input `CAPABILITY_MATRIX`. Score each on strategic role (core/context),
+   external-solution maturity (from the capability comparison), and urgency (tracks the
+   opp score), then pick a `call` — `build` | `buy` | `partner` | `wrap` — per the
+   methodology §7 logic (core+low→build; core+high→buy/wrap; context+high→partner). The
+   default incumbent pattern is *buy/partner the rails, build the experience*. State a
+   one-line `rationale` and tie each row to the `outcomes` it unblocks.
 
 ## Rules
 - `RECOMMENDATIONS[].outcomes` ids must all exist in `OUTCOMES`.
 - `layer` ids must be consistent across OUTCOMES, JOB_MAP, and RECOMMENDATIONS.
+- `BUILD_BUY[].gap` matches a `CAPABILITY_MATRIX[].capability`; its `outcomes` ids exist
+  in `OUTCOMES`. Build-vs-buy calls are judgment, not arithmetic — never invent a cost or
+  acquisition price; flag where a real figure would change the call.
 - Preserve the source attributions from the input briefs; flag any value you had to
   assume.
 
 ## Output
-Return ONLY the four arrays/objects — `OUTCOMES`, `JOB_MAP`, `RECOMMENDATIONS`,
-`STRAT_STATS` — as valid JS literals matching data-schema.md, ready to paste into
-the prototype, followed by a 3–5 sentence executive summary of the priority.
+Return ONLY the five arrays/objects — `OUTCOMES`, `JOB_MAP`, `RECOMMENDATIONS`,
+`STRAT_STATS`, `BUILD_BUY` — as valid JS literals matching data-schema.md, ready to
+paste into the prototype, followed by a 3–5 sentence executive summary of the priority.
