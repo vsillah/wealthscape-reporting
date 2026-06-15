@@ -58,6 +58,53 @@ const MARKET_SIGNALS = [
   { tag:"End-Client Gap",      stat:"41%",      source:"Goldman Sachs AM 2025",             icon:Users,         body:"Only 41% of advised HNW clients have ever discussed private markets with their advisor, yet 80% of $10M+ investors already use alts vs 39% of the $1–5M segment. The advice gap — not product scarcity — is the barrier." },
 ];
 
+// Current Fidelity alts technology (AIX + Wealthscape) vs best-in-class competitors.
+// rating = how well the CURRENT Fidelity stack does this today: none | partial | strong.
+const CAPABILITY_MATRIX = [
+  { capability:"Digital subscription & good-order automation",
+    fidelity:"Wealthscape relays orders to CAIS/iCapital via STP and shows status — but form completion, e-sign and identity verification happen off-platform.",
+    rating:"partial",
+    competitor:"iCapital Multi-Investment Workflow bundles subscriptions into one order with pre-fill and e-sign; Parallel Markets adds a reusable investor passport.",
+    gap:"A pass-through, not the workflow owner — advisors context-switch to finish, keeping NIGO risk high.",
+    source:"Fidelity/BusinessWire 2023 · iCapital Oct 2024" },
+  { capability:"Capital-call & distribution lifecycle",
+    fidelity:"Capital-call processing only for STP-connected funds (CAIS/iCapital/SUBSCRIBE); non-connected funds are tracked manually.",
+    rating:"partial",
+    competitor:"Addepar Alts Data Management + Capital Activity Dashboard AI-extracts calls and distributions from any fund's documents across 40,000 funds.",
+    gap:"Coverage is gated to integrated managers; everything else falls to manual reconciliation.",
+    source:"Fidelity/BusinessWire 2023 · Addepar Feb 2025" },
+  { capability:"Consolidated public + private reporting",
+    fidelity:"'Above-the-line' statement reporting for Fidelity-custodied alts ($95B+ AUA); off-custody private assets are not natively aggregated.",
+    rating:"partial",
+    competitor:"Addepar is purpose-built for public+private consolidation (40% of $7T AUM is alts); Envestnet added Canoe/Arch for the same job.",
+    gap:"The view is bounded to Fidelity custody; off-platform funds leave a blind spot in the client statement.",
+    source:"Fidelity Institutional · Addepar Feb 2025 · Envestnet Jun 2025" },
+  { capability:"Fund marketplace & independent due diligence",
+    fidelity:"5,000+ alt products and a proprietary advisor research portal (2024) — but the research is Fidelity's own, with no third-party ODD imprimatur.",
+    rating:"partial",
+    competitor:"CAIS pairs ~200 funds with independent Mercer ODD/IDD; iCapital lists 2,100+ funds with DLT-based onboarding.",
+    gap:"No third-party-validated ODD layer that institutional buyers expect (48% of advisors cite the DD burden).",
+    source:"WealthManagement.com · CAIS/Mercer 2025 · iCapital" },
+  { capability:"Eligibility / accreditation & Reg BI workflow",
+    fidelity:"No native accreditation or Reg BI suitability workflow in Wealthscape; eligibility is handled on the partner platform the advisor is routed to.",
+    rating:"none",
+    competitor:"iCapital's Investor Passport (Parallel Markets) stores reusable KYC/AML/accreditation; CAIS gates fund access via learning completion.",
+    gap:"Advisors track eligibility outside the custodian — exactly the per-fund re-verification pain ODI-06 measures.",
+    source:"iCapital 2025 · CAIS Q4 2025 · SEC 506(c) Apr 2025" },
+  { capability:"Client-facing alts portal",
+    fidelity:"Clients see alts 'above the line' on statements; there is no dedicated portal for capital-call schedules, distributions or IRR.",
+    rating:"none",
+    competitor:"iCapital gives investors a dashboard + document center across the alts lifecycle; Addepar offers an advisor-branded public+private client portal.",
+    gap:"End clients get no self-service alts view — a transparency and retention risk as 90% of advisors now allocate.",
+    source:"iCapital/Bridge · Addepar · CAIS/Mercer 2025" },
+  { capability:"Data reconciliation across managers",
+    fidelity:"Consolidated data for custodied assets; off-custodian private-fund data needs advisor-side manual reconciliation or a bolt-on aggregator.",
+    rating:"partial",
+    competitor:"Addepar AI-extracts and standardizes capital-account / call / distribution docs from any manager format (40,000 funds); Envestnet uses Canoe.",
+    gap:"Completeness depends on which managers are STP-integrated; the rest is manual.",
+    source:"Addepar Feb 2025 · Envestnet/Canoe Jun 2025" },
+];
+
 const CUSTOMER_PAINS = [
   { metric:"30–60%",     pain:"NIGO rejection rate on paper subscriptions (one sponsor hit 90%). A 50-plus-page packet takes a 3–4 week cycle to clear vs ~20 minutes digitally — and every round-trip risks missing a closing date." },
   { metric:"10–30 day",  pain:"Capital-call funding windows tracked in a spreadsheet and an inbox. There's no cross-commitment dashboard — and a missed call can dilute, force-sell, or forfeit the client's entire prior investment." },
@@ -85,6 +132,8 @@ const OUTCOMES = [
 ];
 const oppScore = o => o.imp + Math.max(o.imp - o.sat, 0);
 const oppColor = v => v >= 16 ? T.green : v >= 14 ? T.indigo : T.slate;
+const ratingColor = r => r === "strong" ? T.green : r === "partial" ? T.amber : T.red;
+const ratingLabel = r => r === "strong" ? "Has it" : r === "partial" ? "Partial" : "Gap";
 const LAYER_NAMES = { desk:"Alts Desk", marketplace:"Fund Marketplace", subscribe:"Subscription Studio", lifecycle:"Capital Activity", reporting:"Consolidated Reporting", portal:"Client Portal" };
 const layerName = id => LAYER_NAMES[id] || id;
 
@@ -293,8 +342,36 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
         </div>
       </StratSection>
 
-      {/* 2 · Customer research */}
-      <StratSection eyebrow="02 · Customer Research" title="Who we studied & what hurt" intro="The job executor is the independent RIA — $250–500M firm AUM, 150–350 HNW/UHNW households, and no dedicated alts operations staff — embodied by Jordan Williams in this prototype.">
+      {/* 2 · Capability comparison */}
+      <StratSection eyebrow="02 · Capability Comparison" title="Current Fidelity technology vs the field" intro="Where the current Fidelity alts stack (AIX + Wealthscape) stands against best-in-class competitors, capability by capability. Each gap maps to an underserved outcome below — the matrix is the 'can't do it today' view of the same gap the opportunity scores quantify.">
+        <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+          {CAPABILITY_MATRIX.map(c=>(
+            <div key={c.capability} style={{ ...card, padding:isMobile?"14px":"16px 18px" }}>
+              <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:10 }}>
+                <div style={{ flex:1, fontSize:13.5, fontWeight:700, color:T.gray900, lineHeight:1.3 }}>{c.capability}</div>
+                <span style={{ fontSize:10, fontWeight:700, color:T.white, background:ratingColor(c.rating), borderRadius:99, padding:"3px 10px", whiteSpace:"nowrap" }}>Fidelity: {ratingLabel(c.rating)}</span>
+              </div>
+              <div style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:10 }}>
+                <div style={{ flex:1, background:T.gray50, borderRadius:9, padding:"10px 12px", borderLeft:`3px solid ${ratingColor(c.rating)}` }}>
+                  <div style={{ fontSize:9, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:3 }}>Fidelity today</div>
+                  <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.5 }}>{c.fidelity}</div>
+                </div>
+                <div style={{ flex:1, background:T.indigoLt, borderRadius:9, padding:"10px 12px", borderLeft:`3px solid ${T.indigo}` }}>
+                  <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:3 }}>Best-in-class</div>
+                  <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.5 }}>{c.competitor}</div>
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:8, alignItems:"flex-start", marginTop:9 }}>
+                <ArrowUpRight size={13} color={T.amber} style={{ flexShrink:0, marginTop:2 }}/>
+                <div style={{ fontSize:11.5, color:T.gray900, lineHeight:1.5 }}><strong>Gap:</strong> {c.gap} <span style={{ color:T.slate }}>· {c.source}</span></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </StratSection>
+
+      {/* 3 · Customer research */}
+      <StratSection eyebrow="03 · Customer Research" title="Who we studied & what hurt" intro="The job executor is the independent RIA — $250–500M firm AUM, 150–350 HNW/UHNW households, and no dedicated alts operations staff — embodied by Jordan Williams in this prototype.">
         <div style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:14 }}>
           <div style={{ ...card, padding:"18px 20px", width:isMobile?"auto":260, flexShrink:0, background:T.navy, border:"none", color:T.white }}>
             <div style={{ width:44, height:44, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:700, marginBottom:12 }}>JW</div>
@@ -319,8 +396,8 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
         </div>
       </StratSection>
 
-      {/* 3 · Desired outcomes */}
-      <StratSection eyebrow="03 · Desired Outcomes" title="The outcomes the advisor is trying to achieve" intro="Each outcome statement was rated for importance and current satisfaction. The opportunity score = Importance + max(Importance − Satisfaction, 0), computed live.">
+      {/* 4 · Desired outcomes */}
+      <StratSection eyebrow="04 · Desired Outcomes" title="The outcomes the advisor is trying to achieve" intro="Each outcome statement was rated for importance and current satisfaction. The opportunity score = Importance + max(Importance − Satisfaction, 0), computed live.">
         <div style={{ ...card, overflow:"hidden" }}>
           {ranked.map((o,i)=>{
             const v = oppScore(o);
@@ -340,8 +417,8 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
         </div>
       </StratSection>
 
-      {/* 4 · Job map */}
-      <StratSection eyebrow="04 · Job Map" title="The universal job, step by step" intro="The advisor's core job — 'incorporate alternatives into my clients' portfolios with public-market confidence' — decomposed into the eight universal job steps. Each step is owned by a prototype layer.">
+      {/* 5 · Job map */}
+      <StratSection eyebrow="05 · Job Map" title="The universal job, step by step" intro="The advisor's core job — 'incorporate alternatives into my clients' portfolios with public-market confidence' — decomposed into the eight universal job steps. Each step is owned by a prototype layer.">
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
           {JOB_MAP.map(j=>(
             <button key={j.n} onClick={()=>onNavigate(j.layer)} style={{ ...card, padding:"14px", textAlign:"left", cursor:"pointer", display:"flex", flexDirection:"column", gap:7, position:"relative" }}>
@@ -356,8 +433,8 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
         </div>
       </StratSection>
 
-      {/* 5 · Opportunity matrix */}
-      <StratSection eyebrow="05 · Opportunity Matrix" title="Where to invest first" intro="Plotting every outcome by importance against current satisfaction. The upper-left band — high importance, low satisfaction — is underserved and where the highest opportunity scores cluster.">
+      {/* 6 · Opportunity matrix */}
+      <StratSection eyebrow="06 · Opportunity Matrix" title="Where to invest first" intro="Plotting every outcome by importance against current satisfaction. The upper-left band — high importance, low satisfaction — is underserved and where the highest opportunity scores cluster.">
         <div style={{ ...card, padding:isMobile?"16px":"22px" }}>
           <div style={{ display:"flex", gap:18, flexDirection:isMobile?"column":"row" }}>
             {/* Plot */}
@@ -405,8 +482,8 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
         </div>
       </StratSection>
 
-      {/* 6 · Recommendations → prototype */}
-      <StratSection eyebrow="06 · Recommendations" title="Six moves — and where to see each one live" intro="Every recommendation traces to the outcomes it serves and the prototype surface that delivers it. Open any surface to see the recommendation in action.">
+      {/* 7 · Recommendations → prototype */}
+      <StratSection eyebrow="07 · Recommendations" title="Six moves — and where to see each one live" intro="Every recommendation traces to the outcomes it serves and the prototype surface that delivers it. Open any surface to see the recommendation in action.">
         <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
           {RECOMMENDATIONS.map(r=>(
             <div key={r.n} style={{ ...card, padding:isMobile?"16px":"18px 20px", display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center" }}>
