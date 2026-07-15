@@ -87,3 +87,12 @@ a deployable prototype with its own Strategy tab.
 - Develop on a feature branch; `npm run build` must pass before committing.
 - Open a PR only when asked; merge with **regular merge commits** (never squash —
   squash rewrites `main` history and forces conflict resolution on the next PR).
+
+## QA handoff notes
+
+- Profile switching is available in the desktop/tablet header and in a compact
+  mobile profile strip below the top bar. Changing profiles updates the shell
+  persona and Strategy view while preserving the existing Tour and Scenario
+  flows.
+- Non-production source labels in the Strategy tab should remain visibly tied to
+  their research anchors. Avoid presenting the prototype as live Wealthscape data.
