@@ -165,6 +165,7 @@ This update preserves the baseline broker-dealer packet and adds current market,
 
 | Signal | Source fact | Product implication |
 | --- | --- | --- |
+| FINRA's 2026 snapshot confirms concentration and dual registration | FINRA reports 639,723 registered representatives in 2025, up 5% since 2021, while member-firm counts declined through concentration. Its companion analysis says more than half of FINRA-registered representatives, 331,802 people, were dually registered as broker-dealer and investment-adviser representatives at year-end 2025. | Broker-dealer profile work should treat dual brokerage/advisory workflows as the norm, not an edge case, and should prioritize cross-registration supervision, disclosure, and relationship context. |
 | Broker-dealer scale keeps concentrating | SIFMA's 2025 Capital Markets Fact Book reports 3,249 FINRA-registered broker-dealers in 2024, down 1.5% year over year, while gross revenues rose 5.9% to $641.0B and pre-tax net income rose 41.3% to $75.8B. | Home-office workflows should assume fewer, larger, more operationally complex firms that need supervision, analytics, and advisor productivity in one operating view. |
 | FINRA made GenAI and AI agents explicit 2026 supervision topics | FINRA's 2026 report adds a GenAI section, says securities rules remain technology-neutral, and identifies agent risks around autonomy, scope, auditability, data sensitivity, domain knowledge, rewards, bias, hallucinations, and privacy. | AI-assisted report narratives, advisor workflows, and agent actions need policy status, prompt/output logging where appropriate, human review, and traceable evidence. |
 | Communication retention modernization now has supplemental cost evidence | SIFMA and SIFMA AMG's May 4, 2026 supplement says survey data supports the view that current communications-retention rules drive over-retention, high costs, and operational inefficiency. Respondents included broker-dealers and dual registrants from fewer than 500 to more than 20,000 employees. | Wealthscape should distinguish retained client-facing recommendations from operational noise and expose retention rationale, not only archive status. |
@@ -224,6 +225,7 @@ Opportunity score formula: `Opportunity = Importance + max(Importance - Satisfac
 
 | Capability | Baseline rating | July 2026 delta | Updated call |
 | --- | --- | --- | --- |
+| Dual broker-dealer/adviser operating model | partial | FINRA's 2026 snapshot shows dual registration is now the predominant representative model. | Treat hybrid brokerage/advisory context as a required data and workflow dimension across home-office, OSJ, and advisor profiles. |
 | AI governance and review | partial | FINRA now explicitly calls out AI agents, prompt/output monitoring, model context, human review, and auditability. | Wrap enterprise AI governance with a broker-dealer workflow layer for report narratives, advisor actions, and branch review. |
 | Communications retention and surveillance | partial | SIFMA's May 2026 supplement strengthens the cost/over-retention case, while Global Relay data shows channel bans and monitoring difficulty remain active. | Partner for capture, archive, surveillance, and legal hold rails; build a retention-rationale and review-status layer inside Wealthscape workflows. |
 | Advisor productivity telemetry | none | J.D. Power links effective firm AI to satisfaction and loyalty, making AI adoption quality a retention signal. | Build telemetry that connects AI usage, training, effectiveness, support tickets, exceptions, and advisor satisfaction. |
@@ -262,6 +264,8 @@ Opportunity score formula: `Opportunity = Importance + max(Importance - Satisfac
 
 - FINRA 2026 Annual Regulatory Oversight Report: `https://www.finra.org/rules-guidance/guidance/reports/2026-finra-annual-regulatory-oversight-report`
 - FINRA GenAI topic: `https://www.finra.org/rules-guidance/guidance/reports/2026-finra-annual-regulatory-oversight-report/gen-ai`
+- FINRA 2026 Industry Snapshot release: `https://www.finra.org/media-center/newsreleases/2026/finra-publishes-2026-industry-snapshot`
+- FINRA 2026 Industry Snapshot analysis: `https://www.finra.org/media-center/blog/four-insights-from-finras-2026-industry-snapshot`
 - SIFMA 2025 Capital Markets Fact Book: `https://www.sifma.org/research/statistics/fact-book`
 - SIFMA Fact Book summary: `https://www.sifma.org/news/blog/top-10-takeaways-from-sifmas-2025-capital-markets-fact-book`
 - SIFMA communications-retention comment: `https://www.sifma.org/advocacy/letters/modernizing-communications-and-record-retention-rules-for-broker-dealersinvestment-advisers-and-security-based-swap-dealers-sifma-and-sifma-amg`
