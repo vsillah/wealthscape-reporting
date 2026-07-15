@@ -1501,15 +1501,72 @@ const BD_WORKSPACES = {
     metrics:[
       { label:"High-risk branches", value:"7", tone:"red" },
       { label:"AI reviews due", value:"42", tone:"amber" },
-      { label:"Advisor friction index", value:"+18%", tone:"amber" },
+      { label:"Productivity lift", value:"+11%", tone:"green" },
       { label:"Retention watchlist", value:"23", tone:"indigo" },
     ],
     queue:[
-      { title:"Off-channel communications spike", meta:"Northeast region · 18 advisors · 3-day trend", action:"Open supervision packet", severity:"Critical" },
-      { title:"Unapproved AI narrative usage", meta:"Retirement income reports · 11 generated summaries", action:"Route to AI review", severity:"High" },
-      { title:"Platform adoption drop", meta:"Commonwealth-transition segment · reporting usage -24%", action:"Assign field intervention", severity:"Watch" },
+      { title:"Off-channel communications spike", meta:"Northeast region · 18 advisors · 3-day trend · 71 messages pending capture", action:"Open supervision packet", severity:"Critical" },
+      { title:"Unapproved AI narrative usage", meta:"Retirement income reports · 11 generated summaries · 5 client-ready drafts", action:"Route to AI review", severity:"High" },
+      { title:"Platform adoption drop", meta:"Commonwealth-transition segment · reporting usage -24% · ticket volume +31%", action:"Assign field intervention", severity:"Watch" },
     ],
     actions:["Review AI policy exceptions", "Open advisor-retention watchlist", "Export branch evidence packet"],
+    operatingPanels:[
+      {
+        title:"Supervision and risk queue",
+        icon:AlertTriangle,
+        tone:"red",
+        summary:"Sort review work by regulatory risk, client impact, aging, and evidence completeness instead of raw timestamp.",
+        rows:[
+          { label:"Critical aging", value:"19", detail:"Items over SLA with client impact" },
+          { label:"Evidence ready", value:"68%", detail:"Packets complete enough for final review" },
+          { label:"Owner gaps", value:"12", detail:"No supervisor or field owner assigned" },
+        ],
+      },
+      {
+        title:"Advisor productivity snapshot",
+        icon:TrendingUp,
+        tone:"green",
+        summary:"Show whether platform use is improving the field's capacity or creating avoidable friction.",
+        rows:[
+          { label:"NBA completion", value:"54%", detail:"+9 pts after routed alerts" },
+          { label:"Report cycle time", value:"-37%", detail:"Median prep time vs manual baseline" },
+          { label:"Escalation drag", value:"2.4d", detail:"Average wait from field signal to action" },
+        ],
+      },
+      {
+        title:"Platform adoption signals",
+        icon:Activity,
+        tone:"indigo",
+        summary:"Treat declining usage, repeated tickets, and training misses as early operational signals.",
+        rows:[
+          { label:"At-risk cohorts", value:"5", detail:"Low adoption plus high exception load" },
+          { label:"Power users", value:"211", detail:"Candidates for champion or pilot programs" },
+          { label:"Training need", value:"34", detail:"Advisors stalled after first report draft" },
+        ],
+      },
+      {
+        title:"Governance and surveillance",
+        icon:Eye,
+        tone:"amber",
+        summary:"Tie AI activity, communications review, retention status, and surveillance evidence to the same action path.",
+        rows:[
+          { label:"AI policy exceptions", value:"42", detail:"Narratives, prompts, or disclosures need review" },
+          { label:"Surveillance hits", value:"27", detail:"Trade, product, and communication patterns" },
+          { label:"Retention gaps", value:"8", detail:"Capture or archive failures before closure" },
+        ],
+      },
+    ],
+    retentionSignals:[
+      { advisor:"Southeast growth team", risk:"High", trigger:"Adoption down 29%, support tickets up 41%, two large-client delays", route:"Field leadership + product ops" },
+      { advisor:"Pacific hybrid cohort", risk:"Watch", trigger:"Repeated annuity workflow blockers and low narrative-clearance rate", route:"Training + supervision review" },
+      { advisor:"Northeast enterprise group", risk:"Critical", trigger:"Off-channel spike overlaps with recruiting outreach pattern", route:"Supervision + retention lead" },
+    ],
+    routingLanes:[
+      { label:"Supervision", count:"31", desc:"Exceptions, communications, trade surveillance, and evidence closure" },
+      { label:"AI Governance", count:"42", desc:"Approved-use status, narrative review, prompt audit, and model-risk monitoring" },
+      { label:"Product Ops", count:"18", desc:"Workflow blockers, defect clusters, adoption friction, and roadmap evidence" },
+      { label:"Field Leadership", count:"23", desc:"Retention risk, coaching, recruiting defense, and champion programs" },
+    ],
   },
   osj: {
     eyebrow:"OSJ Workspace",
@@ -1763,42 +1820,122 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
 function BrokerDealerWorkspace({ workspace, isMobile }) {
   if (!workspace) return null;
   const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green }[tone] || T.slate);
+  const toneBg = tone => `${toneColor(tone)}14`;
+  const operatingPanels = workspace.operatingPanels || [];
+  const retentionSignals = workspace.retentionSignals || [];
+  const routingLanes = workspace.routingLanes || [];
   const severityColor = severity => ({ Critical:T.red, High:T.amber, Watch:T.indigo }[severity] || T.slate);
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
-      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", borderBottom:`1px solid ${T.gray100}` }}>
-          {workspace.metrics.map((m,i)=>(
-            <div key={m.label} style={{ padding:"14px 16px", borderLeft:i&&!isMobile?`1px solid ${T.gray100}`:"none", borderTop:i>1&&isMobile?`1px solid ${T.gray100}`:"none" }}>
-              <div style={{ fontSize:22, fontWeight:800, color:toneColor(m.tone), letterSpacing:"-0.02em" }}>{m.value}</div>
-              <div style={{ fontSize:10.5, color:T.slate, fontWeight:700, letterSpacing:"0.04em", textTransform:"uppercase", marginTop:3 }}>{m.label}</div>
-            </div>
-          ))}
-        </div>
-        <div style={{ padding:isMobile?"14px":"16px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.4fr 0.6fr", gap:16 }}>
-          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-            {workspace.queue.map(item=>(
-              <div key={item.title} style={{ border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 14px", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row" }}>
-                <div style={{ flex:1 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                    <span style={{ background:`${item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo}18`, color:item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
-                    <span style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>{item.title}</span>
-                  </div>
-                  <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.meta}</div>
-                </div>
-                <button style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", borderBottom:`1px solid ${T.gray100}` }}>
+            {workspace.metrics.map((m,i)=>(
+              <div key={m.label} style={{ padding:"14px 16px", borderLeft:i&&!isMobile?`1px solid ${T.gray100}`:"none", borderTop:i>1&&isMobile?`1px solid ${T.gray100}`:"none" }}>
+                <div style={{ fontSize:22, fontWeight:800, color:toneColor(m.tone), letterSpacing:"-0.02em" }}>{m.value}</div>
+                <div style={{ fontSize:10.5, color:T.slate, fontWeight:700, letterSpacing:"0.04em", textTransform:"uppercase", marginTop:3 }}>{m.label}</div>
               </div>
             ))}
           </div>
-          <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
-            <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Next Actions</div>
-            {workspace.actions.map(action=>(
-              <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
-                {action}<ChevronRight size={14} color={T.slate}/>
-              </button>
-            ))}
+          <div style={{ padding:isMobile?"14px":"16px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.4fr 0.6fr", gap:16 }}>
+            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              {workspace.queue.map(item=>(
+                <div key={item.title} style={{ border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 14px", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row" }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
+                      <span style={{ background:`${item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo}18`, color:item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
+                      <span style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>{item.title}</span>
+                    </div>
+                    <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.meta}</div>
+                  </div>
+                  <button style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+                </div>
+              ))}
+            </div>
+            <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Next Actions</div>
+              {workspace.actions.map(action=>(
+                <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                  {action}<ChevronRight size={14} color={T.slate}/>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
+
+        {operatingPanels.length > 0 && (
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
+            {operatingPanels.map(panel=>{
+              const Icon = panel.icon;
+              return (
+                <div key={panel.title} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:isMobile?"14px":"16px", display:"flex", flexDirection:"column", gap:12 }}>
+                  <div style={{ display:"flex", gap:11, alignItems:"flex-start" }}>
+                    <div style={{ width:34, height:34, borderRadius:9, background:toneBg(panel.tone), display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <Icon size={17} color={toneColor(panel.tone)}/>
+                    </div>
+                    <div>
+                      <div style={{ fontSize:13.5, fontWeight:800, color:T.gray900, marginBottom:3 }}>{panel.title}</div>
+                      <div style={{ fontSize:12, color:T.gray600, lineHeight:1.5 }}>{panel.summary}</div>
+                    </div>
+                  </div>
+                  <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3, 1fr)", gap:8 }}>
+                    {panel.rows.map(row=>(
+                      <div key={row.label} style={{ background:T.gray50, borderRadius:8, padding:"10px 11px", minHeight:86 }}>
+                        <div style={{ fontSize:18, fontWeight:800, color:toneColor(panel.tone), letterSpacing:"-0.02em" }}>{row.value}</div>
+                        <div style={{ fontSize:10.5, fontWeight:800, color:T.gray900, marginTop:2 }}>{row.label}</div>
+                        <div style={{ fontSize:10.5, color:T.slate, lineHeight:1.35, marginTop:4 }}>{row.detail}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {(retentionSignals.length > 0 || routingLanes.length > 0) && (
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.15fr 0.85fr", gap:12 }}>
+            {retentionSignals.length > 0 && (
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+                <div style={{ padding:"13px 15px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
+                  <div>
+                    <div style={{ fontSize:13.5, fontWeight:800, color:T.gray900 }}>Retention and recruiting watchlist</div>
+                    <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.4, marginTop:2 }}>Advisor flight risk becomes a visible operations signal.</div>
+                  </div>
+                  <Users size={18} color={T.indigo}/>
+                </div>
+                {retentionSignals.map(signal=>(
+                  <div key={signal.advisor} style={{ padding:"12px 15px", borderTop:`1px solid ${T.gray100}`, display:"grid", gridTemplateColumns:isMobile?"1fr":"0.65fr 1fr 0.65fr", gap:10, alignItems:"start" }}>
+                    <div>
+                      <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{signal.advisor}</div>
+                      <span style={{ display:"inline-flex", marginTop:5, background:`${signal.risk==="Critical"?T.red:signal.risk==="High"?T.amber:T.indigo}18`, color:signal.risk==="Critical"?T.red:signal.risk==="High"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{signal.risk}</span>
+                    </div>
+                    <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{signal.trigger}</div>
+                    <div style={{ fontSize:11.5, color:T.indigo, fontWeight:800, lineHeight:1.4 }}>{signal.route}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {routingLanes.length > 0 && (
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                <div>
+                  <div style={{ fontSize:13.5, fontWeight:800, color:T.gray900 }}>Next-best-action routing</div>
+                  <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:2 }}>Every signal resolves to a named enterprise lane.</div>
+                </div>
+                {routingLanes.map(lane=>(
+                  <button key={lane.label} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:9, padding:"10px 11px", display:"flex", gap:10, alignItems:"center", textAlign:"left", cursor:"pointer" }}>
+                    <div style={{ width:38, height:38, borderRadius:8, background:T.indigoLt, color:T.indigo, fontSize:14, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{lane.count}</div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{lane.label}</div>
+                      <div style={{ fontSize:11.3, color:T.slate, lineHeight:1.35, marginTop:2 }}>{lane.desc}</div>
+                    </div>
+                    <ChevronRight size={14} color={T.slate}/>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
         {workspace.exceptionReview && (
           <div style={{ borderTop:`1px solid ${T.gray100}`, background:T.gray50, padding:isMobile?"14px":"16px 18px", display:"flex", flexDirection:"column", gap:14 }}>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.35fr 0.65fr", gap:14, alignItems:"stretch" }}>
