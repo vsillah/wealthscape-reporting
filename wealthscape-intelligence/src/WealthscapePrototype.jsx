@@ -1517,7 +1517,7 @@ const BD_WORKSPACES = {
     intro:"A local queue that turns home-office findings into rep-specific action, coaching, escalation, and evidence.",
     metrics:[
       { label:"Aging exceptions", value:"31", tone:"red" },
-      { label:"Repeated rep patterns", value:"8", tone:"amber" },
+      { label:"Rep support queue", value:"18", tone:"amber" },
       { label:"Escalations pending", value:"6", tone:"indigo" },
       { label:"Evidence complete", value:"84%", tone:"green" },
     ],
@@ -1527,6 +1527,31 @@ const BD_WORKSPACES = {
       { title:"Repeat NIGO trend", meta:"Three newer reps · account transfers", action:"Assign branch training", severity:"Watch" },
     ],
     actions:["Open branch exception queue", "Create rep coaching plan", "Package escalation evidence"],
+    exceptionReview:[
+      { severity:"Critical", title:"VA replacement disclosure gap", rep:"L. Benton", clients:"2 clients", aging:"4d", pattern:"3rd disclosure miss this quarter", evidence:"Missing signed rider", route:"Rep coaching + branch attestation" },
+      { severity:"High", title:"Concentrated equity rationale", rep:"R. Patel", clients:"$8.1M household", aging:"2d", pattern:"Single-order exposure > policy threshold", evidence:"Trade note incomplete", route:"Home-office supervision packet" },
+      { severity:"Watch", title:"Transfer NIGO cluster", rep:"New rep cohort", clients:"7 transfers", aging:"6d", pattern:"Repeat beneficiary mismatch", evidence:"Forms captured, checklist missing", route:"Group office-hours training" },
+    ],
+    repSupport:[
+      { rep:"L. Benton", need:"Disclosure language review", queue:"5 open", sla:"Today", tone:"red" },
+      { rep:"M. Okafor", need:"ACAT paperwork correction", queue:"3 open", sla:"24h", tone:"amber" },
+      { rep:"R. Patel", need:"Trade rationale template", queue:"2 open", sla:"48h", tone:"indigo" },
+    ],
+    complianceLoad:[
+      { label:"Reviews due today", value:"12", note:"6 are high-impact households", tone:"red" },
+      { label:"Principal attestations", value:"9", note:"3 require evidence follow-up", tone:"amber" },
+      { label:"Training actions", value:"4", note:"Two reps share same pattern", tone:"indigo" },
+    ],
+    bookHealth:[
+      { rep:"L. Benton", book:"$186M", risk:"High", driver:"Disclosure repeat pattern", support:"Coaching note drafted", tone:"red" },
+      { rep:"M. Okafor", book:"$142M", risk:"Medium", driver:"Transfer paperwork aging", support:"Ops queue paired", tone:"amber" },
+      { rep:"D. Mensah", book:"$214M", risk:"Low", driver:"Clean evidence trail", support:"Use as branch model", tone:"green" },
+    ],
+    escalationRoutes:[
+      { route:"Home Office Supervision", trigger:"Policy threshold or incomplete evidence after 48h", owner:"Branch principal", handoff:"Exception packet + rep notes" },
+      { route:"Product Specialist", trigger:"Annuity, alternatives, or structured product question", owner:"Rep support lead", handoff:"Client context + suitability flags" },
+      { route:"Operations Desk", trigger:"NIGO, ACAT, account-opening, or missing document issue", owner:"Office manager", handoff:"Form status + next required field" },
+    ],
   },
   hybrid: {
     eyebrow:"Hybrid Team Workspace",
@@ -1738,6 +1763,7 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
 function BrokerDealerWorkspace({ workspace, isMobile }) {
   if (!workspace) return null;
   const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green }[tone] || T.slate);
+  const severityColor = severity => ({ Critical:T.red, High:T.amber, Watch:T.indigo }[severity] || T.slate);
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
       <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
@@ -1773,6 +1799,118 @@ function BrokerDealerWorkspace({ workspace, isMobile }) {
             ))}
           </div>
         </div>
+        {workspace.exceptionReview && (
+          <div style={{ borderTop:`1px solid ${T.gray100}`, background:T.gray50, padding:isMobile?"14px":"16px 18px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.35fr 0.65fr", gap:14, alignItems:"stretch" }}>
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+                <div style={{ padding:"13px 15px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
+                  <div>
+                    <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Exception Review</div>
+                    <div style={{ fontSize:14, fontWeight:800, color:T.gray900, marginTop:2 }}>Severity, aging, pattern, evidence, route</div>
+                  </div>
+                  <Badge color={T.red} bg={T.redLt}>31 Open</Badge>
+                </div>
+                <div style={{ display:"flex", flexDirection:"column" }}>
+                  {workspace.exceptionReview.map((item,i)=>(
+                    <div key={item.title} style={{ padding:"13px 15px", borderTop:i?`1px solid ${T.gray100}`:"none", display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 0.86fr", gap:12 }}>
+                      <div>
+                        <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", marginBottom:5 }}>
+                          <span style={{ background:`${severityColor(item.severity)}18`, color:severityColor(item.severity), border:`1px solid ${severityColor(item.severity)}40`, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
+                          <span style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>{item.title}</span>
+                        </div>
+                        <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.rep} · {item.clients} · {item.aging} aging</div>
+                        <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45, marginTop:6 }}>{item.pattern}</div>
+                      </div>
+                      <div style={{ display:"grid", gap:6 }}>
+                        <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4 }}><strong style={{ color:T.gray900 }}>Evidence:</strong> {item.evidence}</div>
+                        <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4 }}><strong style={{ color:T.gray900 }}>Route:</strong> {item.route}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:14 }}>
+                <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                    <Users size={14} color={T.indigo}/>
+                    <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Rep Support Queue</div>
+                  </div>
+                  {workspace.repSupport.map(item=>(
+                    <div key={item.rep} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10, display:"grid", gap:5 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                        <span style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{item.rep}</span>
+                        <span style={{ fontSize:10, fontWeight:800, color:toneColor(item.tone), background:`${toneColor(item.tone)}16`, borderRadius:99, padding:"2px 8px" }}>{item.sla}</span>
+                      </div>
+                      <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4 }}>{item.need}</div>
+                      <div style={{ fontSize:10.5, color:T.slate, fontWeight:700 }}>{item.queue}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                    <Activity size={14} color={T.green}/>
+                    <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Local Compliance Load</div>
+                  </div>
+                  {workspace.complianceLoad.map(item=>(
+                    <div key={item.label} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", gap:8, alignItems:"baseline" }}>
+                        <span style={{ fontSize:11.5, fontWeight:700, color:T.slate }}>{item.label}</span>
+                        <span style={{ fontSize:17, fontWeight:900, color:toneColor(item.tone), letterSpacing:"-0.02em" }}>{item.value}</span>
+                      </div>
+                      <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4, marginTop:3 }}>{item.note}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:14 }}>
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:10 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                    <TrendingUp size={14} color={T.green}/>
+                    <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Advisor Book Health</div>
+                  </div>
+                  <Badge color={T.green} bg={T.greenLt}>42 reps</Badge>
+                </div>
+                {workspace.bookHealth.map(item=>(
+                  <div key={item.rep} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10, display:"grid", gridTemplateColumns:isMobile?"1fr":"0.55fr 1fr", gap:8 }}>
+                    <div>
+                      <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{item.rep}</div>
+                      <div style={{ fontSize:11, color:T.slate }}>{item.book} book</div>
+                    </div>
+                    <div>
+                      <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap", marginBottom:4 }}>
+                        <span style={{ fontSize:10, fontWeight:800, color:toneColor(item.tone), background:`${toneColor(item.tone)}16`, borderRadius:99, padding:"2px 8px" }}>{item.risk} risk</span>
+                        <span style={{ fontSize:11.5, color:T.gray600 }}>{item.driver}</span>
+                      </div>
+                      <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4 }}>{item.support}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                  <ArrowUpRight size={14} color={T.indigo}/>
+                  <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Escalation Routing</div>
+                </div>
+                {workspace.escalationRoutes.map(item=>(
+                  <div key={item.route} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10, display:"grid", gap:5 }}>
+                    <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{item.route}</div>
+                    <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45 }}>{item.trigger}</div>
+                    <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                      <span style={{ fontSize:10.5, color:T.indigo, fontWeight:800, background:T.indigoLt, borderRadius:99, padding:"2px 8px" }}>{item.owner}</span>
+                      <span style={{ fontSize:10.5, color:T.slate, fontWeight:700, background:T.gray100, borderRadius:99, padding:"2px 8px" }}>{item.handoff}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </StratSection>
   );
