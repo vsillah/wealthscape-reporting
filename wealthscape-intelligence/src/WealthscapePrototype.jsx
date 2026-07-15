@@ -1465,6 +1465,60 @@ const makeBdJobMap = (define, locate, prepare, confirm, execute, monitor, modify
   { n:8, step:"Conclude", goal:conclude, layer:"strategy" },
 ];
 
+const BD_WORKSPACES = {
+  homeOffice: {
+    eyebrow:"Home Office Workspace",
+    title:"Supervision Command Center",
+    intro:"A governed operating view for platform strategy, supervision, AI activity, and advisor-friction signals.",
+    metrics:[
+      { label:"High-risk branches", value:"7", tone:"red" },
+      { label:"AI reviews due", value:"42", tone:"amber" },
+      { label:"Advisor friction index", value:"+18%", tone:"amber" },
+      { label:"Retention watchlist", value:"23", tone:"indigo" },
+    ],
+    queue:[
+      { title:"Off-channel communications spike", meta:"Northeast region · 18 advisors · 3-day trend", action:"Open supervision packet", severity:"Critical" },
+      { title:"Unapproved AI narrative usage", meta:"Retirement income reports · 11 generated summaries", action:"Route to AI review", severity:"High" },
+      { title:"Platform adoption drop", meta:"Commonwealth-transition segment · reporting usage -24%", action:"Assign field intervention", severity:"Watch" },
+    ],
+    actions:["Review AI policy exceptions", "Open advisor-retention watchlist", "Export branch evidence packet"],
+  },
+  osj: {
+    eyebrow:"OSJ Workspace",
+    title:"Branch Exception Workbench",
+    intro:"A local queue that turns home-office findings into rep-specific action, coaching, escalation, and evidence.",
+    metrics:[
+      { label:"Aging exceptions", value:"31", tone:"red" },
+      { label:"Repeated rep patterns", value:"8", tone:"amber" },
+      { label:"Escalations pending", value:"6", tone:"indigo" },
+      { label:"Evidence complete", value:"84%", tone:"green" },
+    ],
+    queue:[
+      { title:"Variable annuity disclosure missing", meta:"Rep: L. Benton · 2 clients · 4 days aging", action:"Send coaching note", severity:"Critical" },
+      { title:"Trade rationale incomplete", meta:"Rep: R. Patel · concentrated equity order", action:"Build escalation packet", severity:"High" },
+      { title:"Repeat NIGO trend", meta:"Three newer reps · account transfers", action:"Assign branch training", severity:"Watch" },
+    ],
+    actions:["Open branch exception queue", "Create rep coaching plan", "Package escalation evidence"],
+  },
+  hybrid: {
+    eyebrow:"Hybrid Team Workspace",
+    title:"Relationship 360 Action Queue",
+    intro:"A team view that connects brokerage, advisory, planning, account-opening, and supervision blockers to client-ready actions.",
+    metrics:[
+      { label:"Client blockers", value:"14", tone:"amber" },
+      { label:"Suitability holds", value:"5", tone:"red" },
+      { label:"Mixed-book reviews", value:"22", tone:"indigo" },
+      { label:"Narratives cleared", value:"91%", tone:"green" },
+    ],
+    queue:[
+      { title:"Chen household product context split", meta:"Advisory allocation + brokerage annuity trail", action:"Open relationship 360", severity:"High" },
+      { title:"Account package waiting on suitability", meta:"Roth conversion + structured note discussion", action:"Resolve blocker", severity:"Critical" },
+      { title:"Q2 report needs brokerage disclosure", meta:"AI narrative generated · disclosure pending", action:"Send to principal review", severity:"Watch" },
+    ],
+    actions:["Open blocker strip", "Generate hybrid report narrative", "Route team action"],
+  },
+};
+
 const makeProfile = ({
   id,
   label,
@@ -1484,6 +1538,7 @@ const makeProfile = ({
   recommendations = RECOMMENDATIONS,
   capabilities = [],
   buildBuy = [],
+  workspace = null,
 }) => ({
   id,
   label,
@@ -1504,6 +1559,7 @@ const makeProfile = ({
     recommendations,
     capabilities,
     buildBuy,
+    workspace,
   },
 });
 
@@ -1540,6 +1596,7 @@ const STRATEGY_PROFILES = {
     recommendations:BD_HOME_RECOMMENDATIONS,
     capabilities:BD_CAPABILITIES,
     buildBuy:BD_BUILD_BUY,
+    workspace:BD_WORKSPACES.homeOffice,
   }),
   "bd-osj-principal": makeProfile({
     id:"bd-osj-principal",
@@ -1560,6 +1617,7 @@ const STRATEGY_PROFILES = {
     recommendations:BD_OSJ_RECOMMENDATIONS,
     capabilities:BD_CAPABILITIES,
     buildBuy:BD_BUILD_BUY,
+    workspace:BD_WORKSPACES.osj,
   }),
   "bd-hybrid-advisor": makeProfile({
     id:"bd-hybrid-advisor",
@@ -1580,6 +1638,7 @@ const STRATEGY_PROFILES = {
     recommendations:BD_HYBRID_RECOMMENDATIONS,
     capabilities:BD_CAPABILITIES,
     buildBuy:BD_BUILD_BUY,
+    workspace:BD_WORKSPACES.hybrid,
   }),
 };
 
@@ -1608,6 +1667,49 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
         {profileOrder.map(id=><option key={id} value={id}>{profiles[id].label}</option>)}
       </select>
     </label>
+  );
+}
+
+function BrokerDealerWorkspace({ workspace, isMobile }) {
+  if (!workspace) return null;
+  const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green }[tone] || T.slate);
+  return (
+    <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
+      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", borderBottom:`1px solid ${T.gray100}` }}>
+          {workspace.metrics.map((m,i)=>(
+            <div key={m.label} style={{ padding:"14px 16px", borderLeft:i&&!isMobile?`1px solid ${T.gray100}`:"none", borderTop:i>1&&isMobile?`1px solid ${T.gray100}`:"none" }}>
+              <div style={{ fontSize:22, fontWeight:800, color:toneColor(m.tone), letterSpacing:"-0.02em" }}>{m.value}</div>
+              <div style={{ fontSize:10.5, color:T.slate, fontWeight:700, letterSpacing:"0.04em", textTransform:"uppercase", marginTop:3 }}>{m.label}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ padding:isMobile?"14px":"16px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.4fr 0.6fr", gap:16 }}>
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            {workspace.queue.map(item=>(
+              <div key={item.title} style={{ border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 14px", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row" }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
+                    <span style={{ background:`${item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo}18`, color:item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
+                    <span style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>{item.title}</span>
+                  </div>
+                  <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.meta}</div>
+                </div>
+                <button style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+              </div>
+            ))}
+          </div>
+          <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
+            <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Next Actions</div>
+            {workspace.actions.map(action=>(
+              <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                {action}<ChevronRight size={14} color={T.slate}/>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </StratSection>
   );
 }
 
@@ -1648,6 +1750,8 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
           ))}
         </div>
       </div>
+
+      <BrokerDealerWorkspace workspace={strategy.workspace} isMobile={isMobile}/>
 
       {/* 1 · Market research */}
       <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
