@@ -1301,6 +1301,10 @@ const OUTCOMES = [
 ];
 const oppScore = o => o.imp + Math.max(o.imp - o.sat, 0);
 const oppColor = v => v >= 16 ? T.green : v >= 14 ? T.indigo : T.slate;
+const ratingColor = r => r === "strong" ? T.green : r === "partial" ? T.amber : T.red;
+const ratingLabel = r => r === "strong" ? "Has it" : r === "partial" ? "Partial" : "Gap";
+const callColor = c => ({ build:T.green, buy:T.indigo, partner:T.amber, wrap:T.emerald }[c] || T.slate);
+const callLabel = c => ({ build:"Build", buy:"Buy", partner:"Partner", wrap:"Wrap" }[c] || c);
 const LAYER_NAMES = { morning:"Morning Brief", reports:"Report Builder", portal:"Client Portal", integrations:"Integration Hub", insights:"Analytics" };
 const layerName = id => LAYER_NAMES[id] || id;
 
@@ -1346,6 +1350,121 @@ const PLACEHOLDER_RECOMMENDATIONS = [
   { n:1, title:"Populate this profile from the broker-dealer research packet", surface:"Strategy", layer:"strategy", sub:null, outcomes:["BD #1"], body:"The architecture lane only wires the profile switcher and registry. Subsequent lanes add sourced broker-dealer strategy data and workflow surfaces." },
 ];
 
+const BD_MARKET_SIGNALS = [
+  { tag:"BD Scale", stat:"$641B", source:"SIFMA 2025 Fact Book", icon:BarChart2, body:"FINRA-registered broker-dealers generated $641.0B in gross revenue in 2024 while the number of firms declined to 3,249. The platform problem is fewer, larger, more complex firms." },
+  { tag:"Firm Consolidation", stat:"3,249", source:"SIFMA 2025", icon:Layers, body:"The broker-dealer count fell 1.5% year over year. Scale is moving to firms that can operate supervision, advisor productivity, and product governance as one system." },
+  { tag:"Regulatory Scope", stat:"2026", source:"FINRA Oversight", icon:AlertTriangle, body:"FINRA's 2026 report highlights GenAI, cyber-enabled fraud, senior investors, communications, market integrity, and third-party risk as live member-firm priorities." },
+  { tag:"GenAI Governance", stat:"Rules apply", source:"FINRA GenAI", icon:Sparkles, body:"FINRA frames rules as technology-neutral. Firms need user-level and enterprise-level controls when GenAI enters advisor reporting, communications, and supervision." },
+  { tag:"Records Pressure", stat:"17a-4", source:"SIFMA retention comment", icon:FileText, body:"SIFMA's 2025 request to modernize communications-retention rules shows how expensive and unresolved records capture remains for broker-dealers and dual registrants." },
+  { tag:"Advisor Mobility", stat:"Hybrid growth", source:"Cerulli / Schwab", icon:Users, body:"Advisors continue to evaluate affiliation models around technology flexibility, support, custody choice, and independence. Platform friction is a retention signal." },
+];
+
+const BD_CAPABILITIES = [
+  { capability:"Enterprise supervision and evidence trail", fidelity:"Report-pipeline audit concepts exist in the RIA prototype, but supervisory queues are not represented.", rating:"partial", competitor:"Smarsh, Global Relay, and supervision/regtech workflows specialize in communications capture, review, retention, and evidence trails.", source:"FINRA / SIFMA", gap:"Needs integrated supervision workbench and retention/evidence status inside the daily platform." },
+  { capability:"AI governance and review", fidelity:"AI narrative compliance review is visible, but there is no approved-use policy status or enterprise review queue.", rating:"partial", competitor:"Enterprise AI governance programs pair approved-use controls with activity review and model-risk monitoring.", source:"FINRA GenAI / Fidelity AI", gap:"Needs policy-aware AI status, user activity visibility, and review routing." },
+  { capability:"Advisor productivity telemetry", fidelity:"The prototype shows book/client signals, not advisor adoption, support friction, or field productivity.", rating:"none", competitor:"Large wealth platforms and CRM/product analytics stacks track adoption, support, activity, and revenue impact together.", source:"Fidelity trends / Cerulli", gap:"Needs adoption, exception, support, and revenue context in one view." },
+  { capability:"Branch/OSJ exception triage", fidelity:"The current RIA prototype has no OSJ or branch-principal workflow.", rating:"none", competitor:"Broker-dealer supervision dashboards and branch workflow systems route exceptions by severity, aging, rep, and evidence status.", source:"FINRA supervision themes", gap:"Needs branch principal queue, coaching prompts, and escalation packets." },
+  { capability:"Hybrid brokerage/advisory client view", fidelity:"The current prototype assumes a single independent-RIA reporting relationship.", rating:"partial", competitor:"Integrated wealth platforms combine brokerage, advisory, planning, product, and account-opening context.", source:"Fidelity wealth trends", gap:"Needs relationship-level context plus product, suitability, and supervision blockers." },
+];
+
+const BD_BUILD_BUY = [
+  { gap:"Enterprise supervision and evidence trail", role:"context", maturity:"high", urgency:"high", call:"partner", outcomes:["BD-HO #1","BD-OSJ #5"], rationale:"Supervision and retention rails are mature and regulated. The differentiated move is to partner for rails and surface the evidence inside Wealthscape workflows." },
+  { gap:"AI governance and review", role:"core", maturity:"medium", urgency:"high", call:"wrap", outcomes:["BD-HO #2","BD-HA #5"], rationale:"AI governance cannot live outside the advisor workflow. Wealthscape should wrap enterprise controls with report, communications, and next-best-action review." },
+  { gap:"Advisor productivity telemetry", role:"core", maturity:"medium", urgency:"medium", call:"build", outcomes:["BD-HO #3","BD-HO #5"], rationale:"Fidelity can differentiate by connecting usage, support, exceptions, and clearing/custody context into one advisor-retention signal." },
+  { gap:"Branch/OSJ exception triage", role:"core", maturity:"medium", urgency:"high", call:"build", outcomes:["BD-OSJ #1","BD-OSJ #2"], rationale:"The branch-principal experience is a workflow differentiator and should feel native, not like a compliance-system embed." },
+  { gap:"Hybrid brokerage/advisory client view", role:"core", maturity:"high", urgency:"high", call:"wrap", outcomes:["BD-HA #1","BD-HA #2"], rationale:"The data rails may exist across clearing, planning, and reporting systems. The value is the unified client and team experience on top." },
+];
+
+const BD_HOME_STATS = [
+  { value:"6", label:"High-priority home-office outcomes" },
+  { value:"14.2–16.5", label:"ODI opportunity scores" },
+  { value:"4", label:"Enterprise moves" },
+  { value:"8-step", label:"Supervision-to-action map" },
+];
+const BD_HOME_PAINS = [
+  { metric:"4+", pain:"Risk signals live in separate supervision, trading, communications, and advisor-platform systems." },
+  { metric:"Late", pain:"Home office learns about advisor friction after tickets, complaints, or retention risk is already visible." },
+  { metric:"Policy gap", pain:"AI adoption is moving faster than approved-use, review, and retention workflows." },
+  { metric:"Opaque", pain:"Platform investments are hard to prioritize because adoption, risk, and revenue impact are not in one view." },
+];
+const BD_HOME_OUTCOMES = [
+  { id:"BD-HO #1", imp:9.4, sat:2.3, text:"Identify the highest-risk advisor, branch, product, or communications issue requiring home-office action", layer:"strategy", sub:null },
+  { id:"BD-HO #2", imp:9.2, sat:2.6, text:"Confirm advisor-facing AI activity is approved, supervised, retained, and explainable", layer:"strategy", sub:null },
+  { id:"BD-HO #3", imp:9.1, sat:2.8, text:"Connect platform adoption, supervision load, advisor productivity, and revenue impact in one view", layer:"strategy", sub:null },
+  { id:"BD-HO #4", imp:8.9, sat:3.0, text:"Reduce delay between a field friction signal and a product, training, or supervision intervention", layer:"strategy", sub:null },
+  { id:"BD-HO #5", imp:8.8, sat:3.1, text:"Detect advisor-retention risk before a recruiting event or custodian shift", layer:"strategy", sub:null },
+  { id:"BD-HO #6", imp:8.6, sat:3.2, text:"Prove that a supervisory action was completed with the right evidence", layer:"strategy", sub:null },
+];
+const BD_HOME_RECOMMENDATIONS = [
+  { n:1, title:"Rank enterprise risk by advisor, branch, product, and communication type", surface:"Supervision Command", layer:"strategy", sub:null, outcomes:["BD-HO #1","BD-HO #6"], body:"A home-office command center that combines supervision state, records evidence, and next action in one prioritized queue." },
+  { n:2, title:"Make AI activity policy-aware before it becomes field shadow IT", surface:"AI Governance", layer:"strategy", sub:null, outcomes:["BD-HO #2"], body:"Approved-use status, user activity, report narratives, and review routing should travel with every AI-assisted recommendation." },
+  { n:3, title:"Pair risk with advisor productivity telemetry", surface:"Platform Telemetry", layer:"strategy", sub:null, outcomes:["BD-HO #3","BD-HO #4"], body:"Adoption, exceptions, support tickets, and revenue context should explain whether controls are improving or slowing the field." },
+  { n:4, title:"Treat advisor retention as an operational signal", surface:"Retention Watchlist", layer:"strategy", sub:null, outcomes:["BD-HO #5"], body:"Declining adoption, repeated exceptions, support escalation, and custody friction become early warning signs." },
+];
+
+const BD_OSJ_STATS = [
+  { value:"5", label:"Branch-principal outcomes" },
+  { value:"13.7–16.2", label:"ODI opportunity scores" },
+  { value:"4", label:"Local workflow moves" },
+  { value:"8-step", label:"Exception-to-evidence map" },
+];
+const BD_OSJ_PAINS = [
+  { metric:"Queue", pain:"Exception queues are sorted by system timestamp, not local client, rep, or revenue impact." },
+  { metric:"Manual", pain:"OSJ staff translate home-office alerts into rep-level coaching and next steps by hand." },
+  { metric:"Repeated", pain:"Local principals struggle to see which reps create repeated friction before it becomes an audit issue." },
+  { metric:"Context loss", pain:"Escalations lose evidence and ownership context as they move between branch and home office." },
+];
+const BD_OSJ_OUTCOMES = [
+  { id:"BD-OSJ #1", imp:9.3, sat:2.4, text:"Triage branch exceptions most likely to block client service or create regulatory risk", layer:"strategy", sub:null },
+  { id:"BD-OSJ #2", imp:9.0, sat:2.8, text:"Translate home-office findings into rep-specific action and coaching", layer:"strategy", sub:null },
+  { id:"BD-OSJ #3", imp:8.9, sat:3.0, text:"See repeated rep friction patterns before they become audit findings or client complaints", layer:"strategy", sub:null },
+  { id:"BD-OSJ #4", imp:8.7, sat:3.1, text:"Preserve context when escalating branch issues to home office supervision or product support", layer:"strategy", sub:null },
+  { id:"BD-OSJ #5", imp:8.5, sat:3.3, text:"Confirm every reviewed exception has a complete evidence trail", layer:"strategy", sub:null },
+];
+const BD_OSJ_RECOMMENDATIONS = [
+  { n:1, title:"Sort exceptions by severity, client impact, aging, and rep pattern", surface:"Branch Workbench", layer:"strategy", sub:null, outcomes:["BD-OSJ #1"], body:"The OSJ queue should explain what to review first and why it matters locally." },
+  { n:2, title:"Turn exceptions into rep coaching prompts", surface:"Rep Coaching", layer:"strategy", sub:null, outcomes:["BD-OSJ #2","BD-OSJ #3"], body:"Repeated issues become targeted coaching opportunities rather than one-off queue cleanup." },
+  { n:3, title:"Create escalation packets that carry evidence forward", surface:"Escalation Packet", layer:"strategy", sub:null, outcomes:["BD-OSJ #4","BD-OSJ #5"], body:"Owner, due date, evidence, branch notes, and home-office status move together." },
+  { n:4, title:"Balance local compliance load with growth visibility", surface:"Branch Health", layer:"strategy", sub:null, outcomes:["BD-OSJ #3"], body:"Principals need to see which reps are productive, stuck, or repeatedly creating avoidable risk." },
+];
+
+const BD_HYBRID_STATS = [
+  { value:"5", label:"Hybrid advisor outcomes" },
+  { value:"14.0–16.3", label:"ODI opportunity scores" },
+  { value:"4", label:"Team workflow moves" },
+  { value:"8-step", label:"Client relationship map" },
+];
+const BD_HYBRID_PAINS = [
+  { metric:"Split", pain:"The advisory and brokerage sides of the client relationship feel like separate operating systems." },
+  { metric:"Status checks", pain:"Account opening and product workflows require repeated checks across forms, suitability, supervision, and operations." },
+  { metric:"Hard to explain", pain:"Client reports do not clearly show why brokerage, advisory, annuity, and planning pieces belong together." },
+  { metric:"Blocked", pain:"Advisor teams cannot quickly tell whether a client action is blocked by supervision, product eligibility, or missing data." },
+];
+const BD_HYBRID_OUTCOMES = [
+  { id:"BD-HA #1", imp:9.4, sat:2.5, text:"Understand a client's full brokerage, advisory, planning, and product relationship in one view", layer:"strategy", sub:null },
+  { id:"BD-HA #2", imp:9.1, sat:2.7, text:"Produce a client-ready explanation that is compliant across brokerage and advisory contexts", layer:"strategy", sub:null },
+  { id:"BD-HA #3", imp:9.0, sat:2.9, text:"See what is blocking an account, product, or recommendation workflow", layer:"strategy", sub:null },
+  { id:"BD-HA #4", imp:8.8, sat:3.1, text:"Reduce handoffs needed to resolve suitability, eligibility, or supervision questions", layer:"strategy", sub:null },
+  { id:"BD-HA #5", imp:8.6, sat:3.2, text:"Confirm client communications and report narratives match approved product and account context", layer:"strategy", sub:null },
+];
+const BD_HYBRID_RECOMMENDATIONS = [
+  { n:1, title:"Unify brokerage, advisory, planning, annuity, and cash context", surface:"Relationship 360", layer:"strategy", sub:null, outcomes:["BD-HA #1"], body:"A hybrid advisor should not need separate views to understand the whole client relationship." },
+  { n:2, title:"Show workflow blockers at the top of the client record", surface:"Blocker Strip", layer:"strategy", sub:null, outcomes:["BD-HA #3","BD-HA #4"], body:"Account opening, product approvals, suitability, signatures, and supervision holds become visible before the client asks." },
+  { n:3, title:"Generate context-aware report narratives", surface:"Hybrid Reporting", layer:"strategy", sub:null, outcomes:["BD-HA #2","BD-HA #5"], body:"Narratives should distinguish advisory recommendations, brokerage activity, product disclosures, and approved language." },
+  { n:4, title:"Route team actions by owner and blocker type", surface:"Team Queue", layer:"strategy", sub:null, outcomes:["BD-HA #3","BD-HA #4"], body:"Every blocker points to the right advisor, CSA, principal, or home-office team." },
+];
+
+const makeBdJobMap = (define, locate, prepare, confirm, execute, monitor, modify, conclude) => [
+  { n:1, step:"Define", goal:define, layer:"strategy" },
+  { n:2, step:"Locate", goal:locate, layer:"strategy" },
+  { n:3, step:"Prepare", goal:prepare, layer:"strategy" },
+  { n:4, step:"Confirm", goal:confirm, layer:"strategy" },
+  { n:5, step:"Execute", goal:execute, layer:"strategy" },
+  { n:6, step:"Monitor", goal:monitor, layer:"strategy" },
+  { n:7, step:"Modify", goal:modify, layer:"strategy" },
+  { n:8, step:"Conclude", goal:conclude, layer:"strategy" },
+];
+
 const makeProfile = ({
   id,
   label,
@@ -1363,6 +1482,8 @@ const makeProfile = ({
   outcomes = OUTCOMES,
   jobMap = JOB_MAP,
   recommendations = RECOMMENDATIONS,
+  capabilities = [],
+  buildBuy = [],
 }) => ({
   id,
   label,
@@ -1381,6 +1502,8 @@ const makeProfile = ({
     outcomes,
     jobMap,
     recommendations,
+    capabilities,
+    buildBuy,
   },
 });
 
@@ -1405,16 +1528,18 @@ const STRATEGY_PROFILES = {
     eyebrow:"Enterprise broker-dealer view",
     shell:{ initials:"MO", name:"Maya Okonkwo", role:"Head of Platform Strategy" },
     heroTitle:"Broker-dealer home-office strategy",
-    heroBody:"This placeholder profile is ready for the broker-dealer data lane. It will show supervision, advisor productivity, platform governance, risk surveillance, and retention outcomes in the same prototype shell.",
+    heroBody:"The broker-dealer home office has a different job than an independent RIA: scale advisor productivity while making supervision, AI governance, platform risk, and field friction visible before they become regulatory or retention issues.",
     persona:{ initials:"MO", name:"Maya Okonkwo", role:"Head of Platform Strategy · National Broker-Dealer", details:[["Firm","8,000 affiliated reps"],["Model","Multi-custodial clearing"],["Goal","Scale advisor productivity while keeping supervision, AI, and platform risk visible"]] },
-    customerIntro:"Placeholder home-office profile. The strategy data lane will replace this with sourced broker-dealer market and customer research.",
-    jobIntro:"The home-office job map will connect supervision, platform adoption, advisor support, and enterprise risk into one operating view.",
-    stats:[{ value:"3", label:"Broker-dealer profiles wired" },{ value:"Next", label:"Strategy data lane" },{ value:"0", label:"React workflows changed" },{ value:"Default", label:"RIA remains preserved" }],
-    marketSignals:PLACEHOLDER_SIGNALS,
-    customerPains:PLACEHOLDER_PAINS,
-    outcomes:PLACEHOLDER_OUTCOMES,
-    jobMap:PLACEHOLDER_JOB_MAP,
-    recommendations:PLACEHOLDER_RECOMMENDATIONS,
+    customerIntro:"The home-office executor owns platform strategy, supervision load, AI policy, advisor adoption, and retention risk across a large affiliated network.",
+    jobIntro:"The home-office job is to turn scattered risk, adoption, and field-friction signals into governed action without slowing productive advisors.",
+    stats:BD_HOME_STATS,
+    marketSignals:BD_MARKET_SIGNALS,
+    customerPains:BD_HOME_PAINS,
+    outcomes:BD_HOME_OUTCOMES,
+    jobMap:makeBdJobMap("Set the enterprise risk and productivity priorities", "Find advisor, branch, product, AI, and communications signals", "Normalize signals into a governed operating queue", "Confirm policy, retention, evidence, and owner readiness", "Route the intervention to supervision, product, training, or field leadership", "Monitor adoption, exception load, and advisor-retention risk", "Adjust controls, training, or product investments", "Close the loop with evidence and field impact"),
+    recommendations:BD_HOME_RECOMMENDATIONS,
+    capabilities:BD_CAPABILITIES,
+    buildBuy:BD_BUILD_BUY,
   }),
   "bd-osj-principal": makeProfile({
     id:"bd-osj-principal",
@@ -1423,16 +1548,18 @@ const STRATEGY_PROFILES = {
     eyebrow:"Branch supervision view",
     shell:{ initials:"KN", name:"Kwame Nkrumah", role:"OSJ Principal" },
     heroTitle:"OSJ and branch-principal strategy",
-    heroBody:"This placeholder profile is ready for branch exception, rep support, compliance queue, local growth, and escalation workflow data.",
+    heroBody:"The OSJ principal sits between the national home office and the producing rep. The prototype strategy shifts from client-reporting scale to exception triage, rep support, evidence, and local growth visibility.",
     persona:{ initials:"KN", name:"Kwame Nkrumah", role:"OSJ Principal · Regional Supervisory Unit", details:[["Scope","42 reps"],["Coverage","3 offices"],["Goal","Resolve branch exceptions without slowing client service"]] },
-    customerIntro:"Placeholder OSJ profile. The strategy data lane will replace this with sourced broker-dealer branch-principal pains and outcomes.",
-    jobIntro:"The OSJ job map will turn home-office findings into local rep coaching, evidence trails, and escalation actions.",
-    stats:[{ value:"3", label:"Broker-dealer profiles wired" },{ value:"Next", label:"Strategy data lane" },{ value:"0", label:"React workflows changed" },{ value:"Default", label:"RIA remains preserved" }],
-    marketSignals:PLACEHOLDER_SIGNALS,
-    customerPains:PLACEHOLDER_PAINS,
-    outcomes:PLACEHOLDER_OUTCOMES,
-    jobMap:PLACEHOLDER_JOB_MAP,
-    recommendations:PLACEHOLDER_RECOMMENDATIONS,
+    customerIntro:"The OSJ executor needs to keep local rep activity review-ready while helping advisors resolve exceptions and serve clients without waiting on home-office translation.",
+    jobIntro:"The OSJ job map turns home-office findings into local prioritization, rep coaching, escalation packets, and evidence-ready closure.",
+    stats:BD_OSJ_STATS,
+    marketSignals:BD_MARKET_SIGNALS,
+    customerPains:BD_OSJ_PAINS,
+    outcomes:BD_OSJ_OUTCOMES,
+    jobMap:makeBdJobMap("Determine which local exceptions matter first", "Find affected reps, clients, products, and evidence", "Organize exceptions into coachable work", "Confirm severity, evidence, and escalation need", "Resolve, coach, or escalate the branch issue", "Monitor repeated rep friction and aging queues", "Adjust coaching, process, or escalation path", "Close with evidence and branch-level learning"),
+    recommendations:BD_OSJ_RECOMMENDATIONS,
+    capabilities:BD_CAPABILITIES,
+    buildBuy:BD_BUILD_BUY,
   }),
   "bd-hybrid-advisor": makeProfile({
     id:"bd-hybrid-advisor",
@@ -1441,16 +1568,18 @@ const STRATEGY_PROFILES = {
     eyebrow:"Hybrid brokerage/advisory view",
     shell:{ initials:"AD", name:"Amina Diallo", role:"Hybrid Advisor" },
     heroTitle:"Hybrid advisor and team strategy",
-    heroBody:"This placeholder profile is ready for mixed brokerage/advisory book, client reporting, account-opening, product eligibility, and supervision-context data.",
+    heroBody:"The hybrid advisor needs the client relationship to make sense across brokerage, advisory, planning, annuities, product workflows, and supervision context. The broker-dealer strategy has to make that complexity client-ready.",
     persona:{ initials:"AD", name:"Amina Diallo", role:"Lead Advisor · Hybrid Team", details:[["Team","5-person advisor team"],["Book","$680M advisory assets plus brokerage trails"],["Goal","Serve mixed brokerage/advisory relationships in one client-ready workflow"]] },
-    customerIntro:"Placeholder hybrid-advisor profile. The strategy data lane will replace this with sourced broker-dealer advisor/team pains and outcomes.",
-    jobIntro:"The hybrid advisor job map will connect account/product blockers, suitability context, client reporting, and team actions.",
-    stats:[{ value:"3", label:"Broker-dealer profiles wired" },{ value:"Next", label:"Strategy data lane" },{ value:"0", label:"React workflows changed" },{ value:"Default", label:"RIA remains preserved" }],
-    marketSignals:PLACEHOLDER_SIGNALS,
-    customerPains:PLACEHOLDER_PAINS,
-    outcomes:PLACEHOLDER_OUTCOMES,
-    jobMap:PLACEHOLDER_JOB_MAP,
-    recommendations:PLACEHOLDER_RECOMMENDATIONS,
+    customerIntro:"The hybrid advisor executor runs a mixed book where brokerage, advisory, annuity, planning, account-opening, and supervision workflows all affect the client experience.",
+    jobIntro:"The hybrid advisor job map connects relationship context, product blockers, suitability, reporting, team ownership, and client-ready communication.",
+    stats:BD_HYBRID_STATS,
+    marketSignals:BD_MARKET_SIGNALS,
+    customerPains:BD_HYBRID_PAINS,
+    outcomes:BD_HYBRID_OUTCOMES,
+    jobMap:makeBdJobMap("Clarify the client's full brokerage/advisory objective", "Locate all account, product, planning, and blocker signals", "Prepare a unified relationship view and team action queue", "Confirm suitability, eligibility, supervision, and narrative context", "Create the client-ready recommendation or report", "Monitor blockers, communications, and client response", "Modify ownership, disclosures, or next steps", "Deliver a complete explanation with approved evidence"),
+    recommendations:BD_HYBRID_RECOMMENDATIONS,
+    capabilities:BD_CAPABILITIES,
+    buildBuy:BD_BUILD_BUY,
   }),
 };
 
@@ -1541,6 +1670,33 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
           })}
         </div>
       </StratSection>
+
+      {strategy.capabilities.length > 0 && (
+        <StratSection eyebrow="02 · Capability Comparison" title="Where the current stack has gaps" intro="A broker-dealer lens changes the comparison: Wealthscape needs supervision, AI governance, platform telemetry, and hybrid-book context in addition to client-ready reporting.">
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            {strategy.capabilities.map(c=>(
+              <div key={c.capability} style={{ ...card, padding:isMobile?"14px":"15px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.1fr 1.1fr 0.45fr 1.25fr", gap:12, alignItems:"start" }}>
+                <div>
+                  <div style={{ fontSize:13, fontWeight:800, color:T.gray900, marginBottom:4 }}>{c.capability}</div>
+                  <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45 }}>{c.gap}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize:9.5, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:4 }}>Current Wealthscape</div>
+                  <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{c.fidelity}</div>
+                </div>
+                <div>
+                  <span style={{ display:"inline-flex", background:`${ratingColor(c.rating)}18`, color:ratingColor(c.rating), border:`1px solid ${ratingColor(c.rating)}40`, borderRadius:99, padding:"4px 9px", fontSize:10, fontWeight:800 }}>{ratingLabel(c.rating)}</span>
+                </div>
+                <div>
+                  <div style={{ fontSize:9.5, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:4 }}>Reference</div>
+                  <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{c.competitor}</div>
+                  <div style={{ fontSize:10.5, color:T.indigo, fontWeight:700, marginTop:5 }}>{c.source}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </StratSection>
+      )}
 
       {/* 2 · Customer research */}
       <StratSection eyebrow="02 · Customer Research" title="Who we studied & what hurt" intro={strategy.customerIntro}>
@@ -1680,6 +1836,30 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
           ))}
         </div>
       </StratSection>
+
+      {strategy.buildBuy.length > 0 && (
+        <StratSection eyebrow="07 · Resolution Strategy" title="Build, buy, partner, or wrap" intro="Each key gap gets a sourcing call based on whether it is core or context, how mature external solutions are, and how urgent the broker-dealer outcome is.">
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
+            {strategy.buildBuy.map(b=>(
+              <div key={b.gap} style={{ ...card, padding:"15px 16px", display:"flex", flexDirection:"column", gap:9 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
+                  <div style={{ fontSize:13, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{b.gap}</div>
+                  <span style={{ flexShrink:0, background:`${callColor(b.call)}18`, color:callColor(b.call), border:`1px solid ${callColor(b.call)}40`, borderRadius:99, padding:"4px 9px", fontSize:10, fontWeight:800 }}>{callLabel(b.call)}</span>
+                </div>
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {[`Role: ${b.role}`, `Maturity: ${b.maturity}`, `Urgency: ${b.urgency}`].map(tag=>(
+                    <span key={tag} style={{ fontSize:10, fontWeight:700, color:T.slate, background:T.gray100, borderRadius:99, padding:"3px 8px" }}>{tag}</span>
+                  ))}
+                </div>
+                <div style={{ fontSize:12, color:T.gray600, lineHeight:1.55 }}>{b.rationale}</div>
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {b.outcomes.map(id=><span key={id} style={{ fontSize:10, fontWeight:700, color:T.indigo, background:T.indigoLt, borderRadius:99, padding:"3px 8px" }}>{id}</span>)}
+                </div>
+              </div>
+            ))}
+          </div>
+        </StratSection>
+      )}
 
       {/* Closing CTA */}
       <div style={{ background:`linear-gradient(135deg, ${T.green} 0%, ${T.greenMid} 100%)`, borderRadius:14, padding:isMobile?"20px 18px":"24px 28px", color:T.white, display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center", justifyContent:"space-between" }}>
