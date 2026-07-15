@@ -1643,12 +1643,30 @@ const STRATEGY_PROFILES = {
   }),
 };
 
-const getProfile = (profiles, profileId) => profiles[profileId] || profiles[DEFAULT_PROFILE_ID];
-const getProfileOptions = (profiles, profileOrder) => {
-  const orderedIds = profileOrder.filter(id => profiles[id]);
-  const unorderedIds = Object.keys(profiles).filter(id => !orderedIds.includes(id));
-  return [...orderedIds, ...unorderedIds].map(id => profiles[id]);
-};
+function createProfileRegistry(profiles, { defaultProfileId, profileOrder }) {
+  const declaredOrder = profileOrder.filter(id => profiles[id]);
+  const extraProfileIds = Object.keys(profiles).filter(id => !declaredOrder.includes(id));
+  const normalizedOrder = [...declaredOrder, ...extraProfileIds];
+
+  return {
+    profiles,
+    profileOrder: normalizedOrder,
+    defaultProfileId: profiles[defaultProfileId] ? defaultProfileId : normalizedOrder[0],
+  };
+}
+
+const PROFILE_REGISTRY = createProfileRegistry(STRATEGY_PROFILES, {
+  defaultProfileId: DEFAULT_PROFILE_ID,
+  profileOrder: PROFILE_ORDER,
+});
+
+function normalizeProfileId(profileId) {
+  return PROFILE_REGISTRY.profiles[profileId] ? profileId : PROFILE_REGISTRY.defaultProfileId;
+}
+
+function getProfileById(profileId) {
+  return PROFILE_REGISTRY.profiles[normalizeProfileId(profileId)];
+}
 
 function StratSection({ eyebrow, title, intro, children }) {
   return (
@@ -1664,8 +1682,7 @@ function StratSection({ eyebrow, title, intro, children }) {
 }
 
 function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileChange, compact = false }) {
-  const profileOptions = getProfileOptions(profiles, profileOrder);
-  const selectedProfileId = profiles[activeProfileId] ? activeProfileId : DEFAULT_PROFILE_ID;
+  const selectedProfileId = profiles[activeProfileId] ? activeProfileId : profileOrder[0];
 
   return (
     <label style={{ display:"flex", alignItems:"center", gap:8, minWidth:compact?120:180 }}>
@@ -1675,7 +1692,11 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
         onChange={e=>onProfileChange(e.target.value)}
         style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
       >
-        {profileOptions.map(profile=><option key={profile.id} value={profile.id}>{profile.label}</option>)}
+        {profileOrder.map(id=>{
+          const profile = profiles[id];
+          if (!profile) return null;
+          return <option key={id} value={id}>{profile.label}</option>;
+        })}
       </select>
     </label>
   );
@@ -2770,11 +2791,9 @@ export default function WealthscapePrototype() {
   const [scenarioStep,   setScenarioStep]   = useState(0);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [reportDelivered,setReportDelivered]= useState(false);
-  const [activeProfileId,setActiveProfileId]= useState(DEFAULT_PROFILE_ID);
-  const activeProfile = getProfile(STRATEGY_PROFILES, activeProfileId);
-  const handleProfileChange = useCallback((profileId) => {
-    setActiveProfileId(STRATEGY_PROFILES[profileId] ? profileId : DEFAULT_PROFILE_ID);
-  }, []);
+  const [activeProfileId,setActiveProfileId]= useState(PROFILE_REGISTRY.defaultProfileId);
+  const activeProfile = getProfileById(activeProfileId);
+  const handleProfileChange = profileId => setActiveProfileId(normalizeProfileId(profileId));
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
@@ -2918,7 +2937,7 @@ export default function WealthscapePrototype() {
           </div>
           <div style={{ display:"flex", gap:8, alignItems:"center" }}>
             {!isMobile && (
-              <ProfileSwitcher profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} compact={isTablet}/>
+              <ProfileSwitcher profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} compact={isTablet}/>
             )}
             {!isMobile && (
               <div style={{ display:"flex", alignItems:"center", gap:7, background:T.gray100, borderRadius:8, padding:"6px 11px" }}>
@@ -2954,7 +2973,7 @@ export default function WealthscapePrototype() {
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp}/>}
-          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
+          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
 
