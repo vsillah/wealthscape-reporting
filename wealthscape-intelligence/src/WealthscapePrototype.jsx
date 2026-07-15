@@ -1563,10 +1563,11 @@ const makeProfile = ({
   },
 });
 
-const PROFILE_ORDER = ["ria", "bd-home-office", "bd-osj-principal", "bd-hybrid-advisor"];
+const DEFAULT_PROFILE_ID = "ria";
+const PROFILE_ORDER = [DEFAULT_PROFILE_ID, "bd-home-office", "bd-osj-principal", "bd-hybrid-advisor"];
 const STRATEGY_PROFILES = {
   ria: makeProfile({
-    id:"ria",
+    id:DEFAULT_PROFILE_ID,
     label:"RIA Advisor",
     shortLabel:"RIA",
     eyebrow:"Independent advisor view",
@@ -1642,6 +1643,13 @@ const STRATEGY_PROFILES = {
   }),
 };
 
+const getProfile = (profiles, profileId) => profiles[profileId] || profiles[DEFAULT_PROFILE_ID];
+const getProfileOptions = (profiles, profileOrder) => {
+  const orderedIds = profileOrder.filter(id => profiles[id]);
+  const unorderedIds = Object.keys(profiles).filter(id => !orderedIds.includes(id));
+  return [...orderedIds, ...unorderedIds].map(id => profiles[id]);
+};
+
 function StratSection({ eyebrow, title, intro, children }) {
   return (
     <section style={{ display:"flex", flexDirection:"column", gap:14 }}>
@@ -1656,15 +1664,18 @@ function StratSection({ eyebrow, title, intro, children }) {
 }
 
 function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileChange, compact = false }) {
+  const profileOptions = getProfileOptions(profiles, profileOrder);
+  const selectedProfileId = profiles[activeProfileId] ? activeProfileId : DEFAULT_PROFILE_ID;
+
   return (
     <label style={{ display:"flex", alignItems:"center", gap:8, minWidth:compact?120:180 }}>
       {!compact && <span style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", whiteSpace:"nowrap" }}>Profile</span>}
       <select
-        value={activeProfileId}
+        value={selectedProfileId}
         onChange={e=>onProfileChange(e.target.value)}
         style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
       >
-        {profileOrder.map(id=><option key={id} value={id}>{profiles[id].label}</option>)}
+        {profileOptions.map(profile=><option key={profile.id} value={profile.id}>{profile.label}</option>)}
       </select>
     </label>
   );
@@ -2759,8 +2770,11 @@ export default function WealthscapePrototype() {
   const [scenarioStep,   setScenarioStep]   = useState(0);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [reportDelivered,setReportDelivered]= useState(false);
-  const [activeProfileId,setActiveProfileId]= useState("ria");
-  const activeProfile = STRATEGY_PROFILES[activeProfileId] || STRATEGY_PROFILES.ria;
+  const [activeProfileId,setActiveProfileId]= useState(DEFAULT_PROFILE_ID);
+  const activeProfile = getProfile(STRATEGY_PROFILES, activeProfileId);
+  const handleProfileChange = useCallback((profileId) => {
+    setActiveProfileId(STRATEGY_PROFILES[profileId] ? profileId : DEFAULT_PROFILE_ID);
+  }, []);
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
@@ -2904,7 +2918,7 @@ export default function WealthscapePrototype() {
           </div>
           <div style={{ display:"flex", gap:8, alignItems:"center" }}>
             {!isMobile && (
-              <ProfileSwitcher profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={setActiveProfileId} compact={isTablet}/>
+              <ProfileSwitcher profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} compact={isTablet}/>
             )}
             {!isMobile && (
               <div style={{ display:"flex", alignItems:"center", gap:7, background:T.gray100, borderRadius:8, padding:"6px 11px" }}>
@@ -2940,7 +2954,7 @@ export default function WealthscapePrototype() {
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp}/>}
-          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={setActiveProfileId} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
+          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
 
