@@ -8,7 +8,7 @@ You are the Integration Captain for `vsillah/wealthscape-reporting`. Use `/Users
 
 ## Imhotep - Broker-Dealer Research Packet
 
-Create a scoped branch from current `origin/main` in a sibling worktree. Conduct broker-dealer market/customer research using the existing `.claude/skills/value-stack-discovery` methodology. Produce a reviewable broker-dealer research packet only: market signals, capability matrix, customer pains, three persona/firm profiles, ODI outcomes, job map, recommendations, and build-vs-buy calls. Use current cited sources and mark assumptions. Do not edit the React app. Validate with `git diff --check`, commit, push, open a draft PR, and stop.
+Create a scoped branch from current `origin/main` in a sibling worktree. The baseline broker-dealer research packet is already merged, so conduct incremental broker-dealer market/customer research updates using the existing `.claude/skills/value-stack-discovery` methodology and the approved packet as the anchor. Add dated refresh sections for market signals, capability matrix deltas, customer pains, persona/firm profile implications, ODI outcomes, job maps, recommendations, and build-vs-buy calls. Preserve provenance by separating source facts, assumptions, recommendations, and prototype implications. Use current cited sources and mark assumptions. Do not edit the React app unless Vambah explicitly changes scope. Validate with `git diff --check`, manually inspect changed links/tables, commit, push, open a draft PR, and stop.
 
 ## Amina - Profile Architecture Foundation
 
