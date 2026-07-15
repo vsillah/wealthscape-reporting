@@ -1323,6 +1323,137 @@ const RECOMMENDATIONS = [
   { n:5, title:"Give clients an advisor-branded, interactive portal",         surface:"Client Portal", layer:"portal",       sub:null,                      outcomes:["ODI #8.2","ODI #8.1","ODI #8.4"],body:"Interactive reporting, in-context advisor messaging, and the firm's own brand — not the custodian's." },
 ];
 
+const PLACEHOLDER_SIGNALS = [
+  { tag:"Research Pending", stat:"v1", source:"Broker-dealer packet", icon:BookOpen, body:"This profile is wired into the prototype shell. The broker-dealer data lane will replace this placeholder with sourced market, capability, and outcome data." },
+];
+const PLACEHOLDER_PAINS = [
+  { metric:"Next", pain:"Broker-dealer role-specific pains will be populated from the approved research packet." },
+];
+const PLACEHOLDER_OUTCOMES = [
+  { id:"BD #1", imp:8.5, sat:3.5, text:"Placeholder broker-dealer outcome awaiting the strategy data lane", layer:"strategy", sub:null },
+];
+const PLACEHOLDER_JOB_MAP = [
+  { n:1, step:"Define", goal:"Confirm broker-dealer profile priorities", layer:"strategy" },
+  { n:2, step:"Locate", goal:"Map relevant supervision, advisor, and client signals", layer:"strategy" },
+  { n:3, step:"Prepare", goal:"Prepare role-specific workflow data", layer:"strategy" },
+  { n:4, step:"Confirm", goal:"Validate compliance and evidence requirements", layer:"strategy" },
+  { n:5, step:"Execute", goal:"Route work to the right profile surface", layer:"strategy" },
+  { n:6, step:"Monitor", goal:"Track profile-specific risks and outcomes", layer:"strategy" },
+  { n:7, step:"Modify", goal:"Adjust recommendations based on profile context", layer:"strategy" },
+  { n:8, step:"Conclude", goal:"Deliver a reviewable profile-specific action", layer:"strategy" },
+];
+const PLACEHOLDER_RECOMMENDATIONS = [
+  { n:1, title:"Populate this profile from the broker-dealer research packet", surface:"Strategy", layer:"strategy", sub:null, outcomes:["BD #1"], body:"The architecture lane only wires the profile switcher and registry. Subsequent lanes add sourced broker-dealer strategy data and workflow surfaces." },
+];
+
+const makeProfile = ({
+  id,
+  label,
+  shortLabel,
+  eyebrow,
+  shell,
+  heroTitle,
+  heroBody,
+  persona,
+  customerIntro,
+  jobIntro,
+  stats = STRAT_STATS,
+  marketSignals = MARKET_SIGNALS,
+  customerPains = CUSTOMER_PAINS,
+  outcomes = OUTCOMES,
+  jobMap = JOB_MAP,
+  recommendations = RECOMMENDATIONS,
+}) => ({
+  id,
+  label,
+  shortLabel,
+  eyebrow,
+  shell,
+  strategy: {
+    heroTitle,
+    heroBody,
+    persona,
+    customerIntro,
+    jobIntro,
+    stats,
+    marketSignals,
+    customerPains,
+    outcomes,
+    jobMap,
+    recommendations,
+  },
+});
+
+const PROFILE_ORDER = ["ria", "bd-home-office", "bd-osj-principal", "bd-hybrid-advisor"];
+const STRATEGY_PROFILES = {
+  ria: makeProfile({
+    id:"ria",
+    label:"RIA Advisor",
+    shortLabel:"RIA",
+    eyebrow:"Independent advisor view",
+    shell:{ initials:"JW", name:"Jordan Williams", role:"Senior Advisor" },
+    heroTitle:"From research to a working prototype",
+    heroBody:"We studied the independent-RIA advisor's job, measured 11 high-opportunity outcomes against what Wealthscape delivers today, and mapped every gap to a shippable surface. This is the evidence trail behind every screen in this prototype.",
+    persona:{ initials:"JW", name:"Jordan Williams", role:"Senior Advisor · Independent RIA", details:[["Book","~$1.57B AUA"],["Households","134 active"],["Goal","Scale client reporting past 30 clients without losing the personal touch"]] },
+    customerIntro:"Primary research with independent RIA advisors managing 30–150 client households — the persona embodied by Jordan Williams in this prototype.",
+    jobIntro:"The advisor's core job — 'deliver a clear, timely account of how my clients' money is doing' — decomposed into the eight universal job steps. Each step is owned by a prototype layer.",
+  }),
+  "bd-home-office": makeProfile({
+    id:"bd-home-office",
+    label:"BD Home Office",
+    shortLabel:"Home Office",
+    eyebrow:"Enterprise broker-dealer view",
+    shell:{ initials:"MO", name:"Maya Okonkwo", role:"Head of Platform Strategy" },
+    heroTitle:"Broker-dealer home-office strategy",
+    heroBody:"This placeholder profile is ready for the broker-dealer data lane. It will show supervision, advisor productivity, platform governance, risk surveillance, and retention outcomes in the same prototype shell.",
+    persona:{ initials:"MO", name:"Maya Okonkwo", role:"Head of Platform Strategy · National Broker-Dealer", details:[["Firm","8,000 affiliated reps"],["Model","Multi-custodial clearing"],["Goal","Scale advisor productivity while keeping supervision, AI, and platform risk visible"]] },
+    customerIntro:"Placeholder home-office profile. The strategy data lane will replace this with sourced broker-dealer market and customer research.",
+    jobIntro:"The home-office job map will connect supervision, platform adoption, advisor support, and enterprise risk into one operating view.",
+    stats:[{ value:"3", label:"Broker-dealer profiles wired" },{ value:"Next", label:"Strategy data lane" },{ value:"0", label:"React workflows changed" },{ value:"Default", label:"RIA remains preserved" }],
+    marketSignals:PLACEHOLDER_SIGNALS,
+    customerPains:PLACEHOLDER_PAINS,
+    outcomes:PLACEHOLDER_OUTCOMES,
+    jobMap:PLACEHOLDER_JOB_MAP,
+    recommendations:PLACEHOLDER_RECOMMENDATIONS,
+  }),
+  "bd-osj-principal": makeProfile({
+    id:"bd-osj-principal",
+    label:"OSJ Principal",
+    shortLabel:"OSJ",
+    eyebrow:"Branch supervision view",
+    shell:{ initials:"KN", name:"Kwame Nkrumah", role:"OSJ Principal" },
+    heroTitle:"OSJ and branch-principal strategy",
+    heroBody:"This placeholder profile is ready for branch exception, rep support, compliance queue, local growth, and escalation workflow data.",
+    persona:{ initials:"KN", name:"Kwame Nkrumah", role:"OSJ Principal · Regional Supervisory Unit", details:[["Scope","42 reps"],["Coverage","3 offices"],["Goal","Resolve branch exceptions without slowing client service"]] },
+    customerIntro:"Placeholder OSJ profile. The strategy data lane will replace this with sourced broker-dealer branch-principal pains and outcomes.",
+    jobIntro:"The OSJ job map will turn home-office findings into local rep coaching, evidence trails, and escalation actions.",
+    stats:[{ value:"3", label:"Broker-dealer profiles wired" },{ value:"Next", label:"Strategy data lane" },{ value:"0", label:"React workflows changed" },{ value:"Default", label:"RIA remains preserved" }],
+    marketSignals:PLACEHOLDER_SIGNALS,
+    customerPains:PLACEHOLDER_PAINS,
+    outcomes:PLACEHOLDER_OUTCOMES,
+    jobMap:PLACEHOLDER_JOB_MAP,
+    recommendations:PLACEHOLDER_RECOMMENDATIONS,
+  }),
+  "bd-hybrid-advisor": makeProfile({
+    id:"bd-hybrid-advisor",
+    label:"Hybrid Advisor",
+    shortLabel:"Hybrid",
+    eyebrow:"Hybrid brokerage/advisory view",
+    shell:{ initials:"AD", name:"Amina Diallo", role:"Hybrid Advisor" },
+    heroTitle:"Hybrid advisor and team strategy",
+    heroBody:"This placeholder profile is ready for mixed brokerage/advisory book, client reporting, account-opening, product eligibility, and supervision-context data.",
+    persona:{ initials:"AD", name:"Amina Diallo", role:"Lead Advisor · Hybrid Team", details:[["Team","5-person advisor team"],["Book","$680M advisory assets plus brokerage trails"],["Goal","Serve mixed brokerage/advisory relationships in one client-ready workflow"]] },
+    customerIntro:"Placeholder hybrid-advisor profile. The strategy data lane will replace this with sourced broker-dealer advisor/team pains and outcomes.",
+    jobIntro:"The hybrid advisor job map will connect account/product blockers, suitability context, client reporting, and team actions.",
+    stats:[{ value:"3", label:"Broker-dealer profiles wired" },{ value:"Next", label:"Strategy data lane" },{ value:"0", label:"React workflows changed" },{ value:"Default", label:"RIA remains preserved" }],
+    marketSignals:PLACEHOLDER_SIGNALS,
+    customerPains:PLACEHOLDER_PAINS,
+    outcomes:PLACEHOLDER_OUTCOMES,
+    jobMap:PLACEHOLDER_JOB_MAP,
+    recommendations:PLACEHOLDER_RECOMMENDATIONS,
+  }),
+};
+
 function StratSection({ eyebrow, title, intro, children }) {
   return (
     <section style={{ display:"flex", flexDirection:"column", gap:14 }}>
@@ -1336,10 +1467,26 @@ function StratSection({ eyebrow, title, intro, children }) {
   );
 }
 
-function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
+function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileChange, compact = false }) {
+  return (
+    <label style={{ display:"flex", alignItems:"center", gap:8, minWidth:compact?120:180 }}>
+      {!compact && <span style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", whiteSpace:"nowrap" }}>Profile</span>}
+      <select
+        value={activeProfileId}
+        onChange={e=>onProfileChange(e.target.value)}
+        style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
+      >
+        {profileOrder.map(id=><option key={id} value={id}>{profiles[id].label}</option>)}
+      </select>
+    </label>
+  );
+}
+
+function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario }) {
   const { isMobile } = bp;
-  const ranked = [...OUTCOMES].sort((a,b)=>oppScore(b)-oppScore(a));
-  const maxOpp = oppScore(ranked[0]);
+  const strategy = profile.strategy;
+  const ranked = [...strategy.outcomes].sort((a,b)=>oppScore(b)-oppScore(a));
+  const maxOpp = ranked.length ? oppScore(ranked[0]) : 1;
   const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
 
   return (
@@ -1347,18 +1494,24 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
 
       {/* Hero */}
       <div style={{ background:`linear-gradient(135deg, ${T.navy} 0%, ${T.navyMid} 100%)`, borderRadius:16, padding:isMobile?"22px 18px":"30px 32px", color:T.white }}>
-        <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
-          <div style={{ background:T.indigo, borderRadius:7, padding:"4px 9px", display:"flex", alignItems:"center", gap:6 }}>
-            <BookOpen size={12} color={T.white}/><span style={{ fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>Business Case</span>
+        <div style={{ display:"flex", alignItems:isMobile?"stretch":"center", justifyContent:"space-between", gap:12, marginBottom:12, flexDirection:isMobile?"column":"row" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
+            <div style={{ background:T.indigo, borderRadius:7, padding:"4px 9px", display:"flex", alignItems:"center", gap:6 }}>
+              <BookOpen size={12} color={T.white}/><span style={{ fontSize:10, fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase" }}>Business Case</span>
+            </div>
+            <span style={{ fontSize:11, color:"rgba(255,255,255,0.55)" }}>Outcome-Driven Innovation · Jobs-to-be-Done</span>
           </div>
-          <span style={{ fontSize:11, color:"rgba(255,255,255,0.55)" }}>Outcome-Driven Innovation · Jobs-to-be-Done</span>
+          <div style={{ background:"rgba(255,255,255,0.92)", borderRadius:10, padding:6 }}>
+            <ProfileSwitcher profiles={profiles} profileOrder={profileOrder} activeProfileId={activeProfileId} onProfileChange={onProfileChange} compact={isMobile}/>
+          </div>
         </div>
-        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>From research to a working prototype</div>
+        <div style={{ fontSize:11, color:"rgba(255,255,255,0.58)", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>{profile.eyebrow}</div>
+        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>{strategy.heroTitle}</div>
         <div style={{ fontSize:isMobile?13:15, color:"rgba(255,255,255,0.78)", lineHeight:1.65, maxWidth:720 }}>
-          We studied the independent-RIA advisor's job, measured 11 high-opportunity outcomes against what Wealthscape delivers today, and mapped every gap to a shippable surface. This is the evidence trail behind every screen in this prototype.
+          {strategy.heroBody}
         </div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:isMobile?10:14, marginTop:22 }}>
-          {STRAT_STATS.map(s=>(
+          {strategy.stats.map(s=>(
             <div key={s.label} style={{ background:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, padding:"13px 14px" }}>
               <div style={{ fontSize:isMobile?20:24, fontWeight:800, letterSpacing:"-0.01em" }}>{s.value}</div>
               <div style={{ fontSize:10.5, color:"rgba(255,255,255,0.6)", marginTop:3, lineHeight:1.4 }}>{s.label}</div>
@@ -1370,7 +1523,7 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
       {/* 1 · Market research */}
       <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr", gap:12 }}>
-          {MARKET_SIGNALS.map(m=>{
+          {strategy.marketSignals.map(m=>{
             const Icon = m.icon;
             return (
               <div key={m.tag} style={{ ...card, padding:"15px 16px", display:"flex", flexDirection:"column", gap:8 }}>
@@ -1390,13 +1543,13 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
       </StratSection>
 
       {/* 2 · Customer research */}
-      <StratSection eyebrow="02 · Customer Research" title="Who we studied & what hurt" intro="Primary research with independent RIA advisors managing 30–150 client households — the persona embodied by Jordan Williams in this prototype.">
+      <StratSection eyebrow="02 · Customer Research" title="Who we studied & what hurt" intro={strategy.customerIntro}>
         <div style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:14 }}>
           <div style={{ ...card, padding:"18px 20px", width:isMobile?"auto":260, flexShrink:0, background:T.navy, border:"none", color:T.white }}>
-            <div style={{ width:44, height:44, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:700, marginBottom:12 }}>JW</div>
-            <div style={{ fontSize:15, fontWeight:700 }}>Jordan Williams</div>
-            <div style={{ fontSize:12, color:"rgba(255,255,255,0.6)", marginBottom:14 }}>Senior Advisor · Independent RIA</div>
-            {[["Book","~$1.57B AUA"],["Households","134 active"],["Goal","Scale client reporting past 30 clients without losing the personal touch"]].map(([k,v])=>(
+            <div style={{ width:44, height:44, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:700, marginBottom:12 }}>{strategy.persona.initials}</div>
+            <div style={{ fontSize:15, fontWeight:700 }}>{strategy.persona.name}</div>
+            <div style={{ fontSize:12, color:"rgba(255,255,255,0.6)", marginBottom:14 }}>{strategy.persona.role}</div>
+            {strategy.persona.details.map(([k,v])=>(
               <div key={k} style={{ marginBottom:10 }}>
                 <div style={{ fontSize:9.5, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:"0.06em", textTransform:"uppercase" }}>{k}</div>
                 <div style={{ fontSize:12.5, color:"rgba(255,255,255,0.92)", lineHeight:1.45, marginTop:2 }}>{v}</div>
@@ -1405,7 +1558,7 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
           </div>
           <div style={{ flex:1, display:"flex", flexDirection:"column", gap:10 }}>
             <div style={{ fontSize:11, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Top pains, in their words</div>
-            {CUSTOMER_PAINS.map((p,i)=>(
+            {strategy.customerPains.map((p,i)=>(
               <div key={i} style={{ ...card, padding:"12px 16px", display:"flex", gap:14, alignItems:"center" }}>
                 <div style={{ minWidth:74, fontSize:15, fontWeight:800, color:T.green, letterSpacing:"-0.01em" }}>{p.metric}</div>
                 <div style={{ fontSize:12.5, color:T.gray600, lineHeight:1.5 }}>{p.pain}</div>
@@ -1437,9 +1590,9 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
       </StratSection>
 
       {/* 4 · Job map */}
-      <StratSection eyebrow="04 · Job Map" title="The universal job, step by step" intro="The advisor's core job — 'deliver a clear, timely account of how my clients' money is doing' — decomposed into the eight universal job steps. Each step is owned by a prototype layer.">
+      <StratSection eyebrow="04 · Job Map" title="The universal job, step by step" intro={strategy.jobIntro}>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
-          {JOB_MAP.map(j=>(
+          {strategy.jobMap.map(j=>(
             <button key={j.n} onClick={()=>onNavigate(j.layer)} style={{ ...card, padding:"14px", textAlign:"left", cursor:"pointer", display:"flex", flexDirection:"column", gap:7, position:"relative" }}>
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                 <div style={{ width:24, height:24, borderRadius:"50%", background:T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{j.n}</div>
@@ -1471,7 +1624,7 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
                 {/* zone label */}
                 <div style={{ position:"absolute", top:10, left:10, fontSize:9.5, fontWeight:800, color:T.green, letterSpacing:"0.06em", textTransform:"uppercase", lineHeight:1.3 }}>Underserved<br/>Opportunity Zone</div>
                 {/* points */}
-                {OUTCOMES.map(o=>{
+                {strategy.outcomes.map(o=>{
                   const v = oppScore(o);
                   const left = Math.max(2, Math.min(96, (o.sat/6)*100));
                   const top  = Math.max(2, Math.min(94, (1-(o.imp-7.5)/(10-7.5))*100));
@@ -1510,7 +1663,7 @@ function StrategyLayer({ bp, onNavigate, onStartTour, onStartScenario }) {
       {/* 6 · Recommendations → prototype */}
       <StratSection eyebrow="06 · Recommendations" title="Five moves — and where to see each one live" intro="Every recommendation traces to the outcomes it serves and the prototype surface that delivers it. Open any surface to see the recommendation in action.">
         <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-          {RECOMMENDATIONS.map(r=>(
+          {strategy.recommendations.map(r=>(
             <div key={r.n} style={{ ...card, padding:isMobile?"16px":"18px 20px", display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center" }}>
               <div style={{ width:34, height:34, borderRadius:9, background:T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:800, flexShrink:0 }}>{r.n}</div>
               <div style={{ flex:1 }}>
@@ -2322,6 +2475,8 @@ export default function WealthscapePrototype() {
   const [scenarioStep,   setScenarioStep]   = useState(0);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [reportDelivered,setReportDelivered]= useState(false);
+  const [activeProfileId,setActiveProfileId]= useState("ria");
+  const activeProfile = STRATEGY_PROFILES[activeProfileId] || STRATEGY_PROFILES.ria;
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
@@ -2416,8 +2571,8 @@ export default function WealthscapePrototype() {
         {!isDesktop && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:4, color:T.gray400 }} onClick={()=>setSidebarOpen(false)}><X size={18}/></button>}
       </div>
       <div style={{ padding:"12px 18px", borderBottom:`1px solid rgba(255,255,255,0.08)`, display:"flex", gap:10, alignItems:"center" }}>
-        <div style={{ width:30, height:30, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:T.white, flexShrink:0 }}>JW</div>
-        <div><div style={{ fontSize:12, fontWeight:700, color:T.white }}>Jordan Williams</div><div style={{ fontSize:11, color:"#94A3B8" }}>Senior Advisor</div></div>
+        <div style={{ width:30, height:30, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:T.white, flexShrink:0 }}>{activeProfile.shell.initials}</div>
+        <div><div style={{ fontSize:12, fontWeight:700, color:T.white }}>{activeProfile.shell.name}</div><div style={{ fontSize:11, color:"#94A3B8" }}>{activeProfile.shell.role}</div></div>
       </div>
       <nav data-demo="nav-sidebar" style={{ flex:1, padding:"10px 8px", overflowY:"auto" }}>
         {navItems.map(item=>{
@@ -2465,6 +2620,9 @@ export default function WealthscapePrototype() {
           </div>
           <div style={{ display:"flex", gap:8, alignItems:"center" }}>
             {!isMobile && (
+              <ProfileSwitcher profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={setActiveProfileId} compact={isTablet}/>
+            )}
+            {!isMobile && (
               <div style={{ display:"flex", alignItems:"center", gap:7, background:T.gray100, borderRadius:8, padding:"6px 11px" }}>
                 <Search size={13} color={T.slate}/>
                 <input placeholder="Search..." style={{ border:"none", background:"transparent", fontSize:13, outline:"none", width:140, color:T.gray900 }}/>
@@ -2498,7 +2656,7 @@ export default function WealthscapePrototype() {
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp}/>}
-          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
+          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={setActiveProfileId} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
 
