@@ -360,7 +360,7 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile, spotlightRec
             </div>
             <div style={{ fontSize: isMobile ? 15 : 17, fontWeight: 700, color: T.white, lineHeight: 1.3 }}>{s.title}</div>
           </div>
-          <button onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 6, padding: 6, cursor: "pointer", color: T.gray400, flexShrink: 0, marginLeft: 12, display: "flex", alignItems: "center" }}>
+          <button aria-label="Close tour" title="Close tour" onClick={onClose} style={{ background: "rgba(255,255,255,0.1)", border: "none", borderRadius: 6, padding: 6, cursor: "pointer", color: T.gray400, flexShrink: 0, marginLeft: 12, display: "flex", alignItems: "center" }}>
             <X size={16} />
           </button>
         </div>
@@ -572,7 +572,7 @@ function AlertCenter({ alerts, onAction, onDismiss, onMarkAllRead, onClose, isMo
   return (
     <>
       <div style={{ position:"fixed", inset:0, zIndex:60 }} onClick={onClose} />
-      <div style={{ position:"fixed", top:isMobile?52:56, right:isMobile?8:12, left:isMobile?8:"auto", width:isMobile?"auto":380, maxHeight:"calc(100vh - 80px)", background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, boxShadow:"0 16px 48px rgba(0,0,0,0.18)", zIndex:61, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+      <div style={{ position:"fixed", top:isMobile?98:56, right:isMobile?8:12, left:isMobile?8:"auto", width:isMobile?"auto":380, maxHeight:isMobile?"calc(100vh - 126px)":"calc(100vh - 80px)", background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, boxShadow:"0 16px 48px rgba(0,0,0,0.18)", zIndex:61, overflow:"hidden", display:"flex", flexDirection:"column" }}>
         <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray100}`, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ fontSize:14, fontWeight:700, color:T.gray900 }}>Notifications</span>
@@ -637,9 +637,10 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
 }
 
 // ─── LAYER 1: Morning Brief ────────────────────────────────────────────────────
-function MorningBrief({ bp, alerts, onAction, onDismiss, scenarioStep }) {
+function MorningBrief({ bp, profile, alerts, onAction, onDismiss, scenarioStep }) {
   const [expanded, setExpanded] = useState(null);
   const { isMobile } = bp;
+  const firstName = profile?.shell?.name?.split(" ")[0] || "Jordan";
   const feed = alerts.filter(a => a.type !== "report");
   const highCount   = alerts.filter(a => a.severity === "high"   && !a.read).length;
   const taxCount    = alerts.filter(a => a.type === "tax"        && !a.read).length;
@@ -653,7 +654,7 @@ function MorningBrief({ bp, alerts, onAction, onDismiss, scenarioStep }) {
           <div style={{ background:T.indigo, borderRadius:8, padding:9, flexShrink:0 }}><Sparkles size={18} color={T.white}/></div>
           <div style={{ flex:1, minWidth:0 }}>
             <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.1em", color:T.indigo, textTransform:"uppercase", marginBottom:4 }}>Morning Brief</div>
-            <div style={{ fontSize:isMobile?15:18, fontWeight:700, color:T.white, marginBottom:8, lineHeight:1.3 }}>Good morning, Jordan. Here's what needs your attention today.</div>
+            <div style={{ fontSize:isMobile?15:18, fontWeight:700, color:T.white, marginBottom:8, lineHeight:1.3 }}>Good morning, {firstName}. Here's what needs your attention today.</div>
             <div style={{ fontSize:13, color:"#A8BCCF", lineHeight:1.5, marginBottom:12 }}>{openCount} active alert{openCount!==1?"s":""} across your book. AUA up 2.3% MTD to $1.57B.</div>
             <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
               {[{label:`${highCount} High Priority`,c:T.red,bg:"rgba(239,68,68,0.2)"},{label:`${taxCount} Tax Opportunity`,c:"#A78BFA",bg:"rgba(91,79,190,0.3)"},{label:`${reviewCount} Review Overdue`,c:T.amber,bg:"rgba(245,158,11,0.2)"}].map(c=>(
@@ -2493,7 +2494,7 @@ function IntegrationHub({ bp, deepLink }) {
                 <div style={{ fontSize:13, fontWeight:700, color:T.white }}>{selInteg.name}</div>
                 <div style={{ fontSize:11, color:"#94A3B8", marginTop:2 }}>Data Field Mapping</div>
               </div>
-              <button onClick={()=>setSelected(null)} style={{ background:"rgba(255,255,255,0.1)", border:"none", borderRadius:6, padding:6, cursor:"pointer", color:T.gray400, display:"flex" }}><X size={15}/></button>
+              <button aria-label="Close integration detail" title="Close integration detail" onClick={()=>setSelected(null)} style={{ background:"rgba(255,255,255,0.1)", border:"none", borderRadius:6, padding:6, cursor:"pointer", color:T.gray400, display:"flex" }}><X size={15}/></button>
             </div>
 
             <div style={{ padding:"12px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", gap:12, flexWrap:"wrap" }}>
@@ -2682,7 +2683,7 @@ function EmailModal({ onSend, onClose, isMobile }) {
               <div style={{ fontSize:11, color:"#94A3B8" }}>Q2 2025 Quarterly Review · Sarah & Michael Chen</div>
             </div>
           </div>
-          <button onClick={onClose} style={{ background:"rgba(255,255,255,0.1)", border:"none", borderRadius:6, padding:6, cursor:"pointer", color:T.gray400, display:"flex" }}><X size={16}/></button>
+          <button aria-label="Close send modal" title="Close send modal" onClick={onClose} style={{ background:"rgba(255,255,255,0.1)", border:"none", borderRadius:6, padding:6, cursor:"pointer", color:T.gray400, display:"flex" }}><X size={16}/></button>
         </div>
 
         {sent ? (
@@ -2866,7 +2867,7 @@ export default function WealthscapePrototype() {
             <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Reporting 2.0</div>
           </div>
         </div>
-        {!isDesktop && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:4, color:T.gray400 }} onClick={()=>setSidebarOpen(false)}><X size={18}/></button>}
+        {!isDesktop && <button aria-label="Close navigation" title="Close navigation" style={{ background:"transparent", border:"none", cursor:"pointer", padding:4, color:T.gray400 }} onClick={()=>setSidebarOpen(false)}><X size={18}/></button>}
       </div>
       <div style={{ padding:"12px 18px", borderBottom:`1px solid rgba(255,255,255,0.08)`, display:"flex", gap:10, alignItems:"center" }}>
         <div style={{ width:30, height:30, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:T.white, flexShrink:0 }}>{activeProfile.shell.initials}</div>
@@ -2910,7 +2911,7 @@ export default function WealthscapePrototype() {
       <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden", minWidth:0 }}>
         <div style={{ background:T.white, borderBottom:`1px solid ${T.gray200}`, padding:"0 16px", display:"flex", alignItems:"center", justifyContent:"space-between", height:52, flexShrink:0, gap:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            {!isDesktop && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600, display:"flex", alignItems:"center" }} onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>}
+            {!isDesktop && <button aria-label="Open navigation" title="Open navigation" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600, display:"flex", alignItems:"center" }} onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>}
             <div>
               {!isMobile && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Wealthscape Reporting 2.0</div>}
               <div style={{ fontSize:14, fontWeight:700, color:T.gray900 }}>{layerLabels[activeLayer]}</div>
@@ -2926,14 +2927,14 @@ export default function WealthscapePrototype() {
                 <input placeholder="Search..." style={{ border:"none", background:"transparent", fontSize:13, outline:"none", width:140, color:T.gray900 }}/>
               </div>
             )}
-            {isMobile && <button style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
-            <button onClick={startScenario} data-demo="scenario-button" style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
+            {isMobile && <button aria-label="Search prototype" title="Search" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
+            <button aria-label={scenarioActive?"Restart scenario":"Run scenario"} title={scenarioActive?"Restart scenario":"Run scenario"} onClick={startScenario} data-demo="scenario-button" style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
               <Target size={14}/>{!isMobile&&(scenarioActive?" Restart":" Scenario")}
             </button>
-            <button onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
+            <button aria-label="Take tour" title="Take tour" onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
               <PlayCircle size={14}/>{!isMobile&&" Tour"}
             </button>
-            <button onClick={()=>setAlertsOpen(o=>!o)} data-demo="alert-bell" style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
+            <button aria-label="Open alert center" title="Open alert center" onClick={()=>setAlertsOpen(o=>!o)} data-demo="alert-bell" style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
               <Bell size={18} color={alertsOpen?T.gray900:T.slate}/>
               {unreadAlerts > 0 && (
                 <div style={{ position:"absolute", top:-1, right:-1, minWidth:16, height:16, padding:"0 3px", borderRadius:99, background:T.red, border:`2px solid ${T.white}`, display:"flex", alignItems:"center", justifyContent:"center" }}>
@@ -2944,12 +2945,22 @@ export default function WealthscapePrototype() {
           </div>
         </div>
 
+        {isMobile && (
+          <div style={{ background:T.white, borderBottom:`1px solid ${T.gray200}`, padding:"8px 12px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexShrink:0 }}>
+            <div style={{ minWidth:0 }}>
+              <div style={{ fontSize:9, color:T.slate, fontWeight:800, letterSpacing:"0.08em", textTransform:"uppercase" }}>Profile view</div>
+              <div style={{ fontSize:12, fontWeight:700, color:T.gray900, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{activeProfile.shell.name}</div>
+            </div>
+            <ProfileSwitcher profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={setActiveProfileId} compact/>
+          </div>
+        )}
+
         {alertsOpen && (
           <AlertCenter alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onMarkAllRead={markAllRead} onClose={()=>setAlertsOpen(false)} isMobile={isMobile}/>
         )}
 
         <div style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          {activeLayer==="morning"       && <MorningBrief    bp={bp} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} scenarioStep={scenarioActive?scenarioStep:null}/>}
+          {activeLayer==="morning"       && <MorningBrief    bp={bp} profile={activeProfile} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} scenarioStep={scenarioActive?scenarioStep:null}/>}
           {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>}
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
