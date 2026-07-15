@@ -1611,6 +1611,7 @@ const BD_WORKSPACES = {
     ],
   },
   hybrid: {
+    variant:"hybrid",
     eyebrow:"Hybrid Team Workspace",
     title:"Relationship 360 Action Queue",
     intro:"A team view that connects brokerage, advisory, planning, account-opening, and supervision blockers to client-ready actions.",
@@ -1626,6 +1627,33 @@ const BD_WORKSPACES = {
       { title:"Q2 report needs brokerage disclosure", meta:"AI narrative generated · disclosure pending", action:"Send to principal review", severity:"Watch" },
     ],
     actions:["Open blocker strip", "Generate hybrid report narrative", "Route team action"],
+    bookSplit:[
+      { label:"Advisory AUM", value:"$680M", pct:62, tone:"green", note:"Fee-based planning, managed accounts, IPS-driven reviews" },
+      { label:"Brokerage trails", value:"$210M", pct:19, tone:"indigo", note:"Legacy positions, commission history, trade confirmations" },
+      { label:"Annuity/insurance", value:"$94M", pct:12, tone:"amber", note:"Suitability, replacement rules, carrier paperwork" },
+      { label:"Cash and lending", value:"$41M", pct:7, tone:"slate", note:"Liquidity, sweep, credit, and pending transfer context" },
+    ],
+    reportingModes:[
+      { title:"Advisory review", desc:"Show IPS, fee, allocation drift, benchmark, and planning progress in client language.", status:"Ready" },
+      { title:"Brokerage activity", desc:"Separate trades, confirmations, commissions, product disclosures, and non-discretionary context.", status:"Needs disclosure" },
+      { title:"Household narrative", desc:"Explain why managed, brokerage, annuity, and cash pieces belong in one relationship plan.", status:"Principal review" },
+    ],
+    workflows:[
+      { title:"Roth conversion + advisory account", owner:"Lead Advisor", stage:"Client-ready packet", blocker:"Tax projection disclosure", action:"Package client explanation", severity:"High" },
+      { title:"Structured note discussion", owner:"CSA + Principal", stage:"Suitability review", blocker:"Concentration and liquidity notes", action:"Resolve product hold", severity:"Critical" },
+      { title:"Annuity service request", owner:"Operations", stage:"Carrier paperwork", blocker:"Beneficiary update missing", action:"Send signature packet", severity:"Watch" },
+    ],
+    constraints:[
+      { label:"Compensation context", text:"Flag advisory fee, brokerage commission, trail, and annuity compensation differences before narrative generation." },
+      { label:"Product shelf limits", text:"Show whether a recommendation is approved, restricted, grandfathered, or requires supervision evidence." },
+      { label:"Account opening rules", text:"Track NIGO, ACAT, suitability, CIP, e-signature, and principal-review blockers in one client strip." },
+      { label:"Client communication", text:"Use approved disclosure blocks when advisory and brokerage recommendations appear in the same report." },
+    ],
+    productivity:[
+      { label:"Duplicate status checks", before:"6 tools", after:"1 queue" },
+      { label:"Client-ready narrative", before:"42 min", after:"8 min" },
+      { label:"Team owner clarity", before:"Manual handoff", after:"Named owner" },
+    ],
   },
 };
 
@@ -1817,8 +1845,124 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
   );
 }
 
+function HybridAdvisorWorkspace({ workspace, isMobile }) {
+  const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green, slate:T.slate }[tone] || T.slate);
+  const toneBg = tone => ({ red:T.redLt, amber:T.amberLt, indigo:T.indigoLt, green:T.greenLt, slate:T.gray100 }[tone] || T.gray100);
+  const severityColor = severity => severity==="Critical" ? T.red : severity==="High" ? T.amber : T.indigo;
+
+  return (
+    <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
+      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", borderBottom:`1px solid ${T.gray100}` }}>
+          {workspace.metrics.map((m,i)=>(
+            <div key={m.label} style={{ padding:"14px 16px", borderLeft:i&&!isMobile?`1px solid ${T.gray100}`:"none", borderTop:i>1&&isMobile?`1px solid ${T.gray100}`:"none" }}>
+              <div style={{ fontSize:22, fontWeight:800, color:toneColor(m.tone), letterSpacing:"-0.02em" }}>{m.value}</div>
+              <div style={{ fontSize:10.5, color:T.slate, fontWeight:700, letterSpacing:"0.04em", textTransform:"uppercase", marginTop:3 }}>{m.label}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ padding:isMobile?"14px":"18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:16 }}>
+          <div style={{ border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:12 }}>
+            <div>
+              <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Book Split</div>
+              <div style={{ fontSize:13, color:T.gray600, lineHeight:1.5, marginTop:4 }}>Amina needs the household view to stay honest about which assets are advisory, brokerage, annuity, or cash.</div>
+            </div>
+            {workspace.bookSplit.map(item=>(
+              <div key={item.label}>
+                <div style={{ display:"flex", justifyContent:"space-between", gap:10, marginBottom:5, alignItems:"baseline" }}>
+                  <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{item.label}</div>
+                  <div style={{ fontSize:12, fontWeight:800, color:toneColor(item.tone), whiteSpace:"nowrap" }}>{item.value} · {item.pct}%</div>
+                </div>
+                <div style={{ height:7, background:T.gray100, borderRadius:99, overflow:"hidden", marginBottom:5 }}>
+                  <div style={{ width:`${item.pct}%`, height:"100%", background:toneColor(item.tone), borderRadius:99 }}/>
+                </div>
+                <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.4 }}>{item.note}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+            <div>
+              <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Client Reporting Modes</div>
+              <div style={{ fontSize:13, color:T.gray600, lineHeight:1.5, marginTop:4 }}>The report builder has to keep advisory advice, brokerage activity, and household narrative distinct.</div>
+            </div>
+            {workspace.reportingModes.map(mode=>(
+              <div key={mode.title} style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"11px 12px" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", gap:10, alignItems:"flex-start", marginBottom:4 }}>
+                  <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{mode.title}</div>
+                  <span style={{ background:mode.status==="Ready"?T.greenLt:mode.status==="Needs disclosure"?T.amberLt:T.indigoLt, color:mode.status==="Ready"?T.green:mode.status==="Needs disclosure"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:9.5, fontWeight:800, whiteSpace:"nowrap" }}>{mode.status}</span>
+                </div>
+                <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45 }}>{mode.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ padding:isMobile?"0 14px 14px":"0 18px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.35fr 0.65fr", gap:16 }}>
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
+              <div>
+                <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Account + Product Workflow</div>
+                <div style={{ fontSize:12, color:T.gray600, marginTop:3 }}>Every row shows the client-ready action, owner, and blocker type.</div>
+              </div>
+            </div>
+            {workspace.workflows.map(item=>(
+              <div key={item.title} style={{ border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 14px", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row" }}>
+                <div style={{ flex:1 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5, flexWrap:"wrap" }}>
+                    <span style={{ background:`${severityColor(item.severity)}18`, color:severityColor(item.severity), borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
+                    <span style={{ fontSize:13, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{item.title}</span>
+                  </div>
+                  <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{item.stage} · {item.owner}</div>
+                  <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:3 }}>Blocker: {item.blocker}</div>
+                </div>
+                <button style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Client-Ready Actions</div>
+              {workspace.actions.map(action=>(
+                <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                  {action}<ChevronRight size={14} color={T.slate}/>
+                </button>
+              ))}
+            </div>
+            <div style={{ background:T.greenLt, border:`1px solid ${T.green}26`, borderRadius:10, padding:"13px 14px" }}>
+              <div style={{ fontSize:10, fontWeight:800, color:T.green, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:8 }}>Advisor Productivity</div>
+              {workspace.productivity.map((item,i)=>(
+                <div key={item.label} style={{ paddingTop:i?9:0, marginTop:i?9:0, borderTop:i?`1px solid ${T.green}20`:"none" }}>
+                  <div style={{ fontSize:11.5, fontWeight:800, color:T.gray900, marginBottom:3 }}>{item.label}</div>
+                  <div style={{ display:"flex", alignItems:"center", gap:7, fontSize:11.5, color:T.gray600 }}>
+                    <span>{item.before}</span><ChevronRight size={13} color={T.green}/><span style={{ fontWeight:800, color:T.green }}>{item.after}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ padding:isMobile?"0 14px 14px":"0 18px 18px" }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(4, 1fr)", gap:10 }}>
+            {workspace.constraints.map(item=>(
+              <div key={item.label} style={{ background:toneBg(item.label==="Compensation context"?"amber":item.label==="Product shelf limits"?"indigo":item.label==="Account opening rules"?"red":"green"), border:`1px solid ${T.gray200}`, borderRadius:10, padding:"11px 12px" }}>
+                <div style={{ fontSize:11.5, fontWeight:800, color:T.gray900, marginBottom:5, lineHeight:1.3 }}>{item.label}</div>
+                <div style={{ fontSize:11.2, color:T.gray600, lineHeight:1.45 }}>{item.text}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </StratSection>
+  );
+}
+
 function BrokerDealerWorkspace({ workspace, isMobile }) {
   if (!workspace) return null;
+  if (workspace.variant === "hybrid") return <HybridAdvisorWorkspace workspace={workspace} isMobile={isMobile}/>;
   const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green }[tone] || T.slate);
   const toneBg = tone => `${toneColor(tone)}14`;
   const operatingPanels = workspace.operatingPanels || [];
