@@ -1567,7 +1567,7 @@ const DEFAULT_PROFILE_ID = "ria";
 const PROFILE_ORDER = [DEFAULT_PROFILE_ID, "bd-home-office", "bd-osj-principal", "bd-hybrid-advisor"];
 const STRATEGY_PROFILES = {
   ria: makeProfile({
-    id:"ria",
+    id:DEFAULT_PROFILE_ID,
     label:"RIA Advisor",
     shortLabel:"RIA",
     eyebrow:"Independent advisor view",
@@ -1682,11 +1682,13 @@ function StratSection({ eyebrow, title, intro, children }) {
 }
 
 function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileChange, compact = false }) {
+  const selectedProfileId = profiles[activeProfileId] ? activeProfileId : profileOrder[0];
+
   return (
     <label style={{ display:"flex", alignItems:"center", gap:8, minWidth:compact?120:180 }}>
       {!compact && <span style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", whiteSpace:"nowrap" }}>Profile</span>}
       <select
-        value={activeProfileId}
+        value={selectedProfileId}
         onChange={e=>onProfileChange(e.target.value)}
         style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
       >
