@@ -1360,7 +1360,35 @@ const BD_MARKET_SIGNALS = [
   { tag:"Advisor Mobility", stat:"Hybrid growth", source:"Cerulli / Schwab", icon:Users, body:"Advisors continue to evaluate affiliation models around technology flexibility, support, custody choice, and independence. Platform friction is a retention signal." },
 ];
 
+const BD_HOME_MARKET_SIGNALS = [
+  BD_MARKET_SIGNALS[0],
+  BD_MARKET_SIGNALS[1],
+  BD_MARKET_SIGNALS[2],
+  BD_MARKET_SIGNALS[3],
+  BD_MARKET_SIGNALS[4],
+  BD_MARKET_SIGNALS[5],
+];
+
+const BD_OSJ_MARKET_SIGNALS = [
+  { tag:"Branch Supervision", stat:"2026", source:"FINRA Oversight", icon:AlertTriangle, body:"FINRA's 2026 priorities make branch-level evidence, communications review, senior-investor protection, and escalation discipline a daily operating burden for local principals." },
+  { tag:"Exception Context", stat:"Local", source:"FINRA supervision themes", icon:Activity, body:"Home-office alerts only become useful when the OSJ can connect them to the rep, client, product, aging, and evidence needed for a review-ready decision." },
+  { tag:"GenAI In The Field", stat:"Rules apply", source:"FINRA GenAI", icon:Sparkles, body:"Advisor use of GenAI in narratives, emails, and next-best-action drafting still needs local supervision, approved-use boundaries, and explainable review trails." },
+  { tag:"Records Pressure", stat:"17a-4", source:"SIFMA retention comment", icon:FileText, body:"Modern communications retention remains unresolved for broker-dealers and dual registrants, which keeps OSJs exposed when evidence is spread across tools." },
+  { tag:"Rep Development", stat:"42 reps", source:"Profile packet", icon:Users, body:"The branch principal's real unit of work is often coaching: repeated exception patterns should turn into rep-specific training before they become complaints or audit findings." },
+  { tag:"Advisor Mobility", stat:"Friction risk", source:"Cerulli / Schwab", icon:TrendingUp, body:"Technology flexibility and support quality influence affiliation decisions. Local friction and unresolved escalations are early warning signals for advisor retention." },
+];
+
+const BD_HYBRID_MARKET_SIGNALS = [
+  { tag:"Hybrid Growth", stat:"RIA + BD", source:"Cerulli / Schwab", icon:Users, body:"Hybrid and independent affiliation channels keep growing as advisors seek flexibility, custody choice, and more control over the client experience." },
+  { tag:"Wealth Trends", stat:"2026", source:"Fidelity trends", icon:TrendingUp, body:"Fidelity's 2026 wealth-management trends point to AI, new asset classes, cybersecurity, M&A, and broader definitions of wealthy-investor success." },
+  { tag:"Mixed Book", stat:"Many rails", source:"Profile packet", icon:Layers, body:"Brokerage, advisory, annuity, insurance, planning, cash, suitability, and account-opening work often sit in separate systems even when the client sees one relationship." },
+  { tag:"Client Explanation", stat:"Approved", source:"FINRA / Fidelity AI", icon:FileText, body:"Client-ready narratives need to distinguish brokerage activity, advisory recommendations, product disclosures, and approved language without sending the team into manual rewrite mode." },
+  { tag:"Workflow Blocks", stat:"Visible", source:"Fidelity trends", icon:AlertTriangle, body:"Account, product, suitability, supervision, and missing-data blockers need to appear in the same place as the recommendation the advisor is trying to deliver." },
+  { tag:"GenAI Governance", stat:"Rules apply", source:"FINRA GenAI", icon:Sparkles, body:"AI can help hybrid teams explain complex relationships, but the output must carry policy status, supervision context, retention evidence, and product constraints." },
+];
+
 const BD_CAPABILITIES = [
+  { capability:"Advisor-branded reporting", fidelity:"The current prototype improves on legacy Wealthscape reporting, but it is still centered on the independent-RIA use case.", rating:"partial", competitor:"Addepar, Advyzon, and Envestnet reporting ecosystems support richer advisor-branded reporting and client-facing presentation workflows.", source:"Research packet", gap:"Needs broker-dealer role context, supervision state, and multi-affiliation reporting." },
   { capability:"Enterprise supervision and evidence trail", fidelity:"Report-pipeline audit concepts exist in the RIA prototype, but supervisory queues are not represented.", rating:"partial", competitor:"Smarsh, Global Relay, and supervision/regtech workflows specialize in communications capture, review, retention, and evidence trails.", source:"FINRA / SIFMA", gap:"Needs integrated supervision workbench and retention/evidence status inside the daily platform." },
   { capability:"AI governance and review", fidelity:"AI narrative compliance review is visible, but there is no approved-use policy status or enterprise review queue.", rating:"partial", competitor:"Enterprise AI governance programs pair approved-use controls with activity review and model-risk monitoring.", source:"FINRA GenAI / Fidelity AI", gap:"Needs policy-aware AI status, user activity visibility, and review routing." },
   { capability:"Advisor productivity telemetry", fidelity:"The prototype shows book/client signals, not advisor adoption, support friction, or field productivity.", rating:"none", competitor:"Large wealth platforms and CRM/product analytics stacks track adoption, support, activity, and revenue impact together.", source:"Fidelity trends / Cerulli", gap:"Needs adoption, exception, support, and revenue context in one view." },
@@ -1378,7 +1406,7 @@ const BD_BUILD_BUY = [
 
 const BD_HOME_STATS = [
   { value:"6", label:"High-priority home-office outcomes" },
-  { value:"14.2–16.5", label:"ODI opportunity scores" },
+  { value:"14.0–16.5", label:"ODI opportunity scores" },
   { value:"4", label:"Enterprise moves" },
   { value:"8-step", label:"Supervision-to-action map" },
 ];
@@ -1474,15 +1502,72 @@ const BD_WORKSPACES = {
     metrics:[
       { label:"High-risk branches", value:"7", tone:"red" },
       { label:"AI reviews due", value:"42", tone:"amber" },
-      { label:"Advisor friction index", value:"+18%", tone:"amber" },
+      { label:"Productivity lift", value:"+11%", tone:"green" },
       { label:"Retention watchlist", value:"23", tone:"indigo" },
     ],
     queue:[
-      { title:"Off-channel communications spike", meta:"Northeast region · 18 advisors · 3-day trend", action:"Open supervision packet", severity:"Critical" },
-      { title:"Unapproved AI narrative usage", meta:"Retirement income reports · 11 generated summaries", action:"Route to AI review", severity:"High" },
-      { title:"Platform adoption drop", meta:"Commonwealth-transition segment · reporting usage -24%", action:"Assign field intervention", severity:"Watch" },
+      { title:"Off-channel communications spike", meta:"Northeast region · 18 advisors · 3-day trend · 71 messages pending capture", action:"Open supervision packet", severity:"Critical" },
+      { title:"Unapproved AI narrative usage", meta:"Retirement income reports · 11 generated summaries · 5 client-ready drafts", action:"Route to AI review", severity:"High" },
+      { title:"Platform adoption drop", meta:"Commonwealth-transition segment · reporting usage -24% · ticket volume +31%", action:"Assign field intervention", severity:"Watch" },
     ],
     actions:["Review AI policy exceptions", "Open advisor-retention watchlist", "Export branch evidence packet"],
+    operatingPanels:[
+      {
+        title:"Supervision and risk queue",
+        icon:AlertTriangle,
+        tone:"red",
+        summary:"Sort review work by regulatory risk, client impact, aging, and evidence completeness instead of raw timestamp.",
+        rows:[
+          { label:"Critical aging", value:"19", detail:"Items over SLA with client impact" },
+          { label:"Evidence ready", value:"68%", detail:"Packets complete enough for final review" },
+          { label:"Owner gaps", value:"12", detail:"No supervisor or field owner assigned" },
+        ],
+      },
+      {
+        title:"Advisor productivity snapshot",
+        icon:TrendingUp,
+        tone:"green",
+        summary:"Show whether platform use is improving the field's capacity or creating avoidable friction.",
+        rows:[
+          { label:"NBA completion", value:"54%", detail:"+9 pts after routed alerts" },
+          { label:"Report cycle time", value:"-37%", detail:"Median prep time vs manual baseline" },
+          { label:"Escalation drag", value:"2.4d", detail:"Average wait from field signal to action" },
+        ],
+      },
+      {
+        title:"Platform adoption signals",
+        icon:Activity,
+        tone:"indigo",
+        summary:"Treat declining usage, repeated tickets, and training misses as early operational signals.",
+        rows:[
+          { label:"At-risk cohorts", value:"5", detail:"Low adoption plus high exception load" },
+          { label:"Power users", value:"211", detail:"Candidates for champion or pilot programs" },
+          { label:"Training need", value:"34", detail:"Advisors stalled after first report draft" },
+        ],
+      },
+      {
+        title:"Governance and surveillance",
+        icon:Eye,
+        tone:"amber",
+        summary:"Tie AI activity, communications review, retention status, and surveillance evidence to the same action path.",
+        rows:[
+          { label:"AI policy exceptions", value:"42", detail:"Narratives, prompts, or disclosures need review" },
+          { label:"Surveillance hits", value:"27", detail:"Trade, product, and communication patterns" },
+          { label:"Retention gaps", value:"8", detail:"Capture or archive failures before closure" },
+        ],
+      },
+    ],
+    retentionSignals:[
+      { advisor:"Southeast growth team", risk:"High", trigger:"Adoption down 29%, support tickets up 41%, two large-client delays", route:"Field leadership + product ops" },
+      { advisor:"Pacific hybrid cohort", risk:"Watch", trigger:"Repeated annuity workflow blockers and low narrative-clearance rate", route:"Training + supervision review" },
+      { advisor:"Northeast enterprise group", risk:"Critical", trigger:"Off-channel spike overlaps with recruiting outreach pattern", route:"Supervision + retention lead" },
+    ],
+    routingLanes:[
+      { label:"Supervision", count:"31", desc:"Exceptions, communications, trade surveillance, and evidence closure" },
+      { label:"AI Governance", count:"42", desc:"Approved-use status, narrative review, prompt audit, and model-risk monitoring" },
+      { label:"Product Ops", count:"18", desc:"Workflow blockers, defect clusters, adoption friction, and roadmap evidence" },
+      { label:"Field Leadership", count:"23", desc:"Retention risk, coaching, recruiting defense, and champion programs" },
+    ],
   },
   osj: {
     eyebrow:"OSJ Workspace",
@@ -1490,7 +1575,7 @@ const BD_WORKSPACES = {
     intro:"A local queue that turns home-office findings into rep-specific action, coaching, escalation, and evidence.",
     metrics:[
       { label:"Aging exceptions", value:"31", tone:"red" },
-      { label:"Repeated rep patterns", value:"8", tone:"amber" },
+      { label:"Rep support queue", value:"18", tone:"amber" },
       { label:"Escalations pending", value:"6", tone:"indigo" },
       { label:"Evidence complete", value:"84%", tone:"green" },
     ],
@@ -1500,8 +1585,34 @@ const BD_WORKSPACES = {
       { title:"Repeat NIGO trend", meta:"Three newer reps · account transfers", action:"Assign branch training", severity:"Watch" },
     ],
     actions:["Open branch exception queue", "Create rep coaching plan", "Package escalation evidence"],
+    exceptionReview:[
+      { severity:"Critical", title:"VA replacement disclosure gap", rep:"L. Benton", clients:"2 clients", aging:"4d", pattern:"3rd disclosure miss this quarter", evidence:"Missing signed rider", route:"Rep coaching + branch attestation" },
+      { severity:"High", title:"Concentrated equity rationale", rep:"R. Patel", clients:"$8.1M household", aging:"2d", pattern:"Single-order exposure > policy threshold", evidence:"Trade note incomplete", route:"Home-office supervision packet" },
+      { severity:"Watch", title:"Transfer NIGO cluster", rep:"New rep cohort", clients:"7 transfers", aging:"6d", pattern:"Repeat beneficiary mismatch", evidence:"Forms captured, checklist missing", route:"Group office-hours training" },
+    ],
+    repSupport:[
+      { rep:"L. Benton", need:"Disclosure language review", queue:"5 open", sla:"Today", tone:"red" },
+      { rep:"M. Okafor", need:"ACAT paperwork correction", queue:"3 open", sla:"24h", tone:"amber" },
+      { rep:"R. Patel", need:"Trade rationale template", queue:"2 open", sla:"48h", tone:"indigo" },
+    ],
+    complianceLoad:[
+      { label:"Reviews due today", value:"12", note:"6 are high-impact households", tone:"red" },
+      { label:"Principal attestations", value:"9", note:"3 require evidence follow-up", tone:"amber" },
+      { label:"Training actions", value:"4", note:"Two reps share same pattern", tone:"indigo" },
+    ],
+    bookHealth:[
+      { rep:"L. Benton", book:"$186M", risk:"High", driver:"Disclosure repeat pattern", support:"Coaching note drafted", tone:"red" },
+      { rep:"M. Okafor", book:"$142M", risk:"Medium", driver:"Transfer paperwork aging", support:"Ops queue paired", tone:"amber" },
+      { rep:"D. Mensah", book:"$214M", risk:"Low", driver:"Clean evidence trail", support:"Use as branch model", tone:"green" },
+    ],
+    escalationRoutes:[
+      { route:"Home Office Supervision", trigger:"Policy threshold or incomplete evidence after 48h", owner:"Branch principal", handoff:"Exception packet + rep notes" },
+      { route:"Product Specialist", trigger:"Annuity, alternatives, or structured product question", owner:"Rep support lead", handoff:"Client context + suitability flags" },
+      { route:"Operations Desk", trigger:"NIGO, ACAT, account-opening, or missing document issue", owner:"Office manager", handoff:"Form status + next required field" },
+    ],
   },
   hybrid: {
+    variant:"hybrid",
     eyebrow:"Hybrid Team Workspace",
     title:"Relationship 360 Action Queue",
     intro:"A team view that connects brokerage, advisory, planning, account-opening, and supervision blockers to client-ready actions.",
@@ -1517,6 +1628,33 @@ const BD_WORKSPACES = {
       { title:"Q2 report needs brokerage disclosure", meta:"AI narrative generated · disclosure pending", action:"Send to principal review", severity:"Watch" },
     ],
     actions:["Open blocker strip", "Generate hybrid report narrative", "Route team action"],
+    bookSplit:[
+      { label:"Advisory AUM", value:"$680M", pct:62, tone:"green", note:"Fee-based planning, managed accounts, IPS-driven reviews" },
+      { label:"Brokerage trails", value:"$210M", pct:19, tone:"indigo", note:"Legacy positions, commission history, trade confirmations" },
+      { label:"Annuity/insurance", value:"$94M", pct:12, tone:"amber", note:"Suitability, replacement rules, carrier paperwork" },
+      { label:"Cash and lending", value:"$41M", pct:7, tone:"slate", note:"Liquidity, sweep, credit, and pending transfer context" },
+    ],
+    reportingModes:[
+      { title:"Advisory review", desc:"Show IPS, fee, allocation drift, benchmark, and planning progress in client language.", status:"Ready" },
+      { title:"Brokerage activity", desc:"Separate trades, confirmations, commissions, product disclosures, and non-discretionary context.", status:"Needs disclosure" },
+      { title:"Household narrative", desc:"Explain why managed, brokerage, annuity, and cash pieces belong in one relationship plan.", status:"Principal review" },
+    ],
+    workflows:[
+      { title:"Roth conversion + advisory account", owner:"Lead Advisor", stage:"Client-ready packet", blocker:"Tax projection disclosure", action:"Package client explanation", severity:"High" },
+      { title:"Structured note discussion", owner:"CSA + Principal", stage:"Suitability review", blocker:"Concentration and liquidity notes", action:"Resolve product hold", severity:"Critical" },
+      { title:"Annuity service request", owner:"Operations", stage:"Carrier paperwork", blocker:"Beneficiary update missing", action:"Send signature packet", severity:"Watch" },
+    ],
+    constraints:[
+      { label:"Compensation context", text:"Flag advisory fee, brokerage commission, trail, and annuity compensation differences before narrative generation." },
+      { label:"Product shelf limits", text:"Show whether a recommendation is approved, restricted, grandfathered, or requires supervision evidence." },
+      { label:"Account opening rules", text:"Track NIGO, ACAT, suitability, CIP, e-signature, and principal-review blockers in one client strip." },
+      { label:"Client communication", text:"Use approved disclosure blocks when advisory and brokerage recommendations appear in the same report." },
+    ],
+    productivity:[
+      { label:"Duplicate status checks", before:"6 tools", after:"1 queue" },
+      { label:"Client-ready narrative", before:"42 min", after:"8 min" },
+      { label:"Team owner clarity", before:"Manual handoff", after:"Named owner" },
+    ],
   },
 };
 
@@ -1540,6 +1678,7 @@ const makeProfile = ({
   capabilities = [],
   buildBuy = [],
   workspace = null,
+  opportunitySummary = "Nine of eleven outcomes land in the underserved zone, confirming a real, fundable gap rather than incremental polish.",
 }) => ({
   id,
   label,
@@ -1561,6 +1700,7 @@ const makeProfile = ({
     capabilities,
     buildBuy,
     workspace,
+    opportunitySummary,
   },
 });
 
@@ -1587,11 +1727,11 @@ const STRATEGY_PROFILES = {
     shell:{ initials:"MO", name:"Maya Okonkwo", role:"Head of Platform Strategy" },
     heroTitle:"Broker-dealer home-office strategy",
     heroBody:"The broker-dealer home office has a different job than an independent RIA: scale advisor productivity while making supervision, AI governance, platform risk, and field friction visible before they become regulatory or retention issues.",
-    persona:{ initials:"MO", name:"Maya Okonkwo", role:"Head of Platform Strategy · National Broker-Dealer", details:[["Firm","8,000 affiliated reps"],["Model","Multi-custodial clearing"],["Goal","Scale advisor productivity while keeping supervision, AI, and platform risk visible"]] },
+    persona:{ initials:"MO", name:"Maya Okonkwo", role:"Head of Platform Strategy · National Broker-Dealer", details:[["Firm","8,000 affiliated reps"],["Model","Multi-custodial clearing"],["Revenue","Mixed brokerage and advisory"],["Governance","Centralized supervision and product governance"],["Goal","Scale advisor productivity while keeping supervision, AI, and platform risk visible"]] },
     customerIntro:"The home-office executor owns platform strategy, supervision load, AI policy, advisor adoption, and retention risk across a large affiliated network.",
     jobIntro:"The home-office job is to turn scattered risk, adoption, and field-friction signals into governed action without slowing productive advisors.",
     stats:BD_HOME_STATS,
-    marketSignals:BD_MARKET_SIGNALS,
+    marketSignals:BD_HOME_MARKET_SIGNALS,
     customerPains:BD_HOME_PAINS,
     outcomes:BD_HOME_OUTCOMES,
     jobMap:makeBdJobMap("Set the enterprise risk and productivity priorities", "Find advisor, branch, product, AI, and communications signals", "Normalize signals into a governed operating queue", "Confirm policy, retention, evidence, and owner readiness", "Route the intervention to supervision, product, training, or field leadership", "Monitor adoption, exception load, and advisor-retention risk", "Adjust controls, training, or product investments", "Close the loop with evidence and field impact"),
@@ -1599,6 +1739,7 @@ const STRATEGY_PROFILES = {
     capabilities:BD_CAPABILITIES,
     buildBuy:BD_BUILD_BUY,
     workspace:BD_WORKSPACES.homeOffice,
+    opportunitySummary:"All six home-office outcomes land at 14.0 or higher, with the critical gap around finding the highest-risk advisor, branch, product, or communications issue fast enough to act.",
   }),
   "bd-osj-principal": makeProfile({
     id:"bd-osj-principal",
@@ -1608,11 +1749,11 @@ const STRATEGY_PROFILES = {
     shell:{ initials:"KN", name:"Kwame Nkrumah", role:"OSJ Principal" },
     heroTitle:"OSJ and branch-principal strategy",
     heroBody:"The OSJ principal sits between the national home office and the producing rep. The prototype strategy shifts from client-reporting scale to exception triage, rep support, evidence, and local growth visibility.",
-    persona:{ initials:"KN", name:"Kwame Nkrumah", role:"OSJ Principal · Regional Supervisory Unit", details:[["Scope","42 reps"],["Coverage","3 offices"],["Goal","Resolve branch exceptions without slowing client service"]] },
+    persona:{ initials:"KN", name:"Kwame Nkrumah", role:"OSJ Principal · Regional Supervisory Unit", details:[["Scope","42 reps"],["Coverage","3 offices"],["Model","Regional supervisory unit inside a national broker-dealer"],["Accountability","Local compliance, rep coaching, and escalation evidence"],["Goal","Resolve branch exceptions without slowing client service"]] },
     customerIntro:"The OSJ executor needs to keep local rep activity review-ready while helping advisors resolve exceptions and serve clients without waiting on home-office translation.",
     jobIntro:"The OSJ job map turns home-office findings into local prioritization, rep coaching, escalation packets, and evidence-ready closure.",
     stats:BD_OSJ_STATS,
-    marketSignals:BD_MARKET_SIGNALS,
+    marketSignals:BD_OSJ_MARKET_SIGNALS,
     customerPains:BD_OSJ_PAINS,
     outcomes:BD_OSJ_OUTCOMES,
     jobMap:makeBdJobMap("Determine which local exceptions matter first", "Find affected reps, clients, products, and evidence", "Organize exceptions into coachable work", "Confirm severity, evidence, and escalation need", "Resolve, coach, or escalate the branch issue", "Monitor repeated rep friction and aging queues", "Adjust coaching, process, or escalation path", "Close with evidence and branch-level learning"),
@@ -1620,6 +1761,7 @@ const STRATEGY_PROFILES = {
     capabilities:BD_CAPABILITIES,
     buildBuy:BD_BUILD_BUY,
     workspace:BD_WORKSPACES.osj,
+    opportunitySummary:"Four of five OSJ outcomes land in the high or critical opportunity bands, led by faster triage of branch exceptions that block client service or create regulatory risk.",
   }),
   "bd-hybrid-advisor": makeProfile({
     id:"bd-hybrid-advisor",
@@ -1629,11 +1771,11 @@ const STRATEGY_PROFILES = {
     shell:{ initials:"AD", name:"Amina Diallo", role:"Hybrid Advisor" },
     heroTitle:"Hybrid advisor and team strategy",
     heroBody:"The hybrid advisor needs the client relationship to make sense across brokerage, advisory, planning, annuities, product workflows, and supervision context. The broker-dealer strategy has to make that complexity client-ready.",
-    persona:{ initials:"AD", name:"Amina Diallo", role:"Lead Advisor · Hybrid Team", details:[["Team","5-person advisor team"],["Book","$680M advisory assets plus brokerage trails"],["Goal","Serve mixed brokerage/advisory relationships in one client-ready workflow"]] },
+    persona:{ initials:"AD", name:"Amina Diallo", role:"Lead Advisor · Hybrid Team", details:[["Team","5-person advisor team"],["Book","$680M advisory assets plus brokerage trails"],["Products","Brokerage, advisory, annuity, insurance, and planning"],["Supervision","Centralized broker-dealer review"],["Goal","Serve mixed brokerage/advisory relationships in one client-ready workflow"]] },
     customerIntro:"The hybrid advisor executor runs a mixed book where brokerage, advisory, annuity, planning, account-opening, and supervision workflows all affect the client experience.",
     jobIntro:"The hybrid advisor job map connects relationship context, product blockers, suitability, reporting, team ownership, and client-ready communication.",
     stats:BD_HYBRID_STATS,
-    marketSignals:BD_MARKET_SIGNALS,
+    marketSignals:BD_HYBRID_MARKET_SIGNALS,
     customerPains:BD_HYBRID_PAINS,
     outcomes:BD_HYBRID_OUTCOMES,
     jobMap:makeBdJobMap("Clarify the client's full brokerage/advisory objective", "Locate all account, product, planning, and blocker signals", "Prepare a unified relationship view and team action queue", "Confirm suitability, eligibility, supervision, and narrative context", "Create the client-ready recommendation or report", "Monitor blockers, communications, and client response", "Modify ownership, disclosures, or next steps", "Deliver a complete explanation with approved evidence"),
@@ -1641,15 +1783,34 @@ const STRATEGY_PROFILES = {
     capabilities:BD_CAPABILITIES,
     buildBuy:BD_BUILD_BUY,
     workspace:BD_WORKSPACES.hybrid,
+    opportunitySummary:"All five hybrid-advisor outcomes land at 14.0 or higher, with the biggest gap around seeing the full brokerage, advisory, planning, and product relationship in one place.",
   }),
 };
 
-const getProfile = (profiles, profileId) => profiles[profileId] || profiles[DEFAULT_PROFILE_ID];
-const getProfileOptions = (profiles, profileOrder) => {
-  const orderedIds = profileOrder.filter(id => profiles[id]);
-  const unorderedIds = Object.keys(profiles).filter(id => !orderedIds.includes(id));
-  return [...orderedIds, ...unorderedIds].map(id => profiles[id]);
-};
+function createProfileRegistry(profiles, { defaultProfileId, profileOrder }) {
+  const declaredOrder = profileOrder.filter(id => profiles[id]);
+  const extraProfileIds = Object.keys(profiles).filter(id => !declaredOrder.includes(id));
+  const normalizedOrder = [...declaredOrder, ...extraProfileIds];
+
+  return {
+    profiles,
+    profileOrder: normalizedOrder,
+    defaultProfileId: profiles[defaultProfileId] ? defaultProfileId : normalizedOrder[0],
+  };
+}
+
+const PROFILE_REGISTRY = createProfileRegistry(STRATEGY_PROFILES, {
+  defaultProfileId: DEFAULT_PROFILE_ID,
+  profileOrder: PROFILE_ORDER,
+});
+
+function normalizeProfileId(profileId) {
+  return PROFILE_REGISTRY.profiles[profileId] ? profileId : PROFILE_REGISTRY.defaultProfileId;
+}
+
+function getProfileById(profileId) {
+  return PROFILE_REGISTRY.profiles[normalizeProfileId(profileId)];
+}
 
 function StratSection({ eyebrow, title, intro, children }) {
   return (
@@ -1665,8 +1826,7 @@ function StratSection({ eyebrow, title, intro, children }) {
 }
 
 function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileChange, compact = false }) {
-  const profileOptions = getProfileOptions(profiles, profileOrder);
-  const selectedProfileId = profiles[activeProfileId] ? activeProfileId : DEFAULT_PROFILE_ID;
+  const selectedProfileId = profiles[activeProfileId] ? activeProfileId : profileOrder[0];
 
   return (
     <label style={{ display:"flex", alignItems:"center", gap:8, minWidth:compact?120:180 }}>
@@ -1676,15 +1836,21 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
         onChange={e=>onProfileChange(e.target.value)}
         style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
       >
-        {profileOptions.map(profile=><option key={profile.id} value={profile.id}>{profile.label}</option>)}
+        {profileOrder.map(id=>{
+          const profile = profiles[id];
+          if (!profile) return null;
+          return <option key={id} value={id}>{profile.label}</option>;
+        })}
       </select>
     </label>
   );
 }
 
-function BrokerDealerWorkspace({ workspace, isMobile }) {
-  if (!workspace) return null;
-  const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green }[tone] || T.slate);
+function HybridAdvisorWorkspace({ workspace, isMobile }) {
+  const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green, slate:T.slate }[tone] || T.slate);
+  const toneBg = tone => ({ red:T.redLt, amber:T.amberLt, indigo:T.indigoLt, green:T.greenLt, slate:T.gray100 }[tone] || T.gray100);
+  const severityColor = severity => severity==="Critical" ? T.red : severity==="High" ? T.amber : T.indigo;
+
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
       <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
@@ -1696,30 +1862,337 @@ function BrokerDealerWorkspace({ workspace, isMobile }) {
             </div>
           ))}
         </div>
-        <div style={{ padding:isMobile?"14px":"16px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.4fr 0.6fr", gap:16 }}>
+
+        <div style={{ padding:isMobile?"14px":"18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:16 }}>
+          <div style={{ border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:12 }}>
+            <div>
+              <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Book Split</div>
+              <div style={{ fontSize:13, color:T.gray600, lineHeight:1.5, marginTop:4 }}>Amina needs the household view to stay honest about which assets are advisory, brokerage, annuity, or cash.</div>
+            </div>
+            {workspace.bookSplit.map(item=>(
+              <div key={item.label}>
+                <div style={{ display:"flex", justifyContent:"space-between", gap:10, marginBottom:5, alignItems:"baseline" }}>
+                  <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{item.label}</div>
+                  <div style={{ fontSize:12, fontWeight:800, color:toneColor(item.tone), whiteSpace:"nowrap" }}>{item.value} · {item.pct}%</div>
+                </div>
+                <div style={{ height:7, background:T.gray100, borderRadius:99, overflow:"hidden", marginBottom:5 }}>
+                  <div style={{ width:`${item.pct}%`, height:"100%", background:toneColor(item.tone), borderRadius:99 }}/>
+                </div>
+                <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.4 }}>{item.note}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+            <div>
+              <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Client Reporting Modes</div>
+              <div style={{ fontSize:13, color:T.gray600, lineHeight:1.5, marginTop:4 }}>The report builder has to keep advisory advice, brokerage activity, and household narrative distinct.</div>
+            </div>
+            {workspace.reportingModes.map(mode=>(
+              <div key={mode.title} style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"11px 12px" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", gap:10, alignItems:"flex-start", marginBottom:4 }}>
+                  <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{mode.title}</div>
+                  <span style={{ background:mode.status==="Ready"?T.greenLt:mode.status==="Needs disclosure"?T.amberLt:T.indigoLt, color:mode.status==="Ready"?T.green:mode.status==="Needs disclosure"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:9.5, fontWeight:800, whiteSpace:"nowrap" }}>{mode.status}</span>
+                </div>
+                <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45 }}>{mode.desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ padding:isMobile?"0 14px 14px":"0 18px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.35fr 0.65fr", gap:16 }}>
           <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-            {workspace.queue.map(item=>(
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
+              <div>
+                <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Account + Product Workflow</div>
+                <div style={{ fontSize:12, color:T.gray600, marginTop:3 }}>Every row shows the client-ready action, owner, and blocker type.</div>
+              </div>
+            </div>
+            {workspace.workflows.map(item=>(
               <div key={item.title} style={{ border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 14px", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row" }}>
                 <div style={{ flex:1 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
-                    <span style={{ background:`${item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo}18`, color:item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
-                    <span style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>{item.title}</span>
+                  <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5, flexWrap:"wrap" }}>
+                    <span style={{ background:`${severityColor(item.severity)}18`, color:severityColor(item.severity), borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
+                    <span style={{ fontSize:13, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{item.title}</span>
                   </div>
-                  <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.meta}</div>
+                  <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{item.stage} · {item.owner}</div>
+                  <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:3 }}>Blocker: {item.blocker}</div>
                 </div>
                 <button style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
               </div>
             ))}
           </div>
-          <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
-            <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Next Actions</div>
-            {workspace.actions.map(action=>(
-              <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
-                {action}<ChevronRight size={14} color={T.slate}/>
-              </button>
+
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+            <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Client-Ready Actions</div>
+              {workspace.actions.map(action=>(
+                <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                  {action}<ChevronRight size={14} color={T.slate}/>
+                </button>
+              ))}
+            </div>
+            <div style={{ background:T.greenLt, border:`1px solid ${T.green}26`, borderRadius:10, padding:"13px 14px" }}>
+              <div style={{ fontSize:10, fontWeight:800, color:T.green, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:8 }}>Advisor Productivity</div>
+              {workspace.productivity.map((item,i)=>(
+                <div key={item.label} style={{ paddingTop:i?9:0, marginTop:i?9:0, borderTop:i?`1px solid ${T.green}20`:"none" }}>
+                  <div style={{ fontSize:11.5, fontWeight:800, color:T.gray900, marginBottom:3 }}>{item.label}</div>
+                  <div style={{ display:"flex", alignItems:"center", gap:7, fontSize:11.5, color:T.gray600 }}>
+                    <span>{item.before}</span><ChevronRight size={13} color={T.green}/><span style={{ fontWeight:800, color:T.green }}>{item.after}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ padding:isMobile?"0 14px 14px":"0 18px 18px" }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(4, 1fr)", gap:10 }}>
+            {workspace.constraints.map(item=>(
+              <div key={item.label} style={{ background:toneBg(item.label==="Compensation context"?"amber":item.label==="Product shelf limits"?"indigo":item.label==="Account opening rules"?"red":"green"), border:`1px solid ${T.gray200}`, borderRadius:10, padding:"11px 12px" }}>
+                <div style={{ fontSize:11.5, fontWeight:800, color:T.gray900, marginBottom:5, lineHeight:1.3 }}>{item.label}</div>
+                <div style={{ fontSize:11.2, color:T.gray600, lineHeight:1.45 }}>{item.text}</div>
+              </div>
             ))}
           </div>
         </div>
+      </div>
+    </StratSection>
+  );
+}
+
+function BrokerDealerWorkspace({ workspace, isMobile }) {
+  if (!workspace) return null;
+  if (workspace.variant === "hybrid") return <HybridAdvisorWorkspace workspace={workspace} isMobile={isMobile}/>;
+  const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green }[tone] || T.slate);
+  const toneBg = tone => `${toneColor(tone)}14`;
+  const operatingPanels = workspace.operatingPanels || [];
+  const retentionSignals = workspace.retentionSignals || [];
+  const routingLanes = workspace.routingLanes || [];
+  const severityColor = severity => ({ Critical:T.red, High:T.amber, Watch:T.indigo }[severity] || T.slate);
+  return (
+    <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
+      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", borderBottom:`1px solid ${T.gray100}` }}>
+            {workspace.metrics.map((m,i)=>(
+              <div key={m.label} style={{ padding:"14px 16px", borderLeft:i&&!isMobile?`1px solid ${T.gray100}`:"none", borderTop:i>1&&isMobile?`1px solid ${T.gray100}`:"none" }}>
+                <div style={{ fontSize:22, fontWeight:800, color:toneColor(m.tone), letterSpacing:"-0.02em" }}>{m.value}</div>
+                <div style={{ fontSize:10.5, color:T.slate, fontWeight:700, letterSpacing:"0.04em", textTransform:"uppercase", marginTop:3 }}>{m.label}</div>
+              </div>
+            ))}
+          </div>
+          <div style={{ padding:isMobile?"14px":"16px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.4fr 0.6fr", gap:16 }}>
+            <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+              {workspace.queue.map(item=>(
+                <div key={item.title} style={{ border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 14px", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row" }}>
+                  <div style={{ flex:1 }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4, flexWrap:"wrap" }}>
+                      <span style={{ background:`${item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo}18`, color:item.severity==="Critical"?T.red:item.severity==="High"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
+                      <span style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>{item.title}</span>
+                    </div>
+                    <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.meta}</div>
+                  </div>
+                  <button style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+                </div>
+              ))}
+            </div>
+            <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Next Actions</div>
+              {workspace.actions.map(action=>(
+                <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                  {action}<ChevronRight size={14} color={T.slate}/>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {operatingPanels.length > 0 && (
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
+            {operatingPanels.map(panel=>{
+              const Icon = panel.icon;
+              return (
+                <div key={panel.title} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:isMobile?"14px":"16px", display:"flex", flexDirection:"column", gap:12 }}>
+                  <div style={{ display:"flex", gap:11, alignItems:"flex-start" }}>
+                    <div style={{ width:34, height:34, borderRadius:9, background:toneBg(panel.tone), display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <Icon size={17} color={toneColor(panel.tone)}/>
+                    </div>
+                    <div>
+                      <div style={{ fontSize:13.5, fontWeight:800, color:T.gray900, marginBottom:3 }}>{panel.title}</div>
+                      <div style={{ fontSize:12, color:T.gray600, lineHeight:1.5 }}>{panel.summary}</div>
+                    </div>
+                  </div>
+                  <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3, 1fr)", gap:8 }}>
+                    {panel.rows.map(row=>(
+                      <div key={row.label} style={{ background:T.gray50, borderRadius:8, padding:"10px 11px", minHeight:86 }}>
+                        <div style={{ fontSize:18, fontWeight:800, color:toneColor(panel.tone), letterSpacing:"-0.02em" }}>{row.value}</div>
+                        <div style={{ fontSize:10.5, fontWeight:800, color:T.gray900, marginTop:2 }}>{row.label}</div>
+                        <div style={{ fontSize:10.5, color:T.slate, lineHeight:1.35, marginTop:4 }}>{row.detail}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {(retentionSignals.length > 0 || routingLanes.length > 0) && (
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.15fr 0.85fr", gap:12 }}>
+            {retentionSignals.length > 0 && (
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+                <div style={{ padding:"13px 15px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
+                  <div>
+                    <div style={{ fontSize:13.5, fontWeight:800, color:T.gray900 }}>Retention and recruiting watchlist</div>
+                    <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.4, marginTop:2 }}>Advisor flight risk becomes a visible operations signal.</div>
+                  </div>
+                  <Users size={18} color={T.indigo}/>
+                </div>
+                {retentionSignals.map(signal=>(
+                  <div key={signal.advisor} style={{ padding:"12px 15px", borderTop:`1px solid ${T.gray100}`, display:"grid", gridTemplateColumns:isMobile?"1fr":"0.65fr 1fr 0.65fr", gap:10, alignItems:"start" }}>
+                    <div>
+                      <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{signal.advisor}</div>
+                      <span style={{ display:"inline-flex", marginTop:5, background:`${signal.risk==="Critical"?T.red:signal.risk==="High"?T.amber:T.indigo}18`, color:signal.risk==="Critical"?T.red:signal.risk==="High"?T.amber:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{signal.risk}</span>
+                    </div>
+                    <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{signal.trigger}</div>
+                    <div style={{ fontSize:11.5, color:T.indigo, fontWeight:800, lineHeight:1.4 }}>{signal.route}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {routingLanes.length > 0 && (
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                <div>
+                  <div style={{ fontSize:13.5, fontWeight:800, color:T.gray900 }}>Next-best-action routing</div>
+                  <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:2 }}>Every signal resolves to a named enterprise lane.</div>
+                </div>
+                {routingLanes.map(lane=>(
+                  <button key={lane.label} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:9, padding:"10px 11px", display:"flex", gap:10, alignItems:"center", textAlign:"left", cursor:"pointer" }}>
+                    <div style={{ width:38, height:38, borderRadius:8, background:T.indigoLt, color:T.indigo, fontSize:14, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{lane.count}</div>
+                    <div style={{ flex:1 }}>
+                      <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{lane.label}</div>
+                      <div style={{ fontSize:11.3, color:T.slate, lineHeight:1.35, marginTop:2 }}>{lane.desc}</div>
+                    </div>
+                    <ChevronRight size={14} color={T.slate}/>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+        {workspace.exceptionReview && (
+          <div style={{ borderTop:`1px solid ${T.gray100}`, background:T.gray50, padding:isMobile?"14px":"16px 18px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.35fr 0.65fr", gap:14, alignItems:"stretch" }}>
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+                <div style={{ padding:"13px 15px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
+                  <div>
+                    <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Exception Review</div>
+                    <div style={{ fontSize:14, fontWeight:800, color:T.gray900, marginTop:2 }}>Severity, aging, pattern, evidence, route</div>
+                  </div>
+                  <Badge color={T.red} bg={T.redLt}>31 Open</Badge>
+                </div>
+                <div style={{ display:"flex", flexDirection:"column" }}>
+                  {workspace.exceptionReview.map((item,i)=>(
+                    <div key={item.title} style={{ padding:"13px 15px", borderTop:i?`1px solid ${T.gray100}`:"none", display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 0.86fr", gap:12 }}>
+                      <div>
+                        <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", marginBottom:5 }}>
+                          <span style={{ background:`${severityColor(item.severity)}18`, color:severityColor(item.severity), border:`1px solid ${severityColor(item.severity)}40`, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
+                          <span style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>{item.title}</span>
+                        </div>
+                        <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.rep} · {item.clients} · {item.aging} aging</div>
+                        <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45, marginTop:6 }}>{item.pattern}</div>
+                      </div>
+                      <div style={{ display:"grid", gap:6 }}>
+                        <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4 }}><strong style={{ color:T.gray900 }}>Evidence:</strong> {item.evidence}</div>
+                        <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4 }}><strong style={{ color:T.gray900 }}>Route:</strong> {item.route}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:14 }}>
+                <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                    <Users size={14} color={T.indigo}/>
+                    <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Rep Support Queue</div>
+                  </div>
+                  {workspace.repSupport.map(item=>(
+                    <div key={item.rep} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10, display:"grid", gap:5 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                        <span style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{item.rep}</span>
+                        <span style={{ fontSize:10, fontWeight:800, color:toneColor(item.tone), background:`${toneColor(item.tone)}16`, borderRadius:99, padding:"2px 8px" }}>{item.sla}</span>
+                      </div>
+                      <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4 }}>{item.need}</div>
+                      <div style={{ fontSize:10.5, color:T.slate, fontWeight:700 }}>{item.queue}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                    <Activity size={14} color={T.green}/>
+                    <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Local Compliance Load</div>
+                  </div>
+                  {workspace.complianceLoad.map(item=>(
+                    <div key={item.label} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", gap:8, alignItems:"baseline" }}>
+                        <span style={{ fontSize:11.5, fontWeight:700, color:T.slate }}>{item.label}</span>
+                        <span style={{ fontSize:17, fontWeight:900, color:toneColor(item.tone), letterSpacing:"-0.02em" }}>{item.value}</span>
+                      </div>
+                      <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4, marginTop:3 }}>{item.note}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:14 }}>
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:10 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                    <TrendingUp size={14} color={T.green}/>
+                    <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Advisor Book Health</div>
+                  </div>
+                  <Badge color={T.green} bg={T.greenLt}>42 reps</Badge>
+                </div>
+                {workspace.bookHealth.map(item=>(
+                  <div key={item.rep} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10, display:"grid", gridTemplateColumns:isMobile?"1fr":"0.55fr 1fr", gap:8 }}>
+                    <div>
+                      <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{item.rep}</div>
+                      <div style={{ fontSize:11, color:T.slate }}>{item.book} book</div>
+                    </div>
+                    <div>
+                      <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap", marginBottom:4 }}>
+                        <span style={{ fontSize:10, fontWeight:800, color:toneColor(item.tone), background:`${toneColor(item.tone)}16`, borderRadius:99, padding:"2px 8px" }}>{item.risk} risk</span>
+                        <span style={{ fontSize:11.5, color:T.gray600 }}>{item.driver}</span>
+                      </div>
+                      <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.4 }}>{item.support}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                <div style={{ display:"flex", alignItems:"center", gap:7 }}>
+                  <ArrowUpRight size={14} color={T.indigo}/>
+                  <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Escalation Routing</div>
+                </div>
+                {workspace.escalationRoutes.map(item=>(
+                  <div key={item.route} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10, display:"grid", gap:5 }}>
+                    <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{item.route}</div>
+                    <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45 }}>{item.trigger}</div>
+                    <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                      <span style={{ fontSize:10.5, color:T.indigo, fontWeight:800, background:T.indigoLt, borderRadius:99, padding:"2px 8px" }}>{item.owner}</span>
+                      <span style={{ fontSize:10.5, color:T.slate, fontWeight:700, background:T.gray100, borderRadius:99, padding:"2px 8px" }}>{item.handoff}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </StratSection>
   );
@@ -1841,7 +2314,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       </StratSection>
 
       {/* 3 · Desired outcomes */}
-      <StratSection eyebrow="03 · Desired Outcomes" title="The outcomes the advisor is trying to achieve" intro="Each outcome statement was rated for importance and current satisfaction. The opportunity score = Importance + max(Importance − Satisfaction, 0).">
+      <StratSection eyebrow="03 · Desired Outcomes" title="The outcomes this profile is trying to achieve" intro="Each outcome statement was rated for importance and current satisfaction. The opportunity score = Importance + max(Importance − Satisfaction, 0).">
         <div style={{ ...card, overflow:"hidden" }}>
           {ranked.map((o,i)=>{
             const v = oppScore(o);
@@ -1925,7 +2398,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
                 </div>
               ))}
               <div style={{ background:T.greenLt, borderRadius:8, padding:"10px 12px", marginTop:4 }}>
-                <div style={{ fontSize:11, color:T.gray600, lineHeight:1.5 }}>Nine of eleven outcomes land in the underserved zone — confirming a real, fundable gap rather than incremental polish.</div>
+                <div style={{ fontSize:11, color:T.gray600, lineHeight:1.5 }}>{strategy.opportunitySummary}</div>
               </div>
             </div>
           </div>
@@ -2771,11 +3244,9 @@ export default function WealthscapePrototype() {
   const [scenarioStep,   setScenarioStep]   = useState(0);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [reportDelivered,setReportDelivered]= useState(false);
-  const [activeProfileId,setActiveProfileId]= useState(DEFAULT_PROFILE_ID);
-  const activeProfile = getProfile(STRATEGY_PROFILES, activeProfileId);
-  const handleProfileChange = useCallback((profileId) => {
-    setActiveProfileId(STRATEGY_PROFILES[profileId] ? profileId : DEFAULT_PROFILE_ID);
-  }, []);
+  const [activeProfileId,setActiveProfileId]= useState(PROFILE_REGISTRY.defaultProfileId);
+  const activeProfile = getProfileById(activeProfileId);
+  const handleProfileChange = profileId => setActiveProfileId(normalizeProfileId(profileId));
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
@@ -2919,7 +3390,7 @@ export default function WealthscapePrototype() {
           </div>
           <div style={{ display:"flex", gap:8, alignItems:"center" }}>
             {!isMobile && (
-              <ProfileSwitcher profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} compact={isTablet}/>
+              <ProfileSwitcher profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} compact={isTablet}/>
             )}
             {!isMobile && (
               <div style={{ display:"flex", alignItems:"center", gap:7, background:T.gray100, borderRadius:8, padding:"6px 11px" }}>
@@ -2965,7 +3436,7 @@ export default function WealthscapePrototype() {
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp}/>}
-          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
+          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
 
