@@ -8,6 +8,11 @@ components of Fidelity's value stack.
 - **Prototype source:** [`wealthscape-intelligence/`](wealthscape-intelligence/) — a
   single-file Vite + React app (`src/WealthscapePrototype.jsx`). Vercel auto-deploys
   on merge to `main`.
+- **Broker-dealer strategy expansion:** the same prototype now includes a profile
+  switcher with `RIA Advisor`, `BD Home Office`, `OSJ Principal`, and `Hybrid Advisor`
+  views. The broker-dealer research packet and lane prompts live in
+  [`docs/broker-dealer-strategy-expansion.md`](docs/broker-dealer-strategy-expansion.md)
+  and [`docs/lane-prompts/broker-dealer-strategy-lanes.md`](docs/lane-prompts/broker-dealer-strategy-lanes.md).
 - **Alternative Investments prototype:** https://wealthscape-alts.vercel.app —
   source in [`alts-intelligence/`](alts-intelligence/), a second Vite + React app
   (`src/AltsPrototype.jsx`) produced by a `/value-stack-discovery alternative-investments`

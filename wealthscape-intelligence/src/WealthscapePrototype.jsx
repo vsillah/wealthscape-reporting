@@ -1921,7 +1921,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       </StratSection>
 
       {/* 6 · Recommendations → prototype */}
-      <StratSection eyebrow="06 · Recommendations" title="Five moves — and where to see each one live" intro="Every recommendation traces to the outcomes it serves and the prototype surface that delivers it. Open any surface to see the recommendation in action.">
+      <StratSection eyebrow="06 · Recommendations" title="Recommended moves — and where to see each one live" intro="Every recommendation traces to the outcomes it serves and the prototype surface that delivers it. Open any surface to see the recommendation in action.">
         <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
           {strategy.recommendations.map(r=>(
             <div key={r.n} style={{ ...card, padding:isMobile?"16px":"18px 20px", display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center" }}>
@@ -1942,7 +1942,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       </StratSection>
 
       {strategy.buildBuy.length > 0 && (
-        <StratSection eyebrow="07 · Resolution Strategy" title="Build, buy, partner, or wrap" intro="Each key gap gets a sourcing call based on whether it is core or context, how mature external solutions are, and how urgent the broker-dealer outcome is.">
+        <StratSection eyebrow="07 · Resolution Strategy" title="Build, buy, partner, or wrap" intro="Each key gap gets a sourcing call based on whether it is core or context, how mature external solutions are, and how urgent the active profile's outcome is.">
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
             {strategy.buildBuy.map(b=>(
               <div key={b.gap} style={{ ...card, padding:"15px 16px", display:"flex", flexDirection:"column", gap:9 }}>
