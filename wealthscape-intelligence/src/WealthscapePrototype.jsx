@@ -636,10 +636,172 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
   );
 }
 
+function WorkflowContextBanner({ deepLink, profile }) {
+  if (profile?.id === DEFAULT_PROFILE_ID || (!deepLink?.strategyOutcome && !deepLink?.dashboardFocus)) return null;
+  return (
+    <div style={{ background:T.indigoLt, border:`1px solid ${T.indigo}35`, borderRadius:12, padding:"12px 15px", display:"flex", gap:11, alignItems:"center", flexWrap:"wrap" }}>
+      <Target size={15} color={T.indigo}/>
+      <div style={{ flex:1, minWidth:180 }}>
+        <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>Profile workflow context</div>
+        <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{deepLink.dashboardFocus || deepLink.workflowContext || "Opened from the profile dashboard"}</div>
+      </div>
+      {deepLink.strategyOutcome && <Badge color={T.indigo} bg={T.white}>{deepLink.strategyOutcome}</Badge>}
+    </div>
+  );
+}
+
+function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onDismiss, onNavigate, deepLink }) {
+  const { isMobile } = bp;
+  const focus = deepLink?.dashboardFocus || deepLink?.workflowContext || null;
+  const rows = dashboard.queue || [];
+  const evidence = dashboard.strategyEvidence || [];
+  const loop = dashboard.operatingLoop || [];
+  const activeAlerts = alerts.filter(a => !a.read);
+  const severityColor = severity => ({ Critical:T.red, High:T.amber, Watch:T.indigo, Medium:T.amber, Low:T.slate }[severity] || T.slate);
+
+  const route = (layer, sub = {}) => {
+    onNavigate?.(layer, {
+      ...sub,
+      profileId: profile.id,
+      dashboardFocus: sub.dashboardFocus || sub.workflowContext || focus || dashboard.title,
+    });
+  };
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <div data-demo="profile-dashboard-command-center" style={{ background:`linear-gradient(135deg, ${T.navy} 0%, ${T.navyMid} 100%)`, borderRadius:14, padding:isMobile?"18px 16px":"22px 24px", color:T.white }}>
+        <div style={{ display:"flex", gap:14, alignItems:"flex-start", flexDirection:isMobile?"column":"row" }}>
+          <div style={{ background:T.green, borderRadius:9, padding:10, flexShrink:0 }}><Target size={18} color={T.white}/></div>
+          <div style={{ flex:1, minWidth:0 }}>
+            <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", marginBottom:7 }}>
+              <span style={{ fontSize:10, fontWeight:800, letterSpacing:"0.1em", color:"#A8BCCF", textTransform:"uppercase" }}>{dashboard.eyebrow}</span>
+              <Badge color={T.green} bg={T.greenLt}>{profile.shortLabel}</Badge>
+            </div>
+            <div style={{ fontSize:isMobile?18:23, fontWeight:850, lineHeight:1.18, marginBottom:8 }}>{dashboard.title}</div>
+            <div style={{ fontSize:13, color:"#B8C7D6", lineHeight:1.55, maxWidth:780 }}>{dashboard.intro}</div>
+          </div>
+          <button onClick={()=>route("strategy", { strategySection:"opportunity-matrix", strategyOutcome:dashboard.primaryOutcome })} style={{ alignSelf:isMobile?"stretch":"flex-start", background:"rgba(255,255,255,0.12)", color:T.white, border:"1px solid rgba(255,255,255,0.22)", borderRadius:9, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6, whiteSpace:"nowrap" }}>
+            <BookOpen size={13}/> Strategy evidence <ChevronRight size={13}/>
+          </button>
+        </div>
+      </div>
+
+      {focus && (
+        <div style={{ background:T.indigoLt, border:`1px solid ${T.indigo}35`, borderRadius:12, padding:"12px 15px", display:"flex", gap:11, alignItems:"center", flexWrap:"wrap" }}>
+          <Sparkles size={15} color={T.indigo}/>
+          <div style={{ flex:1, minWidth:180 }}>
+            <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>Routed from strategy</div>
+            <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{focus}</div>
+          </div>
+          {deepLink?.strategyOutcome && <Badge color={T.indigo} bg={T.white}>{deepLink.strategyOutcome}</Badge>}
+        </div>
+      )}
+
+      <div data-demo="kpi-strip" style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, minmax(0, 1fr))", gap:10 }}>
+        {dashboard.metrics.map(m=>(
+          <MetricCard key={m.label} label={m.label} value={m.value} delta={m.delta} up={m.up} sub={m.sub} accent={m.accent}/>
+        ))}
+      </div>
+
+      <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.4fr 0.6fr", gap:16 }}>
+        <div data-demo="profile-opportunity-queue" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+          <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray200}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
+            <div>
+              <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Priority Opportunity Queue</div>
+              <div style={{ fontSize:11.5, color:T.slate, marginTop:2 }}>The highest-scoring strategy gaps now drive the day-one work surface.</div>
+            </div>
+            <Badge color={T.green} bg={T.greenLt}>{rows.length} routed actions</Badge>
+          </div>
+          {rows.map((item,i)=>(
+            <div key={item.title} style={{ padding:"15px 18px", borderTop:i?`1px solid ${T.gray100}`:"none", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row", background:focus === item.title ? `${T.indigoLt}88` : T.white }}>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", marginBottom:5 }}>
+                  <span style={{ background:`${severityColor(item.severity)}18`, color:severityColor(item.severity), borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
+                  {item.outcome && <span style={{ background:T.indigoLt, color:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.outcome}</span>}
+                  <span style={{ fontSize:13, fontWeight:850, color:T.gray900, lineHeight:1.35 }}>{item.title}</span>
+                </div>
+                <div style={{ fontSize:12.3, color:T.gray600, lineHeight:1.5 }}>{item.body}</div>
+                <div style={{ fontSize:11.2, color:T.slate, lineHeight:1.45, marginTop:5 }}>{item.detail}</div>
+              </div>
+              <div style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:isMobile?"stretch":"flex-end", flexShrink:0 }}>
+                <button onClick={()=>route(item.layer, { ...(item.sub || {}), strategyOutcome:item.outcome, workflowContext:item.title })} style={{ background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:5, minHeight:38, flex:isMobile?1:"initial" }}>
+                  <Zap size={12}/> {item.action}
+                </button>
+                <button onClick={()=>route("strategy", { strategyOutcome:item.outcome, strategySection:"desired-outcomes" })} style={{ background:T.gray100, color:T.gray600, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:38, flex:isMobile?1:"initial" }}>
+                  Evidence
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+          <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+            <div>
+              <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Strategy Tie-Back</div>
+              <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:2 }}>Every operating lane links to the opportunity score that justified it.</div>
+            </div>
+            {evidence.map(item=>(
+              <button key={item.outcome} onClick={()=>route("strategy", { strategyOutcome:item.outcome, strategySection:"opportunity-matrix" })} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:9, padding:"10px 11px", display:"flex", gap:10, alignItems:"center", textAlign:"left", cursor:"pointer" }}>
+                <div style={{ width:38, height:38, borderRadius:8, background:T.indigoLt, color:T.indigo, fontSize:12, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{item.score}</div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>{item.outcome}</div>
+                  <div style={{ fontSize:11.2, color:T.slate, lineHeight:1.35, marginTop:2 }}>{item.label}</div>
+                </div>
+                <ChevronRight size={14} color={T.slate}/>
+              </button>
+            ))}
+          </div>
+
+          <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+            <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
+              <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Profile Alerts</div>
+              <Badge color={activeAlerts.length?T.red:T.emerald} bg={activeAlerts.length?T.redLt:T.emeraldLt}>{activeAlerts.length} open</Badge>
+            </div>
+            {activeAlerts.slice(0,3).map(a=>(
+              <div key={a.id} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10 }}>
+                <div style={{ display:"flex", gap:6, alignItems:"center", flexWrap:"wrap", marginBottom:4 }}>
+                  <InsightChip type={a.type}/>
+                  <span style={{ fontSize:11, color:T.slate }}>{a.source}</span>
+                </div>
+                <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{a.client}</div>
+                <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45, marginTop:3 }}>{a.body}</div>
+                <div style={{ display:"flex", gap:8, marginTop:8, flexWrap:"wrap" }}>
+                  <button onClick={()=>onAction(a)} style={{ background:T.greenLt, color:T.green, border:"none", borderRadius:7, padding:"7px 10px", fontSize:11, fontWeight:800, cursor:"pointer" }}>{a.action.label}</button>
+                  <button onClick={()=>onDismiss(a.id)} style={{ background:"transparent", color:T.slate, border:"none", padding:"7px 0", fontSize:11, fontWeight:700, cursor:"pointer" }}>Dismiss</button>
+                </div>
+              </div>
+            ))}
+            {activeAlerts.length === 0 && <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>No profile alerts are open. Use the strategy links to inspect the next investment case.</div>}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"15px 18px" }}>
+        <div style={{ fontSize:13, fontWeight:800, color:T.gray900, marginBottom:10 }}>Operating Loop</div>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(4, 1fr)", gap:10 }}>
+          {loop.map(step=>(
+            <button key={step.label} onClick={()=>route(step.layer, { ...(step.sub || {}), strategyOutcome:step.outcome, workflowContext:step.label })} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:10, padding:"11px 12px", textAlign:"left", cursor:"pointer", minHeight:104 }}>
+              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, marginBottom:7 }}>
+                <span style={{ fontSize:11.5, fontWeight:850, color:T.gray900 }}>{step.label}</span>
+                <ChevronRight size={13} color={T.slate}/>
+              </div>
+              <div style={{ fontSize:11.2, color:T.gray600, lineHeight:1.45 }}>{step.desc}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── LAYER 1: Morning Brief ────────────────────────────────────────────────────
-function MorningBrief({ bp, profile, alerts, onAction, onDismiss, scenarioStep }) {
+function MorningBrief({ bp, profile, dashboard, alerts, onAction, onDismiss, onNavigate, deepLink, scenarioStep }) {
   const [expanded, setExpanded] = useState(null);
   const { isMobile } = bp;
+  if (dashboard?.variant !== "ria") {
+    return <ProfileMorningDashboard bp={bp} profile={profile} dashboard={dashboard} alerts={alerts} onAction={onAction} onDismiss={onDismiss} onNavigate={onNavigate} deepLink={deepLink}/>;
+  }
   const firstName = profile?.shell?.name?.split(" ")[0] || "Jordan";
   const feed = alerts.filter(a => a.type !== "report");
   const highCount   = alerts.filter(a => a.severity === "high"   && !a.read).length;
@@ -821,7 +983,7 @@ const TEMPLATE_CONFIG = {
     sections:["proposed","projection","fees"], cta:"Send Proposal" },
 };
 
-function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
+function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClient }) {
   const { isMobile } = bp;
   const [reportTab, setReportTab]     = useState("build");
   const [step, setStep]               = useState(1);
@@ -837,9 +999,11 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
     { id:"generate",  label:"Generate",  desc:"Pipeline" },
     { id:"customize", label:"Customize", desc:"Template editor" },
   ];
+  const contextBanner = <WorkflowContextBanner deepLink={deepLink} profile={profile}/>;
 
   if (reportTab === "generate")  return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
         {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
@@ -848,6 +1012,7 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
   );
   if (reportTab === "customize") return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
         {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
@@ -867,6 +1032,7 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
         {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
@@ -1108,14 +1274,15 @@ function ReportBuilder({ bp, deepLink, onScenarioAdvance, onSendToClient }) {
 }
 
 // ─── LAYER 3: Client Portal ────────────────────────────────────────────────────
-function ClientPortal({ bp, deepLink, reportDelivered }) {
+function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
   const { isMobile } = bp;
   const [tab, setTab] = useState("overview");
   useEffect(() => { if (deepLink?.portalTab) setTab(deepLink.portalTab); }, [deepLink]);
   const tabs = [{id:"overview",label:"Overview"},{id:"performance",label:"Performance"},{id:"documents",label:"Documents"},{id:"messages",label:"Messages"}];
 
   return (
-    <div style={{ display:"flex", flexDirection:"column", gap:0 }}>
+    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <WorkflowContextBanner deepLink={deepLink} profile={profile}/>
       <div data-demo="portal-header" style={{ background:T.navy, borderRadius:"12px 12px 0 0", padding:isMobile?"16px":"20px 24px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:36, height:36, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:700, color:T.white, flexShrink:0 }}>SC</div>
@@ -1812,6 +1979,119 @@ function getProfileById(profileId) {
   return PROFILE_REGISTRY.profiles[normalizeProfileId(profileId)];
 }
 
+const PROFILE_DASHBOARDS = {
+  ria: {
+    variant:"ria",
+    alerts:ALERTS,
+  },
+  "bd-home-office": {
+    variant:"broker-dealer",
+    eyebrow:"Home Office Dashboard",
+    title:"Enterprise Risk and Productivity Command",
+    intro:"Maya's dashboard now starts with the home-office opportunities the strategy page prioritized: supervision risk, AI governance, productivity telemetry, and advisor-retention signals.",
+    primaryOutcome:"BD-HO #1",
+    metrics:[
+      { label:"Critical branches", value:"7", delta:"3 above SLA", up:false, sub:"supervision queue", accent:T.red },
+      { label:"AI reviews due", value:"42", delta:"+11 today", up:false, sub:"policy queue", accent:T.amber },
+      { label:"Productivity lift", value:"+11%", delta:"+4 pts", up:true, sub:"routed NBAs", accent:T.green },
+      { label:"Retention watchlist", value:"23", delta:"5 critical", up:false, sub:"field leadership", accent:T.indigo },
+    ],
+    queue:[
+      { severity:"Critical", outcome:"BD-HO #1", title:"Off-channel communications spike", body:"Northeast enterprise group shows a three-day communications surge with capture gaps and recruiting overlap.", detail:"18 advisors · 71 messages pending capture · evidence packet 68% complete", action:"Open packet", layer:"integrations", sub:{ integrationId:"salesforce" } },
+      { severity:"High", outcome:"BD-HO #2", title:"Unapproved AI narrative usage", body:"Retirement-income report drafts include AI-generated language that has not cleared policy review.", detail:"11 summaries · 5 client-ready drafts · disclosure block missing", action:"Review AI", layer:"reports", sub:{ reportTab:"customize" } },
+      { severity:"Watch", outcome:"BD-HO #5", title:"Platform adoption drop", body:"Commonwealth-transition segment has declining reporting usage, elevated tickets, and a rising retention-risk score.", detail:"Usage -24% · tickets +31% · 8 advisors need field intervention", action:"Open analytics", layer:"insights", sub:{ metricFocus:"retention-watchlist" } },
+    ],
+    strategyEvidence:[
+      { outcome:"BD-HO #1", score:"16.5", label:"Find the highest-risk advisor, branch, product, or communications issue" },
+      { outcome:"BD-HO #2", score:"15.8", label:"Confirm AI activity is approved, supervised, retained, and explainable" },
+      { outcome:"BD-HO #5", score:"14.5", label:"Detect advisor-retention risk before recruiting or custodian shift" },
+    ],
+    operatingLoop:[
+      { label:"Supervision packet", desc:"Pull capture status, communications evidence, branch owner, and aging into one packet.", layer:"integrations", sub:{ integrationId:"salesforce" }, outcome:"BD-HO #1" },
+      { label:"AI governance review", desc:"Open report configuration with policy flags and approved disclosure blocks visible.", layer:"reports", sub:{ reportTab:"customize" }, outcome:"BD-HO #2" },
+      { label:"Retention telemetry", desc:"Inspect adoption, support load, and field-friction trend before assigning intervention.", layer:"insights", sub:{ metricFocus:"retention-watchlist" }, outcome:"BD-HO #5" },
+      { label:"Strategy proof", desc:"Return to the opportunity matrix that justified this dashboard lane.", layer:"strategy", sub:{ strategyOutcome:"BD-HO #1" }, outcome:"BD-HO #1" },
+    ],
+    alerts:[
+      { id:101, type:"risk", severity:"high", client:"Northeast enterprise group", source:"Supervision Command", time:"8:10 AM", read:false, body:"Off-channel communications spike overlaps with retention-risk pattern. Evidence packet needs review.", action:{ label:"Open Packet", layer:"integrations", integrationId:"salesforce", strategyOutcome:"BD-HO #1", dashboardFocus:"Off-channel communications spike" } },
+      { id:102, type:"review", severity:"high", client:"AI narrative review", source:"AI Governance", time:"8:04 AM", read:false, body:"Five retirement-income drafts contain unapproved AI language and missing disclosure blocks.", action:{ label:"Review AI", layer:"reports", reportTab:"customize", strategyOutcome:"BD-HO #2", dashboardFocus:"Unapproved AI narrative usage" } },
+      { id:103, type:"integration", severity:"medium", client:"Commonwealth-transition cohort", source:"Platform Telemetry", time:"7:42 AM", read:false, body:"Reporting usage fell 24% while support tickets rose 31%. Field intervention recommended.", action:{ label:"Open Analytics", layer:"insights", metricFocus:"retention-watchlist", strategyOutcome:"BD-HO #5", dashboardFocus:"Platform adoption drop" } },
+    ],
+  },
+  "bd-osj-principal": {
+    variant:"broker-dealer",
+    eyebrow:"OSJ Dashboard",
+    title:"Branch Exception and Rep Support Workbench",
+    intro:"Kwame's dashboard now converts the OSJ strategy into a local operating queue: exception triage, rep coaching, escalation evidence, and branch health.",
+    primaryOutcome:"BD-OSJ #1",
+    metrics:[
+      { label:"Aging exceptions", value:"31", delta:"12 due today", up:false, sub:"local queue", accent:T.red },
+      { label:"Rep support queue", value:"18", delta:"+5 new", up:false, sub:"coaching items", accent:T.amber },
+      { label:"Evidence complete", value:"84%", delta:"+7 pts", up:true, sub:"this week", accent:T.green },
+      { label:"Escalations pending", value:"6", delta:"2 critical", up:false, sub:"home office", accent:T.indigo },
+    ],
+    queue:[
+      { severity:"Critical", outcome:"BD-OSJ #1", title:"Variable annuity disclosure missing", body:"L. Benton has two client files aging four days with a repeat disclosure pattern this quarter.", detail:"Evidence missing signed rider · coaching note drafted · principal attestation required", action:"Coach rep", layer:"portal", sub:{ portalTab:"messages" } },
+      { severity:"High", outcome:"BD-OSJ #4", title:"Trade rationale incomplete", body:"R. Patel's concentrated-equity order needs a home-office packet before approval can move.", detail:"$8.1M household · rationale template incomplete · escalation route ready", action:"Build packet", layer:"reports", sub:{ reportTab:"build" } },
+      { severity:"Watch", outcome:"BD-OSJ #3", title:"Repeat NIGO trend", body:"Three newer reps are repeating beneficiary mismatches on transfers and need local training.", detail:"7 transfer files · same form pattern · branch office-hours recommended", action:"Assign training", layer:"insights", sub:{ metricFocus:"rep-friction" } },
+    ],
+    strategyEvidence:[
+      { outcome:"BD-OSJ #1", score:"16.2", label:"Triage exceptions most likely to block client service or create regulatory risk" },
+      { outcome:"BD-OSJ #2", score:"15.2", label:"Translate home-office findings into rep-specific action and coaching" },
+      { outcome:"BD-OSJ #5", score:"13.7", label:"Confirm every reviewed exception has a complete evidence trail" },
+    ],
+    operatingLoop:[
+      { label:"Coach the rep", desc:"Open the approved message path with exception context and next required evidence.", layer:"portal", sub:{ portalTab:"messages" }, outcome:"BD-OSJ #2" },
+      { label:"Build escalation packet", desc:"Use the report builder to package client context, policy trigger, and branch notes.", layer:"reports", sub:{ reportTab:"build" }, outcome:"BD-OSJ #4" },
+      { label:"Monitor rep friction", desc:"Track repeat branch patterns before they become audit findings or complaints.", layer:"insights", sub:{ metricFocus:"rep-friction" }, outcome:"BD-OSJ #3" },
+      { label:"Strategy proof", desc:"Return to the OSJ opportunity scores that prioritized the workbench.", layer:"strategy", sub:{ strategyOutcome:"BD-OSJ #1" }, outcome:"BD-OSJ #1" },
+    ],
+    alerts:[
+      { id:201, type:"review", severity:"high", client:"L. Benton", source:"Branch Workbench", time:"8:08 AM", read:false, body:"VA disclosure gap is now critical and needs rep coaching plus branch attestation.", action:{ label:"Coach Rep", layer:"portal", portalTab:"messages", strategyOutcome:"BD-OSJ #2", dashboardFocus:"Variable annuity disclosure missing" } },
+      { id:202, type:"risk", severity:"high", client:"R. Patel", source:"Escalation Queue", time:"7:55 AM", read:false, body:"Concentrated equity rationale is incomplete for an $8.1M household. Build escalation packet.", action:{ label:"Build Packet", layer:"reports", reportTab:"build", strategyOutcome:"BD-OSJ #4", dashboardFocus:"Trade rationale incomplete" } },
+      { id:203, type:"integration", severity:"medium", client:"New rep cohort", source:"Branch Health", time:"Yesterday", read:false, body:"Beneficiary mismatch pattern repeated across seven transfers. Training action recommended.", action:{ label:"Open Analytics", layer:"insights", metricFocus:"rep-friction", strategyOutcome:"BD-OSJ #3", dashboardFocus:"Repeat NIGO trend" } },
+    ],
+  },
+  "bd-hybrid-advisor": {
+    variant:"broker-dealer",
+    eyebrow:"Hybrid Advisor Dashboard",
+    title:"Relationship 360 Action Queue",
+    intro:"Amina's dashboard now starts from the hybrid strategy: one client relationship view, visible blockers, compliant narrative generation, and team-owner routing.",
+    primaryOutcome:"BD-HA #1",
+    metrics:[
+      { label:"Client blockers", value:"14", delta:"5 suitability", up:false, sub:"needs owner", accent:T.amber },
+      { label:"Mixed-book reviews", value:"22", delta:"8 due this week", up:false, sub:"households", accent:T.indigo },
+      { label:"Narratives cleared", value:"91%", delta:"+6 pts", up:true, sub:"approved language", accent:T.green },
+      { label:"Suitability holds", value:"5", delta:"2 critical", up:false, sub:"principal review", accent:T.red },
+    ],
+    queue:[
+      { severity:"High", outcome:"BD-HA #1", title:"Chen household product context split", body:"Advisory allocation, brokerage annuity trail, and planning notes are split across surfaces before the client meeting.", detail:"Advisory AUM + brokerage trail + annuity rider · relationship 360 needed", action:"Open 360", layer:"portal", sub:{ portalTab:"overview" } },
+      { severity:"Critical", outcome:"BD-HA #3", title:"Account package waiting on suitability", body:"Roth conversion and structured-note discussion are blocked by concentration and liquidity notes.", detail:"CSA owns paperwork · principal owns suitability · tax disclosure missing", action:"Resolve hold", layer:"reports", sub:{ reportTab:"customize" } },
+      { severity:"Watch", outcome:"BD-HA #5", title:"Q2 report needs brokerage disclosure", body:"AI narrative is ready, but brokerage disclosure language must be inserted before delivery.", detail:"Narrative generated · approved disclosure block pending · principal review required", action:"Edit report", layer:"reports", sub:{ reportTab:"customize" } },
+    ],
+    strategyEvidence:[
+      { outcome:"BD-HA #1", score:"16.3", label:"Understand the full brokerage, advisory, planning, and product relationship" },
+      { outcome:"BD-HA #3", score:"15.1", label:"See what is blocking an account, product, or recommendation workflow" },
+      { outcome:"BD-HA #5", score:"14.0", label:"Confirm communications and narratives match approved product context" },
+    ],
+    operatingLoop:[
+      { label:"Relationship 360", desc:"Open the client view with advisory, brokerage, annuity, and planning context in one place.", layer:"portal", sub:{ portalTab:"overview" }, outcome:"BD-HA #1" },
+      { label:"Disclosure editing", desc:"Open report customization with approved hybrid disclosure language visible.", layer:"reports", sub:{ reportTab:"customize" }, outcome:"BD-HA #5" },
+      { label:"Team blocker analytics", desc:"Inspect blocker patterns by owner, account type, and supervision route.", layer:"insights", sub:{ metricFocus:"team-blockers" }, outcome:"BD-HA #3" },
+      { label:"Strategy proof", desc:"Return to the hybrid opportunity matrix and prioritized recommendations.", layer:"strategy", sub:{ strategyOutcome:"BD-HA #1" }, outcome:"BD-HA #1" },
+    ],
+    alerts:[
+      { id:301, type:"risk", severity:"high", client:"Chen household", source:"Relationship 360", time:"8:06 AM", read:false, body:"Advisory allocation and brokerage annuity trail are split before the client meeting.", action:{ label:"Open 360", layer:"portal", portalTab:"overview", strategyOutcome:"BD-HA #1", dashboardFocus:"Chen household product context split" } },
+      { id:302, type:"review", severity:"high", client:"Structured note workflow", source:"Suitability Hold", time:"7:50 AM", read:false, body:"Concentration and liquidity notes are missing. Principal review cannot clear yet.", action:{ label:"Resolve Hold", layer:"reports", reportTab:"customize", strategyOutcome:"BD-HA #3", dashboardFocus:"Account package waiting on suitability" } },
+      { id:303, type:"report", severity:"medium", client:"Q2 hybrid report", source:"Report Engine", time:"Yesterday", read:false, body:"AI narrative is generated but needs the approved brokerage disclosure block.", action:{ label:"Edit Report", layer:"reports", reportTab:"customize", strategyOutcome:"BD-HA #5", dashboardFocus:"Q2 report needs brokerage disclosure" } },
+    ],
+  },
+};
+
+function getProfileDashboard(profile) {
+  return PROFILE_DASHBOARDS[profile?.id] || PROFILE_DASHBOARDS.ria;
+}
+
 function StratSection({ eyebrow, title, intro, children }) {
   return (
     <section style={{ display:"flex", flexDirection:"column", gap:14 }}>
@@ -1846,10 +2126,11 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
   );
 }
 
-function HybridAdvisorWorkspace({ workspace, isMobile }) {
+function HybridAdvisorWorkspace({ workspace, isMobile, onNavigate }) {
   const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green, slate:T.slate }[tone] || T.slate);
   const toneBg = tone => ({ red:T.redLt, amber:T.amberLt, indigo:T.indigoLt, green:T.greenLt, slate:T.gray100 }[tone] || T.gray100);
   const severityColor = severity => severity==="Critical" ? T.red : severity==="High" ? T.amber : T.indigo;
+  const route = (label, outcome, layer = "morning", sub = {}) => onNavigate?.(layer, { ...sub, dashboardFocus:label, strategyOutcome:outcome, source:"strategy-workspace" });
 
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
@@ -1918,7 +2199,7 @@ function HybridAdvisorWorkspace({ workspace, isMobile }) {
                   <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{item.stage} · {item.owner}</div>
                   <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:3 }}>Blocker: {item.blocker}</div>
                 </div>
-                <button style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+                <button onClick={()=>route(item.title, item.severity==="Critical" ? "BD-HA #3" : item.severity==="High" ? "BD-HA #1" : "BD-HA #5", item.action.includes("packet") ? "reports" : "morning", item.action.includes("packet") ? { reportTab:"customize" } : {})} style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
               </div>
             ))}
           </div>
@@ -1927,7 +2208,7 @@ function HybridAdvisorWorkspace({ workspace, isMobile }) {
             <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
               <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Client-Ready Actions</div>
               {workspace.actions.map(action=>(
-                <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                <button key={action} onClick={()=>route(action, action.includes("narrative") ? "BD-HA #5" : action.includes("blocker") ? "BD-HA #3" : "BD-HA #1")} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
                   {action}<ChevronRight size={14} color={T.slate}/>
                 </button>
               ))}
@@ -1961,15 +2242,23 @@ function HybridAdvisorWorkspace({ workspace, isMobile }) {
   );
 }
 
-function BrokerDealerWorkspace({ workspace, isMobile }) {
+function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
   if (!workspace) return null;
-  if (workspace.variant === "hybrid") return <HybridAdvisorWorkspace workspace={workspace} isMobile={isMobile}/>;
+  if (workspace.variant === "hybrid") return <HybridAdvisorWorkspace workspace={workspace} isMobile={isMobile} onNavigate={onNavigate}/>;
   const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green }[tone] || T.slate);
   const toneBg = tone => `${toneColor(tone)}14`;
   const operatingPanels = workspace.operatingPanels || [];
   const retentionSignals = workspace.retentionSignals || [];
   const routingLanes = workspace.routingLanes || [];
   const severityColor = severity => ({ Critical:T.red, High:T.amber, Watch:T.indigo }[severity] || T.slate);
+  const isOsjWorkspace = !!workspace.exceptionReview;
+  const queueOutcome = severity => isOsjWorkspace
+    ? (severity==="Critical" ? "BD-OSJ #1" : severity==="High" ? "BD-OSJ #4" : "BD-OSJ #3")
+    : (severity==="Critical" ? "BD-HO #1" : severity==="High" ? "BD-HO #2" : "BD-HO #5");
+  const actionOutcome = action => isOsjWorkspace
+    ? (action.includes("coaching") ? "BD-OSJ #2" : action.includes("escalation") ? "BD-OSJ #4" : "BD-OSJ #1")
+    : (action.includes("retention") ? "BD-HO #5" : action.includes("AI") ? "BD-HO #2" : "BD-HO #1");
+  const route = (label, outcome, layer = "morning", sub = {}) => onNavigate?.(layer, { ...sub, dashboardFocus:label, strategyOutcome:outcome, source:"strategy-workspace" });
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
       <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
@@ -1993,14 +2282,14 @@ function BrokerDealerWorkspace({ workspace, isMobile }) {
                     </div>
                     <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.meta}</div>
                   </div>
-                  <button style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+                  <button onClick={()=>route(item.title, queueOutcome(item.severity))} style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
                 </div>
               ))}
             </div>
             <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
               <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Next Actions</div>
               {workspace.actions.map(action=>(
-                <button key={action} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                <button key={action} onClick={()=>route(action, actionOutcome(action))} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
                   {action}<ChevronRight size={14} color={T.slate}/>
                 </button>
               ))}
@@ -2068,7 +2357,7 @@ function BrokerDealerWorkspace({ workspace, isMobile }) {
                   <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:2 }}>Every signal resolves to a named enterprise lane.</div>
                 </div>
                 {routingLanes.map(lane=>(
-                  <button key={lane.label} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:9, padding:"10px 11px", display:"flex", gap:10, alignItems:"center", textAlign:"left", cursor:"pointer" }}>
+                  <button key={lane.label} onClick={()=>route(lane.label, lane.label==="AI Governance" ? "BD-HO #2" : lane.label==="Field Leadership" ? "BD-HO #5" : "BD-HO #1", lane.label==="Product Ops" ? "insights" : "morning")} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:9, padding:"10px 11px", display:"flex", gap:10, alignItems:"center", textAlign:"left", cursor:"pointer" }}>
                     <div style={{ width:38, height:38, borderRadius:8, background:T.indigoLt, color:T.indigo, fontSize:14, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{lane.count}</div>
                     <div style={{ flex:1 }}>
                       <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{lane.label}</div>
@@ -2198,12 +2487,16 @@ function BrokerDealerWorkspace({ workspace, isMobile }) {
   );
 }
 
-function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario }) {
+function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario, deepLink }) {
   const { isMobile } = bp;
   const strategy = profile.strategy;
   const ranked = [...strategy.outcomes].sort((a,b)=>oppScore(b)-oppScore(a));
   const maxOpp = ranked.length ? oppScore(ranked[0]) : 1;
   const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
+  const isBrokerDealerProfile = profile.id !== DEFAULT_PROFILE_ID;
+  const routeStrategyAction = (label, outcome, layer = "morning", sub = {}) => {
+    onNavigate(layer, { ...sub, dashboardFocus:label, strategyOutcome:outcome, source:"strategy" });
+  };
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>
@@ -2236,7 +2529,20 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
         </div>
       </div>
 
-      <BrokerDealerWorkspace workspace={strategy.workspace} isMobile={isMobile}/>
+      {deepLink?.strategyOutcome && (
+        <div data-demo="strategy-evidence-banner" style={{ background:T.indigoLt, border:`1px solid ${T.indigo}35`, borderRadius:12, padding:"13px 16px", display:"flex", alignItems:"center", gap:11, flexWrap:"wrap" }}>
+          <BookOpen size={15} color={T.indigo}/>
+          <div style={{ flex:1, minWidth:180 }}>
+            <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>Strategy evidence opened from the dashboard</div>
+            <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{deepLink.strategyOutcome} is highlighted in the opportunity matrix and outcome list below.</div>
+          </div>
+          <button onClick={()=>routeStrategyAction(deepLink.dashboardFocus || deepLink.strategyOutcome, deepLink.strategyOutcome)} style={{ background:T.green, color:T.white, border:"none", borderRadius:8, padding:"8px 12px", fontSize:12, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}>
+            Open dashboard queue <ChevronRight size={13}/>
+          </button>
+        </div>
+      )}
+
+      <BrokerDealerWorkspace workspace={strategy.workspace} isMobile={isMobile} onNavigate={onNavigate}/>
 
       {/* 1 · Market research */}
       <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
@@ -2318,9 +2624,10 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
         <div style={{ ...card, overflow:"hidden" }}>
           {ranked.map((o,i)=>{
             const v = oppScore(o);
+            const isEvidenceTarget = deepLink?.strategyOutcome === o.id;
             return (
-              <div key={o.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"12px 16px", borderTop:i?`1px solid ${T.gray100}`:"none" }}>
-                <div style={{ fontSize:11, fontWeight:700, color:T.slate, minWidth:56 }}>{o.id}</div>
+              <div key={o.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"12px 16px", borderTop:i?`1px solid ${T.gray100}`:"none", background:isEvidenceTarget?`${T.indigoLt}88`:T.white, boxShadow:isEvidenceTarget?`inset 3px 0 0 ${T.indigo}`:"none" }}>
+                <div style={{ fontSize:11, fontWeight:700, color:isEvidenceTarget?T.indigo:T.slate, minWidth:56 }}>{o.id}</div>
                 <div style={{ flex:1, fontSize:13, color:T.gray900, fontWeight:500, lineHeight:1.45 }}>{o.text}</div>
                 <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
                   <div style={{ width:isMobile?40:120, height:6, background:T.gray100, borderRadius:99, overflow:"hidden", display:isMobile?"none":"block" }}>
@@ -2338,13 +2645,13 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       <StratSection eyebrow="04 · Job Map" title="The universal job, step by step" intro={strategy.jobIntro}>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
           {strategy.jobMap.map(j=>(
-            <button key={j.n} onClick={()=>onNavigate(j.layer)} style={{ ...card, padding:"14px", textAlign:"left", cursor:"pointer", display:"flex", flexDirection:"column", gap:7, position:"relative" }}>
+            <button key={j.n} onClick={()=>isBrokerDealerProfile ? routeStrategyAction(j.step, ranked[0]?.id, "morning", { workflowContext:j.goal }) : onNavigate(j.layer)} style={{ ...card, padding:"14px", textAlign:"left", cursor:"pointer", display:"flex", flexDirection:"column", gap:7, position:"relative" }}>
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                 <div style={{ width:24, height:24, borderRadius:"50%", background:T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{j.n}</div>
                 <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>{j.step}</div>
               </div>
               <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.5 }}>{j.goal}</div>
-              <div style={{ fontSize:10, fontWeight:700, color:T.indigo, display:"flex", alignItems:"center", gap:3, marginTop:"auto" }}>{layerName(j.layer)} <ChevronRight size={11}/></div>
+              <div style={{ fontSize:10, fontWeight:700, color:T.indigo, display:"flex", alignItems:"center", gap:3, marginTop:"auto" }}>{isBrokerDealerProfile ? "Dashboard workflow" : layerName(j.layer)} <ChevronRight size={11}/></div>
             </button>
           ))}
         </div>
@@ -2418,7 +2725,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
                   {r.outcomes.map(id=><span key={id} style={{ fontSize:10, fontWeight:700, color:T.indigo, background:T.indigoLt, borderRadius:99, padding:"3px 9px" }}>{id}</span>)}
                 </div>
               </div>
-              <button onClick={()=>onNavigate(r.layer, r.sub)} style={{ flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 16px", fontSize:12.5, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
+              <button onClick={()=>isBrokerDealerProfile ? routeStrategyAction(r.title, r.outcomes[0], r.layer === "strategy" ? "morning" : r.layer, r.sub || {}) : onNavigate(r.layer, r.sub)} style={{ flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 16px", fontSize:12.5, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
                 <Zap size={13}/> Open {r.surface} <ChevronRight size={14}/>
               </button>
             </div>
@@ -2466,17 +2773,23 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
 }
 
 // ─── Analytics ─────────────────────────────────────────────────────────────────
-function Analytics({ bp }) {
+function Analytics({ bp, profile, dashboard, deepLink }) {
+  const isProfileAnalytics = profile?.id !== DEFAULT_PROFILE_ID && dashboard?.metrics?.length;
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <WorkflowContextBanner deepLink={deepLink} profile={profile}/>
       <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
-        <MetricCard label="Firm AUA"            value="$1.57B"  delta="+2.3%"               up={true}  accent={T.green} />
-        <MetricCard label="Avg Return vs Bench" value="+2.2pts" delta="Top 15% of advisors"  up={true}  accent={T.indigo}/>
-        <MetricCard label="At-Risk Clients"      value="2"       delta="-1 vs last month"     up={true}  accent={T.amber} />
-        <MetricCard label="Reviews Due"          value="3"       delta="In next 30 days"      up={false} accent={T.red}   />
+        {(isProfileAnalytics ? dashboard.metrics : [
+          { label:"Firm AUA", value:"$1.57B", delta:"+2.3%", up:true, accent:T.green },
+          { label:"Avg Return vs Bench", value:"+2.2pts", delta:"Top 15% of advisors", up:true, accent:T.indigo },
+          { label:"At-Risk Clients", value:"2", delta:"-1 vs last month", up:true, accent:T.amber },
+          { label:"Reviews Due", value:"3", delta:"In next 30 days", up:false, accent:T.red },
+        ]).map(m=>(
+          <MetricCard key={m.label} label={m.label} value={m.value} delta={m.delta} up={m.up} sub={m.sub} accent={m.accent}/>
+        ))}
       </div>
       <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
-        <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:14 }}>Book Performance vs Benchmark (6M)</div>
+        <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:14 }}>{isProfileAnalytics ? `${profile.shortLabel} operating trend` : "Book Performance vs Benchmark (6M)"}</div>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={perfData}>
             <CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/>
@@ -2869,7 +3182,7 @@ const FIELD_MAPS = {
 };
 const CAT_LABELS = { all:"All", custodian:"Custodians", crm:"CRM & Client Data", portfolio:"Portfolio Mgmt", planning:"Financial Planning" };
 
-function IntegrationHub({ bp, deepLink }) {
+function IntegrationHub({ bp, deepLink, profile }) {
   const { isMobile } = bp;
   const [activeCategory, setActiveCategory] = useState("all");
   const [selected,   setSelected]   = useState(null);
@@ -2893,6 +3206,7 @@ function IntegrationHub({ bp, deepLink }) {
 
   return (
     <div data-demo="integration-hub" style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <WorkflowContextBanner deepLink={deepLink} profile={profile}/>
 
       {/* Header */}
       <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
@@ -3234,7 +3548,7 @@ export default function WealthscapePrototype() {
 
   const [activeLayer,    setActiveLayer]    = useState("morning");
   const [sidebarOpen,    setSidebarOpen]    = useState(false);
-  const [alerts,         setAlerts]         = useState(ALERTS);
+  const [alerts,         setAlerts]         = useState(() => getProfileDashboard(getProfileById(PROFILE_REGISTRY.defaultProfileId)).alerts);
   const [alertsOpen,     setAlertsOpen]     = useState(false);
   const [deepLink,       setDeepLink]       = useState(null);
   const [demoActive,     setDemoActive]     = useState(false);
@@ -3246,7 +3560,17 @@ export default function WealthscapePrototype() {
   const [reportDelivered,setReportDelivered]= useState(false);
   const [activeProfileId,setActiveProfileId]= useState(PROFILE_REGISTRY.defaultProfileId);
   const activeProfile = getProfileById(activeProfileId);
-  const handleProfileChange = profileId => setActiveProfileId(normalizeProfileId(profileId));
+  const activeDashboard = getProfileDashboard(activeProfile);
+  const handleProfileChange = profileId => {
+    setActiveProfileId(normalizeProfileId(profileId));
+    setDeepLink(null);
+  };
+
+  useEffect(() => {
+    if (scenarioActive) return;
+    setAlerts(activeDashboard.alerts);
+    setAlertsOpen(false);
+  }, [activeProfileId, scenarioActive]);
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
@@ -3271,6 +3595,7 @@ export default function WealthscapePrototype() {
   // Route an alert's next-best-action to the right screen + sub-tab, mark it read.
   const handleAlertAction = (alert) => {
     const { layer, ...sub } = alert.action;
+    if (sub.profileId) setActiveProfileId(normalizeProfileId(sub.profileId));
     setAlerts(prev => prev.map(a => a.id === alert.id ? { ...a, read:true } : a));
     setActiveLayer(layer);
     setDeepLink({ ...sub, _ts: Date.now() });
@@ -3283,6 +3608,13 @@ export default function WealthscapePrototype() {
   const dismissAlert  = (id) => setAlerts(prev => prev.filter(a => a.id !== id));
   const markAllRead   = ()   => setAlerts(prev => prev.map(a => ({ ...a, read:true })));
   const unreadAlerts  = alerts.filter(a => !a.read).length;
+
+  const navigateToLayer = (layer, sub = null) => {
+    if (sub?.profileId) setActiveProfileId(normalizeProfileId(sub.profileId));
+    setActiveLayer(layer);
+    setDeepLink(sub ? { ...sub, _ts:Date.now() } : null);
+    if (!isDesktop) setSidebarOpen(false);
+  };
 
   // Advance scenario step (called by pipeline completion)
   const advanceScenario = useCallback(() => {
@@ -3306,9 +3638,10 @@ export default function WealthscapePrototype() {
 
   const startScenario = () => {
     setScenarioStep(0); setScenarioActive(true); setReportDelivered(false);
+    setActiveProfileId(DEFAULT_PROFILE_ID);
     setActiveLayer("morning"); setDeepLink(null); setDemoActive(false);
     // Reset alerts so Chen drift is unread
-    setAlerts(prev => prev.map(a => a.id===1 ? { ...a, read:false } : a));
+    setAlerts(ALERTS.map(a => a.id===1 ? { ...a, read:false } : a));
   };
   const endScenario = () => setScenarioActive(false);
 
@@ -3318,7 +3651,7 @@ export default function WealthscapePrototype() {
   const closeDemo = () => setDemoActive(false);
 
   const navItems = [
-    { id:"morning",      icon:Home,     label:"Morning Brief",  badge:4    },
+    { id:"morning",      icon:Home,     label:"Morning Brief",  badge:unreadAlerts || null },
     { id:"reports",      icon:FileText, label:"Report Builder", badge:null },
     { id:"portal",       icon:Users,    label:"Client Portal",  badge:1    },
     { id:"integrations", icon:Zap,      label:"Integrations",   badge:null },
@@ -3348,7 +3681,7 @@ export default function WealthscapePrototype() {
         {navItems.map(item=>{
           const Icon = item.icon; const active = activeLayer===item.id;
           return (
-            <button key={item.id} onClick={()=>{setActiveLayer(item.id);setDeepLink(null);if(!isDesktop)setSidebarOpen(false);}} style={{ width:"100%", display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:8, background:active?`${T.green}40`:"transparent", border:active?`1px solid ${T.green}60`:"1px solid transparent", color:active?T.white:"#94A3B8", fontSize:13, fontWeight:active?600:400, cursor:"pointer", marginBottom:2, transition:"all 0.15s", textAlign:"left", minHeight:44 }}>
+            <button key={item.id} onClick={()=>navigateToLayer(item.id)} style={{ width:"100%", display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:8, background:active?`${T.green}40`:"transparent", border:active?`1px solid ${T.green}60`:"1px solid transparent", color:active?T.white:"#94A3B8", fontSize:13, fontWeight:active?600:400, cursor:"pointer", marginBottom:2, transition:"all 0.15s", textAlign:"left", minHeight:44 }}>
               <Icon size={16}/>{item.label}
               {item.badge && <span style={{ marginLeft:"auto", background:item.id==="morning"?T.red:T.green, color:T.white, fontSize:9, fontWeight:700, padding:"2px 6px", borderRadius:99, minWidth:18, textAlign:"center" }}>{item.badge}</span>}
             </button>
@@ -3422,7 +3755,7 @@ export default function WealthscapePrototype() {
               <div style={{ fontSize:9, color:T.slate, fontWeight:800, letterSpacing:"0.08em", textTransform:"uppercase" }}>Profile view</div>
               <div style={{ fontSize:12, fontWeight:700, color:T.gray900, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{activeProfile.shell.name}</div>
             </div>
-            <ProfileSwitcher profiles={STRATEGY_PROFILES} profileOrder={PROFILE_ORDER} activeProfileId={activeProfileId} onProfileChange={setActiveProfileId} compact/>
+            <ProfileSwitcher profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} compact/>
           </div>
         )}
 
@@ -3431,12 +3764,12 @@ export default function WealthscapePrototype() {
         )}
 
         <div style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          {activeLayer==="morning"       && <MorningBrief    bp={bp} profile={activeProfile} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} scenarioStep={scenarioActive?scenarioStep:null}/>}
-          {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>}
-          {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} reportDelivered={reportDelivered}/>}
-          {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink}/>}
-          {activeLayer==="insights"      && <Analytics       bp={bp}/>}
-          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={(layer,sub)=>{setActiveLayer(layer);setDeepLink(sub?{...sub,_ts:Date.now()}:null);}} onStartTour={startDemo} onStartScenario={startScenario}/>}
+          {activeLayer==="morning"       && <MorningBrief    bp={bp} profile={activeProfile} dashboard={activeDashboard} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onNavigate={navigateToLayer} deepLink={deepLink} scenarioStep={scenarioActive?scenarioStep:null}/>}
+          {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>}
+          {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} profile={activeProfile} reportDelivered={reportDelivered}/>}
+          {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink} profile={activeProfile}/>}
+          {activeLayer==="insights"      && <Analytics       bp={bp} profile={activeProfile} dashboard={activeDashboard} deepLink={deepLink}/>}
+          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={navigateToLayer} onStartTour={startDemo} onStartScenario={startScenario} deepLink={deepLink}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
 
@@ -3445,7 +3778,7 @@ export default function WealthscapePrototype() {
             {navItems.map(item=>{
               const Icon = item.icon; const active = activeLayer===item.id;
               return (
-                <button key={item.id} onClick={()=>{setActiveLayer(item.id);setDeepLink(null);}} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3, padding:"8px 4px 10px", background:"transparent", border:"none", cursor:"pointer", position:"relative", minHeight:54 }}>
+                <button key={item.id} onClick={()=>navigateToLayer(item.id)} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:3, padding:"8px 4px 10px", background:"transparent", border:"none", cursor:"pointer", position:"relative", minHeight:54 }}>
                   <div style={{ color:active?T.green:T.gray400, position:"relative" }}>
                     <Icon size={20}/>
                     {item.badge && <div style={{ position:"absolute", top:-4, right:-6, width:14, height:14, borderRadius:"50%", background:T.red, border:`2px solid ${T.white}`, display:"flex", alignItems:"center", justifyContent:"center" }}><span style={{ fontSize:8, fontWeight:700, color:T.white }}>{item.badge}</span></div>}
