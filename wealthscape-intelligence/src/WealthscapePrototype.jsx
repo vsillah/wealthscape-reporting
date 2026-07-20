@@ -637,15 +637,14 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
 }
 
 function WorkflowContextBanner({ deepLink, profile }) {
-  if (profile?.id === DEFAULT_PROFILE_ID || (!deepLink?.strategyOutcome && !deepLink?.dashboardFocus)) return null;
+  if (profile?.id === DEFAULT_PROFILE_ID || (!deepLink?.dashboardFocus && !deepLink?.workflowContext)) return null;
   return (
     <div style={{ background:T.indigoLt, border:`1px solid ${T.indigo}35`, borderRadius:12, padding:"12px 15px", display:"flex", gap:11, alignItems:"center", flexWrap:"wrap" }}>
       <Target size={15} color={T.indigo}/>
       <div style={{ flex:1, minWidth:180 }}>
-        <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>Profile workflow context</div>
+        <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>Workflow focus</div>
         <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{deepLink.dashboardFocus || deepLink.workflowContext || "Opened from the profile dashboard"}</div>
       </div>
-      {deepLink.strategyOutcome && <Badge color={T.indigo} bg={T.white}>{deepLink.strategyOutcome}</Badge>}
     </div>
   );
 }
@@ -654,7 +653,6 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
   const { isMobile } = bp;
   const focus = deepLink?.dashboardFocus || deepLink?.workflowContext || null;
   const rows = dashboard.queue || [];
-  const evidence = dashboard.strategyEvidence || [];
   const loop = dashboard.operatingLoop || [];
   const activeAlerts = alerts.filter(a => !a.read);
   const severityColor = severity => ({ Critical:T.red, High:T.amber, Watch:T.indigo, Medium:T.amber, Low:T.slate }[severity] || T.slate);
@@ -680,9 +678,6 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
             <div style={{ fontSize:isMobile?18:23, fontWeight:850, lineHeight:1.18, marginBottom:8 }}>{dashboard.title}</div>
             <div style={{ fontSize:13, color:"#B8C7D6", lineHeight:1.55, maxWidth:780 }}>{dashboard.intro}</div>
           </div>
-          <button onClick={()=>route("strategy", { strategySection:"opportunity-matrix", strategyOutcome:dashboard.primaryOutcome })} style={{ alignSelf:isMobile?"stretch":"flex-start", background:"rgba(255,255,255,0.12)", color:T.white, border:"1px solid rgba(255,255,255,0.22)", borderRadius:9, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6, whiteSpace:"nowrap" }}>
-            <BookOpen size={13}/> Strategy evidence <ChevronRight size={13}/>
-          </button>
         </div>
       </div>
 
@@ -690,10 +685,9 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
         <div style={{ background:T.indigoLt, border:`1px solid ${T.indigo}35`, borderRadius:12, padding:"12px 15px", display:"flex", gap:11, alignItems:"center", flexWrap:"wrap" }}>
           <Sparkles size={15} color={T.indigo}/>
           <div style={{ flex:1, minWidth:180 }}>
-            <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>Routed from strategy</div>
+            <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>Workflow focus</div>
             <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{focus}</div>
           </div>
-          {deepLink?.strategyOutcome && <Badge color={T.indigo} bg={T.white}>{deepLink.strategyOutcome}</Badge>}
         </div>
       )}
 
@@ -707,8 +701,8 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
         <div data-demo="profile-opportunity-queue" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
           <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray200}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
             <div>
-              <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Priority Opportunity Queue</div>
-              <div style={{ fontSize:11.5, color:T.slate, marginTop:2 }}>The highest-scoring strategy gaps now drive the day-one work surface.</div>
+              <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Priority Operations Queue</div>
+              <div style={{ fontSize:11.5, color:T.slate, marginTop:2 }}>Work is ranked by urgency, client impact, aging, and owner readiness.</div>
             </div>
             <Badge color={T.green} bg={T.greenLt}>{rows.length} routed actions</Badge>
           </div>
@@ -717,18 +711,14 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", marginBottom:5 }}>
                   <span style={{ background:`${severityColor(item.severity)}18`, color:severityColor(item.severity), borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
-                  {item.outcome && <span style={{ background:T.indigoLt, color:T.indigo, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.outcome}</span>}
                   <span style={{ fontSize:13, fontWeight:850, color:T.gray900, lineHeight:1.35 }}>{item.title}</span>
                 </div>
                 <div style={{ fontSize:12.3, color:T.gray600, lineHeight:1.5 }}>{item.body}</div>
                 <div style={{ fontSize:11.2, color:T.slate, lineHeight:1.45, marginTop:5 }}>{item.detail}</div>
               </div>
               <div style={{ display:"flex", gap:8, flexWrap:"wrap", justifyContent:isMobile?"stretch":"flex-end", flexShrink:0 }}>
-                <button onClick={()=>route(item.layer, { ...(item.sub || {}), strategyOutcome:item.outcome, workflowContext:item.title })} style={{ background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:5, minHeight:38, flex:isMobile?1:"initial" }}>
+                <button onClick={()=>route(item.layer, { ...(item.sub || {}), workflowContext:item.title })} style={{ background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:5, minHeight:38, flex:isMobile?1:"initial" }}>
                   <Zap size={12}/> {item.action}
-                </button>
-                <button onClick={()=>route("strategy", { strategyOutcome:item.outcome, strategySection:"desired-outcomes" })} style={{ background:T.gray100, color:T.gray600, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:38, flex:isMobile?1:"initial" }}>
-                  Evidence
                 </button>
               </div>
             </div>
@@ -736,23 +726,6 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
         </div>
 
         <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-          <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
-            <div>
-              <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Strategy Tie-Back</div>
-              <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:2 }}>Every operating lane links to the opportunity score that justified it.</div>
-            </div>
-            {evidence.map(item=>(
-              <button key={item.outcome} onClick={()=>route("strategy", { strategyOutcome:item.outcome, strategySection:"opportunity-matrix" })} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:9, padding:"10px 11px", display:"flex", gap:10, alignItems:"center", textAlign:"left", cursor:"pointer" }}>
-                <div style={{ width:38, height:38, borderRadius:8, background:T.indigoLt, color:T.indigo, fontSize:12, fontWeight:900, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{item.score}</div>
-                <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>{item.outcome}</div>
-                  <div style={{ fontSize:11.2, color:T.slate, lineHeight:1.35, marginTop:2 }}>{item.label}</div>
-                </div>
-                <ChevronRight size={14} color={T.slate}/>
-              </button>
-            ))}
-          </div>
-
           <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
               <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Profile Alerts</div>
@@ -772,7 +745,7 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
                 </div>
               </div>
             ))}
-            {activeAlerts.length === 0 && <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>No profile alerts are open. Use the strategy links to inspect the next investment case.</div>}
+            {activeAlerts.length === 0 && <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>No profile alerts are open. Queue activity will appear here when a branch, advisor, client, or workflow needs attention.</div>}
           </div>
         </div>
       </div>
@@ -781,7 +754,7 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
         <div style={{ fontSize:13, fontWeight:800, color:T.gray900, marginBottom:10 }}>Operating Loop</div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(4, 1fr)", gap:10 }}>
           {loop.map(step=>(
-            <button key={step.label} onClick={()=>route(step.layer, { ...(step.sub || {}), strategyOutcome:step.outcome, workflowContext:step.label })} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:10, padding:"11px 12px", textAlign:"left", cursor:"pointer", minHeight:104 }}>
+            <button key={step.label} onClick={()=>route(step.layer, { ...(step.sub || {}), workflowContext:step.label })} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:10, padding:"11px 12px", textAlign:"left", cursor:"pointer", minHeight:104 }}>
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8, marginBottom:7 }}>
                 <span style={{ fontSize:11.5, fontWeight:850, color:T.gray900 }}>{step.label}</span>
                 <ChevronRight size={13} color={T.slate}/>
@@ -1988,8 +1961,7 @@ const PROFILE_DASHBOARDS = {
     variant:"broker-dealer",
     eyebrow:"Home Office Dashboard",
     title:"Enterprise Risk and Productivity Command",
-    intro:"Maya's dashboard now starts with the home-office opportunities the strategy page prioritized: supervision risk, AI governance, productivity telemetry, and advisor-retention signals.",
-    primaryOutcome:"BD-HO #1",
+    intro:"Maya starts the day with a governed operating view across supervision risk, AI governance, advisor productivity, and retention signals.",
     metrics:[
       { label:"Critical branches", value:"7", delta:"3 above SLA", up:false, sub:"supervision queue", accent:T.red },
       { label:"AI reviews due", value:"42", delta:"+11 today", up:false, sub:"policy queue", accent:T.amber },
@@ -1997,33 +1969,26 @@ const PROFILE_DASHBOARDS = {
       { label:"Retention watchlist", value:"23", delta:"5 critical", up:false, sub:"field leadership", accent:T.indigo },
     ],
     queue:[
-      { severity:"Critical", outcome:"BD-HO #1", title:"Off-channel communications spike", body:"Northeast enterprise group shows a three-day communications surge with capture gaps and recruiting overlap.", detail:"18 advisors · 71 messages pending capture · evidence packet 68% complete", action:"Open packet", layer:"integrations", sub:{ integrationId:"salesforce" } },
-      { severity:"High", outcome:"BD-HO #2", title:"Unapproved AI narrative usage", body:"Retirement-income report drafts include AI-generated language that has not cleared policy review.", detail:"11 summaries · 5 client-ready drafts · disclosure block missing", action:"Review AI", layer:"reports", sub:{ reportTab:"customize" } },
-      { severity:"Watch", outcome:"BD-HO #5", title:"Platform adoption drop", body:"Commonwealth-transition segment has declining reporting usage, elevated tickets, and a rising retention-risk score.", detail:"Usage -24% · tickets +31% · 8 advisors need field intervention", action:"Open analytics", layer:"insights", sub:{ metricFocus:"retention-watchlist" } },
-    ],
-    strategyEvidence:[
-      { outcome:"BD-HO #1", score:"16.5", label:"Find the highest-risk advisor, branch, product, or communications issue" },
-      { outcome:"BD-HO #2", score:"15.8", label:"Confirm AI activity is approved, supervised, retained, and explainable" },
-      { outcome:"BD-HO #5", score:"14.5", label:"Detect advisor-retention risk before recruiting or custodian shift" },
+      { severity:"Critical", title:"Off-channel communications spike", body:"Northeast enterprise group shows a three-day communications surge with capture gaps and recruiting overlap.", detail:"18 advisors · 71 messages pending capture · evidence packet 68% complete", action:"Open packet", layer:"integrations", sub:{ integrationId:"salesforce" } },
+      { severity:"High", title:"Unapproved AI narrative usage", body:"Retirement-income report drafts include AI-generated language that has not cleared policy review.", detail:"11 summaries · 5 client-ready drafts · disclosure block missing", action:"Review AI", layer:"reports", sub:{ reportTab:"customize" } },
+      { severity:"Watch", title:"Platform adoption drop", body:"Commonwealth-transition segment has declining reporting usage, elevated tickets, and a rising retention-risk score.", detail:"Usage -24% · tickets +31% · 8 advisors need field intervention", action:"Open analytics", layer:"insights", sub:{ metricFocus:"retention-watchlist" } },
     ],
     operatingLoop:[
-      { label:"Supervision packet", desc:"Pull capture status, communications evidence, branch owner, and aging into one packet.", layer:"integrations", sub:{ integrationId:"salesforce" }, outcome:"BD-HO #1" },
-      { label:"AI governance review", desc:"Open report configuration with policy flags and approved disclosure blocks visible.", layer:"reports", sub:{ reportTab:"customize" }, outcome:"BD-HO #2" },
-      { label:"Retention telemetry", desc:"Inspect adoption, support load, and field-friction trend before assigning intervention.", layer:"insights", sub:{ metricFocus:"retention-watchlist" }, outcome:"BD-HO #5" },
-      { label:"Strategy proof", desc:"Return to the opportunity matrix that justified this dashboard lane.", layer:"strategy", sub:{ strategyOutcome:"BD-HO #1" }, outcome:"BD-HO #1" },
+      { label:"Supervision packet", desc:"Pull capture status, communications evidence, branch owner, and aging into one packet.", layer:"integrations", sub:{ integrationId:"salesforce" } },
+      { label:"AI governance review", desc:"Open report configuration with policy flags and approved disclosure blocks visible.", layer:"reports", sub:{ reportTab:"customize" } },
+      { label:"Retention telemetry", desc:"Inspect adoption, support load, and field-friction trend before assigning intervention.", layer:"insights", sub:{ metricFocus:"retention-watchlist" } },
     ],
     alerts:[
-      { id:101, type:"risk", severity:"high", client:"Northeast enterprise group", source:"Supervision Command", time:"8:10 AM", read:false, body:"Off-channel communications spike overlaps with retention-risk pattern. Evidence packet needs review.", action:{ label:"Open Packet", layer:"integrations", integrationId:"salesforce", strategyOutcome:"BD-HO #1", dashboardFocus:"Off-channel communications spike" } },
-      { id:102, type:"review", severity:"high", client:"AI narrative review", source:"AI Governance", time:"8:04 AM", read:false, body:"Five retirement-income drafts contain unapproved AI language and missing disclosure blocks.", action:{ label:"Review AI", layer:"reports", reportTab:"customize", strategyOutcome:"BD-HO #2", dashboardFocus:"Unapproved AI narrative usage" } },
-      { id:103, type:"integration", severity:"medium", client:"Commonwealth-transition cohort", source:"Platform Telemetry", time:"7:42 AM", read:false, body:"Reporting usage fell 24% while support tickets rose 31%. Field intervention recommended.", action:{ label:"Open Analytics", layer:"insights", metricFocus:"retention-watchlist", strategyOutcome:"BD-HO #5", dashboardFocus:"Platform adoption drop" } },
+      { id:101, type:"risk", severity:"high", client:"Northeast enterprise group", source:"Supervision Command", time:"8:10 AM", read:false, body:"Off-channel communications spike overlaps with retention-risk pattern. Evidence packet needs review.", action:{ label:"Open Packet", layer:"integrations", integrationId:"salesforce", dashboardFocus:"Off-channel communications spike" } },
+      { id:102, type:"review", severity:"high", client:"AI narrative review", source:"AI Governance", time:"8:04 AM", read:false, body:"Five retirement-income drafts contain unapproved AI language and missing disclosure blocks.", action:{ label:"Review AI", layer:"reports", reportTab:"customize", dashboardFocus:"Unapproved AI narrative usage" } },
+      { id:103, type:"integration", severity:"medium", client:"Commonwealth-transition cohort", source:"Platform Telemetry", time:"7:42 AM", read:false, body:"Reporting usage fell 24% while support tickets rose 31%. Field intervention recommended.", action:{ label:"Open Analytics", layer:"insights", metricFocus:"retention-watchlist", dashboardFocus:"Platform adoption drop" } },
     ],
   },
   "bd-osj-principal": {
     variant:"broker-dealer",
     eyebrow:"OSJ Dashboard",
     title:"Branch Exception and Rep Support Workbench",
-    intro:"Kwame's dashboard now converts the OSJ strategy into a local operating queue: exception triage, rep coaching, escalation evidence, and branch health.",
-    primaryOutcome:"BD-OSJ #1",
+    intro:"Kwame works from a local queue that turns exception triage, rep coaching, escalation evidence, and branch health into same-day action.",
     metrics:[
       { label:"Aging exceptions", value:"31", delta:"12 due today", up:false, sub:"local queue", accent:T.red },
       { label:"Rep support queue", value:"18", delta:"+5 new", up:false, sub:"coaching items", accent:T.amber },
@@ -2031,33 +1996,26 @@ const PROFILE_DASHBOARDS = {
       { label:"Escalations pending", value:"6", delta:"2 critical", up:false, sub:"home office", accent:T.indigo },
     ],
     queue:[
-      { severity:"Critical", outcome:"BD-OSJ #1", title:"Variable annuity disclosure missing", body:"L. Benton has two client files aging four days with a repeat disclosure pattern this quarter.", detail:"Evidence missing signed rider · coaching note drafted · principal attestation required", action:"Coach rep", layer:"portal", sub:{ portalTab:"messages" } },
-      { severity:"High", outcome:"BD-OSJ #4", title:"Trade rationale incomplete", body:"R. Patel's concentrated-equity order needs a home-office packet before approval can move.", detail:"$8.1M household · rationale template incomplete · escalation route ready", action:"Build packet", layer:"reports", sub:{ reportTab:"build" } },
-      { severity:"Watch", outcome:"BD-OSJ #3", title:"Repeat NIGO trend", body:"Three newer reps are repeating beneficiary mismatches on transfers and need local training.", detail:"7 transfer files · same form pattern · branch office-hours recommended", action:"Assign training", layer:"insights", sub:{ metricFocus:"rep-friction" } },
-    ],
-    strategyEvidence:[
-      { outcome:"BD-OSJ #1", score:"16.2", label:"Triage exceptions most likely to block client service or create regulatory risk" },
-      { outcome:"BD-OSJ #2", score:"15.2", label:"Translate home-office findings into rep-specific action and coaching" },
-      { outcome:"BD-OSJ #5", score:"13.7", label:"Confirm every reviewed exception has a complete evidence trail" },
+      { severity:"Critical", title:"Variable annuity disclosure missing", body:"L. Benton has two client files aging four days with a repeat disclosure pattern this quarter.", detail:"Evidence missing signed rider · coaching note drafted · principal attestation required", action:"Coach rep", layer:"portal", sub:{ portalTab:"messages" } },
+      { severity:"High", title:"Trade rationale incomplete", body:"R. Patel's concentrated-equity order needs a home-office packet before approval can move.", detail:"$8.1M household · rationale template incomplete · escalation route ready", action:"Build packet", layer:"reports", sub:{ reportTab:"build" } },
+      { severity:"Watch", title:"Repeat NIGO trend", body:"Three newer reps are repeating beneficiary mismatches on transfers and need local training.", detail:"7 transfer files · same form pattern · branch office-hours recommended", action:"Assign training", layer:"insights", sub:{ metricFocus:"rep-friction" } },
     ],
     operatingLoop:[
-      { label:"Coach the rep", desc:"Open the approved message path with exception context and next required evidence.", layer:"portal", sub:{ portalTab:"messages" }, outcome:"BD-OSJ #2" },
-      { label:"Build escalation packet", desc:"Use the report builder to package client context, policy trigger, and branch notes.", layer:"reports", sub:{ reportTab:"build" }, outcome:"BD-OSJ #4" },
-      { label:"Monitor rep friction", desc:"Track repeat branch patterns before they become audit findings or complaints.", layer:"insights", sub:{ metricFocus:"rep-friction" }, outcome:"BD-OSJ #3" },
-      { label:"Strategy proof", desc:"Return to the OSJ opportunity scores that prioritized the workbench.", layer:"strategy", sub:{ strategyOutcome:"BD-OSJ #1" }, outcome:"BD-OSJ #1" },
+      { label:"Coach the rep", desc:"Open the approved message path with exception context and next required evidence.", layer:"portal", sub:{ portalTab:"messages" } },
+      { label:"Build escalation packet", desc:"Use the report builder to package client context, policy trigger, and branch notes.", layer:"reports", sub:{ reportTab:"build" } },
+      { label:"Monitor rep friction", desc:"Track repeat branch patterns before they become audit findings or complaints.", layer:"insights", sub:{ metricFocus:"rep-friction" } },
     ],
     alerts:[
-      { id:201, type:"review", severity:"high", client:"L. Benton", source:"Branch Workbench", time:"8:08 AM", read:false, body:"VA disclosure gap is now critical and needs rep coaching plus branch attestation.", action:{ label:"Coach Rep", layer:"portal", portalTab:"messages", strategyOutcome:"BD-OSJ #2", dashboardFocus:"Variable annuity disclosure missing" } },
-      { id:202, type:"risk", severity:"high", client:"R. Patel", source:"Escalation Queue", time:"7:55 AM", read:false, body:"Concentrated equity rationale is incomplete for an $8.1M household. Build escalation packet.", action:{ label:"Build Packet", layer:"reports", reportTab:"build", strategyOutcome:"BD-OSJ #4", dashboardFocus:"Trade rationale incomplete" } },
-      { id:203, type:"integration", severity:"medium", client:"New rep cohort", source:"Branch Health", time:"Yesterday", read:false, body:"Beneficiary mismatch pattern repeated across seven transfers. Training action recommended.", action:{ label:"Open Analytics", layer:"insights", metricFocus:"rep-friction", strategyOutcome:"BD-OSJ #3", dashboardFocus:"Repeat NIGO trend" } },
+      { id:201, type:"review", severity:"high", client:"L. Benton", source:"Branch Workbench", time:"8:08 AM", read:false, body:"VA disclosure gap is now critical and needs rep coaching plus branch attestation.", action:{ label:"Coach Rep", layer:"portal", portalTab:"messages", dashboardFocus:"Variable annuity disclosure missing" } },
+      { id:202, type:"risk", severity:"high", client:"R. Patel", source:"Escalation Queue", time:"7:55 AM", read:false, body:"Concentrated equity rationale is incomplete for an $8.1M household. Build escalation packet.", action:{ label:"Build Packet", layer:"reports", reportTab:"build", dashboardFocus:"Trade rationale incomplete" } },
+      { id:203, type:"integration", severity:"medium", client:"New rep cohort", source:"Branch Health", time:"Yesterday", read:false, body:"Beneficiary mismatch pattern repeated across seven transfers. Training action recommended.", action:{ label:"Open Analytics", layer:"insights", metricFocus:"rep-friction", dashboardFocus:"Repeat NIGO trend" } },
     ],
   },
   "bd-hybrid-advisor": {
     variant:"broker-dealer",
     eyebrow:"Hybrid Advisor Dashboard",
     title:"Relationship 360 Action Queue",
-    intro:"Amina's dashboard now starts from the hybrid strategy: one client relationship view, visible blockers, compliant narrative generation, and team-owner routing.",
-    primaryOutcome:"BD-HA #1",
+    intro:"Amina works from one client relationship queue with visible blockers, compliant narrative generation, and clear team-owner routing.",
     metrics:[
       { label:"Client blockers", value:"14", delta:"5 suitability", up:false, sub:"needs owner", accent:T.amber },
       { label:"Mixed-book reviews", value:"22", delta:"8 due this week", up:false, sub:"households", accent:T.indigo },
@@ -2065,25 +2023,19 @@ const PROFILE_DASHBOARDS = {
       { label:"Suitability holds", value:"5", delta:"2 critical", up:false, sub:"principal review", accent:T.red },
     ],
     queue:[
-      { severity:"High", outcome:"BD-HA #1", title:"Chen household product context split", body:"Advisory allocation, brokerage annuity trail, and planning notes are split across surfaces before the client meeting.", detail:"Advisory AUM + brokerage trail + annuity rider · relationship 360 needed", action:"Open 360", layer:"portal", sub:{ portalTab:"overview" } },
-      { severity:"Critical", outcome:"BD-HA #3", title:"Account package waiting on suitability", body:"Roth conversion and structured-note discussion are blocked by concentration and liquidity notes.", detail:"CSA owns paperwork · principal owns suitability · tax disclosure missing", action:"Resolve hold", layer:"reports", sub:{ reportTab:"customize" } },
-      { severity:"Watch", outcome:"BD-HA #5", title:"Q2 report needs brokerage disclosure", body:"AI narrative is ready, but brokerage disclosure language must be inserted before delivery.", detail:"Narrative generated · approved disclosure block pending · principal review required", action:"Edit report", layer:"reports", sub:{ reportTab:"customize" } },
-    ],
-    strategyEvidence:[
-      { outcome:"BD-HA #1", score:"16.3", label:"Understand the full brokerage, advisory, planning, and product relationship" },
-      { outcome:"BD-HA #3", score:"15.1", label:"See what is blocking an account, product, or recommendation workflow" },
-      { outcome:"BD-HA #5", score:"14.0", label:"Confirm communications and narratives match approved product context" },
+      { severity:"High", title:"Chen household product context split", body:"Advisory allocation, brokerage annuity trail, and planning notes are split across surfaces before the client meeting.", detail:"Advisory AUM + brokerage trail + annuity rider · relationship 360 needed", action:"Open 360", layer:"portal", sub:{ portalTab:"overview" } },
+      { severity:"Critical", title:"Account package waiting on suitability", body:"Roth conversion and structured-note discussion are blocked by concentration and liquidity notes.", detail:"CSA owns paperwork · principal owns suitability · tax disclosure missing", action:"Resolve hold", layer:"reports", sub:{ reportTab:"customize" } },
+      { severity:"Watch", title:"Q2 report needs brokerage disclosure", body:"AI narrative is ready, but brokerage disclosure language must be inserted before delivery.", detail:"Narrative generated · approved disclosure block pending · principal review required", action:"Edit report", layer:"reports", sub:{ reportTab:"customize" } },
     ],
     operatingLoop:[
-      { label:"Relationship 360", desc:"Open the client view with advisory, brokerage, annuity, and planning context in one place.", layer:"portal", sub:{ portalTab:"overview" }, outcome:"BD-HA #1" },
-      { label:"Disclosure editing", desc:"Open report customization with approved hybrid disclosure language visible.", layer:"reports", sub:{ reportTab:"customize" }, outcome:"BD-HA #5" },
-      { label:"Team blocker analytics", desc:"Inspect blocker patterns by owner, account type, and supervision route.", layer:"insights", sub:{ metricFocus:"team-blockers" }, outcome:"BD-HA #3" },
-      { label:"Strategy proof", desc:"Return to the hybrid opportunity matrix and prioritized recommendations.", layer:"strategy", sub:{ strategyOutcome:"BD-HA #1" }, outcome:"BD-HA #1" },
+      { label:"Relationship 360", desc:"Open the client view with advisory, brokerage, annuity, and planning context in one place.", layer:"portal", sub:{ portalTab:"overview" } },
+      { label:"Disclosure editing", desc:"Open report customization with approved hybrid disclosure language visible.", layer:"reports", sub:{ reportTab:"customize" } },
+      { label:"Team blocker analytics", desc:"Inspect blocker patterns by owner, account type, and supervision route.", layer:"insights", sub:{ metricFocus:"team-blockers" } },
     ],
     alerts:[
-      { id:301, type:"risk", severity:"high", client:"Chen household", source:"Relationship 360", time:"8:06 AM", read:false, body:"Advisory allocation and brokerage annuity trail are split before the client meeting.", action:{ label:"Open 360", layer:"portal", portalTab:"overview", strategyOutcome:"BD-HA #1", dashboardFocus:"Chen household product context split" } },
-      { id:302, type:"review", severity:"high", client:"Structured note workflow", source:"Suitability Hold", time:"7:50 AM", read:false, body:"Concentration and liquidity notes are missing. Principal review cannot clear yet.", action:{ label:"Resolve Hold", layer:"reports", reportTab:"customize", strategyOutcome:"BD-HA #3", dashboardFocus:"Account package waiting on suitability" } },
-      { id:303, type:"report", severity:"medium", client:"Q2 hybrid report", source:"Report Engine", time:"Yesterday", read:false, body:"AI narrative is generated but needs the approved brokerage disclosure block.", action:{ label:"Edit Report", layer:"reports", reportTab:"customize", strategyOutcome:"BD-HA #5", dashboardFocus:"Q2 report needs brokerage disclosure" } },
+      { id:301, type:"risk", severity:"high", client:"Chen household", source:"Relationship 360", time:"8:06 AM", read:false, body:"Advisory allocation and brokerage annuity trail are split before the client meeting.", action:{ label:"Open 360", layer:"portal", portalTab:"overview", dashboardFocus:"Chen household product context split" } },
+      { id:302, type:"review", severity:"high", client:"Structured note workflow", source:"Suitability Hold", time:"7:50 AM", read:false, body:"Concentration and liquidity notes are missing. Principal review cannot clear yet.", action:{ label:"Resolve Hold", layer:"reports", reportTab:"customize", dashboardFocus:"Account package waiting on suitability" } },
+      { id:303, type:"report", severity:"medium", client:"Q2 hybrid report", source:"Report Engine", time:"Yesterday", read:false, body:"AI narrative is generated but needs the approved brokerage disclosure block.", action:{ label:"Edit Report", layer:"reports", reportTab:"customize", dashboardFocus:"Q2 report needs brokerage disclosure" } },
     ],
   },
 };
@@ -2130,7 +2082,7 @@ function HybridAdvisorWorkspace({ workspace, isMobile, onNavigate }) {
   const toneColor = tone => ({ red:T.red, amber:T.amber, indigo:T.indigo, green:T.green, slate:T.slate }[tone] || T.slate);
   const toneBg = tone => ({ red:T.redLt, amber:T.amberLt, indigo:T.indigoLt, green:T.greenLt, slate:T.gray100 }[tone] || T.gray100);
   const severityColor = severity => severity==="Critical" ? T.red : severity==="High" ? T.amber : T.indigo;
-  const route = (label, outcome, layer = "morning", sub = {}) => onNavigate?.(layer, { ...sub, dashboardFocus:label, strategyOutcome:outcome, source:"strategy-workspace" });
+  const route = (label, layer = "morning", sub = {}) => onNavigate?.(layer, { ...sub, dashboardFocus:label, source:"strategy-workspace" });
 
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
@@ -2199,7 +2151,7 @@ function HybridAdvisorWorkspace({ workspace, isMobile, onNavigate }) {
                   <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{item.stage} · {item.owner}</div>
                   <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:3 }}>Blocker: {item.blocker}</div>
                 </div>
-                <button onClick={()=>route(item.title, item.severity==="Critical" ? "BD-HA #3" : item.severity==="High" ? "BD-HA #1" : "BD-HA #5", item.action.includes("packet") ? "reports" : "morning", item.action.includes("packet") ? { reportTab:"customize" } : {})} style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+                <button onClick={()=>route(item.title, item.action.includes("packet") ? "reports" : "morning", item.action.includes("packet") ? { reportTab:"customize" } : {})} style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
               </div>
             ))}
           </div>
@@ -2208,7 +2160,7 @@ function HybridAdvisorWorkspace({ workspace, isMobile, onNavigate }) {
             <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
               <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Client-Ready Actions</div>
               {workspace.actions.map(action=>(
-                <button key={action} onClick={()=>route(action, action.includes("narrative") ? "BD-HA #5" : action.includes("blocker") ? "BD-HA #3" : "BD-HA #1")} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                <button key={action} onClick={()=>route(action)} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
                   {action}<ChevronRight size={14} color={T.slate}/>
                 </button>
               ))}
@@ -2252,13 +2204,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
   const routingLanes = workspace.routingLanes || [];
   const severityColor = severity => ({ Critical:T.red, High:T.amber, Watch:T.indigo }[severity] || T.slate);
   const isOsjWorkspace = !!workspace.exceptionReview;
-  const queueOutcome = severity => isOsjWorkspace
-    ? (severity==="Critical" ? "BD-OSJ #1" : severity==="High" ? "BD-OSJ #4" : "BD-OSJ #3")
-    : (severity==="Critical" ? "BD-HO #1" : severity==="High" ? "BD-HO #2" : "BD-HO #5");
-  const actionOutcome = action => isOsjWorkspace
-    ? (action.includes("coaching") ? "BD-OSJ #2" : action.includes("escalation") ? "BD-OSJ #4" : "BD-OSJ #1")
-    : (action.includes("retention") ? "BD-HO #5" : action.includes("AI") ? "BD-HO #2" : "BD-HO #1");
-  const route = (label, outcome, layer = "morning", sub = {}) => onNavigate?.(layer, { ...sub, dashboardFocus:label, strategyOutcome:outcome, source:"strategy-workspace" });
+  const route = (label, layer = "morning", sub = {}) => onNavigate?.(layer, { ...sub, dashboardFocus:label, source:"strategy-workspace" });
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
       <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
@@ -2282,14 +2228,14 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
                     </div>
                     <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{item.meta}</div>
                   </div>
-                  <button onClick={()=>route(item.title, queueOutcome(item.severity))} style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
+                  <button onClick={()=>route(item.title)} style={{ alignSelf:isMobile?"stretch":"center", background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 12px", fontSize:12, fontWeight:800, cursor:"pointer", whiteSpace:"nowrap" }}>{item.action}</button>
                 </div>
               ))}
             </div>
             <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
               <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Next Actions</div>
               {workspace.actions.map(action=>(
-                <button key={action} onClick={()=>route(action, actionOutcome(action))} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                <button key={action} onClick={()=>route(action)} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
                   {action}<ChevronRight size={14} color={T.slate}/>
                 </button>
               ))}
@@ -2357,7 +2303,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
                   <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:2 }}>Every signal resolves to a named enterprise lane.</div>
                 </div>
                 {routingLanes.map(lane=>(
-                  <button key={lane.label} onClick={()=>route(lane.label, lane.label==="AI Governance" ? "BD-HO #2" : lane.label==="Field Leadership" ? "BD-HO #5" : "BD-HO #1", lane.label==="Product Ops" ? "insights" : "morning")} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:9, padding:"10px 11px", display:"flex", gap:10, alignItems:"center", textAlign:"left", cursor:"pointer" }}>
+                  <button key={lane.label} onClick={()=>route(lane.label, lane.label==="Product Ops" ? "insights" : "morning")} style={{ background:T.gray50, border:`1px solid ${T.gray100}`, borderRadius:9, padding:"10px 11px", display:"flex", gap:10, alignItems:"center", textAlign:"left", cursor:"pointer" }}>
                     <div style={{ width:38, height:38, borderRadius:8, background:T.indigoLt, color:T.indigo, fontSize:14, fontWeight:800, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>{lane.count}</div>
                     <div style={{ flex:1 }}>
                       <div style={{ fontSize:12.5, fontWeight:800, color:T.gray900 }}>{lane.label}</div>
@@ -2494,8 +2440,8 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   const maxOpp = ranked.length ? oppScore(ranked[0]) : 1;
   const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
   const isBrokerDealerProfile = profile.id !== DEFAULT_PROFILE_ID;
-  const routeStrategyAction = (label, outcome, layer = "morning", sub = {}) => {
-    onNavigate(layer, { ...sub, dashboardFocus:label, strategyOutcome:outcome, source:"strategy" });
+  const routeStrategyAction = (label, layer = "morning", sub = {}) => {
+    onNavigate(layer, { ...sub, dashboardFocus:label, source:"strategy" });
   };
 
   return (
@@ -2528,21 +2474,6 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
           ))}
         </div>
       </div>
-
-      {deepLink?.strategyOutcome && (
-        <div data-demo="strategy-evidence-banner" style={{ background:T.indigoLt, border:`1px solid ${T.indigo}35`, borderRadius:12, padding:"13px 16px", display:"flex", alignItems:"center", gap:11, flexWrap:"wrap" }}>
-          <BookOpen size={15} color={T.indigo}/>
-          <div style={{ flex:1, minWidth:180 }}>
-            <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>Strategy evidence opened from the dashboard</div>
-            <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{deepLink.strategyOutcome} is highlighted in the opportunity matrix and outcome list below.</div>
-          </div>
-          <button onClick={()=>routeStrategyAction(deepLink.dashboardFocus || deepLink.strategyOutcome, deepLink.strategyOutcome)} style={{ background:T.green, color:T.white, border:"none", borderRadius:8, padding:"8px 12px", fontSize:12, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", gap:5 }}>
-            Open dashboard queue <ChevronRight size={13}/>
-          </button>
-        </div>
-      )}
-
-      <BrokerDealerWorkspace workspace={strategy.workspace} isMobile={isMobile} onNavigate={onNavigate}/>
 
       {/* 1 · Market research */}
       <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
@@ -2624,10 +2555,9 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
         <div style={{ ...card, overflow:"hidden" }}>
           {ranked.map((o,i)=>{
             const v = oppScore(o);
-            const isEvidenceTarget = deepLink?.strategyOutcome === o.id;
             return (
-              <div key={o.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"12px 16px", borderTop:i?`1px solid ${T.gray100}`:"none", background:isEvidenceTarget?`${T.indigoLt}88`:T.white, boxShadow:isEvidenceTarget?`inset 3px 0 0 ${T.indigo}`:"none" }}>
-                <div style={{ fontSize:11, fontWeight:700, color:isEvidenceTarget?T.indigo:T.slate, minWidth:56 }}>{o.id}</div>
+              <div key={o.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"12px 16px", borderTop:i?`1px solid ${T.gray100}`:"none" }}>
+                <div style={{ fontSize:11, fontWeight:700, color:T.slate, minWidth:56 }}>{o.id}</div>
                 <div style={{ flex:1, fontSize:13, color:T.gray900, fontWeight:500, lineHeight:1.45 }}>{o.text}</div>
                 <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
                   <div style={{ width:isMobile?40:120, height:6, background:T.gray100, borderRadius:99, overflow:"hidden", display:isMobile?"none":"block" }}>
@@ -2645,7 +2575,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       <StratSection eyebrow="04 · Job Map" title="The universal job, step by step" intro={strategy.jobIntro}>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
           {strategy.jobMap.map(j=>(
-            <button key={j.n} onClick={()=>isBrokerDealerProfile ? routeStrategyAction(j.step, ranked[0]?.id, "morning", { workflowContext:j.goal }) : onNavigate(j.layer)} style={{ ...card, padding:"14px", textAlign:"left", cursor:"pointer", display:"flex", flexDirection:"column", gap:7, position:"relative" }}>
+            <button key={j.n} onClick={()=>isBrokerDealerProfile ? routeStrategyAction(j.step, "morning", { workflowContext:j.goal }) : onNavigate(j.layer)} style={{ ...card, padding:"14px", textAlign:"left", cursor:"pointer", display:"flex", flexDirection:"column", gap:7, position:"relative" }}>
               <div style={{ display:"flex", alignItems:"center", gap:8 }}>
                 <div style={{ width:24, height:24, borderRadius:"50%", background:T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{j.n}</div>
                 <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>{j.step}</div>
@@ -2725,7 +2655,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
                   {r.outcomes.map(id=><span key={id} style={{ fontSize:10, fontWeight:700, color:T.indigo, background:T.indigoLt, borderRadius:99, padding:"3px 9px" }}>{id}</span>)}
                 </div>
               </div>
-              <button onClick={()=>isBrokerDealerProfile ? routeStrategyAction(r.title, r.outcomes[0], r.layer === "strategy" ? "morning" : r.layer, r.sub || {}) : onNavigate(r.layer, r.sub)} style={{ flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 16px", fontSize:12.5, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
+              <button onClick={()=>isBrokerDealerProfile ? routeStrategyAction(r.title, r.layer === "strategy" ? "morning" : r.layer, r.sub || {}) : onNavigate(r.layer, r.sub)} style={{ flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 16px", fontSize:12.5, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
                 <Zap size={13}/> Open {r.surface} <ChevronRight size={14}/>
               </button>
             </div>
