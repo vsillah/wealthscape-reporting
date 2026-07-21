@@ -760,6 +760,13 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
                 <ChevronRight size={13} color={T.slate}/>
               </div>
               <div style={{ fontSize:11.2, color:T.gray600, lineHeight:1.45 }}>{step.desc}</div>
+              <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap", marginTop:10 }}>
+                <Badge color={T.indigo} bg={T.indigoLt}>Opens {step.destination || layerName(step.layer)}</Badge>
+                <span style={{ fontSize:10.5, color:T.slate, fontWeight:700 }}>{step.contextLabel || "sets workflow focus"}</span>
+              </div>
+              <div style={{ fontSize:11, fontWeight:850, color:T.green, marginTop:8, display:"flex", alignItems:"center", gap:4 }}>
+                {step.actionLabel || `Open ${step.destination || layerName(step.layer)}`} <ChevronRight size={11}/>
+              </div>
             </button>
           ))}
         </div>
@@ -1974,9 +1981,9 @@ const PROFILE_DASHBOARDS = {
       { severity:"Watch", title:"Platform adoption drop", body:"Commonwealth-transition segment has declining reporting usage, elevated tickets, and a rising retention-risk score.", detail:"Usage -24% · tickets +31% · 8 advisors need field intervention", action:"Open analytics", layer:"insights", sub:{ metricFocus:"retention-watchlist" } },
     ],
     operatingLoop:[
-      { label:"Supervision packet", desc:"Pull capture status, communications evidence, branch owner, and aging into one packet.", layer:"integrations", sub:{ integrationId:"salesforce" } },
-      { label:"AI governance review", desc:"Open report configuration with policy flags and approved disclosure blocks visible.", layer:"reports", sub:{ reportTab:"customize" } },
-      { label:"Retention telemetry", desc:"Inspect adoption, support load, and field-friction trend before assigning intervention.", layer:"insights", sub:{ metricFocus:"retention-watchlist" } },
+      { label:"Supervision packet", desc:"Pull capture status, communications evidence, branch owner, and aging into one packet.", layer:"integrations", sub:{ integrationId:"salesforce" }, destination:"Integrations", contextLabel:"focuses Salesforce mapping", actionLabel:"Open packet context" },
+      { label:"AI governance review", desc:"Open report configuration with policy flags and approved disclosure blocks visible.", layer:"reports", sub:{ reportTab:"customize" }, destination:"Report Builder", contextLabel:"opens Customize tab", actionLabel:"Open review context" },
+      { label:"Retention telemetry", desc:"Inspect adoption, support load, and field-friction trend before assigning intervention.", layer:"insights", sub:{ metricFocus:"retention-watchlist" }, destination:"Analytics", contextLabel:"focuses retention signals", actionLabel:"Open telemetry context" },
     ],
     alerts:[
       { id:101, type:"risk", severity:"high", client:"Northeast enterprise group", source:"Supervision Command", time:"8:10 AM", read:false, body:"Off-channel communications spike overlaps with retention-risk pattern. Evidence packet needs review.", action:{ label:"Open Packet", layer:"integrations", integrationId:"salesforce", dashboardFocus:"Off-channel communications spike" } },
@@ -2001,9 +2008,9 @@ const PROFILE_DASHBOARDS = {
       { severity:"Watch", title:"Repeat NIGO trend", body:"Three newer reps are repeating beneficiary mismatches on transfers and need local training.", detail:"7 transfer files · same form pattern · branch office-hours recommended", action:"Assign training", layer:"insights", sub:{ metricFocus:"rep-friction" } },
     ],
     operatingLoop:[
-      { label:"Coach the rep", desc:"Open the approved message path with exception context and next required evidence.", layer:"portal", sub:{ portalTab:"messages" } },
-      { label:"Build escalation packet", desc:"Use the report builder to package client context, policy trigger, and branch notes.", layer:"reports", sub:{ reportTab:"build" } },
-      { label:"Monitor rep friction", desc:"Track repeat branch patterns before they become audit findings or complaints.", layer:"insights", sub:{ metricFocus:"rep-friction" } },
+      { label:"Coach the rep", desc:"Open the approved message path with exception context and next required evidence.", layer:"portal", sub:{ portalTab:"messages" }, destination:"Client Portal", contextLabel:"opens Messages tab", actionLabel:"Open coaching context" },
+      { label:"Build escalation packet", desc:"Use the report builder to package client context, policy trigger, and branch notes.", layer:"reports", sub:{ reportTab:"build" }, destination:"Report Builder", contextLabel:"opens Build tab", actionLabel:"Open packet context" },
+      { label:"Monitor rep friction", desc:"Track repeat branch patterns before they become audit findings or complaints.", layer:"insights", sub:{ metricFocus:"rep-friction" }, destination:"Analytics", contextLabel:"focuses rep friction", actionLabel:"Open friction context" },
     ],
     alerts:[
       { id:201, type:"review", severity:"high", client:"L. Benton", source:"Branch Workbench", time:"8:08 AM", read:false, body:"VA disclosure gap is now critical and needs rep coaching plus branch attestation.", action:{ label:"Coach Rep", layer:"portal", portalTab:"messages", dashboardFocus:"Variable annuity disclosure missing" } },
@@ -2028,9 +2035,9 @@ const PROFILE_DASHBOARDS = {
       { severity:"Watch", title:"Q2 report needs brokerage disclosure", body:"AI narrative is ready, but brokerage disclosure language must be inserted before delivery.", detail:"Narrative generated · approved disclosure block pending · principal review required", action:"Edit report", layer:"reports", sub:{ reportTab:"customize" } },
     ],
     operatingLoop:[
-      { label:"Relationship 360", desc:"Open the client view with advisory, brokerage, annuity, and planning context in one place.", layer:"portal", sub:{ portalTab:"overview" } },
-      { label:"Disclosure editing", desc:"Open report customization with approved hybrid disclosure language visible.", layer:"reports", sub:{ reportTab:"customize" } },
-      { label:"Team blocker analytics", desc:"Inspect blocker patterns by owner, account type, and supervision route.", layer:"insights", sub:{ metricFocus:"team-blockers" } },
+      { label:"Relationship 360", desc:"Open the client view with advisory, brokerage, annuity, and planning context in one place.", layer:"portal", sub:{ portalTab:"overview" }, destination:"Client Portal", contextLabel:"opens Overview tab", actionLabel:"Open 360 context" },
+      { label:"Disclosure editing", desc:"Open report customization with approved hybrid disclosure language visible.", layer:"reports", sub:{ reportTab:"customize" }, destination:"Report Builder", contextLabel:"opens Customize tab", actionLabel:"Open disclosure context" },
+      { label:"Team blocker analytics", desc:"Inspect blocker patterns by owner, account type, and supervision route.", layer:"insights", sub:{ metricFocus:"team-blockers" }, destination:"Analytics", contextLabel:"focuses team blockers", actionLabel:"Open blocker context" },
     ],
     alerts:[
       { id:301, type:"risk", severity:"high", client:"Chen household", source:"Relationship 360", time:"8:06 AM", read:false, body:"Advisory allocation and brokerage annuity trail are split before the client meeting.", action:{ label:"Open 360", layer:"portal", portalTab:"overview", dashboardFocus:"Chen household product context split" } },
