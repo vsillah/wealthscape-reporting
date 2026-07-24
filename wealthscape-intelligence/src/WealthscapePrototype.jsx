@@ -4,7 +4,7 @@ import {
   Download, Filter, ArrowUpRight, ArrowDownRight, Zap,
   Check, Sparkles, Mail, Activity, AlertTriangle, ChevronDown,
   X, Menu, ChevronLeft, ChevronRight, PlayCircle, BookOpen,
-  Target, TrendingUp, Eye, Layers
+  Target, TrendingUp, Eye, Layers, Moon, Sun
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -13,7 +13,7 @@ import {
 } from "recharts";
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
-const T = {
+const LIGHT_TOKENS = {
   green:"#0B5D2E", greenMid:"#1A7A40", greenLt:"#E8F5EE",
   navy:"#1C2B3A",  navyMid:"#2E4057",
   indigo:"#5B4FBE", indigoLt:"#EEF0FF",
@@ -21,9 +21,38 @@ const T = {
   emerald:"#10B981",emeraldLt:"#ECFDF5",
   red:"#EF4444",    redLt:"#FEF2F2",
   slate:"#64748B",  white:"#FFFFFF",
+  surface:"#FFFFFF",
   gray50:"#F8F9FA", gray100:"#F1F5F9", gray200:"#E2E8F0",
   gray300:"#CBD5E1",gray400:"#94A3B8", gray600:"#475569", gray900:"#0F172A",
 };
+const DARK_TOKENS = {
+  green:"#22C55E", greenMid:"#16A34A", greenLt:"#0F2F21",
+  navy:"#0B1220",  navyMid:"#16243A",
+  indigo:"#A5B4FC", indigoLt:"#1C2546",
+  amber:"#FBBF24",  amberLt:"#3A2B0B",
+  emerald:"#34D399",emeraldLt:"#0C2F26",
+  red:"#F87171",    redLt:"#3A171A",
+  slate:"#AAB5C4",  white:"#FFFFFF",
+  surface:"#111827",
+  gray50:"#0B1120", gray100:"#1F2937", gray200:"#334155",
+  gray300:"#475569",gray400:"#94A3B8", gray600:"#CBD5E1", gray900:"#F8FAFC",
+};
+const T = { ...LIGHT_TOKENS };
+const THEME_STORAGE_KEY = "wealthscape-prototype-theme";
+
+function applyThemeTokens(mode) {
+  Object.assign(T, mode === "dark" ? DARK_TOKENS : LIGHT_TOKENS);
+}
+
+function getInitialTheme() {
+  if (typeof window === "undefined") return "light";
+  try {
+    const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
+    return stored === "dark" || stored === "light" ? stored : "light";
+  } catch {
+    return "light";
+  }
+}
 
 // ─── Breakpoints ──────────────────────────────────────────────────────────────
 function useBreakpoint() {
@@ -341,7 +370,7 @@ function DemoTour({ step, total, onNext, onPrev, onClose, isMobile, spotlightRec
       {isCenter && <div style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.65)", zIndex: 999, backdropFilter: "blur(2px)" }} onClick={onClose} />}
 
       {/* Panel */}
-      <div style={{ ...panelStyle, background: T.white, borderRadius: panelRadius, boxShadow: "0 24px 64px rgba(0,0,0,0.35)", overflow: "hidden" }}>
+      <div style={{ ...panelStyle, background: T.surface, borderRadius: panelRadius, boxShadow: "0 24px 64px rgba(0,0,0,0.35)", overflow: "hidden" }}>
 
         {/* Progress bar */}
         <div style={{ height: 3, background: T.gray100 }}>
@@ -572,7 +601,7 @@ function AlertCenter({ alerts, onAction, onDismiss, onMarkAllRead, onClose, isMo
   return (
     <>
       <div style={{ position:"fixed", inset:0, zIndex:60 }} onClick={onClose} />
-      <div style={{ position:"fixed", top:isMobile?98:56, right:isMobile?8:12, left:isMobile?8:"auto", width:isMobile?"auto":380, maxHeight:isMobile?"calc(100vh - 126px)":"calc(100vh - 80px)", background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, boxShadow:"0 16px 48px rgba(0,0,0,0.18)", zIndex:61, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+      <div style={{ position:"fixed", top:isMobile?98:56, right:isMobile?8:12, left:isMobile?8:"auto", width:isMobile?"auto":380, maxHeight:isMobile?"calc(100vh - 126px)":"calc(100vh - 80px)", background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:14, boxShadow:"0 16px 48px rgba(0,0,0,0.18)", zIndex:61, overflow:"hidden", display:"flex", flexDirection:"column" }}>
         <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray100}`, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8 }}>
             <span style={{ fontSize:14, fontWeight:700, color:T.gray900 }}>Notifications</span>
@@ -591,7 +620,7 @@ function AlertCenter({ alerts, onAction, onDismiss, onMarkAllRead, onClose, isMo
           {sorted.map(a => {
             const sev = SEVERITY[a.severity];
             return (
-              <div key={a.id} style={{ padding:"13px 18px", borderBottom:`1px solid ${T.gray100}`, background:a.read?T.white:`${T.indigoLt}55`, display:"flex", gap:11 }}>
+              <div key={a.id} style={{ padding:"13px 18px", borderBottom:`1px solid ${T.gray100}`, background:a.read?T.surface:`${T.indigoLt}55`, display:"flex", gap:11 }}>
                 <div style={{ width:8, height:8, borderRadius:"50%", background:a.read?T.gray200:sev.color, flexShrink:0, marginTop:5 }}/>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:7, marginBottom:4, flexWrap:"wrap" }}>
@@ -621,7 +650,7 @@ function AlertCenter({ alerts, onAction, onDismiss, onMarkAllRead, onClose, isMo
 }
 function MetricCard({ label, value, delta, up, sub, accent }) {
   return (
-    <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px", flex:1, minWidth:140 }}>
+    <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px", flex:1, minWidth:140 }}>
       <div style={{ fontSize:10, fontWeight:700, letterSpacing:"0.08em", color:T.slate, textTransform:"uppercase", marginBottom:6 }}>{label}</div>
       <div style={{ fontSize:22, fontWeight:700, color:T.gray900, lineHeight:1.1, fontVariantNumeric:"tabular-nums" }}>{value}</div>
       {delta && (
@@ -633,6 +662,39 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
       )}
       {accent && <div style={{ height:3, background:accent, borderRadius:2, marginTop:10, width:32 }}/>}
     </div>
+  );
+}
+
+function ThemeToggle({ themeMode, onToggle, isMobile }) {
+  const isDark = themeMode === "dark";
+  const Icon = isDark ? Moon : Sun;
+  return (
+    <button
+      type="button"
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+      aria-pressed={isDark}
+      title={`Switch to ${isDark ? "light" : "dark"} mode`}
+      onClick={onToggle}
+      data-demo="theme-toggle"
+      style={{
+        display:"flex",
+        alignItems:"center",
+        gap:7,
+        background:T.gray100,
+        color:T.gray900,
+        border:`1px solid ${T.gray200}`,
+        borderRadius:999,
+        padding:isMobile?"6px 7px":"5px 8px 5px 6px",
+        minHeight:34,
+        cursor:"pointer",
+        whiteSpace:"nowrap",
+      }}
+    >
+      <span style={{ width:22, height:22, borderRadius:"50%", background:isDark?T.navy:T.surface, border:`1px solid ${isDark?T.gray300:T.gray200}`, display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 1px 3px rgba(15,23,42,0.16)" }}>
+        <Icon size={13} color={isDark?T.indigo:T.amber}/>
+      </span>
+      {!isMobile && <span style={{ fontSize:11, fontWeight:800, color:T.gray900 }}>{isDark ? "Dark" : "Light"}</span>}
+    </button>
   );
 }
 
@@ -698,7 +760,7 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.4fr 0.6fr", gap:16 }}>
-        <div data-demo="profile-opportunity-queue" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+        <div data-demo="profile-opportunity-queue" style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
           <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray200}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
             <div>
               <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Priority Operations Queue</div>
@@ -707,7 +769,7 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
             <Badge color={T.green} bg={T.greenLt}>{rows.length} routed actions</Badge>
           </div>
           {rows.map((item,i)=>(
-            <div key={item.title} style={{ padding:"15px 18px", borderTop:i?`1px solid ${T.gray100}`:"none", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row", background:focus === item.title ? `${T.indigoLt}88` : T.white }}>
+            <div key={item.title} style={{ padding:"15px 18px", borderTop:i?`1px solid ${T.gray100}`:"none", display:"flex", gap:12, alignItems:isMobile?"stretch":"center", flexDirection:isMobile?"column":"row", background:focus === item.title ? `${T.indigoLt}88` : T.surface }}>
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", gap:8, alignItems:"center", flexWrap:"wrap", marginBottom:5 }}>
                   <span style={{ background:`${severityColor(item.severity)}18`, color:severityColor(item.severity), borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:800 }}>{item.severity}</span>
@@ -726,7 +788,7 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
         </div>
 
         <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-          <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+          <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
             <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
               <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Profile Alerts</div>
               <Badge color={activeAlerts.length?T.red:T.emerald} bg={activeAlerts.length?T.redLt:T.emeraldLt}>{activeAlerts.length} open</Badge>
@@ -750,7 +812,7 @@ function ProfileMorningDashboard({ bp, profile, dashboard, alerts, onAction, onD
         </div>
       </div>
 
-      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"15px 18px" }}>
+      <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"15px 18px" }}>
         <div style={{ fontSize:13, fontWeight:800, color:T.gray900, marginBottom:10 }}>Operating Loop</div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(4, 1fr)", gap:10 }}>
           {loop.map(step=>(
@@ -815,7 +877,7 @@ function MorningBrief({ bp, profile, dashboard, alerts, onAction, onDismiss, onN
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:16 }}>
-        <div data-demo="insights-feed" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+        <div data-demo="insights-feed" style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
           <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray200}`, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>Active Insights</div>
             <div style={{ display:"flex", gap:6, alignItems:"center" }}>
@@ -827,7 +889,7 @@ function MorningBrief({ bp, profile, dashboard, alerts, onAction, onDismiss, onN
           {feed.map((ins,i)=>{
             const isTarget = scenarioStep===0 && ins.id===1;
             return (
-            <div key={ins.id} style={{ padding:"14px 18px", borderBottom:i<feed.length-1?`1px solid ${T.gray100}`:"none", cursor:"pointer", background:expanded===ins.id?T.gray50:T.white, outline:isTarget?`2px solid ${T.green}`:"none", outlineOffset:-2, transition:"outline 0.2s", animation:isTarget&&expanded!==ins.id?"scenario-pulse 2s ease-in-out infinite":"none" }} onClick={()=>setExpanded(expanded===ins.id?null:ins.id)}>
+            <div key={ins.id} style={{ padding:"14px 18px", borderBottom:i<feed.length-1?`1px solid ${T.gray100}`:"none", cursor:"pointer", background:expanded===ins.id?T.gray50:T.surface, outline:isTarget?`2px solid ${T.green}`:"none", outlineOffset:-2, transition:"outline 0.2s", animation:isTarget&&expanded!==ins.id?"scenario-pulse 2s ease-in-out infinite":"none" }} onClick={()=>setExpanded(expanded===ins.id?null:ins.id)}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:5 }}>
                 <div style={{ display:"flex", gap:7, alignItems:"center" }}>
                   <InsightChip type={ins.type}/>
@@ -848,7 +910,7 @@ function MorningBrief({ bp, profile, dashboard, alerts, onAction, onDismiss, onN
           );})}
         </div>
 
-        <div data-demo="aua-chart" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
+        <div data-demo="aua-chart" style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
           <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:4 }}>AUA Trend (6M)</div>
           <div style={{ fontSize:20, fontWeight:700, color:T.gray900, marginBottom:3 }}>$1.57B</div>
           <div style={{ display:"flex", alignItems:"center", gap:4, marginBottom:14 }}>
@@ -868,7 +930,7 @@ function MorningBrief({ bp, profile, dashboard, alerts, onAction, onDismiss, onN
         </div>
       </div>
 
-      <div data-demo="client-list" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+      <div data-demo="client-list" style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
         <div style={{ padding:"14px 18px", borderBottom:`1px solid ${T.gray200}`, display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
           <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>Your Book · 134 Clients</div>
           <div style={{ display:"flex", gap:8 }}>
@@ -985,7 +1047,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
-        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.surface:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
       <ReportGeneration bp={bp} onScenarioAdvance={onScenarioAdvance} onSendToClient={onSendToClient}/>
     </div>
@@ -994,7 +1056,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
-        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.surface:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
       <ReportCustomize bp={bp}/>
     </div>
@@ -1014,10 +1076,10 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
-        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.surface:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
       {isMobile && (
-        <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 16px", fontSize:13, fontWeight:600, color:T.gray900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", minHeight:48 }} onClick={()=>setShowConfig(!showConfig)}>
+        <button style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 16px", fontSize:13, fontWeight:600, color:T.gray900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", minHeight:48 }} onClick={()=>setShowConfig(!showConfig)}>
           <span>Report Configuration</span>
           <ChevronDown size={15} color={T.slate} style={{ transform:showConfig?"rotate(180deg)":"none", transition:"transform 0.2s" }}/>
         </button>
@@ -1029,7 +1091,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
 
               {/* Steps */}
-              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 18px" }}>
+              <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 18px" }}>
                 <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:10 }}>Build Report</div>
                 {[{n:1,label:"Choose template"},{n:2,label:"Select clients"},{n:3,label:"AI narrative"}].map(s=>(
                   <div key={s.n} style={{ display:"flex", alignItems:"center", gap:10, padding:"7px 0", cursor:s.n<=step?"pointer":"default", opacity:s.n>step?0.45:1 }} onClick={()=>s.n<=step&&setStep(s.n)}>
@@ -1043,11 +1105,11 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
 
               {/* Template */}
               {step===1 && (
-                <div data-demo="report-config" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+                <div data-demo="report-config" style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
                   <div style={{ padding:"12px 18px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900 }}>Select Template</div>
                   {templates.map(t=>(
-                    <div key={t.id} style={{ padding:"12px 18px", borderBottom:`1px solid ${T.gray100}`, cursor:"pointer", background:template===t.id?T.greenLt:T.white, display:"flex", gap:10, alignItems:"flex-start", minHeight:48 }} onClick={()=>{setTemplate(t.id);setStep(2);}}>
-                      <div style={{ width:16, height:16, borderRadius:"50%", border:`2px solid ${template===t.id?T.green:T.gray300}`, background:template===t.id?T.green:T.white, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>
+                    <div key={t.id} style={{ padding:"12px 18px", borderBottom:`1px solid ${T.gray100}`, cursor:"pointer", background:template===t.id?T.greenLt:T.surface, display:"flex", gap:10, alignItems:"flex-start", minHeight:48 }} onClick={()=>{setTemplate(t.id);setStep(2);}}>
+                      <div style={{ width:16, height:16, borderRadius:"50%", border:`2px solid ${template===t.id?T.green:T.gray300}`, background:template===t.id?T.green:T.surface, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>
                         {template===t.id && <div style={{ width:5, height:5, borderRadius:"50%", background:T.white }}/>}
                       </div>
                       <div><div style={{ fontSize:13, fontWeight:600, color:template===t.id?T.green:T.gray900 }}>{t.label}</div><div style={{ fontSize:11, color:T.slate, marginTop:1 }}>{t.desc}</div></div>
@@ -1058,11 +1120,11 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
 
               {/* Client picker */}
               {step>=2 && (
-                <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+                <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
                   <div style={{ padding:"12px 18px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900 }}>Select Clients</div>
                   {clients.slice(0,5).map(c=>(
                     <div key={c.id} style={{ padding:"10px 14px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", gap:10, cursor:"pointer", minHeight:44 }} onClick={()=>{setSelected(p=>p.includes(c.id)?p.filter(x=>x!==c.id):[...p,c.id]);setStep(3);}}>
-                      <div style={{ width:18, height:18, borderRadius:4, border:`2px solid ${selected.includes(c.id)?T.green:T.gray300}`, background:selected.includes(c.id)?T.green:T.white, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <div style={{ width:18, height:18, borderRadius:4, border:`2px solid ${selected.includes(c.id)?T.green:T.gray300}`, background:selected.includes(c.id)?T.green:T.surface, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                         {selected.includes(c.id)&&<Check size={10} color={T.white}/>}
                       </div>
                       <div style={{ flex:1, minWidth:0 }}><div style={{ fontSize:12, fontWeight:600, color:T.gray900, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{c.name}</div><div style={{ fontSize:11, color:T.slate }}>${c.aum}</div></div>
@@ -1074,7 +1136,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
 
               {/* AI Narrative */}
               {step>=3 && (
-                <div data-demo="ai-narrative" style={{ background:aiNarrative?T.indigoLt:T.white, border:`1px solid ${aiNarrative?T.indigo:T.gray200}`, borderRadius:12, padding:"14px 18px", transition:"all 0.2s" }}>
+                <div data-demo="ai-narrative" style={{ background:aiNarrative?T.indigoLt:T.surface, border:`1px solid ${aiNarrative?T.indigo:T.gray200}`, borderRadius:12, padding:"14px 18px", transition:"all 0.2s" }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                     <div style={{ flex:1, marginRight:12 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3 }}><Sparkles size={13} color={T.indigo}/><span style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>AI Narrative</span></div>
@@ -1098,7 +1160,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
 
         {/* Preview */}
         <div style={{ flex:1, background:T.gray50, borderRadius:12, border:`1px solid ${T.gray200}`, overflow:"hidden" }}>
-          <div style={{ background:T.white, borderBottom:`1px solid ${T.gray200}`, padding:"12px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
+          <div style={{ background:T.surface, borderBottom:`1px solid ${T.gray200}`, padding:"12px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
             <div style={{ display:"flex", gap:8, alignItems:"center" }}><Badge color={T.green} bg={T.greenLt}>PREVIEW</Badge><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{cfg.label} · {selected.length} client{selected.length!==1?"s":""}</span></div>
             <div style={{ display:"flex", gap:8 }}>
               <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:34 }}>Review</button>
@@ -1107,7 +1169,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
           </div>
 
           <div data-demo="report-preview" style={{ padding:16, overflowY:"auto", maxHeight:isMobile?"none":"calc(100vh - 280px)" }}>
-            <div style={{ background:T.white, borderRadius:12, boxShadow:"0 2px 12px rgba(0,0,0,0.06)", overflow:"hidden" }}>
+            <div style={{ background:T.surface, borderRadius:12, boxShadow:"0 2px 12px rgba(0,0,0,0.06)", overflow:"hidden" }}>
               <div style={{ background:T.navy, padding:isMobile?"20px 18px":"24px 28px" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:isMobile?"flex-start":"center", flexDirection:isMobile?"column":"row", gap:12 }}>
                   <div>
@@ -1294,7 +1356,7 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
               <MetricCard label="Unrealized Gains"  value="$312,400"   delta="+18.2%"         up={true}  accent={T.indigo} />
               <MetricCard label="Next Review"        value="Jul 15"     delta="36 days away"   up={true}  accent={T.amber}  />
             </div>
-            <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
+            <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
               <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:4 }}>Portfolio Growth</div>
               <div style={{ fontSize:18, fontWeight:700, color:T.gray900, marginBottom:12 }}>+$334,100 since Jan 1</div>
               <ResponsiveContainer width="100%" height={160}>
@@ -1309,7 +1371,7 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
               </ResponsiveContainer>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 2fr", gap:16 }}>
-              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
+              <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
                 <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Asset Mix</div>
                 <div style={{ display:"flex", justifyContent:"center", marginBottom:10 }}>
                   <PieChart width={120} height={120}><Pie data={allocationData} cx={55} cy={55} innerRadius={32} outerRadius={52} dataKey="value">{allocationData.map((e,i)=><Cell key={i} fill={e.color}/>)}</Pie></PieChart>
@@ -1322,7 +1384,7 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
                   </div>
                 ))}
               </div>
-              <div data-demo="advisor-message" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
+              <div data-demo="advisor-message" style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
                 <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
                   <div style={{ width:36, height:36, borderRadius:"50%", background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:T.green, flexShrink:0 }}>JW</div>
                   <div style={{ flex:1 }}>
@@ -1342,7 +1404,7 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
           </div>
         )}
         {tab==="performance" && (
-          <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"18px" }}>
+          <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"18px" }}>
             <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>Performance vs Benchmark</div>
             <div style={{ display:"flex", gap:20, marginBottom:16, flexWrap:"wrap" }}>
               {[{label:"Your Portfolio YTD",value:"+8.4%",color:T.green},{label:"Blended Benchmark",value:"+6.2%",color:T.gray400},{label:"Outperformance",value:"+2.2pts",color:T.emerald}].map(m=>(
@@ -1370,7 +1432,7 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
               </div>
             )}
             {[{name:"Q2 2025 Performance Report",date:"Jun 9, 2025",isNew:true},{name:"Q1 2025 Performance Report",date:"Mar 12, 2025",isNew:false},{name:"2024 Annual Review",date:"Jan 8, 2025",isNew:false},{name:"Investment Policy Statement",date:"Aug 14, 2024",isNew:false},{name:"Account Opening Documents",date:"May 2, 2023",isNew:false}].map(doc=>(
-              <div key={doc.name} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 16px", display:"flex", alignItems:"center", gap:12 }}>
+              <div key={doc.name} style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 16px", display:"flex", alignItems:"center", gap:12 }}>
                 <div style={{ width:34, height:34, borderRadius:8, background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><FileText size={15} color={T.green}/></div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{doc.name}</span>{doc.isNew&&<Badge color={T.green} bg={T.greenLt}>{reportDelivered?"JUST DELIVERED":"NEW"}</Badge>}</div>
@@ -1382,13 +1444,13 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
           </div>
         )}
         {tab==="messages" && (
-          <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+          <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
             <div style={{ padding:"13px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <span style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>Messages</span>
               <button style={{ background:T.greenLt, border:"none", borderRadius:7, padding:"6px 12px", fontSize:12, fontWeight:700, color:T.green, cursor:"pointer", minHeight:34 }}>+ New</button>
             </div>
             {[{from:"Jordan Williams, CFP®",body:"Your Q2 report is ready for review. Great quarter overall...",date:"Jun 6",unread:true},{from:"Jordan Williams, CFP®",body:"Following up on our April call — confirming the rebalance...",date:"Apr 18",unread:false},{from:"Fidelity Institutional",body:"Your Q1 2025 report is now available in your document vault.",date:"Mar 12",unread:false}].map((msg,i)=>(
-              <div key={i} style={{ padding:"13px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", gap:10, alignItems:"flex-start", background:msg.unread?`${T.greenLt}60`:T.white, cursor:"pointer" }}>
+              <div key={i} style={{ padding:"13px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", gap:10, alignItems:"flex-start", background:msg.unread?`${T.greenLt}60`:T.surface, cursor:"pointer" }}>
                 <div style={{ width:32, height:32, borderRadius:"50%", background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:T.green, flexShrink:0 }}>JW</div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3, gap:8 }}><span style={{ fontSize:12, fontWeight:msg.unread?700:600, color:T.gray900, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{msg.from}</span><span style={{ fontSize:11, color:T.slate, flexShrink:0 }}>{msg.date}</span></div>
@@ -2073,7 +2135,7 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
       <select
         value={selectedProfileId}
         onChange={e=>onProfileChange(e.target.value)}
-        style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
+        style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.surface, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
       >
         {profileOrder.map(id=>{
           const profile = profiles[id];
@@ -2093,7 +2155,7 @@ function HybridAdvisorWorkspace({ workspace, isMobile, onNavigate }) {
 
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
-      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
+      <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", borderBottom:`1px solid ${T.gray100}` }}>
           {workspace.metrics.map((m,i)=>(
             <div key={m.label} style={{ padding:"14px 16px", borderLeft:i&&!isMobile?`1px solid ${T.gray100}`:"none", borderTop:i>1&&isMobile?`1px solid ${T.gray100}`:"none" }}>
@@ -2167,7 +2229,7 @@ function HybridAdvisorWorkspace({ workspace, isMobile, onNavigate }) {
             <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
               <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Client-Ready Actions</div>
               {workspace.actions.map(action=>(
-                <button key={action} onClick={()=>route(action)} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                <button key={action} onClick={()=>route(action)} style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
                   {action}<ChevronRight size={14} color={T.slate}/>
                 </button>
               ))}
@@ -2215,7 +2277,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
   return (
     <StratSection eyebrow={workspace.eyebrow} title={workspace.title} intro={workspace.intro}>
       <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
+        <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:14, overflow:"hidden" }}>
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", borderBottom:`1px solid ${T.gray100}` }}>
             {workspace.metrics.map((m,i)=>(
               <div key={m.label} style={{ padding:"14px 16px", borderLeft:i&&!isMobile?`1px solid ${T.gray100}`:"none", borderTop:i>1&&isMobile?`1px solid ${T.gray100}`:"none" }}>
@@ -2242,7 +2304,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
             <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px", display:"flex", flexDirection:"column", gap:10 }}>
               <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Next Actions</div>
               {workspace.actions.map(action=>(
-                <button key={action} onClick={()=>route(action)} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
+                <button key={action} onClick={()=>route(action)} style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 11px", fontSize:12, fontWeight:700, color:T.gray900, textAlign:"left", cursor:"pointer", display:"flex", justifyContent:"space-between", gap:8, alignItems:"center" }}>
                   {action}<ChevronRight size={14} color={T.slate}/>
                 </button>
               ))}
@@ -2255,7 +2317,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
             {operatingPanels.map(panel=>{
               const Icon = panel.icon;
               return (
-                <div key={panel.title} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:isMobile?"14px":"16px", display:"flex", flexDirection:"column", gap:12 }}>
+                <div key={panel.title} style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:isMobile?"14px":"16px", display:"flex", flexDirection:"column", gap:12 }}>
                   <div style={{ display:"flex", gap:11, alignItems:"flex-start" }}>
                     <div style={{ width:34, height:34, borderRadius:9, background:toneBg(panel.tone), display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                       <Icon size={17} color={toneColor(panel.tone)}/>
@@ -2283,7 +2345,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
         {(retentionSignals.length > 0 || routingLanes.length > 0) && (
           <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.15fr 0.85fr", gap:12 }}>
             {retentionSignals.length > 0 && (
-              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+              <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
                 <div style={{ padding:"13px 15px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10 }}>
                   <div>
                     <div style={{ fontSize:13.5, fontWeight:800, color:T.gray900 }}>Retention and recruiting watchlist</div>
@@ -2304,7 +2366,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
               </div>
             )}
             {routingLanes.length > 0 && (
-              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"14px 15px", display:"flex", flexDirection:"column", gap:10 }}>
                 <div>
                   <div style={{ fontSize:13.5, fontWeight:800, color:T.gray900 }}>Next-best-action routing</div>
                   <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:2 }}>Every signal resolves to a named enterprise lane.</div>
@@ -2326,7 +2388,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
         {workspace.exceptionReview && (
           <div style={{ borderTop:`1px solid ${T.gray100}`, background:T.gray50, padding:isMobile?"14px":"16px 18px", display:"flex", flexDirection:"column", gap:14 }}>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.35fr 0.65fr", gap:14, alignItems:"stretch" }}>
-              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+              <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
                 <div style={{ padding:"13px 15px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
                   <div>
                     <div style={{ fontSize:10, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Exception Review</div>
@@ -2355,7 +2417,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
               </div>
 
               <div style={{ display:"grid", gridTemplateColumns:"1fr", gap:14 }}>
-                <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:7 }}>
                     <Users size={14} color={T.indigo}/>
                     <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Rep Support Queue</div>
@@ -2372,7 +2434,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
                   ))}
                 </div>
 
-                <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+                <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:7 }}>
                     <Activity size={14} color={T.green}/>
                     <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Local Compliance Load</div>
@@ -2391,7 +2453,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
             </div>
 
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:14 }}>
-              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:10 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:7 }}>
                     <TrendingUp size={14} color={T.green}/>
@@ -2416,7 +2478,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
                 ))}
               </div>
 
-              <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
+              <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"13px 15px", display:"flex", flexDirection:"column", gap:10 }}>
                 <div style={{ display:"flex", alignItems:"center", gap:7 }}>
                   <ArrowUpRight size={14} color={T.indigo}/>
                   <div style={{ fontSize:13, fontWeight:800, color:T.gray900 }}>Escalation Routing</div>
@@ -2445,7 +2507,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   const strategy = profile.strategy;
   const ranked = [...strategy.outcomes].sort((a,b)=>oppScore(b)-oppScore(a));
   const maxOpp = ranked.length ? oppScore(ranked[0]) : 1;
-  const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
+  const card = { background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12 };
   const isBrokerDealerProfile = profile.id !== DEFAULT_PROFILE_ID;
   const routeStrategyAction = (label, layer = "morning", sub = {}) => {
     onNavigate(layer, { ...sub, dashboardFocus:label, source:"strategy" });
@@ -2701,7 +2763,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
           <div style={{ fontSize:13, color:"rgba(255,255,255,0.85)", lineHeight:1.55, maxWidth:560 }}>Take the guided tour to walk every component and its outcome, or run the end-to-end scenario to watch one alert become a delivered client report.</div>
         </div>
         <div style={{ display:"flex", gap:10, flexShrink:0 }}>
-          <button onClick={onStartScenario} style={{ display:"flex", alignItems:"center", gap:6, background:T.white, color:T.green, border:"none", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><Target size={15}/> Run Scenario</button>
+          <button onClick={onStartScenario} style={{ display:"flex", alignItems:"center", gap:6, background:T.surface, color:T.green, border:"none", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><Target size={15}/> Run Scenario</button>
           <button onClick={onStartTour} style={{ display:"flex", alignItems:"center", gap:6, background:"rgba(255,255,255,0.15)", color:T.white, border:"1px solid rgba(255,255,255,0.3)", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><PlayCircle size={15}/> Take Tour</button>
         </div>
       </div>
@@ -2725,7 +2787,7 @@ function Analytics({ bp, profile, dashboard, deepLink }) {
           <MetricCard key={m.label} label={m.label} value={m.value} delta={m.delta} up={m.up} sub={m.sub} accent={m.accent}/>
         ))}
       </div>
-      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
+      <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
         <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:14 }}>{isProfileAnalytics ? `${profile.shortLabel} operating trend` : "Book Performance vs Benchmark (6M)"}</div>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={perfData}>
@@ -2753,7 +2815,7 @@ function SettingsLayer() {
     { key:"aiNarr", label:"AI Narrative in Reports", desc:"Generate client commentary automatically"         },
   ];
   return (
-    <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"24px", maxWidth:500 }}>
+    <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"24px", maxWidth:500 }}>
       <div style={{ fontSize:15, fontWeight:700, color:T.gray900, marginBottom:18 }}>Platform Settings</div>
       {items.map(s=>(
         <div key={s.key} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 0", borderBottom:`1px solid ${T.gray100}` }}>
@@ -2808,7 +2870,7 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
 
   return (
     <div data-demo="report-pipeline" style={{ display:"flex", flexDirection:"column", gap:16 }}>
-      <div data-demo="generate-action" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
+      <div data-demo="generate-action" style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
         <div>
           <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:3 }}>Report Generation Pipeline</div>
           <div style={{ fontSize:12, color:T.slate }}>Sarah & Michael Chen · Quarterly Review · Q2 2025</div>
@@ -2833,7 +2895,7 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
                 {!isLast && <div style={{ width:2, flex:1, minHeight:8, background:isDone?T.emerald:T.gray200, transition:"background 0.4s", margin:"3px 0" }}/>}
               </div>
               <div style={{ flex:1, paddingBottom:isLast?0:12, paddingLeft:12 }}>
-                <div style={{ background:T.white, border:`1px solid ${isDone?T.emerald+"50":isActive?T.indigo+"50":T.gray100}`, borderRadius:10, padding:"12px 16px", transition:"border-color 0.3s" }}>
+                <div style={{ background:T.surface, border:`1px solid ${isDone?T.emerald+"50":isActive?T.indigo+"50":T.gray100}`, borderRadius:10, padding:"12px 16px", transition:"border-color 0.3s" }}>
                   <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:3 }}>
                     <span style={{ fontSize:13, fontWeight:700, color:isDone?T.gray900:isActive?T.indigo:T.gray400 }}>{stage.label}</span>
                     {isActive && <span style={{ fontSize:11, color:T.indigo, fontWeight:600, display:"flex", alignItems:"center", gap:5 }}><div style={{ width:6,height:6,borderRadius:"50%",background:T.indigo }}/>Processing</span>}
@@ -2862,7 +2924,7 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
             <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · AI narrative + compliance cleared</div>
           </div>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-            <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
+            <button style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
             <button onClick={onSendToClient} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, boxShadow:onSendToClient?"0 0 0 3px rgba(11,93,46,0.25)":"none" }}>
               <Mail size={13}/> Send to Client
             </button>
@@ -2914,14 +2976,14 @@ function ReportCustomize({ bp }) {
       <div style={{ width:isMobile?"100%":290, flexShrink:0, display:"flex", flexDirection:"column", gap:12 }}>
 
         {/* Sections */}
-        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+        <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
           <div style={{ padding:"12px 16px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900, display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <span>Report Sections</span>
             <span style={{ fontSize:11, color:T.slate, fontWeight:400 }}>{Object.values(sections).filter(Boolean).length} active</span>
           </div>
           {REPORT_SECTIONS.map(sec => (
-            <div key={sec.id} style={{ padding:"10px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", gap:10, background:T.white }}>
-              <div onClick={() => toggleSection(sec.id)} style={{ width:18, height:18, borderRadius:4, border:`2px solid ${sections[sec.id]?T.green:T.gray300}`, background:sections[sec.id]?T.green:T.white, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, cursor:sec.required?"default":"pointer" }}>
+            <div key={sec.id} style={{ padding:"10px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", alignItems:"center", gap:10, background:T.surface }}>
+              <div onClick={() => toggleSection(sec.id)} style={{ width:18, height:18, borderRadius:4, border:`2px solid ${sections[sec.id]?T.green:T.gray300}`, background:sections[sec.id]?T.green:T.surface, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, cursor:sec.required?"default":"pointer" }}>
                 {sections[sec.id] && <Check size={10} color={T.white}/>}
               </div>
               <span style={{ flex:1, fontSize:12, fontWeight:500, color:sections[sec.id]?T.gray900:T.gray400 }}>{sec.label}</span>
@@ -2929,7 +2991,7 @@ function ReportCustomize({ bp }) {
                 {sec.required && <span style={{ fontSize:10, color:T.gray400 }}>Required</span>}
                 {sec.type==="ai" && <span style={{ fontSize:9, fontWeight:700, background:T.indigoLt, color:T.indigo, padding:"2px 6px", borderRadius:99 }}>AI</span>}
                 {sec.type==="chart" && sections[sec.id] && (
-                  <select value={chartType[sec.id]} onChange={e => setChartType(p=>({...p,[sec.id]:e.target.value}))} style={{ fontSize:10, border:`1px solid ${T.gray200}`, borderRadius:4, padding:"2px 5px", color:T.gray600, background:T.white, cursor:"pointer" }}>
+                  <select value={chartType[sec.id]} onChange={e => setChartType(p=>({...p,[sec.id]:e.target.value}))} style={{ fontSize:10, border:`1px solid ${T.gray200}`, borderRadius:4, padding:"2px 5px", color:T.gray600, background:T.surface, cursor:"pointer" }}>
                     {sec.chartTypes.map(t=><option key={t}>{t}</option>)}
                   </select>
                 )}
@@ -2939,7 +3001,7 @@ function ReportCustomize({ bp }) {
         </div>
 
         {/* Branding */}
-        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+        <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
           <div style={{ padding:"12px 16px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900 }}>Branding</div>
           <div style={{ padding:"12px 16px", display:"flex", flexDirection:"column", gap:12 }}>
             <div>
@@ -2967,7 +3029,7 @@ function ReportCustomize({ bp }) {
         </div>
 
         {/* Data settings */}
-        <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+        <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
           <div style={{ padding:"12px 16px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900 }}>Data & Benchmarks</div>
           <div style={{ padding:"12px 16px", display:"flex", flexDirection:"column", gap:10 }}>
             {[
@@ -2976,7 +3038,7 @@ function ReportCustomize({ bp }) {
             ].map(f => (
               <div key={f.label}>
                 <div style={{ fontSize:11, fontWeight:600, color:T.slate, marginBottom:5 }}>{f.label}</div>
-                <select value={f.value} onChange={e=>f.set(e.target.value)} style={{ width:"100%", border:`1px solid ${T.gray200}`, borderRadius:6, padding:"7px 10px", fontSize:12, color:T.gray900, background:T.white, cursor:"pointer" }}>
+                <select value={f.value} onChange={e=>f.set(e.target.value)} style={{ width:"100%", border:`1px solid ${T.gray200}`, borderRadius:6, padding:"7px 10px", fontSize:12, color:T.gray900, background:T.surface, cursor:"pointer" }}>
                   {f.opts.map(o=><option key={o}>{o}</option>)}
                 </select>
               </div>
@@ -2991,7 +3053,7 @@ function ReportCustomize({ bp }) {
 
       {/* Right: live preview */}
       <div style={{ flex:1 }}>
-        <div style={{ background:T.white, borderRadius:12, boxShadow:"0 2px 12px rgba(0,0,0,0.06)", overflow:"hidden" }}>
+        <div style={{ background:T.surface, borderRadius:12, boxShadow:"0 2px 12px rgba(0,0,0,0.06)", overflow:"hidden" }}>
           <div style={{ background:activeTheme.primary, padding:"20px 22px" }}>
             <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:10 }}>
               <div>
@@ -3146,7 +3208,7 @@ function IntegrationHub({ bp, deepLink, profile }) {
       <WorkflowContextBanner deepLink={deepLink} profile={profile}/>
 
       {/* Header */}
-      <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
+      <div style={{ background:T.surface, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
         <div>
           <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:3 }}>Integration Hub</div>
           <div style={{ fontSize:12, color:T.slate }}>{connCount} connected · {INTEGRATIONS.length - connCount} available</div>
@@ -3163,7 +3225,7 @@ function IntegrationHub({ bp, deepLink, profile }) {
       {/* Category filter */}
       <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
         {Object.entries(CAT_LABELS).map(([k, label]) => (
-          <button key={k} onClick={()=>{ setActiveCategory(k); setSelected(null); }} style={{ background:activeCategory===k?T.navy:T.white, color:activeCategory===k?T.white:T.gray600, border:`1px solid ${activeCategory===k?T.navy:T.gray200}`, borderRadius:8, padding:"6px 14px", fontSize:12, fontWeight:600, cursor:"pointer", transition:"all 0.15s" }}>
+          <button key={k} onClick={()=>{ setActiveCategory(k); setSelected(null); }} style={{ background:activeCategory===k?T.navy:T.surface, color:activeCategory===k?T.white:T.gray600, border:`1px solid ${activeCategory===k?T.navy:T.gray200}`, borderRadius:8, padding:"6px 14px", fontSize:12, fontWeight:600, cursor:"pointer", transition:"all 0.15s" }}>
             {label}
           </button>
         ))}
@@ -3178,7 +3240,7 @@ function IntegrationHub({ bp, deepLink, profile }) {
             const isCon    = connecting === integ.id;
             const isSel    = selected   === integ.id;
             return (
-              <div key={integ.id} onClick={()=>isConn&&setSelected(isSel?null:integ.id)} style={{ background:T.white, border:`1px solid ${isSel?T.indigo:isConn?T.emerald+"60":T.gray200}`, borderRadius:12, padding:"14px 16px", cursor:isConn?"pointer":"default", transition:"border 0.2s" }}>
+              <div key={integ.id} onClick={()=>isConn&&setSelected(isSel?null:integ.id)} style={{ background:T.surface, border:`1px solid ${isSel?T.indigo:isConn?T.emerald+"60":T.gray200}`, borderRadius:12, padding:"14px 16px", cursor:isConn?"pointer":"default", transition:"border 0.2s" }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:10 }}>
                   <div style={{ width:38, height:38, borderRadius:9, background:isConn?T.greenLt:T.gray100, display:"flex", alignItems:"center", justifyContent:"center" }}>
                     <Zap size={16} color={isConn?T.green:T.gray400}/>
@@ -3212,7 +3274,7 @@ function IntegrationHub({ bp, deepLink, profile }) {
 
         {/* Field mapping detail panel */}
         {selected && selInteg && (
-          <div style={{ background:T.white, border:`1px solid ${T.indigo}40`, borderRadius:12, overflow:"hidden", marginTop:isMobile?16:0 }}>
+          <div style={{ background:T.surface, border:`1px solid ${T.indigo}40`, borderRadius:12, overflow:"hidden", marginTop:isMobile?16:0 }}>
             <div style={{ background:T.navy, padding:"14px 18px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
               <div>
                 <div style={{ fontSize:13, fontWeight:700, color:T.white }}>{selInteg.name}</div>
@@ -3398,7 +3460,7 @@ function EmailModal({ onSend, onClose, isMobile }) {
   return (
     <>
       <div onClick={onClose} style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.6)", zIndex:86, backdropFilter:"blur(2px)" }}/>
-      <div style={{ position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:isMobile?"calc(100vw - 20px)":560, maxHeight:"calc(100vh - 40px)", background:T.white, borderRadius:16, boxShadow:"0 24px 64px rgba(0,0,0,0.35)", zIndex:87, overflow:"hidden", display:"flex", flexDirection:"column" }}>
+      <div style={{ position:"fixed", top:"50%", left:"50%", transform:"translate(-50%,-50%)", width:isMobile?"calc(100vw - 20px)":560, maxHeight:"calc(100vh - 40px)", background:T.surface, borderRadius:16, boxShadow:"0 24px 64px rgba(0,0,0,0.35)", zIndex:87, overflow:"hidden", display:"flex", flexDirection:"column" }}>
         <div style={{ background:T.navy, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <div style={{ width:32, height:32, borderRadius:8, background:T.green, display:"flex", alignItems:"center", justifyContent:"center" }}><Mail size={15} color={T.white}/></div>
@@ -3455,7 +3517,7 @@ function EmailModal({ onSend, onClose, isMobile }) {
                   <div key={ch.key} onClick={()=>ch.set(!ch.val)} style={{ flex:1, background:ch.val?T.greenLt:T.gray50, border:`1px solid ${ch.val?T.green:T.gray200}`, borderRadius:10, padding:"10px 12px", cursor:"pointer", transition:"all 0.15s" }}>
                     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:3 }}>
                       <span style={{ fontSize:12, fontWeight:700, color:ch.val?T.green:T.gray600 }}>{ch.label}</span>
-                      <div style={{ width:15, height:15, borderRadius:4, border:`2px solid ${ch.val?T.green:T.gray300}`, background:ch.val?T.green:T.white, display:"flex", alignItems:"center", justifyContent:"center" }}>{ch.val&&<Check size={8} color={T.white}/>}</div>
+                      <div style={{ width:15, height:15, borderRadius:4, border:`2px solid ${ch.val?T.green:T.gray300}`, background:ch.val?T.green:T.surface, display:"flex", alignItems:"center", justifyContent:"center" }}>{ch.val&&<Check size={8} color={T.white}/>}</div>
                     </div>
                     <div style={{ fontSize:11, color:T.slate }}>{ch.desc}</div>
                   </div>
@@ -3496,18 +3558,32 @@ export default function WealthscapePrototype() {
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [reportDelivered,setReportDelivered]= useState(false);
   const [activeProfileId,setActiveProfileId]= useState(PROFILE_REGISTRY.defaultProfileId);
+  const [themeMode,      setThemeMode]      = useState(getInitialTheme);
+  applyThemeTokens(themeMode);
   const activeProfile = getProfileById(activeProfileId);
   const activeDashboard = getProfileDashboard(activeProfile);
   const handleProfileChange = profileId => {
     setActiveProfileId(normalizeProfileId(profileId));
     setDeepLink(null);
   };
+  const toggleThemeMode = () => setThemeMode(mode => mode === "dark" ? "light" : "dark");
 
   useEffect(() => {
     if (scenarioActive) return;
     setAlerts(activeDashboard.alerts);
     setAlertsOpen(false);
   }, [activeProfileId, scenarioActive]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = themeMode;
+    document.documentElement.style.colorScheme = themeMode;
+    document.body.style.background = T.gray50;
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, themeMode);
+    } catch {
+      // Storage can be blocked in hardened browser contexts; the toggle still works in-session.
+    }
+  }, [themeMode]);
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
@@ -3633,7 +3709,7 @@ export default function WealthscapePrototype() {
   );
 
   return (
-    <div style={{ display:"flex", height:"100vh", background:T.gray50, fontFamily:"Inter, system-ui, -apple-system, sans-serif", fontSize:14, color:T.gray900, overflow:"hidden", position:"relative" }}>
+    <div data-theme={themeMode} style={{ display:"flex", height:"100vh", background:T.gray50, fontFamily:"Inter, system-ui, -apple-system, sans-serif", fontSize:14, color:T.gray900, overflow:"hidden", position:"relative" }}>
 
       {isDesktop && (
         <div style={{ width:220, background:T.navy, display:"flex", flexDirection:"column", flexShrink:0, overflowY:"auto" }}>
@@ -3650,7 +3726,7 @@ export default function WealthscapePrototype() {
       )}
 
       <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden", minWidth:0 }}>
-        <div style={{ background:T.white, borderBottom:`1px solid ${T.gray200}`, padding:"0 16px", display:"flex", alignItems:"center", justifyContent:"space-between", height:52, flexShrink:0, gap:10 }}>
+        <div style={{ background:T.surface, borderBottom:`1px solid ${T.gray200}`, padding:"0 16px", display:"flex", alignItems:"center", justifyContent:"space-between", height:52, flexShrink:0, gap:10 }}>
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             {!isDesktop && <button aria-label="Open navigation" title="Open navigation" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600, display:"flex", alignItems:"center" }} onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>}
             <div>
@@ -3669,6 +3745,7 @@ export default function WealthscapePrototype() {
               </div>
             )}
             {isMobile && <button aria-label="Search prototype" title="Search" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
+            <ThemeToggle themeMode={themeMode} onToggle={toggleThemeMode} isMobile={isMobile}/>
             <button aria-label={scenarioActive?"Restart scenario":"Run scenario"} title={scenarioActive?"Restart scenario":"Run scenario"} onClick={startScenario} data-demo="scenario-button" style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
               <Target size={14}/>{!isMobile&&(scenarioActive?" Restart":" Scenario")}
             </button>
@@ -3687,7 +3764,7 @@ export default function WealthscapePrototype() {
         </div>
 
         {isMobile && (
-          <div style={{ background:T.white, borderBottom:`1px solid ${T.gray200}`, padding:"8px 12px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexShrink:0 }}>
+          <div style={{ background:T.surface, borderBottom:`1px solid ${T.gray200}`, padding:"8px 12px", display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, flexShrink:0 }}>
             <div style={{ minWidth:0 }}>
               <div style={{ fontSize:9, color:T.slate, fontWeight:800, letterSpacing:"0.08em", textTransform:"uppercase" }}>Profile view</div>
               <div style={{ fontSize:12, fontWeight:700, color:T.gray900, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{activeProfile.shell.name}</div>
@@ -3711,7 +3788,7 @@ export default function WealthscapePrototype() {
         </div>
 
         {isMobile && (
-          <div style={{ background:T.white, borderTop:`1px solid ${T.gray200}`, display:"flex", flexShrink:0, paddingBottom:"env(safe-area-inset-bottom, 0px)" }}>
+          <div style={{ background:T.surface, borderTop:`1px solid ${T.gray200}`, display:"flex", flexShrink:0, paddingBottom:"env(safe-area-inset-bottom, 0px)" }}>
             {navItems.map(item=>{
               const Icon = item.icon; const active = activeLayer===item.id;
               return (
