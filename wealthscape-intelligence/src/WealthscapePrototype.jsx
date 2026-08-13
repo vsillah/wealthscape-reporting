@@ -2798,6 +2798,14 @@ const ROLE_HOUR_MODEL = [
   { role:"QA / compliance review", conventional:"50-75", ai:"2-3", saved:"47-73", rate:"$50.14/hr", avoided:"$2.4K-$3.7K" },
 ];
 
+const PRODUCT_CYCLE = [
+  { stage:"Frame", phase:"Opportunity framing", savings:"13-26 hrs", cost:"$1K-$2K", tone:"indigo", note:"Reusable source packets, Open Brain rules, and style context reduce net-new explanation." },
+  { stage:"Shape", phase:"Concept and workflow design", savings:"152-268 hrs", cost:"$7K-$13K", tone:"green", note:"Personas, job maps, and interaction structure collapse strategy-to-screen translation." },
+  { stage:"Build", phase:"Working prototype", savings:"211-349 hrs", cost:"$11K-$22K", tone:"green", note:"AI-assisted implementation replaces most throwaway scaffolding and first-pass UI assembly." },
+  { stage:"Validate", phase:"QA and evidence", savings:"47-73 hrs", cost:"$2K-$4K", tone:"amber", note:"Build checks, preview deploys, responsive smoke, and source register reduce review rework." },
+  { stage:"Decide", phase:"Funding decision", savings:"cycle time", cost:"risk avoided", tone:"navy", note:"Executives can evaluate the recommendation before a full delivery team is staffed." },
+];
+
 const TOOL_COSTS = [
   { tool:"AI model workspace", range:"$20-$200+/user/mo", source:"OpenAI / Anthropic", note:"Consumer, team, and API usage vary by model and volume." },
   { tool:"AI coding assistant", range:"$10-$100/user/mo", source:"GitHub Copilot", note:"Agentic development capacity scales by plan and credits." },
@@ -2967,6 +2975,44 @@ function BuildCaseLayer({ bp, onNavigate }) {
       </StratSection>
 
       <StratSection eyebrow="03 · Relative Cost Model" title="What this replaces in the early strategy cycle" intro="A conventional product squad can still be needed for implementation. The savings show up earlier: discovery synthesis, concept testing, executive alignment, and funding decisions can move with a smaller strategy-led build lane.">
+        <div style={{ ...card, padding:isMobile?"15px":"18px", overflow:"hidden" }}>
+          <div style={{ display:"flex", alignItems:isMobile?"flex-start":"center", justifyContent:"space-between", gap:12, flexDirection:isMobile?"column":"row", marginBottom:14 }}>
+            <div>
+              <div style={{ fontSize:14, fontWeight:900, color:T.gray900 }}>Where the savings show up in the product cycle</div>
+              <div style={{ fontSize:12.2, color:T.slate, lineHeight:1.45, marginTop:4 }}>The prototype lane compresses the early decision cycle most heavily before enterprise engineering begins.</div>
+            </div>
+            <div style={{ display:"flex", gap:8, alignItems:"center", background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:99, padding:"6px 10px", flexShrink:0 }}>
+              <span style={{ width:8, height:8, borderRadius:"50%", background:T.green }}/>
+              <span style={{ fontSize:10.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase" }}>Savings concentration</span>
+            </div>
+          </div>
+
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(5, 1fr)", gap:isMobile?10:8, position:"relative" }}>
+            {!isMobile && <div style={{ position:"absolute", left:"9%", right:"9%", top:25, height:2, background:T.gray200, zIndex:0 }}/>}
+            {PRODUCT_CYCLE.map((p,i)=>{
+              const tone = p.tone === "green" ? T.green : p.tone === "amber" ? T.amber : p.tone === "navy" ? T.navy : T.indigo;
+              const bg = p.tone === "green" ? T.greenLt : p.tone === "amber" ? T.amberLt : p.tone === "navy" ? "#EAF0F6" : T.indigoLt;
+              return (
+                <div key={p.stage} style={{ position:"relative", zIndex:1, background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:isMobile?"12px 13px":"12px 11px", display:"flex", flexDirection:"column", gap:9, minHeight:isMobile?"auto":184 }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:8 }}>
+                    <div style={{ width:34, height:34, borderRadius:"50%", background:tone, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:900, boxShadow:`0 0 0 5px ${bg}` }}>{i+1}</div>
+                    <span style={{ background:bg, color:tone, borderRadius:99, padding:"3px 8px", fontSize:10, fontWeight:900 }}>{p.savings}</span>
+                  </div>
+                  <div>
+                    <div style={{ fontSize:13.5, fontWeight:900, color:T.gray900, lineHeight:1.2 }}>{p.stage}</div>
+                    <div style={{ fontSize:10.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginTop:3, lineHeight:1.25 }}>{p.phase}</div>
+                  </div>
+                  <div style={{ display:"flex", justifyContent:"space-between", gap:8, alignItems:"center", padding:"7px 9px", borderRadius:8, background:T.gray50, border:`1px solid ${T.gray100}` }}>
+                    <span style={{ fontSize:10, color:T.slate, fontWeight:900, textTransform:"uppercase", letterSpacing:"0.04em" }}>Value</span>
+                    <span style={{ fontSize:12, color:tone, fontWeight:900 }}>{p.cost}</span>
+                  </div>
+                  <div style={{ fontSize:10.8, color:T.gray600, lineHeight:1.4 }}>{p.note}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         <div style={{ ...card, padding:isMobile?"15px":"17px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
           {[
             [`${deliveryHoursSavedLow}-${deliveryHoursSavedHigh}`, "delivery hours saved", "Conventional squad hours minus AI-assisted prototype lane hours."],
