@@ -2728,11 +2728,51 @@ const ECONOMICS_SOURCES = [
 ];
 
 const STACK_TIERS = [
-  { n:"01", title:"Strategy Intelligence", owner:"Product strategy", tools:"ODI/JTBD, source register, research synthesis, decision memo", output:"Opportunity map, prioritized recommendations, traceability from evidence to prototype behavior." },
-  { n:"02", title:"Experience Model", owner:"Product + design", tools:"Persona registry, job map, navigation model, interaction scripts", output:"Role-specific surfaces that explain the operating job without mixing dashboard function with strategy narrative." },
-  { n:"03", title:"Agentic Build", owner:"Strategy-led builder", tools:"Codex, Claude/ChatGPT, React, Vite, Recharts, Lucide", output:"Working browser prototype with realistic workflows, seeded data, and reusable interaction states." },
-  { n:"04", title:"Delivery Shell", owner:"Engineering", tools:"GitHub branches/PRs, Vercel previews, build checks, responsive QA", output:"Shareable deployment, review gates, issue capture, and production-style validation loop." },
-  { n:"05", title:"Governance Layer", owner:"Compliance + platform", tools:"Citation ledger, risk assumptions, source links, QA notes", output:"Decision-ready artifact that can travel into enterprise review without hiding uncertainty." },
+  {
+    n:"01",
+    title:"Strategy Intelligence",
+    owner:"Product strategy",
+    purpose:"Turns the meeting insight, market evidence, and customer jobs into a fundable product thesis.",
+    tools:["ODI / JTBD", "source register", "research synthesis", "decision memo"],
+    data:["Broker-dealer research packet", "market signals", "customer pains", "ODI scores"],
+    output:"Opportunity map, prioritized recommendations, and traceability from evidence to prototype behavior.",
+  },
+  {
+    n:"02",
+    title:"Experience Model",
+    owner:"Product + design",
+    purpose:"Converts strategy into the screens, flows, states, and personas a stakeholder can actually inspect.",
+    tools:["persona registry", "job map", "navigation model", "interaction scripts"],
+    data:["Home office profile", "OSJ profile", "hybrid advisor profile", "role-specific actions"],
+    output:"Role-specific surfaces that explain the operating job without mixing dashboard function with strategy narrative.",
+  },
+  {
+    n:"03",
+    title:"Agentic Build",
+    owner:"Strategy-led builder",
+    purpose:"Uses AI-assisted coding and design iteration to turn the model into a working browser prototype.",
+    tools:["Codex", "Claude / ChatGPT", "React", "Vite", "Recharts", "Lucide"],
+    data:["seeded workflow data", "component registry", "responsive states", "prototype copy"],
+    output:"Working browser prototype with realistic workflows, seeded data, and reusable interaction states.",
+  },
+  {
+    n:"04",
+    title:"Delivery Shell",
+    owner:"Engineering",
+    purpose:"Packages the prototype so it can be reviewed, validated, shared, and promoted through a controlled lane.",
+    tools:["GitHub branches", "draft PRs", "Vercel previews", "build checks", "browser QA"],
+    data:["commit history", "preview deployments", "viewport smoke results", "PR validation notes"],
+    output:"Shareable deployment, review gates, issue capture, and production-style validation loop.",
+  },
+  {
+    n:"05",
+    title:"Governance Layer",
+    owner:"Compliance + platform",
+    purpose:"Keeps the prototype honest by separating sourced facts, assumptions, recommendations, and open risks.",
+    tools:["citation ledger", "risk assumptions", "source links", "QA notes", "memory context"],
+    data:["public sources", "local packets", "Open Brain rules", "human QA feedback"],
+    output:"Decision-ready artifact that can travel into enterprise review without hiding uncertainty.",
+  },
 ];
 
 const EFFORT_TIERS = [
@@ -2856,16 +2896,57 @@ function BuildCaseLayer({ bp, onNavigate }) {
       </div>
 
       <StratSection eyebrow="01 · Nomenclature" title="The components of an AI-assisted prototype" intro="Use common language before scaling the method. These five tiers separate strategy, experience design, build acceleration, deployment, and governance so teams know what is being funded.">
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(5, 1fr)", gap:10 }}>
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
           {STACK_TIERS.map(t=>(
-            <div key={t.n} style={{ ...card, padding:"15px 14px", display:"flex", flexDirection:"column", gap:9, minHeight:226 }}>
-              <div style={{ width:30, height:30, borderRadius:8, background:T.navy, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:900 }}>{t.n}</div>
-              <div>
-                <div style={{ fontSize:13.5, fontWeight:900, color:T.gray900, lineHeight:1.25 }}>{t.title}</div>
-                <div style={{ fontSize:10.5, color:T.indigo, fontWeight:900, marginTop:4 }}>{t.owner}</div>
+            <div key={t.n} style={{ ...card, padding:isMobile?"15px":"17px 18px", display:"flex", flexDirection:"column", gap:13, minHeight:isMobile?"auto":310, gridColumn:!isMobile && t.n==="05" ? "1 / -1" : "auto" }}>
+              <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", gap:12 }}>
+                <div style={{ display:"flex", gap:11, alignItems:"flex-start" }}>
+                  <div style={{ width:34, height:34, borderRadius:10, background:T.navy, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:900, flexShrink:0 }}>{t.n}</div>
+                  <div>
+                    <div style={{ fontSize:15, fontWeight:900, color:T.gray900, lineHeight:1.25 }}>{t.title}</div>
+                    <div style={{ fontSize:10.5, color:T.indigo, fontWeight:900, marginTop:4, textTransform:"uppercase", letterSpacing:"0.04em" }}>{t.owner}</div>
+                  </div>
+                </div>
               </div>
-              <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45 }}><strong style={{ color:T.gray900 }}>Tools:</strong> {t.tools}</div>
-              <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45, marginTop:"auto" }}>{t.output}</div>
+
+              <div style={{ fontSize:12.3, color:T.gray600, lineHeight:1.55 }}>{t.purpose}</div>
+
+              <div style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"11px 12px" }}>
+                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:10, marginBottom:8 }}>
+                  <div style={{ fontSize:10, fontWeight:900, color:T.slate, letterSpacing:"0.07em", textTransform:"uppercase" }}>Tools Used</div>
+                  <Zap size={13} color={T.indigo}/>
+                </div>
+                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
+                  {t.tools.map(tool=>(
+                    <span key={tool} style={{ background:T.white, border:`1px solid ${T.gray200}`, color:T.gray900, borderRadius:99, padding:"4px 8px", fontSize:10.5, fontWeight:800, lineHeight:1.15 }}>{tool}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10, marginTop:"auto" }}>
+                <div style={{ background:T.indigoLt, border:`1px solid ${T.indigo}22`, borderRadius:10, padding:"11px 12px" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:8 }}>
+                    <Database size={13} color={T.indigo}/>
+                    <div style={{ fontSize:10, fontWeight:900, color:T.indigo, letterSpacing:"0.07em", textTransform:"uppercase" }}>Underlying Data</div>
+                  </div>
+                  <div style={{ display:"grid", gap:5 }}>
+                    {t.data.map(item=>(
+                      <div key={item} style={{ display:"flex", gap:6, alignItems:"flex-start", fontSize:11.2, color:T.gray600, lineHeight:1.35 }}>
+                        <span style={{ width:5, height:5, borderRadius:"50%", background:T.indigo, marginTop:5, flexShrink:0 }}/>
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div style={{ background:T.greenLt, border:`1px solid ${T.green}22`, borderRadius:10, padding:"11px 12px" }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:8 }}>
+                    <Check size={13} color={T.green}/>
+                    <div style={{ fontSize:10, fontWeight:900, color:T.green, letterSpacing:"0.07em", textTransform:"uppercase" }}>Output</div>
+                  </div>
+                  <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45 }}>{t.output}</div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
