@@ -2722,6 +2722,9 @@ const ECONOMICS_SOURCES = [
   { key:"github-copilot", label:"GitHub Copilot plans and pricing", href:"https://github.com/features/copilot/plans", note:"Coding assistant and agent seat costs." },
   { key:"vercel-pricing", label:"Vercel pricing", href:"https://vercel.com/pricing", note:"Prototype hosting, previews, and deployment pricing." },
   { key:"figma-pricing", label:"Figma pricing", href:"https://www.figma.com/pricing/", note:"Design, prototyping, Dev Mode, and AI credit pricing." },
+  { key:"finra-genai", label:"FINRA Regulatory Notice 24-09", href:"https://www.finra.org/rules-guidance/notices/24-09", note:"FINRA reminds member firms that existing rules remain technology-neutral when using generative AI or similar tools." },
+  { key:"sec-reg-sp", label:"SEC Regulation S-P safeguarding amendments", href:"https://www.sec.gov/rules-regulations/2024/06/s7-05-23", note:"SEC rulemaking on written policies, incident response, safeguarding customer information, and compliance documentation." },
+  { key:"finra-recordkeeping-ai", label:"FINRA Regulatory Notice 25-07", href:"https://www.finra.org/rules-guidance/notices/25-07", note:"FINRA request for comment includes recordkeeping challenges related to AI-generated communications and digital channels." },
   { key:"bd-packet", label:"Broker-dealer strategy expansion packet", href:"https://github.com/vsillah/wealthscape-reporting/blob/main/docs/broker-dealer-strategy-expansion.md", note:"Internal Wealthscape context reused for personas, ODI outcomes, recommendations, and source anchors." },
   { key:"open-brain", label:"Portfolio Open Brain local service contract", href:null, note:"Local Portfolio source defining sources, events, memories, proposals, links, privacy tiers, and governance boundaries." },
   { key:"open-brain-qa", label:"Portfolio Open Brain RAG retrieval QA packet", href:null, note:"Local Portfolio evidence that public-safe Open Brain RAG projection was not yet available, so repo and local documents remained the practical context source." },
@@ -3259,6 +3262,18 @@ function BuildCaseLayer({ bp, onNavigate }) {
           </div>
           <div style={{ marginTop:12, background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 13px", fontSize:11.8, color:T.slate, lineHeight:1.5 }}>
             This framing is a product governance model, not legal advice. The operating rule is simple: prove the workflow with the least sensitive useful context, preserve the evidence trail, and escalate before any restricted data becomes necessary.
+          </div>
+          <div style={{ marginTop:12, display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(3, 1fr)", gap:10 }}>
+            {["finra-genai", "sec-reg-sp", "finra-recordkeeping-ai"].map(key=>{
+              const source = ECONOMICS_SOURCES.find(s => s.key === key);
+              return (
+                <div key={key} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"11px 12px" }}>
+                  <div style={{ fontSize:10, fontWeight:900, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:5 }}>Primary source anchor</div>
+                  <div style={{ fontSize:11.5, lineHeight:1.35 }}><SourceAnchor href={source.href}>{source.label}</SourceAnchor></div>
+                  <div style={{ fontSize:10.8, color:T.gray600, lineHeight:1.42, marginTop:6 }}>{source.note}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </StratSection>
