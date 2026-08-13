@@ -2827,6 +2827,24 @@ const CONTEXT_REUSE = [
   { source:"Vambah style and strategy corpus", reused:"Voice, framing, executive report tone, practical systems language", avoided:"1-2 hrs", evidence:"local personality corpus and project instructions" },
 ];
 
+const COMPLIANCE_SAFE_INPUTS = [
+  { label:"Synthetic and seeded workflow data", detail:"Representative personas, alerts, metrics, and report states created for the prototype rather than pulled from production systems." },
+  { label:"Public evidence", detail:"Public wage, pricing, market, and product references used for directional business-case framing." },
+  { label:"Local source packets", detail:"Existing strategy packets and repo documents used as controlled context, with source anchors kept in the report layer." },
+  { label:"Approved contextual knowledge", detail:"Project instructions, design patterns, and governance vocabulary used to shape the artifact without exposing confidential records." },
+];
+
+const COMPLIANCE_CONTROLS = [
+  { control:"Intake classification", purpose:"Classify every prototype request by data sensitivity, audience, sharing path, and decision gate before work starts." },
+  { control:"Data minimization", purpose:"Default to no client, advisor, account, household, transaction, or production custody data unless the use case is formally approved." },
+  { control:"Approved datasets", purpose:"Maintain anonymized, tokenized, or synthetic datasets that product teams can reuse without reconstructing confidential records." },
+  { control:"Source and citation ledger", purpose:"Track public sources, local packets, assumptions, screenshots, generated outputs, and human approvals beside the artifact." },
+  { control:"Sandboxed tools", purpose:"Use isolated branches, preview environments, scoped credentials, and non-production stores for AI-assisted build work." },
+  { control:"Compliance review gate", purpose:"Require human compliance, risk, or legal review before restricted data, external sharing, or pilot conversion." },
+  { control:"Retention policy", purpose:"Set retention windows for prompts, outputs, source packets, screenshots, logs, and prototype environments." },
+  { control:"Escalation path", purpose:"Route any restricted-data need through a named approval path with documented rationale, alternatives, and compensating controls." },
+];
+
 const TOKEN_INSTRUMENTATION = [
   "model and provider",
   "input, cached-input, output, and reasoning tokens",
@@ -3178,7 +3196,74 @@ function BuildCaseLayer({ bp, onNavigate }) {
         </div>
       </StratSection>
 
-      <StratSection eyebrow="06 · Enterprise Adoption Pattern" title="How to introduce this across the organization" intro="The scalable pattern is a governed prototyping service: small enough to move quickly, formal enough to keep evidence, controls, and ownership visible.">
+      <StratSection eyebrow="06 · Compliance Model" title="How this prototype stayed inside a protected-data boundary" intro="This was enterprise-safe AI prototyping, not a bypass around compliance. The Wealthscape 2.0 prototype used synthetic and approved context to test workflow value without exposing confidential production records.">
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"0.92fr 1.08fr", gap:14 }}>
+          <div style={{ ...card, padding:isMobile?"16px":"18px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ display:"flex", gap:12, alignItems:"flex-start" }}>
+              <div style={{ width:40, height:40, borderRadius:10, background:T.green, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                <Check size={18} color={T.white}/>
+              </div>
+              <div>
+                <div style={{ fontSize:15.5, fontWeight:900, color:T.gray900, lineHeight:1.25 }}>No sensitive information was used</div>
+                <div style={{ fontSize:12.3, color:T.gray600, lineHeight:1.55, marginTop:6 }}>
+                  The prototype did not use sensitive client, advisor, household, account, transaction, custody, or production reporting data. Names, balances, alerts, metrics, and report states are seeded examples built to demonstrate workflow behavior.
+                </div>
+              </div>
+            </div>
+            <div style={{ background:T.greenLt, border:`1px solid ${T.green}22`, borderRadius:11, padding:"13px 14px" }}>
+              <div style={{ fontSize:10.5, fontWeight:900, color:T.green, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:6 }}>Permitted prototype inputs</div>
+              <div style={{ fontSize:12, color:T.gray600, lineHeight:1.55 }}>
+                Synthetic workflow data, public evidence, local source packets, and approved contextual knowledge were sufficient to evaluate the product thesis, interface model, cost logic, and executive narrative.
+              </div>
+            </div>
+            <div style={{ background:T.amberLt, border:`1px solid ${T.amber}24`, borderRadius:11, padding:"13px 14px" }}>
+              <div style={{ display:"flex", gap:8, alignItems:"center", marginBottom:6 }}>
+                <AlertTriangle size={14} color={T.amber}/>
+                <div style={{ fontSize:10.5, fontWeight:900, color:T.amber, letterSpacing:"0.06em", textTransform:"uppercase" }}>Scale gate</div>
+              </div>
+              <div style={{ fontSize:12, color:T.gray600, lineHeight:1.55 }}>
+                Any move from prototype to pilot should introduce formal compliance review, security review, retention rules, and approval for any restricted data need before real records enter the workflow.
+              </div>
+            </div>
+          </div>
+
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
+            {COMPLIANCE_SAFE_INPUTS.map(input=>(
+              <div key={input.label} style={{ ...card, padding:"15px 16px", minHeight:isMobile?"auto":146 }}>
+                <div style={{ fontSize:10.5, fontWeight:900, color:T.indigo, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:7 }}>Context source</div>
+                <div style={{ fontSize:13.5, fontWeight:900, color:T.gray900, lineHeight:1.25, marginBottom:7 }}>{input.label}</div>
+                <div style={{ fontSize:11.8, color:T.gray600, lineHeight:1.5 }}>{input.detail}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ ...card, padding:isMobile?"15px":"17px 18px" }}>
+          <div style={{ display:"flex", alignItems:isMobile?"flex-start":"center", justifyContent:"space-between", gap:12, flexDirection:isMobile?"column":"row", marginBottom:13 }}>
+            <div>
+              <div style={{ fontSize:14.5, fontWeight:900, color:T.gray900 }}>Scaled governance operating model</div>
+              <div style={{ fontSize:12.2, color:T.slate, lineHeight:1.45, marginTop:4 }}>Controls that let product teams move quickly while keeping protected data, evidence, and review ownership visible.</div>
+            </div>
+            <div style={{ background:T.indigoLt, color:T.indigo, borderRadius:99, padding:"6px 10px", fontSize:10.5, fontWeight:900, letterSpacing:"0.05em", textTransform:"uppercase", whiteSpace:"nowrap" }}>Prototype to pilot</div>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
+            {COMPLIANCE_CONTROLS.map((item,i)=>(
+              <div key={item.control} style={{ display:"grid", gridTemplateColumns:"34px 1fr", gap:10, background:i % 2 ? T.gray50 : T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 13px", alignItems:"start" }}>
+                <div style={{ width:28, height:28, borderRadius:8, background:i < 4 ? T.navy : T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:10.5, fontWeight:900 }}>{String(i+1).padStart(2,"0")}</div>
+                <div>
+                  <div style={{ fontSize:12.7, fontWeight:900, color:T.gray900, lineHeight:1.25 }}>{item.control}</div>
+                  <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45, marginTop:4 }}>{item.purpose}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop:12, background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 13px", fontSize:11.8, color:T.slate, lineHeight:1.5 }}>
+            This framing is a product governance model, not legal advice. The operating rule is simple: prove the workflow with the least sensitive useful context, preserve the evidence trail, and escalate before any restricted data becomes necessary.
+          </div>
+        </div>
+      </StratSection>
+
+      <StratSection eyebrow="07 · Enterprise Adoption Pattern" title="How to introduce this across the organization" intro="The scalable pattern is a governed prototyping service: small enough to move quickly, formal enough to keep evidence, controls, and ownership visible.">
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr", gap:12 }}>
           {[
             { icon:Target, title:"Fund decisions, not demos", body:"Start with an opportunity statement, evidence threshold, and decision owner. The prototype exists to answer whether a recommendation deserves product investment." },
@@ -3201,7 +3286,7 @@ function BuildCaseLayer({ bp, onNavigate }) {
         </div>
       </StratSection>
 
-      <StratSection eyebrow="07 · Source Register" title="Benchmark and pricing references" intro="These public sources and local workspace packets support the directional model. Internal loaded labor rates, enterprise vendor contracts, security controls, governance review time, and actual provider usage exports should be substituted before using the model for budgeting.">
+      <StratSection eyebrow="08 · Source Register" title="Benchmark and pricing references" intro="These public sources and local workspace packets support the directional model. Internal loaded labor rates, enterprise vendor contracts, security controls, governance review time, and actual provider usage exports should be substituted before using the model for budgeting.">
         <div style={{ ...card, padding:"16px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
           {ECONOMICS_SOURCES.map(source=>(
             <div key={source.key} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10 }}>
