@@ -3026,29 +3026,29 @@ function BuildCaseLayer({ bp, onNavigate }) {
           </div>
         </div>
 
-        <div style={{ ...card, padding:isMobile?"14px":"16px 18px", position:"sticky", top:isMobile?8:12, zIndex:4, boxShadow:"0 12px 30px rgba(15, 23, 42, 0.08)" }}>
+        <div style={{ ...card, padding:isMobile?"12px":"16px 18px", position:"sticky", top:isMobile?58:12, zIndex:4, boxShadow:"0 12px 30px rgba(15, 23, 42, 0.08)" }}>
           <div style={{ display:"flex", alignItems:isMobile?"flex-start":"center", justifyContent:"space-between", gap:12, flexDirection:isMobile?"column":"row", marginBottom:12 }}>
             <div>
               <div style={{ fontSize:14, fontWeight:900, color:T.gray900 }}>Executive cost summary</div>
-              <div style={{ fontSize:12.2, color:T.slate, lineHeight:1.45, marginTop:4 }}>Keep these top-line economics visible while reviewing the evidence below.</div>
+              {!isMobile && <div style={{ fontSize:12.2, color:T.slate, lineHeight:1.45, marginTop:4 }}>Keep these top-line economics visible while reviewing the evidence below.</div>}
             </div>
             <div style={{ display:"flex", alignItems:"center", gap:7, background:T.greenLt, color:T.green, border:`1px solid ${T.green}22`, borderRadius:99, padding:"6px 10px", fontSize:10.5, fontWeight:900, textTransform:"uppercase", letterSpacing:"0.05em" }}>
               <Calculator size={13}/> Persistent summary
             </div>
           </div>
-          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:isMobile?8:10 }}>
             {costMetricCards.map(([value,label,note])=>(
-              <div key={label} style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 13px", minHeight:isMobile?112:104 }}>
-                <div style={{ fontSize:isMobile?20:24, fontWeight:900, color:T.green, letterSpacing:"-0.02em" }}>{value}</div>
-                <div style={{ fontSize:10.5, fontWeight:900, color:T.gray900, textTransform:"uppercase", letterSpacing:"0.05em", lineHeight:1.3, marginTop:4 }}>{label}</div>
-                <div style={{ fontSize:10.8, color:T.slate, lineHeight:1.35, marginTop:7 }}>{note}</div>
+              <div key={label} style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:isMobile?"9px 10px":"12px 13px", minHeight:isMobile?72:104 }}>
+                <div style={{ fontSize:isMobile?17:24, fontWeight:900, color:T.green, letterSpacing:"-0.02em" }}>{value}</div>
+                <div style={{ fontSize:isMobile?9.2:10.5, fontWeight:900, color:T.gray900, textTransform:"uppercase", letterSpacing:"0.04em", lineHeight:1.18, marginTop:4 }}>{label}</div>
+                {!isMobile && <div style={{ fontSize:10.8, color:T.slate, lineHeight:1.35, marginTop:7 }}>{note}</div>}
               </div>
             ))}
           </div>
         </div>
 
         <div style={{ ...card, overflow:"hidden" }}>
-          <div role="tablist" aria-label="Relative cost model detail views" style={{ display:"flex", gap:6, overflowX:"auto", WebkitOverflowScrolling:"touch", padding:isMobile?"10px":"12px 14px", background:T.gray50, borderBottom:`1px solid ${T.gray200}` }}>
+          <div role="tablist" aria-label="Relative cost model detail views" style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, minmax(0, 1fr))", gap:6, padding:isMobile?"10px":"12px 14px", background:T.gray50, borderBottom:`1px solid ${T.gray200}` }}>
             {costTabs.map(t=>{
               const active = activeCostTab === t.id;
               return (
@@ -3060,7 +3060,7 @@ function BuildCaseLayer({ bp, onNavigate }) {
                   aria-selected={active}
                   aria-controls={`cost-panel-${t.id}`}
                   onClick={()=>setActiveCostTab(t.id)}
-                  style={{ border:`1px solid ${active ? T.green : T.gray200}`, background:active ? T.white : "transparent", color:active ? T.green : T.slate, borderRadius:10, padding:isMobile?"10px 12px":"10px 14px", minWidth:isMobile?152:170, minHeight:48, textAlign:"left", cursor:"pointer", boxShadow:active ? "0 8px 18px rgba(11,93,46,0.10)" : "none", flexShrink:0 }}
+                  style={{ border:`1px solid ${active ? T.green : T.gray200}`, background:active ? T.white : "transparent", color:active ? T.green : T.slate, borderRadius:10, padding:isMobile?"9px 10px":"10px 14px", minHeight:isMobile?54:48, textAlign:"left", cursor:"pointer", boxShadow:active ? "0 8px 18px rgba(11,93,46,0.10)" : "none" }}
                 >
                   <div style={{ fontSize:12, fontWeight:900, lineHeight:1.2 }}>{t.label}</div>
                   <div style={{ fontSize:10.5, color:active ? T.gray600 : T.slate, lineHeight:1.25, marginTop:3 }}>{t.note}</div>
