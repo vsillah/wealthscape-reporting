@@ -2848,6 +2848,7 @@ function MiniSource({ sourceKey }) {
 
 function BuildCaseLayer({ bp, onNavigate }) {
   const { isMobile } = bp;
+  const [activeCostTab, setActiveCostTab] = useState("hours");
   const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
   const avgRate = 54.5;
   const strategyLeadRate = 84.2;
@@ -2872,6 +2873,18 @@ function BuildCaseLayer({ bp, onNavigate }) {
   const allInBaseSavingsHigh = baseSavingsHigh + contextValueHigh;
   const loadedSavingsLow = loadedLow - aiHigh;
   const loadedSavingsHigh = loadedHigh - aiLow;
+  const costMetricCards = [
+    [`${deliveryHoursSavedLow}-${deliveryHoursSavedHigh}`, "delivery hours saved", "Conventional squad hours minus AI-assisted prototype lane hours."],
+    [`${contextHoursLow}-${contextHoursHigh}`, "context hours avoided", "Reusable packet, shell, Open Brain, and style context reduced setup time."],
+    [`${totalHoursSavedLow}-${totalHoursSavedHigh}`, "total modeled hours saved", "Delivery savings plus context-reuse credit."],
+    [`${money(allInBaseSavingsLow)}-${money(allInBaseSavingsHigh)}`, "base cost advantage", "Labor differential plus context-reuse value, before enterprise loaded rates."],
+  ];
+  const costTabs = [
+    { id:"hours", label:"Role-hour savings", note:"Modeled hours by role" },
+    { id:"squad", label:"Conventional squad", note:"Baseline cost view" },
+    { id:"ai-lane", label:"AI-assisted lane", note:"Strategy-led tool cost" },
+    { id:"assumptions", label:"Assumptions", note:"How to read the model" },
+  ];
 
   return (
     <div style={{ maxWidth:1120, margin:"0 auto", display:"flex", flexDirection:"column", gap:22, paddingBottom:24 }}>
@@ -3013,109 +3026,166 @@ function BuildCaseLayer({ bp, onNavigate }) {
           </div>
         </div>
 
-        <div style={{ ...card, padding:isMobile?"15px":"17px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
-          {[
-            [`${deliveryHoursSavedLow}-${deliveryHoursSavedHigh}`, "delivery hours saved", "Conventional squad hours minus AI-assisted prototype lane hours."],
-            [`${contextHoursLow}-${contextHoursHigh}`, "context hours avoided", "Reusable packet, shell, Open Brain, and style context reduced setup time."],
-            [`${totalHoursSavedLow}-${totalHoursSavedHigh}`, "total modeled hours saved", "Delivery savings plus context-reuse credit."],
-            [`${money(allInBaseSavingsLow)}-${money(allInBaseSavingsHigh)}`, "base cost advantage", "Labor differential plus context-reuse value, before enterprise loaded rates."],
-          ].map(([value,label,note])=>(
-            <div key={label} style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 13px", minHeight:104 }}>
-              <div style={{ fontSize:isMobile?21:24, fontWeight:900, color:T.green, letterSpacing:"-0.02em" }}>{value}</div>
-              <div style={{ fontSize:10.5, fontWeight:900, color:T.gray900, textTransform:"uppercase", letterSpacing:"0.05em", lineHeight:1.3, marginTop:4 }}>{label}</div>
-              <div style={{ fontSize:10.8, color:T.slate, lineHeight:1.35, marginTop:7 }}>{note}</div>
+        <div style={{ ...card, padding:isMobile?"14px":"16px 18px", position:"sticky", top:isMobile?8:12, zIndex:4, boxShadow:"0 12px 30px rgba(15, 23, 42, 0.08)" }}>
+          <div style={{ display:"flex", alignItems:isMobile?"flex-start":"center", justifyContent:"space-between", gap:12, flexDirection:isMobile?"column":"row", marginBottom:12 }}>
+            <div>
+              <div style={{ fontSize:14, fontWeight:900, color:T.gray900 }}>Executive cost summary</div>
+              <div style={{ fontSize:12.2, color:T.slate, lineHeight:1.45, marginTop:4 }}>Keep these top-line economics visible while reviewing the evidence below.</div>
             </div>
-          ))}
+            <div style={{ display:"flex", alignItems:"center", gap:7, background:T.greenLt, color:T.green, border:`1px solid ${T.green}22`, borderRadius:99, padding:"6px 10px", fontSize:10.5, fontWeight:900, textTransform:"uppercase", letterSpacing:"0.05em" }}>
+              <Calculator size={13}/> Persistent summary
+            </div>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
+            {costMetricCards.map(([value,label,note])=>(
+              <div key={label} style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 13px", minHeight:isMobile?112:104 }}>
+                <div style={{ fontSize:isMobile?20:24, fontWeight:900, color:T.green, letterSpacing:"-0.02em" }}>{value}</div>
+                <div style={{ fontSize:10.5, fontWeight:900, color:T.gray900, textTransform:"uppercase", letterSpacing:"0.05em", lineHeight:1.3, marginTop:4 }}>{label}</div>
+                <div style={{ fontSize:10.8, color:T.slate, lineHeight:1.35, marginTop:7 }}>{note}</div>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div style={{ ...card, overflow:"hidden" }}>
-          <div style={{ display:isMobile?"none":"grid", gridTemplateColumns:"1fr 0.55fr 0.5fr 0.5fr 0.5fr 0.58fr", gap:10, padding:"11px 16px", background:T.navy, color:T.white, alignItems:"center" }}>
-            {["Role", "Conventional hrs", "AI-assisted hrs", "Hrs saved", "Rate", "Gross wages avoided"].map(h=>(
-              <div key={h} style={{ fontSize:10, fontWeight:900, letterSpacing:"0.06em", textTransform:"uppercase", color:"rgba(255,255,255,0.72)" }}>{h}</div>
-            ))}
+          <div role="tablist" aria-label="Relative cost model detail views" style={{ display:"flex", gap:6, overflowX:"auto", WebkitOverflowScrolling:"touch", padding:isMobile?"10px":"12px 14px", background:T.gray50, borderBottom:`1px solid ${T.gray200}` }}>
+            {costTabs.map(t=>{
+              const active = activeCostTab === t.id;
+              return (
+                <button
+                  key={t.id}
+                  id={`cost-tab-${t.id}`}
+                  role="tab"
+                  type="button"
+                  aria-selected={active}
+                  aria-controls={`cost-panel-${t.id}`}
+                  onClick={()=>setActiveCostTab(t.id)}
+                  style={{ border:`1px solid ${active ? T.green : T.gray200}`, background:active ? T.white : "transparent", color:active ? T.green : T.slate, borderRadius:10, padding:isMobile?"10px 12px":"10px 14px", minWidth:isMobile?152:170, minHeight:48, textAlign:"left", cursor:"pointer", boxShadow:active ? "0 8px 18px rgba(11,93,46,0.10)" : "none", flexShrink:0 }}
+                >
+                  <div style={{ fontSize:12, fontWeight:900, lineHeight:1.2 }}>{t.label}</div>
+                  <div style={{ fontSize:10.5, color:active ? T.gray600 : T.slate, lineHeight:1.25, marginTop:3 }}>{t.note}</div>
+                </button>
+              );
+            })}
           </div>
-          {ROLE_HOUR_MODEL.map((row,i)=>(
-            <div key={row.role} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"1fr 0.55fr 0.5fr 0.5fr 0.5fr 0.58fr", gap:10, padding:isMobile?"13px 15px":"13px 16px", borderTop:i?`1px solid ${T.gray100}`:"none", alignItems:"center" }}>
-              <div style={{ fontSize:12.5, fontWeight:900, color:T.gray900, lineHeight:1.35, gridColumn:isMobile?"1 / -1":"auto" }}>{row.role}</div>
-              <div style={{ fontSize:12, color:T.gray600 }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Conventional</div>}{row.conventional}</div>
-              <div style={{ fontSize:12, color:T.gray600 }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>AI-assisted</div>}{row.ai}</div>
-              <div style={{ fontSize:12.5, fontWeight:900, color:T.green }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Saved</div>}{row.saved}</div>
-              <div style={{ fontSize:12, color:T.slate }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Rate</div>}{row.rate}</div>
-              <div style={{ fontSize:12.5, fontWeight:900, color:T.gray900, gridColumn:isMobile?"1 / -1":"auto" }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Gross wages avoided</div>}{row.avoided}</div>
-            </div>
-          ))}
-          <div style={{ padding:"11px 16px", background:T.greenLt, borderTop:`1px solid ${T.green}22`, fontSize:11.5, color:T.gray600, lineHeight:1.45 }}>
-            Per-role hours are modeled from a 5-person conventional prototype squad at 500-750 total hours versus a 60-90 hour AI-assisted strategy-led lane. The wage-avoidance column is gross role-hour reduction; the top-line cost advantage nets out the strategy-led AI lane.
-          </div>
-        </div>
 
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:14 }}>
-          <div style={{ ...card, padding:"18px", display:"flex", flexDirection:"column", gap:14 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:38, height:38, borderRadius:10, background:T.indigoLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Briefcase size={18} color={T.indigo}/></div>
-              <div>
-                <div style={{ fontSize:15, fontWeight:900, color:T.gray900 }}>Conventional prototype squad</div>
-                <div style={{ fontSize:11.5, color:T.slate }}>5 roles · 4-6 weeks · 500-750 labor hours</div>
-              </div>
-            </div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-              <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px" }}>
-                <div style={{ fontSize:22, fontWeight:900, color:T.gray900 }}>{money(conventionalLow)}-{money(conventionalHigh)}</div>
-                <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>base wage model</div>
-              </div>
-              <div style={{ background:T.amberLt, borderRadius:10, padding:"13px 14px" }}>
-                <div style={{ fontSize:22, fontWeight:900, color:T.amber }}>{money(loadedLow)}-{money(loadedHigh)}</div>
-                <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>loaded / vendor range</div>
-              </div>
-            </div>
-            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {CONVENTIONAL_TEAM.map(r=>(
-                <div key={r.role} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 0.42fr 0.34fr", gap:8, fontSize:11.8, color:T.gray600, alignItems:"center", borderTop:`1px solid ${T.gray100}`, paddingTop:8 }}>
-                  <div style={{ fontWeight:800, color:T.gray900 }}>{r.role}</div>
-                  <div>{r.rate}/hr</div>
-                  <div style={{ color:T.slate }}>{r.allocation}</div>
+          <div id={`cost-panel-${activeCostTab}`} role="tabpanel" aria-labelledby={`cost-tab-${activeCostTab}`} style={{ padding:isMobile?"14px":"16px 18px" }}>
+            {activeCostTab==="hours" && (
+              <div style={{ border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
+                <div style={{ display:isMobile?"none":"grid", gridTemplateColumns:"1fr 0.55fr 0.5fr 0.5fr 0.5fr 0.58fr", gap:10, padding:"11px 16px", background:T.navy, color:T.white, alignItems:"center" }}>
+                  {["Role", "Conventional hrs", "AI-assisted hrs", "Hrs saved", "Rate", "Gross wages avoided"].map(h=>(
+                    <div key={h} style={{ fontSize:10, fontWeight:900, letterSpacing:"0.06em", textTransform:"uppercase", color:"rgba(255,255,255,0.72)" }}>{h}</div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <MiniSource sourceKey="bls-oews"/>
-            <MiniSource sourceKey="onet-pm"/>
-          </div>
-
-          <div style={{ ...card, padding:"18px", display:"flex", flexDirection:"column", gap:14 }}>
-            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-              <div style={{ width:38, height:38, borderRadius:10, background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Cpu size={18} color={T.green}/></div>
-              <div>
-                <div style={{ fontSize:15, fontWeight:900, color:T.gray900 }}>AI-assisted strategy prototype lane</div>
-                <div style={{ fontSize:11.5, color:T.slate }}>1 strategy-led builder · 1-2 weeks · 60-90 human hours</div>
-              </div>
-            </div>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-              <div style={{ background:T.greenLt, borderRadius:10, padding:"13px 14px" }}>
-                <div style={{ fontSize:22, fontWeight:900, color:T.green }}>{money(aiLow)}-{money(aiHigh)}</div>
-                <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>labor equivalent</div>
-              </div>
-              <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px" }}>
-                <div style={{ fontSize:22, fontWeight:900, color:T.gray900 }}>$80-$300</div>
-                <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>monthly tool floor</div>
-              </div>
-            </div>
-            <div style={{ fontSize:12.5, color:T.gray600, lineHeight:1.55 }}>
-              The model prices this as a decision accelerator, not an enterprise-ready system. It assumes a senior product/technology lead can steer AI-assisted research, design, code, QA, and source capture before the work moves into formal product delivery.
-            </div>
-            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-              {TOOL_COSTS.map(t=>(
-                <div key={t.tool} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:8 }}>
-                  <div style={{ display:"flex", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
-                    <span style={{ fontSize:12, fontWeight:900, color:T.gray900 }}>{t.tool}</span>
-                    <span style={{ fontSize:12, fontWeight:900, color:T.green }}>{t.range}</span>
+                {ROLE_HOUR_MODEL.map((row,i)=>(
+                  <div key={row.role} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"1fr 0.55fr 0.5fr 0.5fr 0.5fr 0.58fr", gap:10, padding:isMobile?"13px 15px":"13px 16px", borderTop:i?`1px solid ${T.gray100}`:"none", alignItems:"center" }}>
+                    <div style={{ fontSize:12.5, fontWeight:900, color:T.gray900, lineHeight:1.35, gridColumn:isMobile?"1 / -1":"auto" }}>{row.role}</div>
+                    <div style={{ fontSize:12, color:T.gray600 }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Conventional</div>}{row.conventional}</div>
+                    <div style={{ fontSize:12, color:T.gray600 }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>AI-assisted</div>}{row.ai}</div>
+                    <div style={{ fontSize:12.5, fontWeight:900, color:T.green }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Saved</div>}{row.saved}</div>
+                    <div style={{ fontSize:12, color:T.slate }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Rate</div>}{row.rate}</div>
+                    <div style={{ fontSize:12.5, fontWeight:900, color:T.gray900, gridColumn:isMobile?"1 / -1":"auto" }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Gross wages avoided</div>}{row.avoided}</div>
                   </div>
-                  <div style={{ fontSize:11.3, color:T.slate, lineHeight:1.45, marginTop:3 }}>{t.source}: {t.note}</div>
+                ))}
+                <div style={{ padding:"11px 16px", background:T.greenLt, borderTop:`1px solid ${T.green}22`, fontSize:11.5, color:T.gray600, lineHeight:1.45 }}>
+                  Per-role hours are modeled from a 5-person conventional prototype squad at 500-750 total hours versus a 60-90 hour AI-assisted strategy-led lane. The wage-avoidance column is gross role-hour reduction; the top-line cost advantage nets out the strategy-led AI lane.
                 </div>
-              ))}
-            </div>
-            <MiniSource sourceKey="github-copilot"/>
-            <MiniSource sourceKey="vercel-pricing"/>
-            <MiniSource sourceKey="figma-pricing"/>
+              </div>
+            )}
+
+            {activeCostTab==="squad" && (
+              <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"0.88fr 1.12fr", gap:14, alignItems:"start" }}>
+                <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                  <div style={{ width:38, height:38, borderRadius:10, background:T.indigoLt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Briefcase size={18} color={T.indigo}/></div>
+                  <div>
+                    <div style={{ fontSize:15, fontWeight:900, color:T.gray900 }}>Conventional prototype squad</div>
+                    <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.35 }}>5 roles · 4-6 weeks · 500-750 labor hours</div>
+                  </div>
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
+                  <div style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 14px" }}>
+                    <div style={{ fontSize:22, fontWeight:900, color:T.gray900 }}>{money(conventionalLow)}-{money(conventionalHigh)}</div>
+                    <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>base wage model</div>
+                  </div>
+                  <div style={{ background:T.amberLt, border:`1px solid ${T.amber}22`, borderRadius:10, padding:"13px 14px" }}>
+                    <div style={{ fontSize:22, fontWeight:900, color:T.amber }}>{money(loadedLow)}-{money(loadedHigh)}</div>
+                    <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>loaded / vendor range</div>
+                  </div>
+                </div>
+                <div style={{ gridColumn:isMobile?"auto":"1 / -1", display:"flex", flexDirection:"column", gap:8 }}>
+                  {CONVENTIONAL_TEAM.map(r=>(
+                    <div key={r.role} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 0.42fr 0.34fr", gap:8, fontSize:11.8, color:T.gray600, alignItems:"center", borderTop:`1px solid ${T.gray100}`, paddingTop:8 }}>
+                      <div style={{ fontWeight:800, color:T.gray900 }}>{r.role}</div>
+                      <div>{r.rate}/hr</div>
+                      <div style={{ color:T.slate }}>{r.allocation}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ gridColumn:isMobile?"auto":"1 / -1" }}>
+                  <MiniSource sourceKey="bls-oews"/>
+                  <MiniSource sourceKey="onet-pm"/>
+                </div>
+              </div>
+            )}
+
+            {activeCostTab==="ai-lane" && (
+              <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"0.9fr 1.1fr", gap:14, alignItems:"start" }}>
+                <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                    <div style={{ width:38, height:38, borderRadius:10, background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Cpu size={18} color={T.green}/></div>
+                    <div>
+                      <div style={{ fontSize:15, fontWeight:900, color:T.gray900 }}>AI-assisted strategy prototype lane</div>
+                      <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.35 }}>1 strategy-led builder · 1-2 weeks · 60-90 human hours</div>
+                    </div>
+                  </div>
+                  <div style={{ fontSize:12.5, color:T.gray600, lineHeight:1.55 }}>
+                    The model prices this as a decision accelerator, not an enterprise-ready system. It assumes a senior product/technology lead can steer AI-assisted research, design, code, QA, and source capture before the work moves into formal product delivery.
+                  </div>
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:10 }}>
+                  <div style={{ background:T.greenLt, border:`1px solid ${T.green}22`, borderRadius:10, padding:"13px 14px" }}>
+                    <div style={{ fontSize:22, fontWeight:900, color:T.green }}>{money(aiLow)}-{money(aiHigh)}</div>
+                    <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>labor equivalent</div>
+                  </div>
+                  <div style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 14px" }}>
+                    <div style={{ fontSize:22, fontWeight:900, color:T.gray900 }}>$80-$300</div>
+                    <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>monthly tool floor</div>
+                  </div>
+                </div>
+                <div style={{ gridColumn:isMobile?"auto":"1 / -1", display:"flex", flexDirection:"column", gap:8 }}>
+                  {TOOL_COSTS.map(t=>(
+                    <div key={t.tool} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:8 }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
+                        <span style={{ fontSize:12, fontWeight:900, color:T.gray900 }}>{t.tool}</span>
+                        <span style={{ fontSize:12, fontWeight:900, color:T.green }}>{t.range}</span>
+                      </div>
+                      <div style={{ fontSize:11.3, color:T.slate, lineHeight:1.45, marginTop:3 }}>{t.source}: {t.note}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ gridColumn:isMobile?"auto":"1 / -1" }}>
+                  <MiniSource sourceKey="github-copilot"/>
+                  <MiniSource sourceKey="vercel-pricing"/>
+                  <MiniSource sourceKey="figma-pricing"/>
+                </div>
+              </div>
+            )}
+
+            {activeCostTab==="assumptions" && (
+              <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
+                {[
+                  ["Where savings count", "The model counts the early strategy cycle: synthesis, concept design, prototype build, validation, executive review, and funding evidence. It does not claim the prototype replaces enterprise delivery."],
+                  ["What stays outside the delta", "Security review, production architecture, real data contracts, full SDLC controls, platform support, and adoption planning remain downstream delivery work."],
+                  ["Why the header uses base advantage", "The top-line cost advantage nets the AI-assisted lane against conventional labor, then adds context-reuse value before applying enterprise loaded-rate or vendor multipliers."],
+                  ["What to instrument next", "Future lanes should capture provider, model, token counts, tool calls, source packets, browser minutes, human review time, and rework cycles while the work is happening."],
+                ].map(([title,body])=>(
+                  <div key={title} style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 14px" }}>
+                    <div style={{ fontSize:12.5, fontWeight:900, color:T.gray900, marginBottom:5 }}>{title}</div>
+                    <div style={{ fontSize:11.7, color:T.gray600, lineHeight:1.5 }}>{body}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </StratSection>
