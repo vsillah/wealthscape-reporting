@@ -2750,6 +2750,14 @@ const CONVENTIONAL_TEAM = [
   { role:"QA / compliance review", rate:"$50.14", source:"BLS OEWS", allocation:"10%" },
 ];
 
+const ROLE_HOUR_MODEL = [
+  { role:"Product strategist / PM", conventional:"100-150", ai:"24-36", saved:"64-126", rate:"$49.19/hr", avoided:"$3.1K-$6.2K" },
+  { role:"UX / digital designer", conventional:"100-150", ai:"8-12", saved:"88-142", rate:"$50.00/hr", avoided:"$4.4K-$7.1K" },
+  { role:"Software developer", conventional:"150-225", ai:"20-30", saved:"120-205", rate:"$65.38/hr", avoided:"$7.8K-$13.4K" },
+  { role:"Data / AI engineer", conventional:"100-150", ai:"6-9", saved:"91-144", rate:"$57.80/hr", avoided:"$5.3K-$8.3K" },
+  { role:"QA / compliance review", conventional:"50-75", ai:"2-3", saved:"47-73", rate:"$50.14/hr", avoided:"$2.4K-$3.7K" },
+];
+
 const TOOL_COSTS = [
   { tool:"AI model workspace", range:"$20-$200+/user/mo", source:"OpenAI / Anthropic", note:"Consumer, team, and API usage vary by model and volume." },
   { tool:"AI coding assistant", range:"$10-$100/user/mo", source:"GitHub Copilot", note:"Agentic development capacity scales by plan and credits." },
@@ -2794,13 +2802,28 @@ function BuildCaseLayer({ bp, onNavigate }) {
   const { isMobile } = bp;
   const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
   const avgRate = 54.5;
+  const strategyLeadRate = 84.2;
   const conventionalLow = 500 * avgRate;
   const conventionalHigh = 750 * avgRate;
   const loadedLow = conventionalLow * 1.35;
   const loadedHigh = conventionalHigh * 2.0;
-  const aiLow = 60 * 84.2;
-  const aiHigh = 90 * 84.2;
+  const aiLow = 60 * strategyLeadRate;
+  const aiHigh = 90 * strategyLeadRate;
   const money = v => `$${Math.round(v / 1000)}K`;
+  const deliveryHoursSavedLow = 500 - 90;
+  const deliveryHoursSavedHigh = 750 - 60;
+  const contextHoursLow = 13;
+  const contextHoursHigh = 26;
+  const totalHoursSavedLow = deliveryHoursSavedLow + contextHoursLow;
+  const totalHoursSavedHigh = deliveryHoursSavedHigh + contextHoursHigh;
+  const baseSavingsLow = conventionalLow - aiHigh;
+  const baseSavingsHigh = conventionalHigh - aiLow;
+  const contextValueLow = contextHoursLow * strategyLeadRate;
+  const contextValueHigh = contextHoursHigh * strategyLeadRate;
+  const allInBaseSavingsLow = baseSavingsLow + contextValueLow;
+  const allInBaseSavingsHigh = baseSavingsHigh + contextValueHigh;
+  const loadedSavingsLow = loadedLow - aiHigh;
+  const loadedSavingsHigh = loadedHigh - aiLow;
 
   return (
     <div style={{ maxWidth:1120, margin:"0 auto", display:"flex", flexDirection:"column", gap:22, paddingBottom:24 }}>
@@ -2818,9 +2841,9 @@ function BuildCaseLayer({ bp, onNavigate }) {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
             {[
-              ["246", "code additions"],
-              ["6m37s", "git coding interval"],
-              ["13-26", "context hrs avoided"],
+              [`${totalHoursSavedLow}-${totalHoursSavedHigh}`, "modeled hrs saved"],
+              [`${money(allInBaseSavingsLow)}-${money(allInBaseSavingsHigh)}`, "base cost advantage"],
+              [`${money(loadedSavingsLow)}-${money(loadedSavingsHigh)}`, "loaded/vendor delta"],
               ["Track", "token ledger next run"],
             ].map(([v,l])=>(
               <div key={l} style={{ background:"rgba(255,255,255,0.82)", border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 14px", minHeight:82 }}>
@@ -2863,6 +2886,42 @@ function BuildCaseLayer({ bp, onNavigate }) {
       </StratSection>
 
       <StratSection eyebrow="03 · Relative Cost Model" title="What this replaces in the early strategy cycle" intro="A conventional product squad can still be needed for implementation. The savings show up earlier: discovery synthesis, concept testing, executive alignment, and funding decisions can move with a smaller strategy-led build lane.">
+        <div style={{ ...card, padding:isMobile?"15px":"17px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
+          {[
+            [`${deliveryHoursSavedLow}-${deliveryHoursSavedHigh}`, "delivery hours saved", "Conventional squad hours minus AI-assisted prototype lane hours."],
+            [`${contextHoursLow}-${contextHoursHigh}`, "context hours avoided", "Reusable packet, shell, Open Brain, and style context reduced setup time."],
+            [`${totalHoursSavedLow}-${totalHoursSavedHigh}`, "total modeled hours saved", "Delivery savings plus context-reuse credit."],
+            [`${money(allInBaseSavingsLow)}-${money(allInBaseSavingsHigh)}`, "base cost advantage", "Labor differential plus context-reuse value, before enterprise loaded rates."],
+          ].map(([value,label,note])=>(
+            <div key={label} style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 13px", minHeight:104 }}>
+              <div style={{ fontSize:isMobile?21:24, fontWeight:900, color:T.green, letterSpacing:"-0.02em" }}>{value}</div>
+              <div style={{ fontSize:10.5, fontWeight:900, color:T.gray900, textTransform:"uppercase", letterSpacing:"0.05em", lineHeight:1.3, marginTop:4 }}>{label}</div>
+              <div style={{ fontSize:10.8, color:T.slate, lineHeight:1.35, marginTop:7 }}>{note}</div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ ...card, overflow:"hidden" }}>
+          <div style={{ display:isMobile?"none":"grid", gridTemplateColumns:"1fr 0.55fr 0.5fr 0.5fr 0.5fr 0.58fr", gap:10, padding:"11px 16px", background:T.navy, color:T.white, alignItems:"center" }}>
+            {["Role", "Conventional hrs", "AI-assisted hrs", "Hrs saved", "Rate", "Gross wages avoided"].map(h=>(
+              <div key={h} style={{ fontSize:10, fontWeight:900, letterSpacing:"0.06em", textTransform:"uppercase", color:"rgba(255,255,255,0.72)" }}>{h}</div>
+            ))}
+          </div>
+          {ROLE_HOUR_MODEL.map((row,i)=>(
+            <div key={row.role} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"1fr 0.55fr 0.5fr 0.5fr 0.5fr 0.58fr", gap:10, padding:isMobile?"13px 15px":"13px 16px", borderTop:i?`1px solid ${T.gray100}`:"none", alignItems:"center" }}>
+              <div style={{ fontSize:12.5, fontWeight:900, color:T.gray900, lineHeight:1.35, gridColumn:isMobile?"1 / -1":"auto" }}>{row.role}</div>
+              <div style={{ fontSize:12, color:T.gray600 }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Conventional</div>}{row.conventional}</div>
+              <div style={{ fontSize:12, color:T.gray600 }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>AI-assisted</div>}{row.ai}</div>
+              <div style={{ fontSize:12.5, fontWeight:900, color:T.green }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Saved</div>}{row.saved}</div>
+              <div style={{ fontSize:12, color:T.slate }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Rate</div>}{row.rate}</div>
+              <div style={{ fontSize:12.5, fontWeight:900, color:T.gray900, gridColumn:isMobile?"1 / -1":"auto" }}>{isMobile && <div style={{ fontSize:9.5, fontWeight:900, color:T.slate, letterSpacing:"0.04em", textTransform:"uppercase", marginBottom:3 }}>Gross wages avoided</div>}{row.avoided}</div>
+            </div>
+          ))}
+          <div style={{ padding:"11px 16px", background:T.greenLt, borderTop:`1px solid ${T.green}22`, fontSize:11.5, color:T.gray600, lineHeight:1.45 }}>
+            Per-role hours are modeled from a 5-person conventional prototype squad at 500-750 total hours versus a 60-90 hour AI-assisted strategy-led lane. The wage-avoidance column is gross role-hour reduction; the top-line cost advantage nets out the strategy-led AI lane.
+          </div>
+        </div>
+
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:14 }}>
           <div style={{ ...card, padding:"18px", display:"flex", flexDirection:"column", gap:14 }}>
             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
