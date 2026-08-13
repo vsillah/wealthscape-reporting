@@ -2722,6 +2722,9 @@ const ECONOMICS_SOURCES = [
   { key:"github-copilot", label:"GitHub Copilot plans and pricing", href:"https://github.com/features/copilot/plans", note:"Coding assistant and agent seat costs." },
   { key:"vercel-pricing", label:"Vercel pricing", href:"https://vercel.com/pricing", note:"Prototype hosting, previews, and deployment pricing." },
   { key:"figma-pricing", label:"Figma pricing", href:"https://www.figma.com/pricing/", note:"Design, prototyping, Dev Mode, and AI credit pricing." },
+  { key:"bd-packet", label:"Broker-dealer strategy expansion packet", href:"https://github.com/vsillah/wealthscape-reporting/blob/main/docs/broker-dealer-strategy-expansion.md", note:"Internal Wealthscape context reused for personas, ODI outcomes, recommendations, and source anchors." },
+  { key:"open-brain", label:"Portfolio Open Brain local service contract", href:null, note:"Local Portfolio source defining sources, events, memories, proposals, links, privacy tiers, and governance boundaries." },
+  { key:"open-brain-qa", label:"Portfolio Open Brain RAG retrieval QA packet", href:null, note:"Local Portfolio evidence that public-safe Open Brain RAG projection was not yet available, so repo and local documents remained the practical context source." },
 ];
 
 const STACK_TIERS = [
@@ -2754,7 +2757,30 @@ const TOOL_COSTS = [
   { tool:"Preview hosting", range:"$0-$20+/mo", source:"Vercel", note:"Free-to-Pro floor before enterprise controls and usage." },
 ];
 
+const BUILD_LEDGER = [
+  { item:"PR #30 Build Case slice", measured:"246 additions / 3 deletions in 1 React file", time:"6m37s branch-to-commit", token:"Not exposed by repo or GitHub", note:"Measured from Git diff and reflog; excludes research, browser QA, PR creation, and human review." },
+  { item:"Research and benchmark pass", measured:"11 public source links + 3 local context packets", time:"~45-75 min analyst-equivalent", token:"Track next run", note:"Public wage/pricing sources were verified; internal context came from the existing Wealthscape packet and Portfolio/Open Brain docs." },
+  { item:"Implementation and copy synthesis", measured:"New navigable report layer, cost model, source register, cross-links", time:"~2-4 hrs analyst-engineer equivalent", token:"Track next run", note:"Small code surface because the prototype shell, design tokens, navigation, and strategy architecture already existed." },
+  { item:"Validation and handoff", measured:"Build, desktop/mobile Playwright smoke, PR preview, in-app browser handoff", time:"~30-60 min", token:"Track next run", note:"This is the governance work that makes the prototype sharable beyond a local demo." },
+];
+
+const CONTEXT_REUSE = [
+  { source:"Wealthscape strategy packet", reused:"Personas, ODI outcomes, job maps, recommendations, source anchors", avoided:"6-12 hrs", evidence:"docs/broker-dealer-strategy-expansion.md" },
+  { source:"Existing React prototype shell", reused:"Navigation, design tokens, cards, responsive patterns, deployment config", avoided:"4-8 hrs", evidence:"wealthscape-intelligence/src/WealthscapePrototype.jsx" },
+  { source:"Portfolio / Open Brain architecture", reused:"Provenance vocabulary: sources, events, proposals, memories, privacy tiers", avoided:"2-4 hrs", evidence:"Portfolio docs/open-brain-local-service.md" },
+  { source:"Vambah style and strategy corpus", reused:"Voice, framing, executive report tone, practical systems language", avoided:"1-2 hrs", evidence:"local personality corpus and project instructions" },
+];
+
+const TOKEN_INSTRUMENTATION = [
+  "model and provider",
+  "input, cached-input, output, and reasoning tokens",
+  "tool-call count and browser/computer-use minutes",
+  "retrieved source packet IDs and byte/token size",
+  "human review minutes and rework cycles",
+];
+
 function SourceAnchor({ children, href }) {
+  if (!href) return <span style={{ color:T.indigo, fontWeight:800 }}>{children}</span>;
   return <a href={href} target="_blank" rel="noreferrer" style={{ color:T.indigo, fontWeight:800, textDecoration:"none" }}>{children}</a>;
 }
 
@@ -2792,10 +2818,10 @@ function BuildCaseLayer({ bp, onNavigate }) {
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
             {[
-              ["5", "prototype tiers"],
-              ["60-90", "strategy-led hours"],
-              ["500-750", "traditional squad hours"],
-              ["$80-$300", "monthly tool floor"],
+              ["246", "code additions"],
+              ["6m37s", "git coding interval"],
+              ["13-26", "context hrs avoided"],
+              ["Track", "token ledger next run"],
             ].map(([v,l])=>(
               <div key={l} style={{ background:"rgba(255,255,255,0.82)", border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 14px", minHeight:82 }}>
                 <div style={{ fontSize:22, fontWeight:900, color:T.green, letterSpacing:"-0.02em" }}>{v}</div>
@@ -2908,7 +2934,65 @@ function BuildCaseLayer({ bp, onNavigate }) {
         </div>
       </StratSection>
 
-      <StratSection eyebrow="04 · Enterprise Adoption Pattern" title="How to introduce this across the organization" intro="The scalable pattern is a governed prototyping service: small enough to move quickly, formal enough to keep evidence, controls, and ownership visible.">
+      <StratSection eyebrow="04 · Build Ledger" title="What can be measured from this build" intro="Git, source files, PR metadata, and validation logs give a real build ledger. Exact AI token usage is not recoverable from the deployed app or Git history; it has to be captured from the model provider or agent runtime while the work is happening.">
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1.05fr 0.95fr", gap:14 }}>
+          <div style={{ ...card, overflow:"hidden" }}>
+            {BUILD_LEDGER.map((row,i)=>(
+              <div key={row.item} style={{ padding:isMobile?"14px 15px":"15px 17px", borderTop:i?`1px solid ${T.gray100}`:"none" }}>
+                <div style={{ display:"flex", justifyContent:"space-between", gap:10, flexWrap:"wrap", marginBottom:6 }}>
+                  <div style={{ fontSize:13.5, fontWeight:900, color:T.gray900 }}>{row.item}</div>
+                  <span style={{ fontSize:11, fontWeight:900, color:T.green, background:T.greenLt, borderRadius:99, padding:"3px 8px" }}>{row.time}</span>
+                </div>
+                <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 0.65fr", gap:10 }}>
+                  <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{row.measured}</div>
+                  <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}><strong style={{ color:T.gray900 }}>Tokens:</strong> {row.token}</div>
+                </div>
+                <div style={{ fontSize:11.3, color:T.slate, lineHeight:1.45, marginTop:7 }}>{row.note}</div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ ...card, padding:"16px 17px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div>
+              <div style={{ fontSize:14, fontWeight:900, color:T.gray900, marginBottom:5 }}>Token-cost instrumentation for the next build</div>
+              <div style={{ fontSize:12.2, color:T.gray600, lineHeight:1.55 }}>The next prototype lane should emit a run manifest so cost is no longer estimated after the fact. That manifest should capture:</div>
+            </div>
+            <div style={{ display:"grid", gap:8 }}>
+              {TOKEN_INSTRUMENTATION.map(item=>(
+                <div key={item} style={{ display:"flex", gap:8, alignItems:"flex-start", fontSize:12, color:T.gray600, lineHeight:1.4 }}>
+                  <Check size={14} color={T.green} style={{ flexShrink:0, marginTop:1 }}/>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+            <div style={{ background:T.gray50, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 13px" }}>
+              <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.5 }}>
+                Directional token math stays small compared with labor: tokens x price per million. At current frontier-model pricing, even hundreds of thousands of tokens are usually dollars to low tens of dollars; the bigger economic driver is reducing net-new context gathering, rework, and alignment cycles.
+              </div>
+              <MiniSource sourceKey="openai-pricing"/>
+              <MiniSource sourceKey="anthropic-pricing"/>
+            </div>
+          </div>
+        </div>
+      </StratSection>
+
+      <StratSection eyebrow="05 · Context Reuse Credit" title="How Open Brain and existing Portfolio context reduce net-new work" intro="The cost story should account for reusable context. Existing research packets, source registers, memory architecture, and style guidance reduce the amount of new explanation a team has to provide before the agent can produce useful work.">
+        <div style={{ ...card, overflow:"hidden" }}>
+          {CONTEXT_REUSE.map((row,i)=>(
+            <div key={row.source} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"0.75fr 1.25fr 0.45fr 0.9fr", gap:12, padding:isMobile?"14px 15px":"14px 17px", borderTop:i?`1px solid ${T.gray100}`:"none", alignItems:"start" }}>
+              <div style={{ fontSize:12.5, fontWeight:900, color:T.gray900, lineHeight:1.35 }}>{row.source}</div>
+              <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{row.reused}</div>
+              <div style={{ fontSize:12.5, fontWeight:900, color:T.green, whiteSpace:"nowrap" }}>{row.avoided}</div>
+              <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45 }}>{row.evidence}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ background:T.indigoLt, border:`1px solid ${T.indigo}22`, borderRadius:12, padding:"13px 15px", fontSize:12.3, color:T.gray600, lineHeight:1.55 }}>
+          This is a context-reuse estimate, not a billable-time claim. The key enterprise lesson is that a governed memory layer compounds: once source packets, decisions, style rules, and operating constraints are captured, each new prototype starts with less explanation and fewer false starts.
+        </div>
+      </StratSection>
+
+      <StratSection eyebrow="06 · Enterprise Adoption Pattern" title="How to introduce this across the organization" intro="The scalable pattern is a governed prototyping service: small enough to move quickly, formal enough to keep evidence, controls, and ownership visible.">
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr", gap:12 }}>
           {[
             { icon:Target, title:"Fund decisions, not demos", body:"Start with an opportunity statement, evidence threshold, and decision owner. The prototype exists to answer whether a recommendation deserves product investment." },
@@ -2931,7 +3015,7 @@ function BuildCaseLayer({ bp, onNavigate }) {
         </div>
       </StratSection>
 
-      <StratSection eyebrow="05 · Source Register" title="Benchmark and pricing references" intro="These public sources support the directional model. Internal loaded labor rates, enterprise vendor contracts, security controls, and governance review time should be substituted before using the model for budgeting.">
+      <StratSection eyebrow="07 · Source Register" title="Benchmark and pricing references" intro="These public sources and local workspace packets support the directional model. Internal loaded labor rates, enterprise vendor contracts, security controls, governance review time, and actual provider usage exports should be substituted before using the model for budgeting.">
         <div style={{ ...card, padding:"16px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
           {ECONOMICS_SOURCES.map(source=>(
             <div key={source.key} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10 }}>
