@@ -4,7 +4,7 @@ import {
   Download, Filter, ArrowUpRight, ArrowDownRight, Zap,
   Check, Sparkles, Mail, Activity, AlertTriangle, ChevronDown,
   X, Menu, ChevronLeft, ChevronRight, PlayCircle, BookOpen,
-  Target, TrendingUp, Eye, Layers
+  Target, TrendingUp, Eye, Layers, Cpu, Calculator, Briefcase, Database
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -2709,6 +2709,242 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   );
 }
 
+// ─── Prototype Build Case ────────────────────────────────────────────────────
+const ECONOMICS_SOURCES = [
+  { key:"bls-oews", label:"BLS OEWS May 2025 national wage release", href:"https://www.bls.gov/news.release/ocwage.htm", note:"Software developers, web designers, QA analysts, and data scientists wage benchmarks." },
+  { key:"onet-pm", label:"O*NET / BLS Project Management Specialists wage data", href:"https://www.onetonline.org/link/localwages/13-1082.00?p=hourly", note:"Project/product coordination wage benchmark." },
+  { key:"career-cis", label:"CareerOneStop / BLS Computer and Information Systems Managers", href:"https://cloudfront.careeronestop.org/Toolkit/Wages/find-salary.aspx?dataview=table&hourly=False&keyword=Computer+and+Information+Systems+Managers&location=Minnesota&national=True&soccode=113021", note:"Technical leadership wage benchmark." },
+  { key:"scrum-guide", label:"The Scrum Guide, 2020", href:"https://scrumguides.org/scrum-guide.html?from=hub", note:"Typical Scrum Team sizing reference." },
+  { key:"mckinsey-dev", label:"McKinsey: developer productivity with generative AI", href:"https://www.mckinsey.com/capabilities/tech-and-ai/our-insights/unleashing-developer-productivity-with-generative-ai", note:"AI-assisted development speed varies by task and expertise." },
+  { key:"github-research", label:"GitHub Copilot productivity research", href:"https://github.blog/news-insights/research/research-quantifying-github-copilots-impact-on-developer-productivity-and-happiness/", note:"Controlled experiment on task completion speed." },
+  { key:"openai-pricing", label:"OpenAI API pricing", href:"https://openai.com/api/pricing/", note:"Model token pricing for agentic work." },
+  { key:"anthropic-pricing", label:"Anthropic Claude API pricing", href:"https://platform.claude.com/docs/en/about-claude/pricing", note:"Claude API and platform pricing." },
+  { key:"github-copilot", label:"GitHub Copilot plans and pricing", href:"https://github.com/features/copilot/plans", note:"Coding assistant and agent seat costs." },
+  { key:"vercel-pricing", label:"Vercel pricing", href:"https://vercel.com/pricing", note:"Prototype hosting, previews, and deployment pricing." },
+  { key:"figma-pricing", label:"Figma pricing", href:"https://www.figma.com/pricing/", note:"Design, prototyping, Dev Mode, and AI credit pricing." },
+];
+
+const STACK_TIERS = [
+  { n:"01", title:"Strategy Intelligence", owner:"Product strategy", tools:"ODI/JTBD, source register, research synthesis, decision memo", output:"Opportunity map, prioritized recommendations, traceability from evidence to prototype behavior." },
+  { n:"02", title:"Experience Model", owner:"Product + design", tools:"Persona registry, job map, navigation model, interaction scripts", output:"Role-specific surfaces that explain the operating job without mixing dashboard function with strategy narrative." },
+  { n:"03", title:"Agentic Build", owner:"Strategy-led builder", tools:"Codex, Claude/ChatGPT, React, Vite, Recharts, Lucide", output:"Working browser prototype with realistic workflows, seeded data, and reusable interaction states." },
+  { n:"04", title:"Delivery Shell", owner:"Engineering", tools:"GitHub branches/PRs, Vercel previews, build checks, responsive QA", output:"Shareable deployment, review gates, issue capture, and production-style validation loop." },
+  { n:"05", title:"Governance Layer", owner:"Compliance + platform", tools:"Citation ledger, risk assumptions, source links, QA notes", output:"Decision-ready artifact that can travel into enterprise review without hiding uncertainty." },
+];
+
+const EFFORT_TIERS = [
+  { tier:"Sketch", duration:"4-8 hrs", scope:"Single workflow or executive concept", proof:"Static or lightly interactive view", decision:"Is this worth deeper discovery?" },
+  { tier:"Narrated Prototype", duration:"2-4 days", scope:"Persona, job map, 2-3 core flows", proof:"Clickable prototype with sourced strategy notes", decision:"Which recommendation should be funded?" },
+  { tier:"Operating Prototype", duration:"1-2 weeks", scope:"Multiple roles, routed actions, QA pass, deployment", proof:"Working app surface like this Wealthscape build", decision:"What should enter product discovery or pilot planning?" },
+  { tier:"Pilot-Ready MVP", duration:"4-8+ weeks", scope:"Real data contracts, auth, audit, instrumentation, support model", proof:"Enterprise controls, security review, analytics, runbook", decision:"Can this become an implementation program?" },
+];
+
+const CONVENTIONAL_TEAM = [
+  { role:"Product strategist / PM", rate:"$49.19", source:"O*NET/BLS", allocation:"20%" },
+  { role:"UX / digital designer", rate:"$50.00", source:"BLS OEWS", allocation:"20%" },
+  { role:"Software developer", rate:"$65.38", source:"BLS OEWS", allocation:"30%" },
+  { role:"Data / AI engineer", rate:"$57.80", source:"BLS OEWS", allocation:"20%" },
+  { role:"QA / compliance review", rate:"$50.14", source:"BLS OEWS", allocation:"10%" },
+];
+
+const TOOL_COSTS = [
+  { tool:"AI model workspace", range:"$20-$200+/user/mo", source:"OpenAI / Anthropic", note:"Consumer, team, and API usage vary by model and volume." },
+  { tool:"AI coding assistant", range:"$10-$100/user/mo", source:"GitHub Copilot", note:"Agentic development capacity scales by plan and credits." },
+  { tool:"Design/prototype suite", range:"$16-$90/user/mo", source:"Figma", note:"Professional through enterprise full-seat pricing." },
+  { tool:"Preview hosting", range:"$0-$20+/mo", source:"Vercel", note:"Free-to-Pro floor before enterprise controls and usage." },
+];
+
+function SourceAnchor({ children, href }) {
+  return <a href={href} target="_blank" rel="noreferrer" style={{ color:T.indigo, fontWeight:800, textDecoration:"none" }}>{children}</a>;
+}
+
+function MiniSource({ sourceKey }) {
+  const source = ECONOMICS_SOURCES.find(s => s.key === sourceKey);
+  if (!source) return null;
+  return <div style={{ fontSize:10.5, color:T.slate, lineHeight:1.45, marginTop:8 }}>Source: <SourceAnchor href={source.href}>{source.label}</SourceAnchor></div>;
+}
+
+function BuildCaseLayer({ bp, onNavigate }) {
+  const { isMobile } = bp;
+  const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
+  const avgRate = 54.5;
+  const conventionalLow = 500 * avgRate;
+  const conventionalHigh = 750 * avgRate;
+  const loadedLow = conventionalLow * 1.35;
+  const loadedHigh = conventionalHigh * 2.0;
+  const aiLow = 60 * 84.2;
+  const aiHigh = 90 * 84.2;
+  const money = v => `$${Math.round(v / 1000)}K`;
+
+  return (
+    <div style={{ maxWidth:1120, margin:"0 auto", display:"flex", flexDirection:"column", gap:22, paddingBottom:24 }}>
+      <div style={{ position:"relative", overflow:"hidden", background:T.white, border:`1px solid ${T.gray200}`, borderRadius:16 }}>
+        <div style={{ position:"absolute", inset:0, background:"radial-gradient(circle at 14% 16%, rgba(11,93,46,0.10), transparent 28%), radial-gradient(circle at 82% 10%, rgba(91,79,190,0.09), transparent 30%), linear-gradient(135deg, rgba(248,249,250,0.92), rgba(255,255,255,0.98))" }}/>
+        <div style={{ position:"relative", padding:isMobile?"22px 18px":"30px 34px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.15fr 0.85fr", gap:22, alignItems:"end" }}>
+          <div>
+            <div style={{ display:"inline-flex", alignItems:"center", gap:7, background:T.greenLt, color:T.green, borderRadius:99, padding:"5px 10px", fontSize:10.5, fontWeight:900, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>
+              <Calculator size={13}/> Build Economics
+            </div>
+            <div style={{ fontSize:isMobile?24:34, fontWeight:900, color:T.gray900, lineHeight:1.12, marginBottom:10 }}>How to name, staff, and fund an AI-assisted strategy prototype</div>
+            <div style={{ fontSize:isMobile?13:15, color:T.gray600, lineHeight:1.65, maxWidth:740 }}>
+              This report translates the Wealthscape 2.0 work into organization-ready nomenclature: the tiers, tools, effort bands, cost logic, and governance controls needed to introduce agentic prototyping without treating a prototype as the final product.
+            </div>
+          </div>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+            {[
+              ["5", "prototype tiers"],
+              ["60-90", "strategy-led hours"],
+              ["500-750", "traditional squad hours"],
+              ["$80-$300", "monthly tool floor"],
+            ].map(([v,l])=>(
+              <div key={l} style={{ background:"rgba(255,255,255,0.82)", border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 14px", minHeight:82 }}>
+                <div style={{ fontSize:22, fontWeight:900, color:T.green, letterSpacing:"-0.02em" }}>{v}</div>
+                <div style={{ fontSize:10.5, fontWeight:800, color:T.slate, textTransform:"uppercase", letterSpacing:"0.06em", lineHeight:1.35, marginTop:4 }}>{l}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <StratSection eyebrow="01 · Nomenclature" title="The components of an AI-assisted prototype" intro="Use common language before scaling the method. These five tiers separate strategy, experience design, build acceleration, deployment, and governance so teams know what is being funded.">
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"repeat(5, 1fr)", gap:10 }}>
+          {STACK_TIERS.map(t=>(
+            <div key={t.n} style={{ ...card, padding:"15px 14px", display:"flex", flexDirection:"column", gap:9, minHeight:226 }}>
+              <div style={{ width:30, height:30, borderRadius:8, background:T.navy, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:900 }}>{t.n}</div>
+              <div>
+                <div style={{ fontSize:13.5, fontWeight:900, color:T.gray900, lineHeight:1.25 }}>{t.title}</div>
+                <div style={{ fontSize:10.5, color:T.indigo, fontWeight:900, marginTop:4 }}>{t.owner}</div>
+              </div>
+              <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45 }}><strong style={{ color:T.gray900 }}>Tools:</strong> {t.tools}</div>
+              <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.45, marginTop:"auto" }}>{t.output}</div>
+            </div>
+          ))}
+        </div>
+      </StratSection>
+
+      <StratSection eyebrow="02 · Effort Bands" title="Four levels of prototype investment" intro="The right question is not whether AI replaces a delivery team. The right question is which decision needs evidence, and how much working fidelity is required before the next funding gate.">
+        <div style={{ ...card, overflow:"hidden" }}>
+          {EFFORT_TIERS.map((row,i)=>(
+            <div key={row.tier} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"0.75fr 0.7fr 1.15fr 1fr 1fr", gap:12, padding:isMobile?"14px 15px":"14px 18px", borderTop:i?`1px solid ${T.gray100}`:"none", alignItems:"start" }}>
+              <div style={{ fontSize:13, fontWeight:900, color:T.gray900 }}>{row.tier}</div>
+              <div style={{ fontSize:13, fontWeight:900, color:T.green, whiteSpace:"nowrap" }}>{row.duration}</div>
+              <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{row.scope}</div>
+              <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{row.proof}</div>
+              <div style={{ fontSize:12, color:T.slate, lineHeight:1.45 }}>{row.decision}</div>
+            </div>
+          ))}
+        </div>
+      </StratSection>
+
+      <StratSection eyebrow="03 · Relative Cost Model" title="What this replaces in the early strategy cycle" intro="A conventional product squad can still be needed for implementation. The savings show up earlier: discovery synthesis, concept testing, executive alignment, and funding decisions can move with a smaller strategy-led build lane.">
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:14 }}>
+          <div style={{ ...card, padding:"18px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:T.indigoLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Briefcase size={18} color={T.indigo}/></div>
+              <div>
+                <div style={{ fontSize:15, fontWeight:900, color:T.gray900 }}>Conventional prototype squad</div>
+                <div style={{ fontSize:11.5, color:T.slate }}>5 roles · 4-6 weeks · 500-750 labor hours</div>
+              </div>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+              <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px" }}>
+                <div style={{ fontSize:22, fontWeight:900, color:T.gray900 }}>{money(conventionalLow)}-{money(conventionalHigh)}</div>
+                <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>base wage model</div>
+              </div>
+              <div style={{ background:T.amberLt, borderRadius:10, padding:"13px 14px" }}>
+                <div style={{ fontSize:22, fontWeight:900, color:T.amber }}>{money(loadedLow)}-{money(loadedHigh)}</div>
+                <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>loaded / vendor range</div>
+              </div>
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              {CONVENTIONAL_TEAM.map(r=>(
+                <div key={r.role} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 0.42fr 0.34fr", gap:8, fontSize:11.8, color:T.gray600, alignItems:"center", borderTop:`1px solid ${T.gray100}`, paddingTop:8 }}>
+                  <div style={{ fontWeight:800, color:T.gray900 }}>{r.role}</div>
+                  <div>{r.rate}/hr</div>
+                  <div style={{ color:T.slate }}>{r.allocation}</div>
+                </div>
+              ))}
+            </div>
+            <MiniSource sourceKey="bls-oews"/>
+            <MiniSource sourceKey="onet-pm"/>
+          </div>
+
+          <div style={{ ...card, padding:"18px", display:"flex", flexDirection:"column", gap:14 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+              <div style={{ width:38, height:38, borderRadius:10, background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Cpu size={18} color={T.green}/></div>
+              <div>
+                <div style={{ fontSize:15, fontWeight:900, color:T.gray900 }}>AI-assisted strategy prototype lane</div>
+                <div style={{ fontSize:11.5, color:T.slate }}>1 strategy-led builder · 1-2 weeks · 60-90 human hours</div>
+              </div>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
+              <div style={{ background:T.greenLt, borderRadius:10, padding:"13px 14px" }}>
+                <div style={{ fontSize:22, fontWeight:900, color:T.green }}>{money(aiLow)}-{money(aiHigh)}</div>
+                <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>labor equivalent</div>
+              </div>
+              <div style={{ background:T.gray50, borderRadius:10, padding:"13px 14px" }}>
+                <div style={{ fontSize:22, fontWeight:900, color:T.gray900 }}>$80-$300</div>
+                <div style={{ fontSize:10.5, color:T.slate, fontWeight:800, textTransform:"uppercase", letterSpacing:"0.05em", marginTop:3 }}>monthly tool floor</div>
+              </div>
+            </div>
+            <div style={{ fontSize:12.5, color:T.gray600, lineHeight:1.55 }}>
+              The model prices this as a decision accelerator, not an enterprise-ready system. It assumes a senior product/technology lead can steer AI-assisted research, design, code, QA, and source capture before the work moves into formal product delivery.
+            </div>
+            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+              {TOOL_COSTS.map(t=>(
+                <div key={t.tool} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:8 }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", gap:10, flexWrap:"wrap" }}>
+                    <span style={{ fontSize:12, fontWeight:900, color:T.gray900 }}>{t.tool}</span>
+                    <span style={{ fontSize:12, fontWeight:900, color:T.green }}>{t.range}</span>
+                  </div>
+                  <div style={{ fontSize:11.3, color:T.slate, lineHeight:1.45, marginTop:3 }}>{t.source}: {t.note}</div>
+                </div>
+              ))}
+            </div>
+            <MiniSource sourceKey="github-copilot"/>
+            <MiniSource sourceKey="vercel-pricing"/>
+            <MiniSource sourceKey="figma-pricing"/>
+          </div>
+        </div>
+      </StratSection>
+
+      <StratSection eyebrow="04 · Enterprise Adoption Pattern" title="How to introduce this across the organization" intro="The scalable pattern is a governed prototyping service: small enough to move quickly, formal enough to keep evidence, controls, and ownership visible.">
+        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr", gap:12 }}>
+          {[
+            { icon:Target, title:"Fund decisions, not demos", body:"Start with an opportunity statement, evidence threshold, and decision owner. The prototype exists to answer whether a recommendation deserves product investment." },
+            { icon:Database, title:"Keep provenance attached", body:"Every benchmark, assumption, source, screenshot, and decision note should live beside the artifact. This reduces reinvention and protects the review path." },
+            { icon:Activity, title:"Measure the time saved", body:"Track calendar time, human hours, tool spend, defects found, recommendations changed, and which decisions moved faster because the prototype existed." },
+          ].map(item=>{
+            const Icon = item.icon;
+            return (
+              <div key={item.title} style={{ ...card, padding:"16px 17px", minHeight:158 }}>
+                <div style={{ width:34, height:34, borderRadius:9, background:T.navy, display:"flex", alignItems:"center", justifyContent:"center", marginBottom:11 }}><Icon size={16} color={T.white}/></div>
+                <div style={{ fontSize:14, fontWeight:900, color:T.gray900, marginBottom:7 }}>{item.title}</div>
+                <div style={{ fontSize:12.2, color:T.gray600, lineHeight:1.55 }}>{item.body}</div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+          <button onClick={()=>onNavigate("strategy")} style={{ display:"flex", alignItems:"center", gap:7, background:T.green, color:T.white, border:"none", borderRadius:8, padding:"10px 14px", fontSize:12.5, fontWeight:900, cursor:"pointer" }}><Layers size={14}/> Open strategy traceability</button>
+          <button onClick={()=>onNavigate("morning")} style={{ display:"flex", alignItems:"center", gap:7, background:T.white, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 14px", fontSize:12.5, fontWeight:900, cursor:"pointer" }}><Home size={14}/> Open operating prototype</button>
+        </div>
+      </StratSection>
+
+      <StratSection eyebrow="05 · Source Register" title="Benchmark and pricing references" intro="These public sources support the directional model. Internal loaded labor rates, enterprise vendor contracts, security controls, and governance review time should be substituted before using the model for budgeting.">
+        <div style={{ ...card, padding:"16px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
+          {ECONOMICS_SOURCES.map(source=>(
+            <div key={source.key} style={{ borderTop:`1px solid ${T.gray100}`, paddingTop:10 }}>
+              <SourceAnchor href={source.href}>{source.label}</SourceAnchor>
+              <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45, marginTop:3 }}>{source.note}</div>
+            </div>
+          ))}
+        </div>
+      </StratSection>
+    </div>
+  );
+}
+
 // ─── Analytics ─────────────────────────────────────────────────────────────────
 function Analytics({ bp, profile, dashboard, deepLink }) {
   const isProfileAnalytics = profile?.id !== DEFAULT_PROFILE_ID && dashboard?.metrics?.length;
@@ -3496,6 +3732,7 @@ export default function WealthscapePrototype() {
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [reportDelivered,setReportDelivered]= useState(false);
   const [activeProfileId,setActiveProfileId]= useState(PROFILE_REGISTRY.defaultProfileId);
+  const contentRef = useRef(null);
   const activeProfile = getProfileById(activeProfileId);
   const activeDashboard = getProfileDashboard(activeProfile);
   const handleProfileChange = profileId => {
@@ -3508,6 +3745,10 @@ export default function WealthscapePrototype() {
     setAlerts(activeDashboard.alerts);
     setAlertsOpen(false);
   }, [activeProfileId, scenarioActive]);
+
+  useEffect(() => {
+    contentRef.current?.scrollTo({ top:0, left:0 });
+  }, [activeLayer]);
 
   useEffect(() => {
     const id = "wealthscape-pulse-style";
@@ -3594,9 +3835,10 @@ export default function WealthscapePrototype() {
     { id:"integrations", icon:Zap,      label:"Integrations",   badge:null },
     { id:"insights",     icon:Activity, label:"Analytics",      badge:null },
     { id:"strategy",     icon:Layers,   label:"Strategy",       badge:null },
+    { id:"buildcase",    icon:Calculator, label:"Build Case",   badge:null },
     { id:"settings",     icon:Settings, label:"Settings",       badge:null },
   ];
-  const layerLabels = { morning:"Morning Brief", reports:"Report Builder", portal:"Client Portal", integrations:"Integrations", insights:"Analytics", strategy:"Strategy", settings:"Settings" };
+  const layerLabels = { morning:"Morning Brief", reports:"Report Builder", portal:"Client Portal", integrations:"Integrations", insights:"Analytics", strategy:"Strategy", buildcase:"Build Case", settings:"Settings" };
 
   const SidebarContent = () => (
     <>
@@ -3700,13 +3942,14 @@ export default function WealthscapePrototype() {
           <AlertCenter alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onMarkAllRead={markAllRead} onClose={()=>setAlertsOpen(false)} isMobile={isMobile}/>
         )}
 
-        <div style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
+        <div ref={contentRef} style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
           {activeLayer==="morning"       && <MorningBrief    bp={bp} profile={activeProfile} dashboard={activeDashboard} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onNavigate={navigateToLayer} deepLink={deepLink} scenarioStep={scenarioActive?scenarioStep:null}/>}
           {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>}
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} profile={activeProfile} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink} profile={activeProfile}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp} profile={activeProfile} dashboard={activeDashboard} deepLink={deepLink}/>}
           {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={navigateToLayer} onStartTour={startDemo} onStartScenario={startScenario} deepLink={deepLink}/>}
+          {activeLayer==="buildcase"     && <BuildCaseLayer  bp={bp} onNavigate={navigateToLayer}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
 
