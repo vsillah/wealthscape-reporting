@@ -4227,9 +4227,13 @@ export default function WealthscapePrototype() {
         <div ref={contentRef} style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
           {activeLayer==="morning" && !demoActive && !scenarioActive && <LifecycleDashboard profile={activeProfile} cases={maintenanceCases} onNavigate={navigateToLayer}/>}
           {activeLayer==="maintenance" && <AccountMaintenance profile={activeProfile} cases={maintenanceCases} setCases={setMaintenanceCases} deepLink={deepLink} onNavigate={navigateToLayer}/>}
-          {activeLayer==="reports" && <MaintenanceReportingGate profile={activeProfile} cases={maintenanceCases} onNavigate={navigateToLayer}/>}
           {activeLayer==="morning" && (demoActive || scenarioActive) && <MorningBrief    bp={bp} profile={activeProfile} dashboard={activeDashboard} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onNavigate={navigateToLayer} deepLink={deepLink} scenarioStep={scenarioActive?scenarioStep:null}/>}
-          {activeLayer==="reports"       && <ReportBuilder   bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>}
+          {activeLayer==="reports" && (
+            <>
+              <MaintenanceReportingGate profile={activeProfile} cases={maintenanceCases} onNavigate={navigateToLayer}/>
+              <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>
+            </>
+          )}
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} profile={activeProfile} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink} profile={activeProfile}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp} profile={activeProfile} dashboard={activeDashboard} deepLink={deepLink}/>}
