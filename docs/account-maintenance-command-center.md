@@ -83,3 +83,10 @@ Start: `http://127.0.0.1:5187/#view=morning&profileId=ria`
 Existing nanoid/postcss dependency audit findings remain outside this scoped change; no dependencies changed. No live provider/customer-data test or production deployment was performed. A full replay of the old reporting tour/scenario and integration with the other open economics/theme lanes remains a captain check.
 
 Implementation revision complete; captain review and human QA remain. Do not merge this implementation lane automatically.
+
+## KPI and lifecycle interaction polish
+
+- Lifecycle KPI cards open persona-scoped Open, Blocked, Ready for review, and Complete queues. Queue context shows the selected status and matching count, with Clear filters recovery including empty results.
+- Lifecycle stages and KPIs provide hover and keyboard-focus feedback, with reduced-motion support. Stage destinations retain an explicit opened-stage indicator through reload.
+- Validation: production build and `git diff --check` passed. Integrated Browser checks at 1280px and 390px covered all four KPI destinations, filter recovery, RIA and home-office scope counts, persisted Human review context, and Report output context. Mobile page width matched its 390px viewport; no browser console errors observed. Hover and keyboard-focus appearance were visually inspected.
+- This refinement remains ready for captain review; no merge, production deployment, or live customer-data test was performed.

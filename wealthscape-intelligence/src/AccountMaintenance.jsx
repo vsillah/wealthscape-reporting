@@ -164,18 +164,29 @@ export function LifecycleDashboard({ profile, cases, onNavigate }) {
       </p>
       <div className="am-metrics">
         {[
-          ["Open changes", rows.filter((c) => !ready(c)).length],
-          ["Blocked", blocked.length],
+          ["Open changes", rows.filter((c) => !ready(c)).length, "Open"],
+          ["Blocked", blocked.length, "Blocked"],
           [
-            "Awaiting review",
+            "Waiting review",
             rows.filter((c) => c.status === "Ready for review").length,
+            "Ready for review",
           ],
-          ["Reporting-ready", rows.filter(ready).length],
-        ].map(([label, count]) => (
-          <div className="am-card" key={label}>
+          ["Reporting ready", rows.filter(ready).length, "Complete"],
+        ].map(([label, count, statusFilter]) => (
+          <button
+            className="am-card am-kpi"
+            key={label}
+            onClick={() =>
+              onNavigate("maintenance", {
+                statusFilter,
+                maintenanceView: "queue",
+              })
+            }
+          >
             <strong className="am-number">{count}</strong>
             <span>{label}</span>
-          </div>
+            <small>View queue →</small>
+          </button>
         ))}
       </div>
       <LifecycleJourney onNavigate={onNavigate} />
@@ -368,6 +379,8 @@ export function maintenanceHref(layer, sub = {}) {
     "panel",
     "maintenanceView",
     "owner",
+    "statusFilter",
+    "lifecycleStage",
   ])
     if (sub[key]) params.set(key, sub[key]);
   return "#" + params.toString();
@@ -423,7 +436,13 @@ export function AccountMaintenance({
     );
     setOwnerFilter(deepLink?.owner || "");
     setQuery("");
-    setFilter("All");
+    setFilter(
+      ["Open", "Blocked", "Ready for review", "Complete"].includes(
+        deepLink?.statusFilter,
+      )
+        ? deepLink.statusFilter
+        : "All",
+    );
     setNotice("");
   }, [deepLink, profile.id]);
   // A strategy deep link may expose any synthetic case; this is not an entitlement implementation.
@@ -431,12 +450,19 @@ export function AccountMaintenance({
   const c = cases.find((c) => c.id === selected);
   const rows = scoped.filter(
     (c) =>
-      (filter === "All" || c.status === filter) &&
+      (filter === "All" ||
+        (filter === "Open" ? c.status !== "Complete" : c.status === filter)) &&
       (!ownerFilter || c.owner === ownerFilter) &&
       `${c.household} ${c.id} ${c.change} ${c.owner}`
         .toLowerCase()
         .includes(query.toLowerCase()),
   );
+  const clearFilters = () => {
+    setFilter("All");
+    setOwnerFilter("");
+    setQuery("");
+    onNavigate("maintenance");
+  };
   const update = (patch, text) => {
     setCases((prev) =>
       prev.map((item) =>
@@ -490,7 +516,11 @@ export function AccountMaintenance({
         Synthetic demo · Session-only edits · No documents, signatures, or
         requests are sent.
       </p>
-      <LifecycleJourney item={c} onNavigate={onNavigate} />
+      <LifecycleJourney
+        item={c}
+        activeStage={deepLink?.lifecycleStage}
+        onNavigate={onNavigate}
+      />
       <div className="am-tabs" aria-label="Maintenance views">
         {[
           ["queue", "Work queue"],
@@ -626,13 +656,23 @@ export function AccountMaintenance({
                 Status
                 <select
                   value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
+                  onChange={(e) =>
+                    onNavigate("maintenance", {
+                      ...deepLink,
+                      statusFilter: e.target.value,
+                      maintenanceView: "queue",
+                    })
+                  }
                 >
-                  {["All", "Blocked", "Ready for review", "Complete"].map(
-                    (s) => (
-                      <option key={s}>{s}</option>
-                    ),
-                  )}
+                  {[
+                    "All",
+                    "Open",
+                    "Blocked",
+                    "Ready for review",
+                    "Complete",
+                  ].map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
                 </select>
               </label>
               {ownerFilter && (
@@ -640,9 +680,18 @@ export function AccountMaintenance({
                   Clear owner: {ownerFilter} ×
                 </button>
               )}
-              <span>
-                {rows.length} of {scoped.length} requests
+              <span role="status">
+                Showing{" "}
+                {filter === "All"
+                  ? "all work"
+                  : filter === "Open"
+                    ? "open work"
+                    : filter}{" "}
+                · {rows.length} of {scoped.length} requests
               </span>
+              {(filter !== "All" || query || ownerFilter) && (
+                <button onClick={clearFilters}>Clear filters</button>
+              )}
             </div>
           )}
           {c ? (
@@ -860,15 +909,6 @@ export function AccountMaintenance({
               {view === "queue" && !rows.length && (
                 <div className="am-detail">
                   <p>No requests match these filters.</p>
-                  <button
-                    onClick={() => {
-                      setQuery("");
-                      setFilter("All");
-                      setOwnerFilter("");
-                    }}
-                  >
-                    Clear filters
-                  </button>
                 </div>
               )}
               {view === "readiness" && (

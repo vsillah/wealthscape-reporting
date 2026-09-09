@@ -9,7 +9,10 @@ const stages = [
   ["Ready account context", "Operations"],
   ["Report output", "Advisor"],
 ];
-export function LifecycleJourney({ item, onNavigate }) {
+export function LifecycleJourney({ item, activeStage, onNavigate }) {
+  const opened = ["0", "1", "2", "3", "4", "5"].includes(String(activeStage))
+    ? Number(activeStage)
+    : null;
   const finished = item?.status === "Complete";
   const evidenceReady = item?.checks.every(Boolean);
   const stage = !item
@@ -39,15 +42,27 @@ export function LifecycleJourney({ item, onNavigate }) {
               : "Select a stage to open its workspace"}
         </span>
       </div>
+      {opened !== null && (
+        <p className="lx-opened" role="status">
+          Opened stage {opened + 1}: <strong>{stages[opened][0]}</strong>
+        </p>
+      )}
       <div className="lx-stages">
         {stages.map(([name, owner], i) => (
           <button
             key={name}
             aria-current={item && i === stage ? "step" : undefined}
-            className={item && i <= stage ? "lx-current" : ""}
+            aria-pressed={opened === i}
+            className={`${item && i <= stage ? "lx-current" : ""} ${opened === i ? "lx-selected" : ""}`}
             onClick={() =>
               onNavigate(i === 5 ? "reports" : "maintenance", {
                 caseId: item?.id,
+                lifecycleStage: String(i),
+                ...(!item && i === 3
+                  ? { statusFilter: "Ready for review" }
+                  : !item && (i === 1 || i === 2)
+                    ? { statusFilter: "Blocked" }
+                    : {}),
                 maintenanceView:
                   i === 0 ? "intake" : i === 4 ? "readiness" : "queue",
                 panel: i === 1 || i === 3 ? "evidence" : "overview",
@@ -172,6 +187,7 @@ export function ConnectedReportBuilder({
         documents, accounts, or submissions.
       </p>
       <LifecycleJourney
+        activeStage={deepLink?.lifecycleStage}
         item={chosen.length === 1 ? chosen[0] : undefined}
         onNavigate={onNavigate}
       />
