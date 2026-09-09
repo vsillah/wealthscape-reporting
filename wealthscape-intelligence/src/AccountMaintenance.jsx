@@ -1,3 +1,4 @@
+import { LifecycleJourney } from "./LifecycleExperience";
 import { useEffect, useState } from "react";
 import "./AccountMaintenance.css";
 
@@ -122,7 +123,7 @@ const checkLabels = [
   "Client signature packet verified",
   "Change evidence and account details reviewed",
 ];
-const visibleCases = (cases, profile) =>
+export const visibleCases = (cases, profile) =>
   cases.filter(
     (c) =>
       (roles[profile.id] || roles.ria).ids.includes(c.id) ||
@@ -177,34 +178,7 @@ export function LifecycleDashboard({ profile, cases, onNavigate }) {
           </div>
         ))}
       </div>
-      <div className="am-lifecycle">
-        {[
-          "Capture change",
-          "Resolve blockers",
-          "Verify evidence",
-          "Reporting readiness",
-        ].map((label, i) => (
-          <button
-            key={label}
-            onClick={() =>
-              onNavigate("maintenance", {
-                maintenanceView:
-                  i === 0 ? "intake" : i === 3 ? "readiness" : "queue",
-                ...(i === 2 && rows.length
-                  ? {
-                      caseId: rows.find((c) => !ready(c))?.id || rows[0].id,
-                      panel: "evidence",
-                    }
-                  : {}),
-              })
-            }
-          >
-            <span>0{i + 1}</span>
-            {label}
-            <b>→</b>
-          </button>
-        ))}
-      </div>
+      <LifecycleJourney onNavigate={onNavigate} />
       <div className="am-columns">
         <section className="am-card">
           <h2>{role.heading}</h2>
@@ -331,11 +305,11 @@ export function MaintenanceStrategy({ onNavigate }) {
   return (
     <section className="am-workspace am-card">
       <span className="am-eyebrow">Account maintenance direction</span>
-      <h2>Make the account change the unit of work</h2>
+      <h2>Move from report modernization to lifecycle orchestration</h2>
       <p>
-        Prioritize a shared intake, validation, and exception path across
-        maintenance functions. Carry verified changes into reporting as a
-        downstream outcome.
+        Prioritize shared intake, validation, and exception handling. Authority
+        and review establish trusted account context; reporting reuses that
+        evidence as one downstream output.
       </p>
       <div className="am-strategy-grid">
         {links.map(([title, body, sub]) => (
@@ -516,6 +490,7 @@ export function AccountMaintenance({
         Synthetic demo · Session-only edits · No documents, signatures, or
         requests are sent.
       </p>
+      <LifecycleJourney item={c} onNavigate={onNavigate} />
       <div className="am-tabs" aria-label="Maintenance views">
         {[
           ["queue", "Work queue"],
@@ -818,6 +793,26 @@ export function AccountMaintenance({
                   </div>
                 </div>
               )}
+              {ready(c) && (
+                <div className="am-callout">
+                  <strong>
+                    {c.reportId
+                      ? `Report ${c.reportId} generated`
+                      : "Verified context is ready for your report"}
+                  </strong>
+                  <p>
+                    The selected accounts and this evidence history will flow
+                    into the account change report.
+                  </p>
+                  <button
+                    className="am-primary"
+                    onClick={() => onNavigate("reports", { caseId: c.id })}
+                  >
+                    {c.reportId ? "View account report" : "Continue to report"}{" "}
+                    →
+                  </button>
+                </div>
+              )}
               {panel === "timeline" && (
                 <ol className="am-timeline">
                   {c.events.map((e, i) => (
@@ -878,8 +873,9 @@ export function AccountMaintenance({
               )}
               {view === "readiness" && (
                 <p className="am-note">
-                  Readiness reflects maintenance completion only. The Report
-                  Builder remains a separate synthetic preview.
+                  Completed changes supply account scope and evidence to report
+                  generation. Select a completed request and continue to its
+                  report.
                 </p>
               )}
             </section>
@@ -888,29 +884,6 @@ export function AccountMaintenance({
       )}
       <button className="am-back" onClick={() => onNavigate("morning")}>
         ← Lifecycle command center
-      </button>
-    </div>
-  );
-}
-export function MaintenanceReportingGate({ profile, cases, onNavigate }) {
-  const rows = visibleCases(cases, profile);
-  const held = rows.filter((c) => !ready(c));
-  return (
-    <div className="am-workspace am-report-gate">
-      <strong>
-        Account maintenance readiness · {rows.filter(ready).length}/
-        {rows.length} changes complete
-      </strong>
-      <p>
-        {held.length} changes remain on hold. This report preview uses
-        independent synthetic data; maintenance changes are not applied to it.
-      </p>
-      <button
-        onClick={() =>
-          onNavigate("maintenance", { maintenanceView: "readiness" })
-        }
-      >
-        Inspect maintenance readiness →
       </button>
     </div>
   );

@@ -1,4 +1,5 @@
-import { AccountMaintenance, LifecycleDashboard, MaintenanceStrategy, MaintenanceReportingGate, initialMaintenance, maintenanceHref, readMaintenanceRoute } from "./AccountMaintenance";
+import { ConnectedReportBuilder, LifecycleResearch, LifecycleInvestment } from "./LifecycleExperience";
+import { AccountMaintenance, LifecycleDashboard, MaintenanceStrategy, visibleCases, initialMaintenance, maintenanceHref, readMaintenanceRoute } from "./AccountMaintenance";
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Bell, Search, BarChart2, FileText, Users, Settings, Home,
@@ -44,9 +45,9 @@ const TOUR_STEPS = [
   {
     id: "intro",
     layer: "morning",
-    title: "Welcome to Wealthscape Reporting 2.0",
-    component: "Interactive Prototype Tour",
-    description: "This is a working prototype of the redesigned Wealthscape experience — built around five ODI-driven layers: Morning Brief, Report Builder, Integration Hub, Client Portal, and Analytics. Alerts surface from a single store, every alert carries a next-best-action, and a guided end-to-end scenario stitches the whole workflow together. This tour explains every component and the customer outcome it addresses.",
+    title: "Welcome to Wealthscape Lifecycle Intelligence",
+    component: "Reporting Module Tour",
+    description: "This guided tour covers the reporting output within Wealthscape Lifecycle Intelligence. Use the Lifecycle workspace for the connected maintenance-to-report flow. The original reporting demonstration remains available — built around five ODI-driven layers: Morning Brief, Report Builder, Integration Hub, Client Portal, and Analytics. Alerts surface from a single store, every alert carries a next-best-action, and a guided end-to-end scenario stitches the whole workflow together. This tour explains every component and the customer outcome it addresses.",
     outcome: null,
     outcomeScore: null,
     position: "center",
@@ -57,7 +58,7 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Morning Brief Banner",
     component: "Layer 1 · AI Intelligence Surface",
-    description: "The highest-priority surface in the entire platform. Every morning, Wealthscape Reporting 2.0 surfaces a prioritized digest of what needs the advisor's attention before market open — drift alerts, tax windows, at-risk clients, and overdue reviews.",
+    description: "The highest-priority surface in the entire platform. Every morning, Wealthscape Lifecycle Intelligence surfaces a prioritized digest of what needs the advisor's attention before market open — drift alerts, tax windows, at-risk clients, and overdue reviews.",
     outcome: "Know what needs attention right now each morning",
     outcomeScore: "ODI #1 · Opportunity Score 14.6",
     gap: "Wealthscape had no native morning digest. Advisors were logging into 12+ apps to reconstruct this view manually.",
@@ -142,7 +143,7 @@ const TOUR_STEPS = [
     layer: "reports",
     title: "AI Narrative Toggle",
     component: "Compliance-Resident Report Commentary",
-    description: "When enabled, Wealthscape Reporting 2.0 generates a plain-language client summary directly from custody data — performance drivers, risk context, and key actions. The generated block appears inline in the report preview with a 'Pending Compliance Review' flag, keeping it in the audit trail. Toggle tone between Formal, Conversational, and Concise.",
+    description: "When enabled, Wealthscape Lifecycle Intelligence generates a plain-language client summary directly from custody data — performance drivers, risk context, and key actions. The generated block appears inline in the report preview with a 'Pending Compliance Review' flag, keeping it in the audit trail. Toggle tone between Formal, Conversational, and Concise.",
     outcome: "Ensure AI-generated narrative summaries are accurate and compliance-safe",
     outcomeScore: "ODI #5.5 · Execute Step · Critical Gap",
     gap: "41% of advisors are already using ChatGPT/Claude outside the platform to generate report narratives — a direct shadow-IT compliance risk. This brings that workflow inside Wealthscape with an auditable chain.",
@@ -267,7 +268,7 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Navigation & AI Status",
     component: "Shell · Persistent Sidebar with AI Indicator",
-    description: "The left sidebar provides persistent navigation across all five experience layers. The AI Active badge at the bottom signals that Wealthscape Reporting 2.0 is running background analysis on the advisor's book — normalizing the expectation that AI is always on, not an opt-in feature.",
+    description: "The left sidebar provides persistent navigation across all five experience layers. The AI Active badge at the bottom signals that Wealthscape Lifecycle Intelligence is running background analysis on the advisor's book — normalizing the expectation that AI is always on, not an opt-in feature.",
     outcome: "Minimize the number of apps required to complete a full advisory workflow",
     outcomeScore: "ODI #5.3 · Score 17 / Competitive: 12 apps/advisor (Kitces 2025)",
     gap: "The average Wealthscape advisor uses 12 separate apps. This shell is designed to consolidate Morning Brief, Reporting, Client Portal, and Analytics into a single login surface — directly competing with Jump AI's 'workflow OS' positioning.",
@@ -2469,12 +2470,12 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
           </div>
         </div>
         <div style={{ fontSize:11, color:"rgba(255,255,255,0.58)", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>{profile.eyebrow}</div>
-        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>{strategy.heroTitle}</div>
+        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>Account lifecycle orchestration</div>
         <div style={{ fontSize:isMobile?13:15, color:"rgba(255,255,255,0.78)", lineHeight:1.65, maxWidth:720 }}>
-          {strategy.heroBody}
+          Modernize the path from account change to trusted output: capture once, resolve authority and service blockers, retain review evidence, and reuse verified context in reporting. Each persona owns a different part of this shared lifecycle.
         </div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:isMobile?10:14, marginTop:22 }}>
-          {strategy.stats.map(s=>(
+          {[{value:"15",label:"Maintenance outcomes · directional"},{value:"6",label:"Stages from intake to output"},{value:"4",label:"Operating personas"},{value:"1",label:"Shared evidence path"}].map(s=>(
             <div key={s.label} style={{ background:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, padding:"13px 14px" }}>
               <div style={{ fontSize:isMobile?20:24, fontWeight:800, letterSpacing:"-0.01em" }}>{s.value}</div>
               <div style={{ fontSize:10.5, color:"rgba(255,255,255,0.6)", marginTop:3, lineHeight:1.4 }}>{s.label}</div>
@@ -2484,7 +2485,11 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       </div>
 
       <MaintenanceStrategy onNavigate={onNavigate}/>
+      <LifecycleResearch/>
 
+      <details className="am-workspace am-card">
+        <summary>Reporting output and persona research detail</summary>
+        <div style={{ display:"flex", flexDirection:"column", gap:30, marginTop:20 }}>
       {/* 1 · Market research */}
       <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr", gap:12 }}>
@@ -2708,6 +2713,8 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
           <button onClick={onStartTour} style={{ display:"flex", alignItems:"center", gap:6, background:"rgba(255,255,255,0.15)", color:T.white, border:"1px solid rgba(255,255,255,0.3)", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><PlayCircle size={15}/> Take Tour</button>
         </div>
       </div>
+        </div>
+      </details>
     </div>
   );
 }
@@ -2878,6 +2885,7 @@ function BuildCaseLayer({ bp, onNavigate }) {
 
   return (
     <div style={{ maxWidth:1120, margin:"0 auto", display:"flex", flexDirection:"column", gap:22, paddingBottom:24 }}>
+      <LifecycleInvestment onNavigate={onNavigate}/>
       <div style={{ position:"relative", overflow:"hidden", background:T.white, border:`1px solid ${T.gray200}`, borderRadius:16 }}>
         <div style={{ position:"absolute", inset:0, background:"radial-gradient(circle at 14% 16%, rgba(11,93,46,0.10), transparent 28%), radial-gradient(circle at 82% 10%, rgba(91,79,190,0.09), transparent 30%), linear-gradient(135deg, rgba(248,249,250,0.92), rgba(255,255,255,0.98))" }}/>
         <div style={{ position:"relative", padding:isMobile?"22px 18px":"30px 34px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.15fr 0.85fr", gap:22, alignItems:"end" }}>
@@ -2885,9 +2893,9 @@ function BuildCaseLayer({ bp, onNavigate }) {
             <div style={{ display:"inline-flex", alignItems:"center", gap:7, background:T.greenLt, color:T.green, borderRadius:99, padding:"5px 10px", fontSize:10.5, fontWeight:900, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:12 }}>
               <Calculator size={13}/> Build Economics
             </div>
-            <div style={{ fontSize:isMobile?24:34, fontWeight:900, color:T.gray900, lineHeight:1.12, marginBottom:10 }}>How to name, staff, and fund an AI-assisted strategy prototype</div>
+            <div style={{ fontSize:isMobile?24:34, fontWeight:900, color:T.gray900, lineHeight:1.12, marginBottom:10 }}>Prototype delivery economics</div>
             <div style={{ fontSize:isMobile?13:15, color:T.gray600, lineHeight:1.65, maxWidth:740 }}>
-              This report translates the Wealthscape 2.0 work into organization-ready nomenclature: the tiers, tools, effort bands, cost logic, and governance controls needed to introduce agentic prototyping without treating a prototype as the final product.
+              The delivery model below supports Wealthscape Lifecycle Intelligence: the tiers, tools, effort bands, cost logic, and governance controls needed to introduce agentic prototyping without treating a prototype as the final product.
             </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
@@ -3807,7 +3815,7 @@ const SCENARIO_STEPS = [
     id: "complete",
     targetId: null,
     title: "Full Loop Complete",
-    instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Wealthscape Reporting 2.0 workflow.",
+    instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Wealthscape Lifecycle Intelligence workflow.",
     isComplete: true,
   },
 ];
@@ -3994,6 +4002,7 @@ export default function WealthscapePrototype() {
 
   const [activeLayer,    setActiveLayer]    = useState(() => readMaintenanceRoute().layer);
   const [maintenanceCases, setMaintenanceCases] = useState(initialMaintenance);
+  const [lifecycleReports, setLifecycleReports] = useState([]);
   const [sidebarOpen,    setSidebarOpen]    = useState(false);
   const [alerts,         setAlerts]         = useState(() => getProfileDashboard(getProfileById(PROFILE_REGISTRY.defaultProfileId)).alerts);
   const [alertsOpen,     setAlertsOpen]     = useState(false);
@@ -4112,7 +4121,7 @@ export default function WealthscapePrototype() {
   const navItems = [
     { id:"morning",      icon:Home,     label:"Lifecycle",  badge:null },
     { id:"maintenance", icon:Briefcase, label:"Account Maintenance", badge:null },
-    { id:"reports",      icon:FileText, label:"Report Builder", badge:null },
+    { id:"reports",      icon:FileText, label:"Reporting outputs", badge:null },
     { id:"portal",       icon:Users,    label:"Client Portal",  badge:1    },
     { id:"integrations", icon:Zap,      label:"Integrations",   badge:null },
     { id:"insights",     icon:Activity, label:"Analytics",      badge:null },
@@ -4129,7 +4138,7 @@ export default function WealthscapePrototype() {
           <div style={{ width:26, height:26, borderRadius:7, background:T.green, display:"flex", alignItems:"center", justifyContent:"center" }}><BarChart2 size={14} color={T.white}/></div>
           <div>
             <div style={{ fontSize:13, fontWeight:800, color:T.white, letterSpacing:"-0.01em" }}>Wealthscape</div>
-            <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Reporting 2.0</div>
+            <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Lifecycle Intelligence</div>
           </div>
         </div>
         {!isDesktop && <button aria-label="Close navigation" title="Close navigation" style={{ background:"transparent", border:"none", cursor:"pointer", padding:4, color:T.gray400 }} onClick={()=>setSidebarOpen(false)}><X size={18}/></button>}
@@ -4150,8 +4159,8 @@ export default function WealthscapePrototype() {
         })}
       </nav>
       <div style={{ margin:"0 8px 14px", background:"rgba(238,240,255,0.12)", border:`1px solid rgba(91,79,190,0.25)`, borderRadius:8, padding:"10px 12px" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3 }}><Sparkles size={11} color={T.indigo}/><span style={{ fontSize:10, fontWeight:700, color:"#A78BFA", letterSpacing:"0.06em", textTransform:"uppercase" }}>AI Active</span></div>
-        <div style={{ fontSize:11, color:"#94A3B8", lineHeight:1.4 }}>AI is analyzing your book</div>
+        <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:3 }}><Sparkles size={11} color={T.indigo}/><span style={{ fontSize:10, fontWeight:700, color:"#A78BFA", letterSpacing:"0.06em", textTransform:"uppercase" }}>Prototype</span></div>
+        <div style={{ fontSize:11, color:"#94A3B8", lineHeight:1.4 }}>Synthetic session only</div>
       </div>
     </>
   );
@@ -4178,7 +4187,7 @@ export default function WealthscapePrototype() {
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             {!isDesktop && <button aria-label="Open navigation" title="Open navigation" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600, display:"flex", alignItems:"center" }} onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>}
             <div>
-              {isDesktop && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Wealthscape Reporting 2.0</div>}
+              {isDesktop && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Wealthscape Lifecycle Intelligence</div>}
               <div style={{ fontSize:14, fontWeight:700, color:T.gray900 }}>{layerLabels[activeLayer]}</div>
             </div>
           </div>
@@ -4230,8 +4239,11 @@ export default function WealthscapePrototype() {
           {activeLayer==="morning" && (demoActive || scenarioActive) && <MorningBrief    bp={bp} profile={activeProfile} dashboard={activeDashboard} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onNavigate={navigateToLayer} deepLink={deepLink} scenarioStep={scenarioActive?scenarioStep:null}/>}
           {activeLayer==="reports" && (
             <>
-              <MaintenanceReportingGate profile={activeProfile} cases={maintenanceCases} onNavigate={navigateToLayer}/>
-              <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/>
+              {demoActive || scenarioActive ? <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/> : (
+                <ConnectedReportBuilder key={activeProfileId + (deepLink?.caseId || "")} profile={activeProfile} cases={maintenanceCases.filter(c=>visibleCases(maintenanceCases,activeProfile).some(v=>v.id===c.id)||c.id===deepLink?.caseId)} setCases={setMaintenanceCases} deepLink={deepLink} onNavigate={navigateToLayer} reports={lifecycleReports} setReports={setLifecycleReports}>
+                  <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onSendToClient={()=>setEmailModalOpen(true)}/>
+                </ConnectedReportBuilder>
+              )}
             </>
           )}
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} profile={activeProfile} reportDelivered={reportDelivered}/>}

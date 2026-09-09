@@ -1,77 +1,85 @@
-# Account maintenance command center
+# Wealthscape Lifecycle Intelligence
 
-## Scope
+## Continuous account lifecycle
 
-This prototype makes account maintenance the default operating layer before reporting. It uses synthetic household labels and DEMO account identifiers only. There is no persistence, provider call, signature request, real document validation, or change to a financial account.
+The default product story is account change intake -> authority/signature evidence -> exception routing -> human review -> trusted account context -> reporting output. The shell, browser title, Strategy, and Build Case use Lifecycle Intelligence as the product hierarchy.
 
-- RIA: household follow-through and reporting holds.
-- Home office: owner-based service lanes and cross-office exceptions.
-- OSJ principal: supervisory review docket and evidence coverage.
-- Hybrid advisor: mixed-registration service work.
+- Lifecycle keeps persona-specific queues and counts operational. The six-stage journey shows where work goes next.
+- Account Maintenance captures synthetic household scope, routes owners, records checklist attestations, and requires a demo reviewer to confirm completion.
+- Reporting outputs selects maintenance cases as report context. Empty scope or any incomplete selected case holds generation and the portfolio studio. Resolve prerequisite links take the user to the corresponding evidence packet.
+- Continue to report carries the completed case into the report selection. Generation copies household, change, selected account IDs, evidence reference, owner, and review history into a session-only account change report. The report ID is written back to the maintenance timeline.
+- Download evidence JSON exports the generated synthetic snapshot. Reports remain available in the current session when navigating away and back. Reload resets the demo.
+- The existing portfolio Report Builder remains intact behind the same maintenance prerequisite gate. Its market charts still use independent illustrative data; they are explicitly distinguished from the maintenance-driven account change report. Existing tour/scenario mode retains the original reporting demonstration.
 
-The shared session state feeds the lifecycle dashboard, work queue, evidence packet, status timeline, and reporting-readiness banner. All three evidence attestations must be checked before the demo reviewer can complete a change. Completed requests are read-only. Report Builder still uses its independent fixture data; its banner explicitly states that maintenance changes are not applied to the report.
+The four personas retain separate case scopes: RIA household follow-through, home-office owner lanes, OSJ supervisory docket, and hybrid registration context. These are demonstration views, not entitlement controls.
 
-The original reporting tour/scenario remains available through the existing controls and temporarily shows the original Morning Brief. The Build Case product-cycle tabs and cost model are unchanged. Mobile navigation prioritizes Lifecycle, Maintenance, Report, and Strategy; all other workspaces remain in the navigation drawer.
+## Strategy and investment logic
+
+Strategy now leads with account lifecycle orchestration and includes:
+
+- Five operational deep links.
+- A 15-outcome importance/satisfaction map with Sourced, Derived, and Inferred labels retained from the Frames artifact, plus a selectable outcome detail.
+- Competitive positioning with survey satisfaction separated from assessed public maintenance capability. Platform details are selectable; missing documentation is not presented as proof of missing functionality.
+- An illustrative journey curve with authority/signature and service-wait troughs, plus a client/operations/home-office swimlane.
+- Existing reporting/persona research preserved under an expandable detail section.
+
+Build Case leads with maintenance investment logic, before the existing prototype delivery economics:
+
+- Five weighted dimensions and four initiative scorecards from the executive deck.
+- Explicit distinction between ranking and dependency sequence: household authority scores 4.25, but validation/exceptions at 3.75 must precede the multi-account extension.
+- NOW/NEXT/LATER planning gates over an assessed 24-month horizon, including a month-three volume/rework measurement gate.
+- Editable assumptions for change volume, percentage-point rework reduction, minutes per rework, and hourly cost. Output is illustrative capacity value, not cash savings or ROI. Delivery and ongoing operating cost categories remain visible.
+
+No direct maintenance survey category and no internal maintenance volume/cost baseline are available. Those caveats remain adjacent to claims and in the scaling disclosure. No legal applicability determination is made by the prototype.
 
 ## Provenance
 
-User-designated origin: Claude Desktop project **Wealthscape Market Research**, artifact **Account Maintenance Frames**, presentation **Wealthscape account maintenance executive**.
+User-designated origin: Claude Desktop project Wealthscape Market Research; Account Maintenance Frames; Wealthscape account maintenance executive. Inspected local exports remain outside the repository:
 
-Inspected local exports (not copied into the repository):
+| Export | SHA-256 | Use |
+| --- | --- | --- |
+| Account_Maintenance_Frames.html | `9c75845bbf32bbf697048a6f335f5770ac883f31223828fc8e318d50a3b9ec20` | 15-outcome and competitor snapshot |
+| Wealthscape_Account_Maintenance_Executive.pptx | `b4ccf518f58da27c41417d65a46bbc377a3d31e053d116620c36f9bc1e1c36a0` | Original qualitative direction |
+| Wealthscape_Account_Maintenance_Executive_4.pptx | `163fc515281cb9de6db90d950ec58bf86b880f384f110ed0bb75cc99ee44b4b0` | Slides 6/10 journey; 19/20 scorecard; 23 phases; 25/30 assumptions |
 
-| Export | SHA-256 |
-| --- | --- |
-| Account_Maintenance_Frames.html | `9c75845bbf32bbf697048a6f335f5770ac883f31223828fc8e318d50a3b9ec20` |
-| Wealthscape_Account_Maintenance_Executive.pptx | `b4ccf518f58da27c41417d65a46bbc377a3d31e053d116620c36f9bc1e1c36a0` |
+The Frames and later deck differ on some numeric scores. The app labels the map as the Frames snapshot rather than combining versions silently. Chart values are reproduced as source-reported proxies, not independently verified current findings.
 
-The source materials prioritize cross-cutting validation/exception handling, household scope, evidence currency, and acquisition servicing. The implementation uses those qualitative directions. The exports differ in their opportunity-quadrant wording, so no opportunity scores or quadrant totals were imported. The deck explicitly separates sourced, derived, and inferred findings and acknowledges adjacent-category proxies; these are not direct measurements of maintenance performance.
+Research families retained: Kitces 2025; T3/Inside Information 2026; FINRA 3110/4311; SEA Rule 17a-3(a)(17); J.D. Power 2026; Schwab, Altruist, and Axos materials; Reddit/Apify methodology. Regulatory proposals are excluded from enacted-rule framing. Raw private source text, identities, forum exports, and original decks are not shipped.
 
-Research families retained in the strategy disclosure: Kitces 2025; T3/Inside Information 2026; FINRA 3110/4311; SEA Rule 17a-3(a)(17); J.D. Power 2026; Schwab, Altruist, and Axos competitor materials; Reddit/Apify forum methodology. This lane did not independently revalidate those external sources or present legal conclusions. Private source text, forum exports, and raw research files are excluded.
+## Boundaries
 
-Production controls remain future work: classification, account entitlements, redaction, durable audit logs, document provenance, reviewer identity and separation of duties. Persona switching and deep links are demonstration navigation, not authorization controls.
+All maintenance/report data is synthetic and session-only. Checkboxes simulate attestations; they do not verify documents or signatures. No provider submission, financial-account mutation, or real customer-data processing occurs. Production requires classification, account entitlements, redaction, durable audit trails, provenance, reviewer identity, and human review gates.
 
-## Review routes
-
-Run from the scoped worktree:
+## Run and review
 
 ```sh
 npm --prefix wealthscape-intelligence ci
 npm --prefix wealthscape-intelligence run dev -- --host 127.0.0.1 --port 5187
 ```
 
-- Lifecycle: `http://127.0.0.1:5187/#view=morning&profileId=ria`
-- Queue: `http://127.0.0.1:5187/#view=maintenance&profileId=ria`
-- Evidence: `http://127.0.0.1:5187/#view=maintenance&profileId=ria&caseId=MC-101&panel=evidence`
-- Strategy: `http://127.0.0.1:5187/#view=strategy&profileId=ria`
+Start: `http://127.0.0.1:5187/#view=morning&profileId=ria`
 
-## Validation — September 9, 2026
+1. Switch all four personas on Lifecycle; inspect operating queues and the shared journey.
+2. Open Reporting outputs. MC-101 is selected and generation is held.
+3. Choose Resolve prerequisite for Cedar. Check the missing signature and change-evidence attestations; confirm demo review.
+4. Choose Continue to report, then Generate account report. Verify MC-101, DEMO-01/02, owner, and review history in the report.
+5. Download evidence JSON. Return to maintenance and inspect the generation event and report link in Status timeline.
+6. Select an additional blocked case to verify the generation hold. Clear all selections to verify the empty-scope guard.
+7. Explore Strategy's outcome selector, competitor selector, journey view, and legacy research disclosure.
+8. Open Build Case; compare priority with phase order and change Value assumptions. Zero volume must yield zero modeled capacity.
 
-Passed:
+## Validation - September 9, 2026 revision
 
-- `npm --prefix wealthscape-intelligence run build`
-- `git diff --check`
-- Integrated Codex Browser visual inspection at 1280px desktop, 1024px compact desktop, 768px tablet, and 390px mobile.
-- All four personas selected: differing case scopes, counts, service-team routing, supervisory docket, and mixed-registration context verified.
-- MC-101: completion disabled while evidence missing; check remaining items; complete; timeline contains the evidence actions and review; lifecycle and Report Builder readiness both update; completed evidence controls disabled.
-- Owner routing: MC-102 moved from Fidelity service to Supervision with visible feedback and removal from the original owner-filtered queue.
-- Search no-match state, clear-filter recovery, complete-status filter and counts.
-- Household intake with empty account scope disabled; select one trust demo account and create an Authority update; resulting request retains exact scope and missing-evidence gate.
-- Intake and evidence lifecycle shortcuts.
-- All five strategy links: intake, authority, routing, evidence, timeline. Browser Back returns to strategy and restores persona.
-- Mobile queue, evidence, strategy links, reporting banner, and navigation; tablet header crowding fixed and rechecked.
-- Browser console error capture returned no errors during the final check.
+- `npm --prefix wealthscape-intelligence run build` passed.
+- `git diff --check` passed.
+- Integrated Codex Browser visual inspection of Lifecycle, Account Maintenance, Reporting outputs, Strategy, and Build Case at desktop 1280px, tablet 768px, and mobile 390px. Mobile chart labels and journey density refined after inspection.
+- Persona switching, blocked -> evidence -> reviewer confirmation -> generated report -> maintenance timeline flow passed.
+- Mixed/empty report selections held generation; portfolio studio enforced the same prerequisite gate.
+- Generated LR-001 JSON inspected with Python assertions: MC-101 Complete, two scoped accounts, all evidence checks true, human review event present.
+- Opportunity and competitor selectors, research tabs, and investment tabs exercised. Value assumptions: 2,000 changes x 10 percentage points x 20 minutes / 60 = 66.7 modeled hours and $3,667 at $55/hour. Zero-volume case yielded zero.
+- No browser console errors in final capture.
+- Earlier queue routing, intake scope guard, search/filter recovery, and strategy deep-link QA remain documented in PR history; handlers preserved.
 
-`npm --prefix wealthscape-intelligence audit --json` reports two existing high-severity dependency entries, nanoid and postcss. No dependency or lockfile changes are included. Captain should track remediation separately.
+Existing nanoid/postcss dependency audit findings remain outside this scoped change; no dependencies changed. No live provider/customer-data test or production deployment was performed. A full replay of the old reporting tour/scenario and integration with the other open economics/theme lanes remains a captain check.
 
-Not validated: live providers, customer data, real entitlements, durable evidence, production deployment, and a complete replay of the older report-generation tour/scenario. No merge was performed. Review compatibility with open Build Case compliance/cost-model and theme PRs before integration.
-
-## Captain handoff
-
-1. Open Lifecycle and switch all four personas.
-2. Open MC-101 from the RIA queue, select Authority & evidence, observe the blocked completion control, check the missing evidence, and confirm demo review.
-3. Open Status timeline, then Lifecycle and Report Builder; verify readiness changes while the report itself remains a separate fixture.
-4. Start household change, clear all account selections to see the guard, then create a request with chosen demo scope.
-5. Open Strategy and try each maintenance tie-back.
-6. Check mobile navigation and tablet header at the viewport sizes above; then review the older report tour/scenario and the other open PR integrations before merge.
-
-Implementation complete; captain review and human QA remain. State resets on page reload.
+Implementation revision complete; captain review and human QA remain. Do not merge this implementation lane automatically.
