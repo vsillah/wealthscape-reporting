@@ -2444,11 +2444,17 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
 
 function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario, deepLink }) {
   const { isMobile } = bp;
+  const [researchTrack, setResearchTrack] = useState("lifecycle");
   const strategy = profile.strategy;
   const ranked = [...strategy.outcomes].sort((a,b)=>oppScore(b)-oppScore(a));
   const maxOpp = ranked.length ? oppScore(ranked[0]) : 1;
   const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
   const isBrokerDealerProfile = profile.id !== DEFAULT_PROFILE_ID;
+  const trackTitle = researchTrack === "lifecycle" ? "Account lifecycle orchestration" : strategy.heroTitle;
+  const trackBody = researchTrack === "lifecycle" ? "Modernize the path from account change to trusted output: capture once, resolve authority and service blockers, retain review evidence, and reuse verified context in reporting. Each persona owns a different part of this shared lifecycle." : strategy.heroBody;
+  const trackStats = researchTrack === "lifecycle"
+    ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"6",label:"Stages from intake to output"},{value:"4",label:"Operating personas"},{value:"1",label:"Shared evidence path"}]
+    : [{value:strategy.marketSignals.length,label:"Market signals"},{value:strategy.outcomes.length,label:"Reporting outcomes"},{value:strategy.recommendations.length,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
   const routeStrategyAction = (label, layer = "morning", sub = {}) => {
     onNavigate(layer, { ...sub, dashboardFocus:label, source:"strategy" });
   };
@@ -2456,7 +2462,14 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>
 
-      {/* Hero */}
+      <div className="am-workspace" role="group" aria-label="Strategy research tracks">
+        <div className="am-tabs" style={{ marginBottom:0 }}>
+          <button aria-pressed={researchTrack === "lifecycle"} aria-controls="strategy-lifecycle" onClick={()=>setResearchTrack("lifecycle")}>Account lifecycle</button>
+          <button aria-pressed={researchTrack === "reporting"} aria-controls="strategy-reporting" onClick={()=>setResearchTrack("reporting")}>Reporting modernization</button>
+        </div>
+      </div>
+
+      {/* Strategy hero */}
       <div style={{ background:`linear-gradient(135deg, ${T.navy} 0%, ${T.navyMid} 100%)`, borderRadius:16, padding:isMobile?"22px 18px":"30px 32px", color:T.white }}>
         <div style={{ display:"flex", alignItems:isMobile?"stretch":"center", justifyContent:"space-between", gap:12, marginBottom:12, flexDirection:isMobile?"column":"row" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
@@ -2465,17 +2478,14 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
             </div>
             <span style={{ fontSize:11, color:"rgba(255,255,255,0.55)" }}>Outcome-Driven Innovation · Jobs-to-be-Done</span>
           </div>
-          <div style={{ background:"rgba(255,255,255,0.92)", borderRadius:10, padding:6 }}>
-            <ProfileSwitcher profiles={profiles} profileOrder={profileOrder} activeProfileId={activeProfileId} onProfileChange={onProfileChange} compact={isMobile}/>
-          </div>
         </div>
         <div style={{ fontSize:11, color:"rgba(255,255,255,0.58)", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>{profile.eyebrow}</div>
-        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>Account lifecycle orchestration</div>
+        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>{trackTitle}</div>
         <div style={{ fontSize:isMobile?13:15, color:"rgba(255,255,255,0.78)", lineHeight:1.65, maxWidth:720 }}>
-          Modernize the path from account change to trusted output: capture once, resolve authority and service blockers, retain review evidence, and reuse verified context in reporting. Each persona owns a different part of this shared lifecycle.
+          {trackBody}
         </div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:isMobile?10:14, marginTop:22 }}>
-          {[{value:"15",label:"Maintenance outcomes · directional"},{value:"6",label:"Stages from intake to output"},{value:"4",label:"Operating personas"},{value:"1",label:"Shared evidence path"}].map(s=>(
+          {trackStats.map(s=>(
             <div key={s.label} style={{ background:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, padding:"13px 14px" }}>
               <div style={{ fontSize:isMobile?20:24, fontWeight:800, letterSpacing:"-0.01em" }}>{s.value}</div>
               <div style={{ fontSize:10.5, color:"rgba(255,255,255,0.6)", marginTop:3, lineHeight:1.4 }}>{s.label}</div>
@@ -2484,11 +2494,19 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
         </div>
       </div>
 
-      <MaintenanceStrategy onNavigate={onNavigate}/>
-      <LifecycleResearch/>
+      <section id="strategy-lifecycle" hidden={researchTrack !== "lifecycle"}>
+        <div style={{ display:"flex", flexDirection:"column", gap:30 }}>
+          <MaintenanceStrategy onNavigate={onNavigate}/>
+          <LifecycleResearch/>
+        </div>
+      </section>
 
-      <details className="am-workspace am-card">
-        <summary>Reporting output and persona research detail</summary>
+      <section id="strategy-reporting" hidden={researchTrack !== "reporting"} aria-label="Reporting modernization research">
+        <div className="am-workspace am-card" style={{ marginBottom:20 }}>
+          <h2>Reporting research takeaways</h2>
+          <p>Use persona-specific outcome gaps to guide reporting priorities, then compare the recommended capabilities and build-or-buy choices below.</p>
+          <p className="am-note">This research track retains its original market sources, customer-research framing, and Claude Project references. Its outcome scores are separate from the account-maintenance proxy map.</p>
+        </div>
         <div style={{ display:"flex", flexDirection:"column", gap:30, marginTop:20 }}>
       {/* 1 · Market research */}
       <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
@@ -2714,7 +2732,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
         </div>
       </div>
         </div>
-      </details>
+      </section>
     </div>
   );
 }
