@@ -90,3 +90,10 @@ Implementation revision complete; captain review and human QA remain. Do not mer
 - Lifecycle stages and KPIs provide hover and keyboard-focus feedback, with reduced-motion support. Stage destinations retain an explicit opened-stage indicator through reload.
 - Validation: production build and `git diff --check` passed. Integrated Browser checks at 1280px and 390px covered all four KPI destinations, filter recovery, RIA and home-office scope counts, persisted Human review context, and Report output context. Mobile page width matched its 390px viewport; no browser console errors observed. Hover and keyboard-focus appearance were visually inspected.
 - This refinement remains ready for captain review; no merge, production deployment, or live customer-data test was performed.
+
+## Interactive operating flow refinement
+
+- Added Lucide symbols to the six lifecycle stages while preserving readable labels and destination context.
+- Added a connected three-handoff flow on the command center. Counts and proportional bars derive from the current persona's requests; hover and keyboard focus reveal next actions and current owners. Clicking opens the corresponding Blocked, Ready for review, or Complete queue. This is a current-state distribution, not a throughput or historical conversion metric.
+- Production build and `git diff --check` passed. Integrated Browser visual QA at 1280px, 768px, and 390px found no visible horizontal overflow. Verified all three flow destinations, empty-review recovery, mobile blocker navigation, existing Open changes KPI drilldown, hover insight changes, keyboard focus, and readable stage icons. No browser console errors observed.
+- No live workflow/customer-data smoke or deployment was performed. Captain review and human QA remain; this lane must not merge.

@@ -1,4 +1,4 @@
-import { LifecycleJourney } from "./LifecycleExperience";
+import { LifecycleJourney, LifecycleFlow } from "./LifecycleExperience";
 import { useEffect, useState } from "react";
 import "./AccountMaintenance.css";
 
@@ -189,6 +189,7 @@ export function LifecycleDashboard({ profile, cases, onNavigate }) {
           </button>
         ))}
       </div>
+      <LifecycleFlow rows={rows} onNavigate={onNavigate} />
       <LifecycleJourney onNavigate={onNavigate} />
       <div className="am-columns">
         <section className="am-card">

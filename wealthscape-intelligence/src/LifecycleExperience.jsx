@@ -1,4 +1,13 @@
 import { useState } from "react";
+import {
+  Inbox,
+  FileSignature,
+  GitBranch,
+  UserCheck,
+  ShieldCheck,
+  FileBarChart,
+  ArrowRight,
+} from "lucide-react";
 import "./AccountMaintenance.css";
 
 const stages = [
@@ -9,6 +18,15 @@ const stages = [
   ["Ready account context", "Operations"],
   ["Report output", "Advisor"],
 ];
+const stageIcons = [
+  Inbox,
+  FileSignature,
+  GitBranch,
+  UserCheck,
+  ShieldCheck,
+  FileBarChart,
+];
+
 export function LifecycleJourney({ item, activeStage, onNavigate }) {
   const opened = ["0", "1", "2", "3", "4", "5"].includes(String(activeStage))
     ? Number(activeStage)
@@ -70,7 +88,10 @@ export function LifecycleJourney({ item, activeStage, onNavigate }) {
             }
           >
             <span className="lx-stage-num">
-              {item && i < stage ? "✓" : i + 1}
+              {(() => {
+                const Icon = stageIcons[i];
+                return <Icon size={22} aria-hidden="true" />;
+              })()}
             </span>
             <strong>{name}</strong>
             <small>{owner}</small>
@@ -90,6 +111,99 @@ export function LifecycleJourney({ item, activeStage, onNavigate }) {
     </section>
   );
 }
+
+export function LifecycleFlow({ rows, onNavigate }) {
+  const [active, setActive] = useState(0);
+  const lanes = [
+    {
+      label: "Resolve blockers",
+      status: "Blocked",
+      icon: GitBranch,
+      hint: "Complete missing evidence or route the exception to its owner.",
+      tone: "amber",
+    },
+    {
+      label: "Confirm review",
+      status: "Ready for review",
+      icon: UserCheck,
+      hint: "Evidence is ready. Human confirmation releases the change for reporting.",
+      tone: "violet",
+    },
+    {
+      label: "Ready for reporting",
+      status: "Complete",
+      icon: ShieldCheck,
+      hint: "Completed changes can supply account context to a report.",
+      tone: "green",
+    },
+  ].map((lane) => ({
+    ...lane,
+    items: rows.filter((row) => row.status === lane.status),
+  }));
+  const current = lanes[active];
+  const owners = [...new Set(current.items.map((row) => row.owner))];
+  return (
+    <section className="lx-flow" aria-label="Live work flow">
+      <div className="am-heading">
+        <div>
+          <span className="am-eyebrow">Work in motion</span>
+          <h2>Where the next action lives</h2>
+        </div>
+        <span className="am-note">
+          {rows.length} requests · current persona
+        </span>
+      </div>
+      <p className="am-note">
+        Explore each handoff, then open its queue. Bars show the share of
+        current requests.
+      </p>
+      <div className="lx-flow-track">
+        {lanes.map((lane, index) => {
+          const Icon = lane.icon;
+          const share = rows.length
+            ? Math.round((lane.items.length / rows.length) * 100)
+            : 0;
+          return (
+            <button
+              key={lane.status}
+              className={`lx-flow-node lx-${lane.tone} ${active === index ? "lx-flow-active" : ""}`}
+              onMouseEnter={() => setActive(index)}
+              onFocus={() => setActive(index)}
+              onClick={() =>
+                onNavigate("maintenance", {
+                  statusFilter: lane.status,
+                  maintenanceView: "queue",
+                })
+              }
+              aria-label={`${lane.label}: ${lane.items.length} requests. Open queue`}
+            >
+              <span className="lx-flow-top">
+                <Icon size={26} aria-hidden="true" />
+                <strong>{lane.items.length}</strong>
+                <ArrowRight size={19} aria-hidden="true" />
+              </span>
+              <strong>{lane.label}</strong>
+              <span className="lx-flow-meter" aria-hidden="true">
+                <span style={{ width: `${share}%` }} />
+              </span>
+              <small>{share}% of requests · Open queue</small>
+            </button>
+          );
+        })}
+      </div>
+      <div className={`lx-flow-insight lx-${current.tone}`}>
+        <strong>{current.label}</strong>
+        <p>{current.hint}</p>
+        <span>
+          {owners.length
+            ? `With ${owners.join(" · ")}`
+            : "No requests at this handoff. Open the queue to inspect or clear filters."}
+        </span>
+      </div>
+    </section>
+  );
+}
+
 export function ConnectedReportBuilder({
   profile,
   cases,
