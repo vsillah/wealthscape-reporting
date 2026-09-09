@@ -535,7 +535,7 @@ const sourceColors = {
 };
 export function LifecycleResearch() {
   const [tab, setTab] = useState("opportunity");
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(-1);
   const [competitor, setCompetitor] = useState(3);
   const d = outcomes[index];
   const rival = competitors[competitor];
@@ -623,8 +623,8 @@ export function LifecycleResearch() {
                         fill={
                           o[3] === "Inferred" ? "white" : sourceColors[o[3]]
                         }
-                        fillOpacity={i === index ? 1 : 0.18}
-                        strokeOpacity={i === index ? 1 : 0.55}
+                        fillOpacity={index === -1 || i === index ? 1 : 0.18}
+                        strokeOpacity={index === -1 || i === index ? 1 : 0.55}
                         stroke={sourceColors[o[3]]}
                         strokeWidth={i === index ? 4 : 1}
                         strokeDasharray={
@@ -636,7 +636,7 @@ export function LifecycleResearch() {
                         y={284 - (o[2] - 1) * 63.75}
                         textAnchor="middle"
                         fill={
-                          i !== index
+                          index !== -1 && i !== index
                             ? "#354452"
                             : o[3] === "Inferred"
                               ? "#805400"
@@ -662,8 +662,9 @@ export function LifecycleResearch() {
                 </text>
               </svg>
               <p className="am-note" role="status">
-                Highlighted: {index + 1}. {d[0]}. Muted bubbles remain visible
-                for comparison.
+                {d
+                  ? `Highlighted: ${index + 1}. ${d[0]}. Muted bubbles remain visible for comparison.`
+                  : "Showing all 15 outcomes with equal emphasis. Select an outcome to inspect its evidence."}
               </p>
               <div className="lx-legend">
                 {Object.entries(sourceColors).map(([name, color]) => (
@@ -681,6 +682,7 @@ export function LifecycleResearch() {
                   value={index}
                   onChange={(e) => setIndex(Number(e.target.value))}
                 >
+                  <option value={-1}>All outcomes</option>
                   {outcomes.map((o, i) => (
                     <option key={o[0]} value={i}>
                       {i + 1}. {o[0]}
@@ -689,18 +691,34 @@ export function LifecycleResearch() {
                 </select>
               </label>
               <div className="am-callout">
-                <strong>
-                  {index + 1}. {d[0]}
-                </strong>
-                <p>
-                  {d[3]} input · importance {d[2].toFixed(2)} / 5 · satisfaction{" "}
-                  {d[1].toFixed(2)} / 5
-                </p>
-                <p>
-                  {d[3] === "Inferred"
-                    ? "An inference to test with operations teams; do not treat this as a measured rate."
-                    : "Retained artifact label. Cross-category mapping still introduces uncertainty."}
-                </p>
+                {d ? (
+                  <>
+                    <strong>
+                      {index + 1}. {d[0]}
+                    </strong>
+                    <p>
+                      {d[3]} input · importance {d[2].toFixed(2)} / 5 ·
+                      satisfaction {d[1].toFixed(2)} / 5
+                    </p>
+                    <p>
+                      {d[3] === "Inferred"
+                        ? "An inference to test with operations teams; do not treat this as a measured rate."
+                        : "Retained artifact label. Cross-category mapping still introduces uncertainty."}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <strong>All outcomes</strong>
+                    <p>
+                      Compare all 15 outcomes by importance and satisfaction.
+                      Select an outcome to see its values and evidence category.
+                    </p>
+                    <p>
+                      These directional proxies retain the source artifact’s
+                      category labels and uncertainty.
+                    </p>
+                  </>
+                )}
               </div>
               <p className="am-note">
                 Kitces 2025 and T3/Inside Information 2026 inform the artifact.

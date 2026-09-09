@@ -103,3 +103,9 @@ Implementation revision complete; captain review and human QA remain. Do not mer
 Selected outcomes render above the other points with an outer ring, full-opacity category styling, and a stronger number label. Other bubbles use lighter fills and borders with dark number labels. Sourced/derived colors and inferred dashed outlines remain. The existing dropdown controls selection; points remain a non-interactive chart. A text status identifies the highlighted outcome.
 
 Validation: production build and `git diff --check` passed. Integrated Browser QA at 1280px and 390px verified dropdown selection changes across derived (5), inferred (3), and sourced (12) outcomes, matching chart emphasis and detail text, and no visible horizontal overflow or console errors. No live customer-data smoke or deployment. Captain review and human QA remain.
+
+## All-outcomes reset
+
+The outcome selector now defaults to All outcomes and can return there after any selection. All bubbles use full evidence-category styling without a selection ring; the status and detail panel show a neutral comparison summary. Selecting a specific outcome restores selected-versus-muted styling. Source caveats remain visible.
+
+Validation: production build and `git diff --check` passed. Integrated Browser QA at 1280px and 390px covered All outcomes, derived outcome 5, inferred outcome 3, sourced outcome 12, and clearing back to All outcomes. No visible horizontal overflow or console errors observed. No deployment or live customer-data smoke; captain review and human QA remain.
