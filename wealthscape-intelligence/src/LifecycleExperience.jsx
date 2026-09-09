@@ -601,28 +601,54 @@ export function LifecycleResearch() {
                     </text>
                   </g>
                 ))}
-                {outcomes.map((o, i) => (
-                  <g key={o[0]}>
-                    <circle
-                      cx={52 + (o[1] - 1) * 110}
-                      cy={280 - (o[2] - 1) * 63.75}
-                      r={i === index ? 14 : 9}
-                      fill={o[3] === "Inferred" ? "white" : sourceColors[o[3]]}
-                      stroke={sourceColors[o[3]]}
-                      strokeWidth={i === index ? 4 : 1}
-                      strokeDasharray={o[3] === "Inferred" ? "3 2" : undefined}
-                    />
-                    <text
-                      x={52 + (o[1] - 1) * 110}
-                      y={284 - (o[2] - 1) * 63.75}
-                      textAnchor="middle"
-                      fill={o[3] === "Inferred" ? "#805400" : "white"}
-                      fontSize="9"
-                    >
-                      {i + 1}
-                    </text>
-                  </g>
-                ))}
+                {outcomes
+                  .map((o, i) => ({ o, i }))
+                  .sort((a, b) => Number(a.i === index) - Number(b.i === index))
+                  .map(({ o, i }) => (
+                    <g key={o[0]}>
+                      {i === index && (
+                        <circle
+                          cx={52 + (o[1] - 1) * 110}
+                          cy={280 - (o[2] - 1) * 63.75}
+                          r={20}
+                          fill="white"
+                          stroke="#243542"
+                          strokeWidth="2"
+                        />
+                      )}
+                      <circle
+                        cx={52 + (o[1] - 1) * 110}
+                        cy={280 - (o[2] - 1) * 63.75}
+                        r={i === index ? 14 : 9}
+                        fill={
+                          o[3] === "Inferred" ? "white" : sourceColors[o[3]]
+                        }
+                        fillOpacity={i === index ? 1 : 0.18}
+                        strokeOpacity={i === index ? 1 : 0.55}
+                        stroke={sourceColors[o[3]]}
+                        strokeWidth={i === index ? 4 : 1}
+                        strokeDasharray={
+                          o[3] === "Inferred" ? "3 2" : undefined
+                        }
+                      />
+                      <text
+                        x={52 + (o[1] - 1) * 110}
+                        y={284 - (o[2] - 1) * 63.75}
+                        textAnchor="middle"
+                        fill={
+                          i !== index
+                            ? "#354452"
+                            : o[3] === "Inferred"
+                              ? "#805400"
+                              : "white"
+                        }
+                        fontWeight={i === index ? "800" : "600"}
+                        fontSize={i === index ? "11" : "9"}
+                      >
+                        {i + 1}
+                      </text>
+                    </g>
+                  ))}
                 <text x="270" y="330" textAnchor="middle">
                   Satisfaction proxy →
                 </text>
@@ -635,6 +661,10 @@ export function LifecycleResearch() {
                   Importance proxy →
                 </text>
               </svg>
+              <p className="am-note" role="status">
+                Highlighted: {index + 1}. {d[0]}. Muted bubbles remain visible
+                for comparison.
+              </p>
               <div className="lx-legend">
                 {Object.entries(sourceColors).map(([name, color]) => (
                   <span key={name}>

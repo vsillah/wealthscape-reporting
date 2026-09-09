@@ -97,3 +97,9 @@ Implementation revision complete; captain review and human QA remain. Do not mer
 - Added a connected three-handoff flow on the command center. Counts and proportional bars derive from the current persona's requests; hover and keyboard focus reveal next actions and current owners. Clicking opens the corresponding Blocked, Ready for review, or Complete queue. This is a current-state distribution, not a throughput or historical conversion metric.
 - Production build and `git diff --check` passed. Integrated Browser visual QA at 1280px, 768px, and 390px found no visible horizontal overflow. Verified all three flow destinations, empty-review recovery, mobile blocker navigation, existing Open changes KPI drilldown, hover insight changes, keyboard focus, and readable stage icons. No browser console errors observed.
 - No live workflow/customer-data smoke or deployment was performed. Captain review and human QA remain; this lane must not merge.
+
+## Outcome-map selection contrast
+
+Selected outcomes render above the other points with an outer ring, full-opacity category styling, and a stronger number label. Other bubbles use lighter fills and borders with dark number labels. Sourced/derived colors and inferred dashed outlines remain. The existing dropdown controls selection; points remain a non-interactive chart. A text status identifies the highlighted outcome.
+
+Validation: production build and `git diff --check` passed. Integrated Browser QA at 1280px and 390px verified dropdown selection changes across derived (5), inferred (3), and sourced (12) outcomes, matching chart emphasis and detail text, and no visible horizontal overflow or console errors. No live customer-data smoke or deployment. Captain review and human QA remain.
