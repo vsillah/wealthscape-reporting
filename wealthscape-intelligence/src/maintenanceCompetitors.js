@@ -1,0 +1,83 @@
+// Frames D2 coordinates are a preserved snapshot, not a refreshed capability ranking.
+export const competitorSurvey = {
+  title: "T3 / Inside Information 2026 · custodial platforms, pp. 81–82",
+  url: "https://t3technologyhub.com/wp-content/uploads/2026/03/2026-T3-Inside-Information-Software-Survey.pdf#page=84",
+  type: "Advisor survey",
+  date: "2026 edition",
+};
+const vendor = (title, url, date = "Undated · checked 10 Sep 2026") => ({ title, url, date, type: "Vendor-published" });
+export const maintenanceCompetitors = [
+  {
+    question: "Can a service associate complete an existing-account authority change, including an exception, without re-entering household data?",
+    name: "Schwab", satisfaction: 7.95, capability: 5, label: [320, 25],
+    basis: "Frames placed Schwab highest for its continuous, dated release program. The revised study narrows much of that evidence to onboarding; the 5/5 assessment is retained, not independently validated.",
+    strength: "Schwab documents adding or modifying firm authority across up to 20 client accounts in one digital envelope, with prefilled existing-client data.",
+    limit: "This is firm LPOA-IA authority. It does not establish third-party POA coverage or show that every onboarding improvement also works on existing accounts.",
+    appeal: "Reusing client data and grouping authority changes may reduce repeated handling for service teams.",
+    friction: "Users handling other authority types may still need a different path. Validate those exceptions before extending this workflow's benefits.",
+    source: vendor("Schwab · digital authority workflow", "https://advisorservices.schwab.com/whats-new/account-management/digital-workflows", "February 2026"),
+  },
+  {
+    question: "Can a client revise a beneficiary after opening and can staff see what remains incomplete?",
+    feedback: "Altruist calls combined account opening and transfers a top-requested update; it reports that separate post-opening transfer requests had caused client confusion. This is vendor-reported feedback, not independent research or an explanation of the 2026 rating.",
+    name: "Altruist", satisfaction: 8.31, capability: 4.5, label: [440, 100],
+    basis: "Frames rated Altruist highly for client-initiated, forms-free maintenance. The April release provides specific post-opening beneficiary evidence; the 4.5/5 remains the original assessment.",
+    strength: "Altruist documents post-opening beneficiary designation edits in its client portal and app, native client-agreement signatures, and account-activity notifications.",
+    limit: "The April 2024 release limits its eSignature tool to clients with an Altruist login and email on file. Per Stirpes designations apply to people, not entity beneficiaries. These are dated release limits.",
+    appeal: "Client edits and activity alerts may reduce follow-up between clients and service teams.",
+    friction: "Clients outside the documented signing prerequisites may need assistance. No independent evidence here shows how often that happens.",
+    source: vendor("Altruist · April product release", "https://altruist.com/news/april-2024/", "29 April 2024"),
+  },
+  {
+    question: "Which of the bundled onboarding steps can be reused for a later change across the same household?",
+    name: "TradePMR", satisfaction: 7.86, capability: 3, label: [428, 142],
+    basis: "Frames described partial maintenance documentation and assigned 3/5. The source did not supply a reproducible capability rubric; the score is retained as an assessment.",
+    strength: "TradePMR describes CRM-prefilled account applications, multiple household accounts in one DocuSign envelope, and parallel signatures.",
+    limit: "The October 2024 announcement covers account opening. It does not verify the equivalent workflow for changing existing account ownership, beneficiaries, or authority.",
+    appeal: "CRM reuse and bundled signatures may make onboarding feel less repetitive.",
+    friction: "If existing-account changes use separate workflows, teams could lose that convenience after onboarding. This needs a product walkthrough, not inference from missing documentation.",
+    source: vendor("TradePMR · account-opening enhancements", "https://www.tradepmr.com/blog/tradepmr-enhances-new-account-opening-capabilities-to-support-advisor-growth", "7 October 2024"),
+  },
+  {
+    question: "Can an entitled user identify the next owner, resolve a NIGO message, and retrieve the completed request history?",
+    name: "Wealthscape", satisfaction: 7.73, capability: 2, label: [365, 223],
+    basis: "Frames assigned 2/5 from limited public documentation. Fidelity's detailed Service Center help documents existing workflows, so the historical assessment needs revalidation; it is not a measured functionality limit.",
+    strength: "Fidelity documents actionable service queues, item statuses, saved searches, status alerts, and request histories in Service Center.",
+    limit: "Fidelity notes that entitlements limit visible requests and messages. Its help does not measure turnaround or user satisfaction. Retail Fidelity findings cannot automatically describe institutional Wealthscape.",
+    appeal: "A shared service channel may help firms retain context when a request needs Fidelity intervention.",
+    friction: "Work that crosses service and supervision could feel fragmented if ownership or next steps are unclear. This prototype tests that hypothesis; it is not a verified customer complaint.",
+    source: vendor("Fidelity · Service Center help", "https://www2.advisorchannel.com/wc/channel/jsp/sp3help/content/fwchlpCSServiceDashboard.htm"),
+  },
+  {
+    question: "How does an RIA track a maintenance request from its service liaison through resolution?",
+    name: "SEI", satisfaction: 7.49, capability: 2, label: [260, 163],
+    basis: "Frames based its 2/5 assessment on account-opening evidence from 2022. Current service material adds context but does not reproduce or validate that earlier scoring process.",
+    strength: "SEI says every client is supported by a relationship manager and dedicated service liaison, alongside custody and open-architecture technology.",
+    limit: "A stated service model does not establish response times or demonstrate self-service maintenance, household authority, or exception recovery. Those workflows need direct validation.",
+    appeal: "A known service contact may reduce the effort of explaining a firm's context each time it needs help.",
+    friction: "If a request depends on assisted service, users may value visibility into the next owner and expected response. No measured delay or dissatisfaction is established here.",
+    source: vendor("SEI · dedicated RIA service", "https://www.seic.com/financial-advisors/custodian-revolution/dedicated-ria-service"),
+  },
+  {
+    question: "Which maintenance actions and recovery paths are available in the firm’s entitled NetX configuration?",
+    name: "Pershing", satisfaction: 6.73, capability: 1, label: [185, 269],
+    basis: "Frames gave 1/5 from portfolio-focused public evidence. The revised study warns that gated release documentation makes comparisons uneven. This score cannot establish absent maintenance capability.",
+    strength: "BNY describes NetX360+ as an integrated custodial platform and NetXInvestor as online and mobile access to account information with self-service options.",
+    limit: "The overview does not demonstrate the full workflow for specific maintenance changes. BNY also cautions that some described functionality may not yet be available; validate scope in an authenticated demo.",
+    appeal: "Advisor and investor access to account information may make routine status checks easier.",
+    friction: "Moving between firm-configured tools could create extra handoffs if context is not carried forward. This is a testable hypothesis, not the cause of the 6.73 rating.",
+    source: vendor("BNY Pershing · NetX platform overview", "https://www.bny.com/pershing/us/en/platforms/netx.html"),
+  },
+  {
+    question: "What happens when a supported client needs a beneficiary or authority change after onboarding?",
+    name: "Goldman", satisfaction: 6.13, capability: 1, label: [95, 200],
+    basis: "Frames assigned 1/5 where maintenance documentation was limited. Current onboarding and status features add evidence, but the original snapshot is preserved rather than rescored.",
+    strength: "Goldman documents multiple supported account openings, transfer requests, and bank links with one signature, plus a dashboard for monitoring those requests.",
+    limit: "These claims concern onboarding and supported account types. They do not establish all existing-account maintenance paths; Goldman directs firms to confirm supported types with its team.",
+    appeal: "Bundled requests and visible status may reduce uncertainty during a client transition.",
+    friction: "Users with unsupported account types or later maintenance needs may require a different path. Its frequency and impact have not been measured here.",
+    source: vendor("Goldman Sachs · modern client experiences", "https://www.goldmansachs.com/what-we-do/ficc-and-equities/custody-solutions/our-solutions/modern-client-experiences"),
+  },
+];
+export const competitorX = value => 52 + (value - 6) * 160;
+export const competitorY = value => 280 - value * 46;

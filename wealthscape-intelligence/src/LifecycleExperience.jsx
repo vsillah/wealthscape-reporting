@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MaintenanceCompetitorMap from "./MaintenanceCompetitorMap";
 import {
   Inbox,
   FileSignature,
@@ -529,15 +530,6 @@ export const outcomes = [
   ["Confirming a change is complete", 2.9, 4.12, "Inferred"],
   ["Standing instruction / bank link", 3.12, 3.9, "Derived"],
 ];
-const competitors = [
-  ["Schwab", 7.95, 5, "Continuous dated program"],
-  ["Altruist", 8.31, 4.5, "Client-initiated, forms-free"],
-  ["TradePMR", 7.86, 3, "Partial documentation"],
-  ["Wealthscape", 7.73, 2, "Limited public maintenance documentation"],
-  ["SEI", 7.49, 2, "Account-opening evidence"],
-  ["Pershing", 6.73, 1, "Portfolio-focused public evidence"],
-  ["Goldman", 6.13, 1, "Limited documentation"],
-];
 const sourceColors = {
   Sourced: "#0b5d2e",
   Derived: "#5b4fbe",
@@ -556,9 +548,7 @@ export function LifecycleResearch({
   const [localIndex, setLocalIndex] = useState(-1);
   const index = selectedOutcome === undefined ? localIndex : selectedOutcome;
   const setIndex = onOutcomeChange || setLocalIndex;
-  const [competitor, setCompetitor] = useState(3);
   const d = outcomes[index];
-  const rival = competitors[competitor];
   return (
     <section className="am-workspace am-card">
       {!embedded && (
@@ -822,107 +812,7 @@ export function LifecycleResearch({
           </div>
         </>
       )}
-      {tab === "positioning" && (
-        <>
-          <p className="am-note">
-            Account Maintenance Frames snapshot. X: T3 2026 advisor
-            satisfaction. Y: assessed public maintenance capability, not
-            survey-measured capability. Missing documentation does not establish
-            missing product functionality.
-          </p>
-          <div className="lx-research-grid">
-            <svg
-              className="lx-chart"
-              viewBox="0 0 520 340"
-              role="img"
-              aria-label="Competitor satisfaction and assessed maintenance capability"
-            >
-              <rect x="270" y="25" width="222" height="140" fill="#e8f5ee" />
-              {[1, 2, 3, 4, 5].map((n) => (
-                <g key={n}>
-                  <line
-                    x1="52"
-                    x2="492"
-                    y1={280 - n * 46}
-                    y2={280 - n * 46}
-                    stroke="#e2e8f0"
-                  />
-                  <text x="33" y={285 - n * 46}>
-                    {n}
-                  </text>
-                </g>
-              ))}
-              {[6, 7, 8].map((n) => (
-                <text key={n} x={52 + (n - 6) * 160} y="302">
-                  {n}
-                </text>
-              ))}
-              {competitors.map((c, i) => (
-                <g key={c[0]}>
-                  <circle
-                    cx={52 + (c[1] - 6) * 160}
-                    cy={280 - c[2] * 46}
-                    r={i === competitor ? 14 : 9}
-                    fill={i === 3 ? "#0b5d2e" : "#5b4fbe"}
-                  />
-                  <text
-                    x={52 + (c[1] - 6) * 160}
-                    y={284 - c[2] * 46}
-                    textAnchor="middle"
-                    fill="white"
-                    fontSize="10"
-                  >
-                    {i + 1}
-                  </text>
-                </g>
-              ))}
-              <text x="265" y="330" textAnchor="middle">
-                Advisor satisfaction →
-              </text>
-              <text
-                x="15"
-                y="170"
-                transform="rotate(-90 15 170)"
-                textAnchor="middle"
-              >
-                Assessed capability →
-              </text>
-            </svg>
-            <div>
-              <label className="am-field">
-                Explore a platform
-                <select
-                  value={competitor}
-                  onChange={(e) => setCompetitor(Number(e.target.value))}
-                >
-                  {competitors.map((c, i) => (
-                    <option key={c[0]} value={i}>
-                      {i + 1}. {c[0]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <div className="am-callout">
-                <strong>{rival[0]}</strong>
-                <p>
-                  Satisfaction {rival[1]} · capability {rival[2]} / 5
-                </p>
-                <p>{rival[3]}</p>
-              </div>
-              <p>
-                Investment question: can a shared maintenance path close the
-                documented workflow gap while keeping authority and review
-                visible?
-              </p>
-              <p className="am-note">
-                Vendor-published evidence needs independent checks. Axos
-                materials remain a qualitative evidence family, not an invented
-                point on this chart.
-              </p>
-            </div>
-          </div>
-        </>
-      )}
+      {tab === "positioning" && <MaintenanceCompetitorMap />}
       {tab === "journey" && (
         <>
           <p className="am-note">

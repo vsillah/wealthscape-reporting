@@ -1,5 +1,27 @@
 # Wealthscape Lifecycle Intelligence
 
+## Named competitor map and evidence context — 10 September 2026
+
+All seven competitor names remain visible beside their points, using fixed 12px HTML buttons and leader lines. Name buttons, keyboard-accessible points, and the dropdown share one selection. The Frames D2 identities and satisfaction/capability coordinates are unchanged. Desktop places the map beside the detail; 805px and 390px stack them.
+
+Each selected platform separates the measured T3 satisfaction snapshot from the historical, unvalidated capability assessment and its basis. Current vendor strengths, documented limits/evidence gaps, and source date/type are distinct from **Assumption** statements about possible user appeal and friction. Each panel ends with a specific question to validate. These hypotheses do not explain the survey rating. Altruist's reported client confusion around separate transfer requests is explicitly vendor-reported feedback, not independent customer research. Fidelity's detailed Service Center documentation is counterevidence that requires revalidating the historical 2/5 assessment; no absence claim or score refresh is made.
+
+| Platform | Public evidence and publication date | Scope retained |
+| --- | --- | --- |
+| All seven | [T3 / Inside Information 2026](https://t3technologyhub.com/wp-content/uploads/2026/03/2026-T3-Inside-Information-Software-Survey.pdf#page=84), printed pp. 81–82 | Broad custodial satisfaction; no maintenance-specific causal attribution. |
+| Schwab | [Digital authority workflow](https://advisorservices.schwab.com/whats-new/account-management/digital-workflows), February 2026 | Firm authority across up to 20 accounts; not third-party POA. |
+| Altruist | [April product release](https://altruist.com/news/april-2024/), 29 April 2024 | Post-opening beneficiary edits; dated signing prerequisites; vendor-reported transfer confusion. |
+| TradePMR | [Account-opening enhancements](https://www.tradepmr.com/blog/tradepmr-enhances-new-account-opening-capabilities-to-support-advisor-growth), 7 October 2024 | CRM prefill, household envelopes, parallel signing; onboarding scope. |
+| Wealthscape | [Fidelity Service Center help](https://www2.advisorchannel.com/wc/channel/jsp/sp3help/content/fwchlpCSServiceDashboard.htm), undated | Action queues, statuses, alerts, searches and history; entitlements apply. |
+| SEI | [Dedicated RIA service](https://www.seic.com/financial-advisors/custodian-revolution/dedicated-ria-service), undated | Relationship manager/service liaison claims; no response-time measurement. |
+| Pershing | [BNY NetX overview](https://www.bny.com/pershing/us/en/platforms/netx.html), undated | Advisor platform and investor account access; firm-specific feature availability needs validation. |
+| Goldman | [Modern client experiences](https://www.goldmansachs.com/what-we-do/ficc-and-equities/custody-solutions/our-solutions/modern-client-experiences), undated | Supported onboarding, transfer/bank-link requests and status dashboard; not all existing-account maintenance. |
+
+Vendor pages checked 10 September 2026. Raw decks and private exports remain outside the repository. The revised executive study's slides 15, 17 and 27 constrain interpretation of the earlier Frames map.
+
+Validation: `node --test wealthscape-intelligence/src/maintenanceCompetitors.test.js wealthscape-intelligence/src/maintenanceOutcomeSolutions.test.js wealthscape-intelligence/src/maintenanceGuide.test.js` — 10 passing tests. `npm --prefix wealthscape-intelligence run build` and `git diff --check` pass. Integrated Browser visual checks at 1208/805/390px show readable labels, no label intersections or horizontal overflow. Name clicks, Enter on a chart point, and dropdown changes synchronize selection/detail; captain separately checked all seven names and source links. No live account/provider actions, authenticated vendor teardown, primary interviews, commit, merge, or production promotion. Changes remain uncommitted for captain publication and human QA.
+
+
 ## Unified outcomes and opportunities — 10 September 2026
 
 Visual preference: quadrant labels are secondary annotations; outcome points lead. Use fixed 12px, regular-weight, muted-slate HTML annotations over the chart so text remains readable at every viewport without scaling the font. Annotations do not intercept point interactions; the SVG retains the accessible quadrant description.
