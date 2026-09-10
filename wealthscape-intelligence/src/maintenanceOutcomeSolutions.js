@@ -246,3 +246,9 @@ export function outcomeDestination(outcomeId, profileId, scopedCases) {
     context: `No matching ${solution.kind === "queue" ? "blocked request" : "fixture"} is visible in this profile. This link opens ${view === "intake" ? "household intake" : "reporting readiness"} to inspect the adjacent workflow; it does not demonstrate the missing capability.`,
   };
 }
+
+// Executive scores use a common 0–10 display scale; Frames inputs are independent.
+export const outcomeScoreScale = 10;
+export function rankedOutcomeSolutions() {
+  return [...outcomeSolutions].sort((a, b) => b.score - a.score || a.id - b.id);
+}

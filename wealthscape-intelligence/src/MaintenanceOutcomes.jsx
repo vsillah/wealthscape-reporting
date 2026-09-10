@@ -1,16 +1,35 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { LifecycleResearch, outcomes } from "./LifecycleExperience";
 import { visibleCases } from "./AccountMaintenance";
 import {
   outcomeSolutions,
+  rankedOutcomeSolutions,
+  outcomeScoreScale,
   outcomeDestination,
   normalizeOutcomeSelection,
 } from "./maintenanceOutcomeSolutions.js";
 
 export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
+  const inspectorRef = useRef(null);
+  const [view, setView] = useState("map");
   const [selected, setSelected] = useState(-1);
   const select = (value) => setSelected(normalizeOutcomeSelection(value));
+  const selectRanked = (value) => {
+    select(value);
+    if (!window.matchMedia("(max-width: 1000px)").matches) return;
+    requestAnimationFrame(() => {
+      const inspector = inspectorRef.current;
+      if (!inspector) return;
+      inspector.focus({ preventScroll: true });
+      inspector.scrollIntoView({
+        block: "start",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+    });
+  };
   const solution = outcomeSolutions[selected];
   const values = outcomes[selected];
   const destination = outcomeDestination(
@@ -19,7 +38,12 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
     visibleCases(cases, profile),
   );
   const detail = solution ? (
-    <article className="mo-detail" aria-label="Selected outcome solution">
+    <article
+      ref={inspectorRef}
+      tabIndex={-1}
+      className="mo-detail"
+      aria-label="Selected outcome solution"
+    >
       <h3>
         {solution.id}. {values[0]}
       </h3>
@@ -63,9 +87,9 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
     <div className="mo-empty">
       <h3>All outcomes</h3>
       <p>
-        Compare all 15 outcomes with equal emphasis. Select a chart point
-        or dropdown option to inspect the problem, proposed response, and
-        relevant demo.
+        Compare all 15 outcomes with equal emphasis. Select a chart point,
+        ranked row, or dropdown option to inspect the problem, proposed
+        response, and relevant demo.
       </p>
     </div>
   );
@@ -83,14 +107,71 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         and 14 are inferred. The plotted values place outcomes 12 and 15 in
         Table stakes, despite the Frames prose calling all outcomes underserved.
       </p>
-      <LifecycleResearch
-        embedded
-        view="opportunity"
-        selectedOutcome={selected}
-        onOutcomeChange={select}
-        outcomeDetail={detail}
-        compactSourceNote
-      />
+      <div
+        className="am-tabs mo-view-switch"
+        role="group"
+        aria-label="Outcome presentation"
+      >
+        <button aria-pressed={view === "map"} onClick={() => setView("map")}>
+          Opportunity map
+        </button>
+        <button
+          aria-pressed={view === "ranked"}
+          onClick={() => setView("ranked")}
+        >
+          Ranked outcomes
+        </button>
+      </div>
+      {view === "ranked" ? (
+        <div className="mo-ranked-layout">
+          <section aria-label="Ranked executive study outcomes">
+            <p className="am-note">
+              Published revised-study opportunity scores · common 0–10 scale.
+              Bar lengths show scores, not percentages. Frames coordinates
+              remain separate in the opportunity map.
+            </p>
+            <button
+              className="mo-reset"
+              aria-pressed={selected === -1}
+              onClick={() => select(-1)}
+            >
+              All outcomes
+            </button>
+            <div className="mo-ranked">
+              {rankedOutcomeSolutions().map((item) => (
+                <button
+                  key={item.id}
+                  aria-pressed={selected === item.id - 1}
+                  onClick={() => selectRanked(item.id - 1)}
+                >
+                  <span className="mo-rank-id">{item.id}</span>
+                  <span className="mo-rank-name">
+                    {outcomes[item.id - 1][0]}
+                  </span>
+                  <span className="mo-bar" aria-hidden="true">
+                    <span
+                      style={{
+                        width: `${(item.score / outcomeScoreScale) * 100}%`,
+                      }}
+                    />
+                  </span>
+                  <strong>{item.score.toFixed(2)}</strong>
+                </button>
+              ))}
+            </div>
+          </section>
+          {detail}
+        </div>
+      ) : (
+        <LifecycleResearch
+          embedded
+          view="opportunity"
+          selectedOutcome={selected}
+          onOutcomeChange={select}
+          outcomeDetail={detail}
+          compactSourceNote
+        />
+      )}
     </div>
   );
 }

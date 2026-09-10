@@ -842,6 +842,19 @@ export function LifecycleResearch({
             </text>
           </svg>
           <div className="lx-swimlane">
+            <div className="mr-job-progression" aria-label="Job progression">
+              <strong>Proposed sequence</strong>
+              {[
+                "Establish scope",
+                "Resolve and review",
+                "Confirm completion",
+              ].map((label, index) => (
+                <span key={label}>
+                  <b className="mr-step-number">{index + 1}</b>
+                  {label}
+                </span>
+              ))}
+            </div>
             {[
               [
                 "Client",

@@ -243,3 +243,16 @@ Validation in this implementation lane:
 Changes remain uncommitted for captain review. No merge, deployment, live provider workflow, or customer-data smoke was performed.
 
 Captain subsequently reported all seven tour stops passing at desktop, 805px, and 390px widths; the second 805px target settled after a transient measurement. Captain also reported focus wrapping, Escape and focus restoration, and the eight-step scenario evidence, review, and report gates passing. Reporting regression and review media remain outside this lane's confirmed evidence.
+
+
+## Maintenance Strategy visual parity refinement
+
+Adapted Reporting Strategy's existing icon tiles, accented reference cards, colored role regions, numeric bars, and numbered recommendations. Maintenance source text and caveats remain intact. Capability cards separate documented vendor references, questions requiring Wealthscape validation, and strategic implications; no competitive rating or new feature absence claim was added. Role panels contain the existing role labels and research limitations, without fictional biography.
+
+Outcomes now offer mutually exclusive Opportunity map and Ranked outcomes presentations with shared selection and inspector. The ranked view retains all 15 published executive-study scores and IDs on one explicitly labeled 0–10 scale. It does not recompute Frames coordinates. All outcomes reset clears either presentation. At stacked widths the inspector appears before the ranking. The existing journey retains every role/stage entry under three numbered non-interactive phase headings. Recommendations retain their profile-scoped routes and gain numbered headings and stronger action treatment.
+
+Validation: existing 14 tests plus one ranked-score/ID/source-order contract test passed (15 total), production build passed, and git diff --check passed. Integrated Browser visual checks covered 1280 × 720 (market widgets, capability cards, ranking), 805 × 900 (persona regions, stacked inspector, journey), and 390 × 844 (rank bars, personas, journey, recommendation action). Verified rank selection survives switching to map, reset clears the inspector and removes the alternative list from the map view, and the validation recommendation opens the scoped case. Browser was restored to 1280 × 720.
+
+Exact local QA entry: `http://127.0.0.1:5195/#view=strategy&profileId=bd-hybrid-advisor`. Use Jump to section for Market research, Capability comparison, Customer research, Outcomes & opportunities, Job map, and Recommendations. Verified recommendation destination: `http://127.0.0.1:5195/#view=maintenance&profileId=bd-hybrid-advisor&caseId=MC-101&panel=evidence&maintenanceView=queue`.
+
+No reporting redesign, tour/scenario logic change, production deployment, or live customer-data smoke. Changes remain uncommitted for captain review; review media capture and full captain regression remain next.

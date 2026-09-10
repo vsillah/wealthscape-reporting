@@ -1406,3 +1406,228 @@
 .am-workspace .mc-brand-label[aria-pressed="true"] { box-shadow:0 0 0 2px #0b5d2e; }
 .mc-brand-fallback { color:#243542; font:400 12px/14px system-ui; white-space:normal; overflow-wrap:anywhere; }
 .mc-brand-label.reverse .mc-brand-fallback { color:white; }
+
+/* Maintenance Strategy: reporting-aligned visual hierarchy. */
+.mr-cards article {
+  border-left: 4px solid #6755b5;
+  padding: 18px;
+}
+.mr-widget-icon {
+  display: inline-flex;
+  padding: 8px;
+  border-radius: 8px;
+  background: #efebfa;
+  color: #6150ac;
+  margin-bottom: 12px;
+}
+#maintenance-research-3 .mr-cards article {
+  border-left-color: #24704c;
+}
+.mr-comparison {
+  display: grid;
+  gap: 14px;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+}
+.mr-comparison > article {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid #dce3e9;
+  border-left: 4px solid #6755b5;
+  border-radius: 8px;
+  background: #fff;
+}
+.mr-comparison > article h3 {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 16px;
+}
+.mr-comparison > article small {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 700;
+  color: #6150ac;
+}
+.mr-comparison > article p {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.mr-step-number {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #246244;
+  color: white;
+  font-size: 12px;
+  margin-right: 8px;
+}
+.mr-recommendation {
+  border-left: 4px solid #246244;
+}
+.mr-recommendation h3 {
+  display: flex;
+  align-items: center;
+}
+.mr-demonstrated button {
+  background: #246244;
+  color: #fff;
+  border-color: #246244;
+  font-weight: 700;
+}
+.mr-job-progression span {
+  font-weight: 700;
+  color: #246244;
+}
+.mo-ranked-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr);
+  gap: 24px;
+  margin-top: 18px;
+  align-items: start;
+}
+.mo-ranked {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+.mo-ranked button {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 90px 42px;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  padding: 12px;
+  background: white;
+  border: 1px solid #dfe6ec;
+  border-radius: 8px;
+}
+.mo-ranked button[aria-pressed="true"] {
+  background: #edf5ef;
+  border-color: #246244;
+  box-shadow: inset 3px 0 #246244;
+}
+.mo-rank-id {
+  color: #64756e;
+  font-size: 12px;
+}
+.mo-rank-name {
+  font-size: 13px;
+  line-height: 1.45;
+}
+.mo-bar {
+  height: 7px;
+  background: #e7ece9;
+  border-radius: 9px;
+  overflow: hidden;
+}
+.mo-bar > span {
+  display: block;
+  height: 100%;
+  background: #24704c;
+  border-radius: 9px;
+}
+.mo-ranked strong {
+  font-size: 13px;
+  color: #246244;
+  text-align: right;
+}
+@media (max-width: 1000px) {
+  .mo-ranked-layout {
+    grid-template-columns: 1fr;
+  }
+  .mr-comparison > article {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+@media (max-width: 480px) {
+  .mo-ranked button {
+    grid-template-columns: 20px minmax(0, 1fr) 42px;
+  }
+  .mo-bar {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .mo-ranked strong {
+    grid-column: 3;
+    grid-row: 1;
+  }
+  .mr-comparison > article {
+    padding: 15px;
+  }
+}
+
+.mr-cards article,
+.mr-recommendation {
+  border-radius: 8px;
+}
+.mr-personas {
+  grid-template-columns: 1fr;
+}
+.mr-personas article {
+  padding: 0;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  overflow: hidden;
+  border-left: 0;
+}
+.mr-personas .mr-card-identity {
+  padding: 20px;
+  background: #173c35;
+}
+.mr-personas .mr-card-identity h3 {
+  color: #fff;
+  margin-bottom: 0;
+}
+.mr-personas article:nth-child(2) .mr-card-identity {
+  background: #37305f;
+}
+.mr-personas article:nth-child(3) .mr-card-identity {
+  background: #28465b;
+}
+.mr-personas article > p {
+  padding: 20px;
+}
+.mr-job-progression {
+  background: #edf5ef;
+}
+.mr-job-progression > span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+@media (max-width: 1000px) {
+  .mo-ranked-layout > .mo-detail,
+  .mo-ranked-layout > .mo-empty {
+    order: -1;
+  }
+}
+@media (max-width: 600px) {
+  .mr-personas article {
+    grid-template-columns: 1fr;
+  }
+  .mr-personas .mr-card-identity {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 15px;
+  }
+  .mr-personas .mr-widget-icon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+}
+
+.mo-ranked-layout > .mo-detail {
+  scroll-margin-top: calc(var(--mr-nav-height, 84px) + 18px);
+}

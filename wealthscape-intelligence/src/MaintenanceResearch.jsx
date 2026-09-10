@@ -70,15 +70,23 @@ function Evidence({ slide, links = [], children }) {
     </div>
   );
 }
-function Cards({ rows }) {
+function Cards({ rows, icons = [Lightbulb], personas = false }) {
   return (
-    <div className="mr-cards">
-      {rows.map(([title, text]) => (
-        <article key={title}>
-          <h3>{title}</h3>
-          <p>{text}</p>
-        </article>
-      ))}
+    <div className={`mr-cards ${personas ? "mr-personas" : ""}`}>
+      {rows.map(([title, text], index) => {
+        const Icon = icons[index % icons.length];
+        return (
+          <article key={title}>
+            <div className="mr-card-identity">
+              <span className="mr-widget-icon">
+                <Icon size={18} aria-hidden="true" />
+              </span>
+              <h3>{title}</h3>
+            </div>
+            <p>{text}</p>
+          </article>
+        );
+      })}
     </div>
   );
 }
@@ -153,7 +161,7 @@ const recommendationMap = [
 function RecommendationMap({ scoped, profile, onNavigate }) {
   return (
     <div className="mr-recommendations">
-      {recommendationMap.map((rec) => {
+      {recommendationMap.map((rec, index) => {
         const sample = rec.preferred
           .map((id) => scoped.find((c) => c.id === id))
           .find(Boolean);
@@ -168,7 +176,10 @@ function RecommendationMap({ scoped, profile, onNavigate }) {
                 <span className="am-eyebrow">
                   {rec.phase} · weighted score {rec.score}
                 </span>
-                <h3>{rec.title}</h3>
+                <h3>
+                  <span className="mr-step-number">{index + 1}</span>
+                  {rec.title}
+                </h3>
               </div>
               <span className="mr-outcome-ref">Outcomes {rec.outcomes}</span>
             </header>
@@ -440,6 +451,7 @@ export default function MaintenanceResearch({
                   maintenance work stalls.
                 </p>
                 <Cards
+                  icons={[ChartScatter, GitBranch, Database, ShieldCheck]}
                   rows={[
                     [
                       "A platform benchmark, not a maintenance rating",
@@ -496,17 +508,8 @@ export default function MaintenanceResearch({
                 </Evidence>
                 <div
                   className="mr-comparison"
-                  role="table"
-                  aria-label="Maintenance capability gaps"
+                  aria-label="Maintenance capability references and validation questions"
                 >
-                  <div role="row" className="mr-comparison-head">
-                    <strong role="columnheader">Capability</strong>
-                    <strong role="columnheader">Documented reference</strong>
-                    <strong role="columnheader">
-                      Wealthscape validation gap
-                    </strong>
-                    <strong role="columnheader">Strategic implication</strong>
-                  </div>
                   {[
                     [
                       "Shared validation",
@@ -536,30 +539,46 @@ export default function MaintenanceResearch({
                       "Make the next owner and completion evidence retrievable at every handoff.",
                       "altruist",
                     ],
-                  ].map(([capability, reference, gap, implication, source]) => (
-                    <div role="row" key={capability}>
-                      <strong role="cell">{capability}</strong>
-                      <div role="cell">
-                        <small>Documented reference</small>
-                        <p>{reference}</p>
-                        <a
-                          href={sources[source][1]}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          {sources[source][0]} ↗
-                        </a>
-                      </div>
-                      <div role="cell">
-                        <small>Wealthscape validation gap</small>
-                        <p>{gap}</p>
-                      </div>
-                      <div role="cell">
-                        <small>Strategic implication</small>
-                        <p>{implication}</p>
-                      </div>
-                    </div>
-                  ))}
+                  ].map(
+                    (
+                      [capability, reference, gap, implication, source],
+                      index,
+                    ) => {
+                      const CapabilityIcon = [
+                        ClipboardCheck,
+                        ShieldCheck,
+                        Users,
+                        Database,
+                      ][index];
+                      return (
+                        <article key={capability}>
+                          <h3>
+                            <CapabilityIcon size={18} aria-hidden="true" />
+                            {capability}
+                          </h3>
+                          <div>
+                            <small>Documented reference</small>
+                            <p>{reference}</p>
+                            <a
+                              href={sources[source][1]}
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {sources[source][0]} ↗
+                            </a>
+                          </div>
+                          <div>
+                            <small>Wealthscape · validation needed</small>
+                            <p>{gap}</p>
+                          </div>
+                          <div>
+                            <small>Strategic implication</small>
+                            <p>{implication}</p>
+                          </div>
+                        </article>
+                      );
+                    },
+                  )}
                 </div>
               </>
             )}
@@ -570,6 +589,8 @@ export default function MaintenanceResearch({
                   gap.
                 </p>
                 <Cards
+                  personas
+                  icons={[Users, ClipboardCheck, ShieldCheck]}
                   rows={[
                     [
                       "Investor · sees the outcome",
@@ -609,9 +630,16 @@ export default function MaintenanceResearch({
             )}
             {section === 4 && (
               <>
-                <MaintenanceOutcomes profile={profile} cases={cases} onNavigate={onNavigate}/>
+                <MaintenanceOutcomes
+                  profile={profile}
+                  cases={cases}
+                  onNavigate={onNavigate}
+                />
                 <Evidence slide="18, 25, 28" links={["kitces", "t3"]}>
-                  Study methodology: opportunity = importance + max(importance − satisfaction, 0), using the revised study inputs. Its published scores are retained; the Frames coordinates are not recomputed.
+                  Study methodology: opportunity = importance + max(importance −
+                  satisfaction, 0), using the revised study inputs. Its
+                  published scores are retained; the Frames coordinates are not
+                  recomputed.
                 </Evidence>
               </>
             )}
@@ -841,7 +869,10 @@ export default function MaintenanceResearch({
           <button onClick={() => onStartGuide("scenario")}>
             <FlaskConical size={16} /> Run Scenario
           </button>
-          <button data-maintenance-guide-launch="tour" onClick={() => onStartGuide("tour")}>
+          <button
+            data-maintenance-guide-launch="tour"
+            onClick={() => onStartGuide("tour")}
+          >
             <BookOpen size={16} /> Take Tour
           </button>
         </div>

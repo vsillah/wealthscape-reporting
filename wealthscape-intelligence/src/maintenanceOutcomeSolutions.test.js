@@ -118,3 +118,30 @@ test("quadrants reproduce Frames midpoint 3 and orientation, not its inconsisten
     16,
   );
 });
+
+test("ranked view retains every published score and stable ID without mutating source order", async () => {
+  const { rankedOutcomeSolutions, outcomeScoreScale, outcomeSolutions } =
+    await import("./maintenanceOutcomeSolutions.js");
+  const before = outcomeSolutions.map((item) => [item.id, item.score]);
+  const ranked = rankedOutcomeSolutions();
+  assert.equal(outcomeScoreScale, 10);
+  assert.equal(ranked.length, 15);
+  assert.deepEqual(
+    ranked.map((item) => item.id).sort((a, b) => a - b),
+    Array.from({ length: 15 }, (_, i) => i + 1),
+  );
+  assert.ok(
+    ranked.every(
+      (item, index) =>
+        item.score >= 0 &&
+        item.score <= outcomeScoreScale &&
+        (!index || ranked[index - 1].score >= item.score),
+    ),
+  );
+  assert.deepEqual(
+    outcomeSolutions.map((item) => [item.id, item.score]),
+    before,
+  );
+  for (const item of ranked)
+    assert.equal(item.score, before.find(([id]) => id === item.id)[1]);
+});
