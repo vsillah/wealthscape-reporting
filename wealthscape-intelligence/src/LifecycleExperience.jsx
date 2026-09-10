@@ -1,4 +1,6 @@
 import { useState } from "react";
+import MaintenanceJourney from "./MaintenanceJourney.jsx";
+import MaintenanceCompetitorMap from "./MaintenanceCompetitorMap";
 import {
   Inbox,
   FileSignature,
@@ -9,6 +11,13 @@ import {
   ArrowRight,
 } from "lucide-react";
 import "./AccountMaintenance.css";
+import {
+  outcomeQuadrants,
+  OUTCOME_MIDPOINT,
+  OUTCOME_CHART,
+  outcomeChartX,
+  outcomeChartY,
+} from "./maintenanceQuadrants.js";
 
 const stages = [
   ["Intake", "Advisor / service team"],
@@ -306,7 +315,9 @@ export function ConnectedReportBuilder({
         onNavigate={onNavigate}
       />
       <section className="am-card">
-        <h2>Maintenance prerequisites</h2>
+        <h2 data-maintenance-guide="prerequisites">
+          Maintenance prerequisites
+        </h2>
         <p>
           Selected changes supply the report's household, account scope,
           evidence packet, owner, and review history.
@@ -362,7 +373,7 @@ export function ConnectedReportBuilder({
             </div>
           ))}
         </div>
-        <div className="am-callout" role="status">
+        <div className="am-callout" role="status" data-maintenance-tour="prerequisites">
           <strong>
             {eligible
               ? `${chosen.length} verified change${chosen.length === 1 ? "" : "s"} ready for reporting`
@@ -392,7 +403,7 @@ export function ConnectedReportBuilder({
         </button>
       </div>
       {mode === "account" ? (
-        <section className="am-card">
+        <section className="am-card" data-maintenance-guide="report">
           <div className="am-heading">
             <div>
               <h2>Account change report</h2>
@@ -413,6 +424,7 @@ export function ConnectedReportBuilder({
           {report ? (
             <article
               className="lx-report"
+              data-maintenance-guide="output"
               aria-label="Generated account change report"
             >
               <div className="lx-report-head">
@@ -502,7 +514,7 @@ export function ConnectedReportBuilder({
     </div>
   );
 }
-const outcomes = [
+export const outcomes = [
   ["Data re-entry across a change", 1.86, 4.93, "Sourced"],
   ["Rejected for incomplete information", 2.14, 5, "Derived"],
   ["Exception resolution time", 2.36, 4.9, "Inferred"],
@@ -519,97 +531,156 @@ const outcomes = [
   ["Confirming a change is complete", 2.9, 4.12, "Inferred"],
   ["Standing instruction / bank link", 3.12, 3.9, "Derived"],
 ];
-const competitors = [
-  ["Schwab", 7.95, 5, "Continuous dated program"],
-  ["Altruist", 8.31, 4.5, "Client-initiated, forms-free"],
-  ["TradePMR", 7.86, 3, "Partial documentation"],
-  ["Wealthscape", 7.73, 2, "Limited public maintenance documentation"],
-  ["SEI", 7.49, 2, "Account-opening evidence"],
-  ["Pershing", 6.73, 1, "Portfolio-focused public evidence"],
-  ["Goldman", 6.13, 1, "Limited documentation"],
-];
 const sourceColors = {
   Sourced: "#0b5d2e",
   Derived: "#5b4fbe",
   Inferred: "#a76b09",
 };
-export function LifecycleResearch() {
-  const [tab, setTab] = useState("opportunity");
-  const [index, setIndex] = useState(-1);
-  const [competitor, setCompetitor] = useState(3);
+export function LifecycleResearch({
+  view,
+  embedded = false,
+  selectedOutcome,
+  onOutcomeChange,
+  outcomeDetail,
+  compactSourceNote = false,
+}) {
+  const [localTab, setTab] = useState("opportunity");
+  const tab = view || localTab;
+  const [localIndex, setLocalIndex] = useState(-1);
+  const index = selectedOutcome === undefined ? localIndex : selectedOutcome;
+  const setIndex = onOutcomeChange || setLocalIndex;
   const d = outcomes[index];
-  const rival = competitors[competitor];
   return (
-    <section className="am-workspace am-card">
-      <span className="am-eyebrow">
-        Research translated into product direction
-      </span>
-      <h2>The work behind the report</h2>
-      <p>
-        Account intake, authority, service action, and review form one operating
-        path. Reporting is one output of that verified context.
-      </p>
-      <div className="am-tabs">
-        {[
-          ["opportunity", "15-outcome map"],
-          ["positioning", "Competitive positioning"],
-          ["journey", "Journey & ownership"],
-        ].map(([id, label]) => (
-          <button key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>
-            {label}
-          </button>
-        ))}
-      </div>
+    <section className={`am-workspace am-card ${tab === "journey" ? "mj-shell" : ""}`}>
+      {!embedded && (
+        <>
+          <span className="am-eyebrow">
+            Research translated into product direction
+          </span>
+          <h2>The work behind the report</h2>
+          <p>
+            Account intake, authority, service action, and review form one
+            operating path. Reporting is one output of that verified context.
+          </p>
+          <div className="am-tabs">
+            {[
+              ["opportunity", "15-outcome map"],
+              ["positioning", "Competitive positioning"],
+              ["journey", "Journey & ownership"],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                aria-pressed={tab === id}
+                onClick={() => setTab(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
       {tab === "opportunity" && (
         <>
-          <p className="am-note">
-            Source snapshot: Account Maintenance Frames. Importance and
-            satisfaction use adjacent survey categories; they are directional
-            proxies, not direct maintenance measurements. Source tags are
-            retained from the artifact.
-          </p>
+          {!compactSourceNote && (
+            <p className="am-note">
+              Source snapshot: Account Maintenance Frames. Importance and
+              satisfaction use adjacent survey categories; they are directional
+              proxies, not direct maintenance measurements. Source tags are
+              retained from the artifact.
+            </p>
+          )}
           <div className="lx-research-grid">
-            <div>
+            <div className="lx-outcome-chart">
+              <div className="lx-outcome-plot">
               <svg
                 className="lx-chart"
-                viewBox="0 0 520 340"
-                role="img"
+                viewBox={`0 0 ${OUTCOME_CHART.width} ${OUTCOME_CHART.height}`}
+                role="group"
                 aria-label="Fifteen maintenance outcomes plotted by satisfaction and importance"
               >
-                <rect x="52" y="25" width="220" height="255" fill="#e8f5ee" />
+                <desc>
+                  Four source quadrants, divided at 3 on both 1–5 axes. High
+                  importance and low satisfaction: Opportunity / underserved.
+                  High importance and high satisfaction: Table stakes. Low
+                  importance and high satisfaction: Overserved. Low importance
+                  and low satisfaction: Ignore.
+                </desc>
+                {outcomeQuadrants.map((q) => (
+                  <rect
+                    key={q.label}
+                    aria-label={q.label}
+                    x={outcomeChartX(q.minS)}
+                    y={outcomeChartY(q.maxI)}
+                    width={outcomeChartX(q.maxS) - outcomeChartX(q.minS)}
+                    height={outcomeChartY(q.minI) - outcomeChartY(q.maxI)}
+                    fill={q.fill}
+                  />
+                ))}
                 {[1, 2, 3, 4, 5].map((n) => (
                   <g key={n}>
                     <line
-                      x1={52 + (n - 1) * 110}
-                      x2={52 + (n - 1) * 110}
-                      y1="25"
-                      y2="280"
+                      x1={outcomeChartX(n)}
+                      x2={outcomeChartX(n)}
+                      y1={OUTCOME_CHART.top}
+                      y2={OUTCOME_CHART.bottom}
                       stroke="#e2e8f0"
                     />
                     <line
                       x1="52"
                       x2="492"
-                      y1={280 - (n - 1) * 63.75}
-                      y2={280 - (n - 1) * 63.75}
+                      y1={outcomeChartY(n)}
+                      y2={outcomeChartY(n)}
                       stroke="#e2e8f0"
                     />
-                    <text x={52 + (n - 1) * 110} y="302" textAnchor="middle">
+                    <text x={outcomeChartX(n)} y={OUTCOME_CHART.bottom + 22} textAnchor="middle">
                       {n}
                     </text>
-                    <text x="35" y={285 - (n - 1) * 63.75}>
+                    <text x="35" y={outcomeChartY(n) + 5}>
                       {n}
                     </text>
                   </g>
                 ))}
+                <line
+                  x1={outcomeChartX(OUTCOME_MIDPOINT)}
+                  x2={outcomeChartX(OUTCOME_MIDPOINT)}
+                  y1={OUTCOME_CHART.top}
+                  y2={OUTCOME_CHART.bottom}
+                  stroke="#869398"
+                  strokeWidth="1.5"
+                  strokeDasharray="6 5"
+                />
+                <line
+                  x1="52"
+                  x2="492"
+                  y1={outcomeChartY(OUTCOME_MIDPOINT)}
+                  y2={outcomeChartY(OUTCOME_MIDPOINT)}
+                  stroke="#869398"
+                  strokeWidth="1.5"
+                  strokeDasharray="6 5"
+                />
                 {outcomes
                   .map((o, i) => ({ o, i }))
                   .sort((a, b) => Number(a.i === index) - Number(b.i === index))
                   .map(({ o, i }) => (
-                    <g key={o[0]}>
+                    <g
+                      key={o[0]}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Select outcome ${i + 1}: ${o[0]}`}
+                      aria-pressed={i === index}
+                      onClick={() => setIndex(i)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setIndex(i);
+                        }
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
                       {i === index && (
                         <circle
-                          cx={52 + (o[1] - 1) * 110}
-                          cy={280 - (o[2] - 1) * 63.75}
+                          cx={outcomeChartX(o[1])}
+                          cy={outcomeChartY(o[2])}
                           r={20}
                           fill="white"
                           stroke="#243542"
@@ -617,8 +688,8 @@ export function LifecycleResearch() {
                         />
                       )}
                       <circle
-                        cx={52 + (o[1] - 1) * 110}
-                        cy={280 - (o[2] - 1) * 63.75}
+                        cx={outcomeChartX(o[1])}
+                        cy={outcomeChartY(o[2])}
                         r={i === index ? 14 : 9}
                         fill={
                           o[3] === "Inferred" ? "white" : sourceColors[o[3]]
@@ -632,8 +703,8 @@ export function LifecycleResearch() {
                         }
                       />
                       <text
-                        x={52 + (o[1] - 1) * 110}
-                        y={284 - (o[2] - 1) * 63.75}
+                        x={outcomeChartX(o[1])}
+                        y={outcomeChartY(o[2]) + 4}
                         textAnchor="middle"
                         fill={
                           index !== -1 && i !== index
@@ -649,18 +720,20 @@ export function LifecycleResearch() {
                       </text>
                     </g>
                   ))}
-                <text x="270" y="330" textAnchor="middle">
+                <text x="270" y={OUTCOME_CHART.height - 10} textAnchor="middle">
                   Satisfaction proxy →
                 </text>
                 <text
                   x="15"
-                  y="175"
-                  transform="rotate(-90 15 175)"
+                  y={outcomeChartY(OUTCOME_MIDPOINT)}
+                  transform={`rotate(-90 15 ${outcomeChartY(OUTCOME_MIDPOINT)})`}
                   textAnchor="middle"
                 >
                   Importance proxy →
                 </text>
               </svg>
+                {outcomeQuadrants.map(q => <span key={q.label} className="lx-quadrant-label" aria-hidden="true" style={{ left: `${outcomeChartX((q.minS + q.maxS) / 2) / OUTCOME_CHART.width * 100}%`, ...(q.minI === 3 ? { bottom: `calc(${(1 - outcomeChartY(OUTCOME_MIDPOINT) / OUTCOME_CHART.height) * 100}% + 6px)`, top: "auto" } : { top: `${outcomeChartY(1.5) / OUTCOME_CHART.height * 100}%` }) }}>{q.lines.map(line => <span key={line}>{line}</span>)}</span>)}
+              </div>
               <p className="am-note" role="status">
                 {d
                   ? `Highlighted: ${index + 1}. ${d[0]}. Muted bubbles remain visible for comparison.`
@@ -675,7 +748,7 @@ export function LifecycleResearch() {
                 ))}
               </div>
             </div>
-            <div>
+            <div className="lx-outcome-inspector">
               <label className="am-field">
                 Explore an outcome
                 <select
@@ -690,210 +763,58 @@ export function LifecycleResearch() {
                   ))}
                 </select>
               </label>
-              <div className="am-callout">
-                {d ? (
-                  <>
-                    <strong>
-                      {index + 1}. {d[0]}
-                    </strong>
-                    <p>
-                      {d[3]} input · importance {d[2].toFixed(2)} / 5 ·
-                      satisfaction {d[1].toFixed(2)} / 5
-                    </p>
-                    <p>
-                      {d[3] === "Inferred"
-                        ? "An inference to test with operations teams; do not treat this as a measured rate."
-                        : "Retained artifact label. Cross-category mapping still introduces uncertainty."}
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <strong>All outcomes</strong>
-                    <p>
-                      Compare all 15 outcomes by importance and satisfaction.
-                      Select an outcome to see its values and evidence category.
-                    </p>
-                    <p>
-                      These directional proxies retain the source artifact’s
-                      category labels and uncertainty.
-                    </p>
-                  </>
-                )}
-              </div>
-              <p className="am-note">
-                Kitces 2025 and T3/Inside Information 2026 inform the artifact.
-                Their samples and categories differ. The later executive deck
-                revises some scores; this map is explicitly the Frames snapshot.
-              </p>
-            </div>
-          </div>
-        </>
-      )}
-      {tab === "positioning" && (
-        <>
-          <p className="am-note">
-            Account Maintenance Frames snapshot. X: T3 2026 advisor
-            satisfaction. Y: assessed public maintenance capability, not
-            survey-measured capability. Missing documentation does not establish
-            missing product functionality.
-          </p>
-          <div className="lx-research-grid">
-            <svg
-              className="lx-chart"
-              viewBox="0 0 520 340"
-              role="img"
-              aria-label="Competitor satisfaction and assessed maintenance capability"
-            >
-              <rect x="270" y="25" width="222" height="140" fill="#e8f5ee" />
-              {[1, 2, 3, 4, 5].map((n) => (
-                <g key={n}>
-                  <line
-                    x1="52"
-                    x2="492"
-                    y1={280 - n * 46}
-                    y2={280 - n * 46}
-                    stroke="#e2e8f0"
-                  />
-                  <text x="33" y={285 - n * 46}>
-                    {n}
-                  </text>
-                </g>
-              ))}
-              {[6, 7, 8].map((n) => (
-                <text key={n} x={52 + (n - 6) * 160} y="302">
-                  {n}
-                </text>
-              ))}
-              {competitors.map((c, i) => (
-                <g key={c[0]}>
-                  <circle
-                    cx={52 + (c[1] - 6) * 160}
-                    cy={280 - c[2] * 46}
-                    r={i === competitor ? 14 : 9}
-                    fill={i === 3 ? "#0b5d2e" : "#5b4fbe"}
-                  />
-                  <text
-                    x={52 + (c[1] - 6) * 160}
-                    y={284 - c[2] * 46}
-                    textAnchor="middle"
-                    fill="white"
-                    fontSize="10"
-                  >
-                    {i + 1}
-                  </text>
-                </g>
-              ))}
-              <text x="265" y="330" textAnchor="middle">
-                Advisor satisfaction →
-              </text>
-              <text
-                x="15"
-                y="170"
-                transform="rotate(-90 15 170)"
-                textAnchor="middle"
-              >
-                Assessed capability →
-              </text>
-            </svg>
-            <div>
-              <label className="am-field">
-                Explore a platform
-                <select
-                  value={competitor}
-                  onChange={(e) => setCompetitor(Number(e.target.value))}
-                >
-                  {competitors.map((c, i) => (
-                    <option key={c[0]} value={i}>
-                      {i + 1}. {c[0]}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <div className="am-callout">
-                <strong>{rival[0]}</strong>
-                <p>
-                  Satisfaction {rival[1]} · capability {rival[2]} / 5
+              {index !== -1 && (
+                <button className="mo-reset" onClick={() => setIndex(-1)}>
+                  All outcomes
+                </button>
+              )}
+              {outcomeDetail || (
+                <div className="am-callout">
+                  {d ? (
+                    <>
+                      <strong>
+                        {index + 1}. {d[0]}
+                      </strong>
+                      <p>
+                        {d[3]} input · importance {d[2].toFixed(2)} / 5 ·
+                        satisfaction {d[1].toFixed(2)} / 5
+                      </p>
+                      <p>
+                        {d[3] === "Inferred"
+                          ? "An inference to test with operations teams; do not treat this as a measured rate."
+                          : "Retained artifact label. Cross-category mapping still introduces uncertainty."}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <strong>All outcomes</strong>
+                      <p>
+                        Compare all 15 outcomes by importance and satisfaction.
+                        Select an outcome to see its values and evidence
+                        category.
+                      </p>
+                      <p>
+                        These directional proxies retain the source artifact’s
+                        category labels and uncertainty.
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
+              {!compactSourceNote && (
+                <p className="am-note">
+                  Kitces 2025 and T3/Inside Information 2026 inform the
+                  artifact. Their samples and categories differ. The later
+                  executive deck revises some scores; this map is explicitly the
+                  Frames snapshot.
                 </p>
-                <p>{rival[3]}</p>
-              </div>
-              <p>
-                Investment question: can a shared maintenance path close the
-                documented workflow gap while keeping authority and review
-                visible?
-              </p>
-              <p className="am-note">
-                Vendor-published evidence needs independent checks. Axos
-                materials remain a qualitative evidence family, not an invented
-                point on this chart.
-              </p>
+              )}
             </div>
           </div>
         </>
       )}
-      {tab === "journey" && (
-        <>
-          <p className="am-note">
-            Executive deck, slides 6 and 10. Assessed journey from directional
-            forum evidence; curve height is illustrative, not measured
-            confidence.
-          </p>
-          <svg
-            className="lx-chart lx-curve"
-            viewBox="0 0 680 160"
-            role="img"
-            aria-label="Illustrative journey friction at authority and service waiting"
-          >
-            <path
-              d="M35 35 C90 20 130 30 160 100 S230 55 275 45 S350 125 395 120 S480 20 540 35 L640 25"
-              fill="none"
-              stroke="#0b5d2e"
-              strokeWidth="4"
-            />
-            <circle cx="160" cy="100" r="7" fill="#ad7100" />
-            <circle cx="395" cy="120" r="7" fill="#ad7100" />
-            <text x="160" y="145" textAnchor="middle">
-              Authority / signature
-            </text>
-            <text x="425" y="153" textAnchor="middle">
-              Waiting on service
-            </text>
-          </svg>
-          <div className="lx-swimlane">
-            {[
-              [
-                "Client",
-                "Life event",
-                "Authority / signature",
-                "Receives confirmation",
-              ],
-              [
-                "Operations",
-                "Capture once",
-                "Route rejected work",
-                "Confirm account scope",
-              ],
-              [
-                "Home office",
-                "Policy context",
-                "Review exceptions",
-                "Retain review evidence",
-              ],
-            ].map(([role, ...steps]) => (
-              <div key={role}>
-                <strong>{role}</strong>
-                {steps.map((s) => (
-                  <span key={s}>{s}</span>
-                ))}
-              </div>
-            ))}
-          </div>
-          <p>
-            Design response: show the next owner and missing evidence at each
-            wait, retain the rejection history, and carry the completed packet
-            into reporting.
-          </p>
-        </>
-      )}
+      {tab === "positioning" && <MaintenanceCompetitorMap />}
+      {tab === "journey" && <MaintenanceJourney />}
     </section>
   );
 }

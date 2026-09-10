@@ -1,5 +1,8 @@
-import { ConnectedReportBuilder, LifecycleResearch, LifecycleInvestment } from "./LifecycleExperience";
-import { AccountMaintenance, LifecycleDashboard, MaintenanceStrategy, visibleCases, initialMaintenance, maintenanceHref, readMaintenanceRoute } from "./AccountMaintenance";
+import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
+import MaintenanceResearch from "./MaintenanceResearch";
+import MaintenanceGuide from "./MaintenanceGuide.jsx";
+import { createGuideCase, guideSteps, canVisitGuideStep, GUIDE_CASE_ID } from "./maintenanceGuide.js";
+import { AccountMaintenance, LifecycleDashboard, visibleCases, initialMaintenance, maintenanceHref, readMaintenanceRoute } from "./AccountMaintenance";
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Bell, Search, BarChart2, FileText, Users, Settings, Home,
@@ -2073,6 +2076,7 @@ function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileCha
     <label style={{ display:"flex", alignItems:"center", gap:8, minWidth:compact?145:180 }}>
       {!compact && <span style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", whiteSpace:"nowrap" }}>Profile</span>}
       <select
+        aria-label="Profile"
         value={selectedProfileId}
         onChange={e=>onProfileChange(e.target.value)}
         style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
@@ -2442,13 +2446,19 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
   );
 }
 
-function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario, deepLink }) {
+function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario, onStartMaintenanceGuide, deepLink, cases }) {
   const { isMobile } = bp;
+  const [researchTrack, setResearchTrack] = useState("lifecycle");
   const strategy = profile.strategy;
   const ranked = [...strategy.outcomes].sort((a,b)=>oppScore(b)-oppScore(a));
   const maxOpp = ranked.length ? oppScore(ranked[0]) : 1;
   const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
   const isBrokerDealerProfile = profile.id !== DEFAULT_PROFILE_ID;
+  const trackTitle = researchTrack === "lifecycle" ? "Account maintenance strategy" : strategy.heroTitle;
+  const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : strategy.heroBody;
+  const trackStats = researchTrack === "lifecycle"
+    ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"8",label:"Maintenance functions"},{value:"3",label:"Stakeholder groups"},{value:"4",label:"Investment priorities"}]
+    : [{value:strategy.marketSignals.length,label:"Market signals"},{value:strategy.outcomes.length,label:"Reporting outcomes"},{value:strategy.recommendations.length,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
   const routeStrategyAction = (label, layer = "morning", sub = {}) => {
     onNavigate(layer, { ...sub, dashboardFocus:label, source:"strategy" });
   };
@@ -2456,7 +2466,14 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>
 
-      {/* Hero */}
+      <div className="am-workspace" role="group" aria-label="Strategy research tracks">
+        <div className="am-tabs" style={{ marginBottom:0 }}>
+          <button aria-pressed={researchTrack === "lifecycle"} aria-controls="strategy-lifecycle" onClick={()=>setResearchTrack("lifecycle")}>Account maintenance</button>
+          <button aria-pressed={researchTrack === "reporting"} aria-controls="strategy-reporting" onClick={()=>setResearchTrack("reporting")}>Reporting modernization</button>
+        </div>
+      </div>
+
+      {/* Strategy hero */}
       <div style={{ background:`linear-gradient(135deg, ${T.navy} 0%, ${T.navyMid} 100%)`, borderRadius:16, padding:isMobile?"22px 18px":"30px 32px", color:T.white }}>
         <div style={{ display:"flex", alignItems:isMobile?"stretch":"center", justifyContent:"space-between", gap:12, marginBottom:12, flexDirection:isMobile?"column":"row" }}>
           <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
@@ -2465,17 +2482,14 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
             </div>
             <span style={{ fontSize:11, color:"rgba(255,255,255,0.55)" }}>Outcome-Driven Innovation · Jobs-to-be-Done</span>
           </div>
-          <div style={{ background:"rgba(255,255,255,0.92)", borderRadius:10, padding:6 }}>
-            <ProfileSwitcher profiles={profiles} profileOrder={profileOrder} activeProfileId={activeProfileId} onProfileChange={onProfileChange} compact={isMobile}/>
-          </div>
         </div>
         <div style={{ fontSize:11, color:"rgba(255,255,255,0.58)", fontWeight:700, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>{profile.eyebrow}</div>
-        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>Account lifecycle orchestration</div>
+        <div style={{ fontSize:isMobile?22:30, fontWeight:800, letterSpacing:"-0.02em", lineHeight:1.2, marginBottom:10 }}>{trackTitle}</div>
         <div style={{ fontSize:isMobile?13:15, color:"rgba(255,255,255,0.78)", lineHeight:1.65, maxWidth:720 }}>
-          Modernize the path from account change to trusted output: capture once, resolve authority and service blockers, retain review evidence, and reuse verified context in reporting. Each persona owns a different part of this shared lifecycle.
+          {trackBody}
         </div>
         <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:isMobile?10:14, marginTop:22 }}>
-          {[{value:"15",label:"Maintenance outcomes · directional"},{value:"6",label:"Stages from intake to output"},{value:"4",label:"Operating personas"},{value:"1",label:"Shared evidence path"}].map(s=>(
+          {trackStats.map(s=>(
             <div key={s.label} style={{ background:"rgba(255,255,255,0.08)", border:"1px solid rgba(255,255,255,0.12)", borderRadius:10, padding:"13px 14px" }}>
               <div style={{ fontSize:isMobile?20:24, fontWeight:800, letterSpacing:"-0.01em" }}>{s.value}</div>
               <div style={{ fontSize:10.5, color:"rgba(255,255,255,0.6)", marginTop:3, lineHeight:1.4 }}>{s.label}</div>
@@ -2484,11 +2498,18 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
         </div>
       </div>
 
-      <MaintenanceStrategy onNavigate={onNavigate}/>
-      <LifecycleResearch/>
+      <section id="strategy-lifecycle" hidden={researchTrack !== "lifecycle"}>
+        <div style={{ display:"flex", flexDirection:"column", gap:30 }}>
+          <MaintenanceResearch onNavigate={onNavigate} profile={profile} cases={cases} onStartGuide={onStartMaintenanceGuide}/>
+        </div>
+      </section>
 
-      <details className="am-workspace am-card">
-        <summary>Reporting output and persona research detail</summary>
+      <section id="strategy-reporting" hidden={researchTrack !== "reporting"} aria-label="Reporting modernization research">
+        <div className="am-workspace am-card" style={{ marginBottom:20 }}>
+          <h2>Reporting research takeaways</h2>
+          <p>Use persona-specific outcome gaps to guide reporting priorities, then compare the recommended capabilities and build-or-buy choices below.</p>
+          <p className="am-note">This research track retains its original market sources, customer-research framing, and Claude Project references. Its outcome scores are separate from the account-maintenance proxy map.</p>
+        </div>
         <div style={{ display:"flex", flexDirection:"column", gap:30, marginTop:20 }}>
       {/* 1 · Market research */}
       <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
@@ -2706,7 +2727,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       <div style={{ background:`linear-gradient(135deg, ${T.green} 0%, ${T.greenMid} 100%)`, borderRadius:14, padding:isMobile?"20px 18px":"24px 28px", color:T.white, display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center", justifyContent:"space-between" }}>
         <div>
           <div style={{ fontSize:isMobile?16:18, fontWeight:800, marginBottom:4 }}>See the research come to life</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.85)", lineHeight:1.55, maxWidth:560 }}>Take the guided tour to walk every component and its outcome, or run the end-to-end scenario to watch one alert become a delivered client report.</div>
+          <div style={{ fontSize:13, color:"#fff", lineHeight:1.55, maxWidth:560 }}>Take the guided tour to walk every component and its outcome, or run the end-to-end scenario to watch one alert become a delivered client report.</div>
         </div>
         <div style={{ display:"flex", gap:10, flexShrink:0 }}>
           <button onClick={onStartScenario} style={{ display:"flex", alignItems:"center", gap:6, background:T.white, color:T.green, border:"none", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><Target size={15}/> Run Scenario</button>
@@ -2714,7 +2735,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
         </div>
       </div>
         </div>
-      </details>
+      </section>
     </div>
   );
 }
@@ -4003,6 +4024,11 @@ export default function WealthscapePrototype() {
   const [activeLayer,    setActiveLayer]    = useState(() => readMaintenanceRoute().layer);
   const [maintenanceCases, setMaintenanceCases] = useState(initialMaintenance);
   const [lifecycleReports, setLifecycleReports] = useState([]);
+  const [maintenanceGuide, setMaintenanceGuide] = useState(null);
+  const [guideCases, setGuideCases] = useState([]);
+  const [guideReports, setGuideReports] = useState([]);
+  const displayedCases = maintenanceGuide ? guideCases : maintenanceCases;
+  const updateDisplayedCases = maintenanceGuide ? setGuideCases : setMaintenanceCases;
   const [sidebarOpen,    setSidebarOpen]    = useState(false);
   const [alerts,         setAlerts]         = useState(() => getProfileDashboard(getProfileById(PROFILE_REGISTRY.defaultProfileId)).alerts);
   const [alertsOpen,     setAlertsOpen]     = useState(false);
@@ -4019,12 +4045,23 @@ export default function WealthscapePrototype() {
   const activeProfile = getProfileById(activeProfileId);
   const activeDashboard = getProfileDashboard(activeProfile);
   useEffect(() => {
-    const sync = () => { const route = readMaintenanceRoute(); setActiveLayer(route.layer); setDeepLink(route.sub); if(route.sub.profileId) setActiveProfileId(normalizeProfileId(route.sub.profileId)); };
+    const sync = () => {
+      setMaintenanceGuide(null); setGuideCases([]); setGuideReports([]);
+      const route = readMaintenanceRoute();
+      if (route.sub.caseId === GUIDE_CASE_ID) {
+        route.layer = "strategy"; delete route.sub.caseId; delete route.sub.panel;
+        window.history.replaceState(null, "", maintenanceHref("strategy", route.sub));
+      }
+      setActiveLayer(route.layer); setDeepLink(route.sub);
+      if(route.sub.profileId) setActiveProfileId(normalizeProfileId(route.sub.profileId));
+    };
     window.addEventListener("popstate", sync);
-    return () => window.removeEventListener("popstate", sync);
+    window.addEventListener("hashchange", sync);
+    return () => { window.removeEventListener("popstate", sync); window.removeEventListener("hashchange", sync); };
   }, []);
   const handleProfileChange = profileId => {
-    window.history.pushState(null, "", maintenanceHref(activeLayer, { profileId }));
+    if (maintenanceGuide) { setMaintenanceGuide(null); setGuideCases([]); setGuideReports([]); setActiveLayer("strategy"); }
+    window.history.pushState(null, "", maintenanceHref(maintenanceGuide ? "strategy" : activeLayer, { profileId }));
     setActiveProfileId(normalizeProfileId(profileId));
     setDeepLink(null);
   };
@@ -4036,6 +4073,7 @@ export default function WealthscapePrototype() {
   }, [activeProfileId, scenarioActive]);
 
   useEffect(() => {
+    if (maintenanceGuide) return; // The guide positions its actual target.
     contentRef.current?.scrollTo({ top:0, left:0 });
   }, [activeLayer]);
 
@@ -4061,7 +4099,9 @@ export default function WealthscapePrototype() {
 
   // Route an alert's next-best-action to the right screen + sub-tab, mark it read.
   const handleAlertAction = (alert) => {
+    setMaintenanceGuide(null); setGuideCases([]); setGuideReports([]);
     const { layer, ...sub } = alert.action;
+    if (maintenanceGuide) window.history.pushState(null, "", maintenanceHref(layer, { profileId: activeProfileId, ...sub }));
     if (sub.profileId) setActiveProfileId(normalizeProfileId(sub.profileId));
     setAlerts(prev => prev.map(a => a.id === alert.id ? { ...a, read:true } : a));
     setActiveLayer(layer);
@@ -4077,6 +4117,19 @@ export default function WealthscapePrototype() {
   const unreadAlerts  = alerts.filter(a => !a.read).length;
 
   const navigateToLayer = (layer, sub = null) => {
+    if (maintenanceGuide) {
+      // Operational links may follow this fixture; unrelated navigation exits.
+      const steps = guideSteps(maintenanceGuide.mode);
+      const index = ["intake", "readiness"].includes(sub?.maintenanceView) ? -1 : steps.findIndex(s => s.layer === layer &&
+        (sub?.caseId === GUIDE_CASE_ID ? s.sub.caseId === sub.caseId && (!sub.panel || s.sub.panel === sub.panel) : !s.sub.caseId));
+      if (index >= 0 && (!sub?.profileId || sub.profileId === activeProfileId)) {
+        if (!canVisitGuideStep(maintenanceGuide.mode, maintenanceGuide.step, index, guideCases[0], guideReports)) {
+          setMaintenanceGuide(g => ({ ...g, notice: "Complete the evidence and human review steps before moving ahead. Use Next to follow the guided order." }));
+          return;
+        }
+        setMaintenanceGuide(g => ({ ...g, step: index, notice: undefined }));
+      } else { setMaintenanceGuide(null); setGuideCases([]); setGuideReports([]); }
+    }
     window.history.pushState(null, "", maintenanceHref(layer, { profileId: activeProfileId, ...sub }));
     if (sub?.profileId) setActiveProfileId(normalizeProfileId(sub.profileId));
     setActiveLayer(layer);
@@ -4105,6 +4158,7 @@ export default function WealthscapePrototype() {
   };
 
   const startScenario = () => {
+    setMaintenanceGuide(null); setGuideCases([]); setGuideReports([]);
     setScenarioStep(0); setScenarioActive(true); setReportDelivered(false);
     setActiveProfileId(DEFAULT_PROFILE_ID);
     setActiveLayer("morning"); setDeepLink(null); setDemoActive(false);
@@ -4113,7 +4167,28 @@ export default function WealthscapePrototype() {
   };
   const endScenario = () => setScenarioActive(false);
 
-  const startDemo = () => { setDemoStep(0); setSpotlightRect(null); setDemoActive(true); setScenarioActive(false); };
+  const startDemo = () => { setMaintenanceGuide(null); setGuideCases([]); setGuideReports([]); setDemoStep(0); setSpotlightRect(null); setDemoActive(true); setScenarioActive(false); };
+  const routeMaintenanceGuide = (mode, step) => {
+    const destination = guideSteps(mode)[step];
+    const sub = { ...destination.sub, profileId: activeProfileId };
+    window.history.pushState(null, "", maintenanceHref(destination.layer, sub));
+    setActiveLayer(destination.layer); setDeepLink({ ...sub, _ts: Date.now() });
+    setMaintenanceGuide({ mode, step, runId: Date.now() }); setSidebarOpen(false);
+  };
+  const startMaintenanceGuide = (mode) => {
+    setDemoActive(false); setScenarioActive(false); setEmailModalOpen(false); setAlertsOpen(false);
+    setGuideCases([createGuideCase(activeProfileId)]); setGuideReports([]);
+    routeMaintenanceGuide(mode, 0);
+  };
+  const closeMaintenanceGuide = () => {
+    setMaintenanceGuide(null); setGuideCases([]); setGuideReports([]);
+    window.history.pushState(null, "", maintenanceHref("strategy", { profileId: activeProfileId }));
+    setActiveLayer("strategy"); setDeepLink(null);
+  };
+  const stepMaintenanceGuide = (next) => {
+    if (!canVisitGuideStep(maintenanceGuide.mode, maintenanceGuide.step, next, guideCases[0], guideReports)) return;
+    routeMaintenanceGuide(maintenanceGuide.mode, next);
+  };
   const nextStep  = () => setDemoStep(s => Math.min(s + 1, TOUR_STEPS.length - 1));
   const prevStep  = () => setDemoStep(s => Math.max(s - 1, 0));
   const closeDemo = () => setDemoActive(false);
@@ -4233,14 +4308,15 @@ export default function WealthscapePrototype() {
           <AlertCenter alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onMarkAllRead={markAllRead} onClose={()=>setAlertsOpen(false)} isMobile={isMobile}/>
         )}
 
-        <div ref={contentRef} style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          {activeLayer==="morning" && !demoActive && !scenarioActive && <LifecycleDashboard profile={activeProfile} cases={maintenanceCases} onNavigate={navigateToLayer}/>}
-          {activeLayer==="maintenance" && <AccountMaintenance profile={activeProfile} cases={maintenanceCases} setCases={setMaintenanceCases} deepLink={deepLink} onNavigate={navigateToLayer}/>}
+        <div className="mg-layout">
+        <div className="mg-surface" ref={contentRef} style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
+          {activeLayer==="morning" && !demoActive && !scenarioActive && <LifecycleDashboard profile={activeProfile} cases={displayedCases} onNavigate={navigateToLayer}/>}
+          {activeLayer==="maintenance" && <AccountMaintenance key={maintenanceGuide ? `guide-${maintenanceGuide.step}` : "session"} guided={!!maintenanceGuide} readOnly={maintenanceGuide?.mode === "tour"} profile={activeProfile} cases={displayedCases} setCases={updateDisplayedCases} deepLink={deepLink} onNavigate={navigateToLayer}/>}
           {activeLayer==="morning" && (demoActive || scenarioActive) && <MorningBrief    bp={bp} profile={activeProfile} dashboard={activeDashboard} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onNavigate={navigateToLayer} deepLink={deepLink} scenarioStep={scenarioActive?scenarioStep:null}/>}
           {activeLayer==="reports" && (
             <>
               {demoActive || scenarioActive ? <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/> : (
-                <ConnectedReportBuilder key={activeProfileId + (deepLink?.caseId || "")} profile={activeProfile} cases={maintenanceCases.filter(c=>visibleCases(maintenanceCases,activeProfile).some(v=>v.id===c.id)||c.id===deepLink?.caseId)} setCases={setMaintenanceCases} deepLink={deepLink} onNavigate={navigateToLayer} reports={lifecycleReports} setReports={setLifecycleReports}>
+                <ConnectedReportBuilder key={activeProfileId + (deepLink?.caseId || "")} profile={activeProfile} cases={displayedCases.filter(c=>visibleCases(displayedCases,activeProfile).some(v=>v.id===c.id)||c.id===deepLink?.caseId)} setCases={updateDisplayedCases} deepLink={deepLink} onNavigate={navigateToLayer} reports={maintenanceGuide ? guideReports : lifecycleReports} setReports={maintenanceGuide ? setGuideReports : setLifecycleReports}>
                   <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onSendToClient={()=>setEmailModalOpen(true)}/>
                 </ConnectedReportBuilder>
               )}
@@ -4249,9 +4325,11 @@ export default function WealthscapePrototype() {
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} profile={activeProfile} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink} profile={activeProfile}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp} profile={activeProfile} dashboard={activeDashboard} deepLink={deepLink}/>}
-          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={navigateToLayer} onStartTour={startDemo} onStartScenario={startScenario} deepLink={deepLink}/>}
+          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={navigateToLayer} onStartTour={startDemo} onStartScenario={startScenario} onStartMaintenanceGuide={startMaintenanceGuide} deepLink={deepLink} cases={maintenanceCases}/>}
           {activeLayer==="buildcase"     && <BuildCaseLayer  bp={bp} onNavigate={navigateToLayer}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
+        </div>
+        {maintenanceGuide && <MaintenanceGuide guide={maintenanceGuide} item={guideCases[0]} reports={guideReports} profile={activeProfile} onStep={stepMaintenanceGuide} onClose={closeMaintenanceGuide} onRestart={()=>startMaintenanceGuide(maintenanceGuide.mode)}/>}
         </div>
 
         {isMobile && (
