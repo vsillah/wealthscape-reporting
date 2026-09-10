@@ -1,5 +1,19 @@
 # Wealthscape Lifecycle Intelligence
 
+## Maintenance research guides — 10 September 2026
+
+The Account maintenance Strategy footer now offers **Run Scenario** and **Take Tour**, alongside the existing reporting-track experience. Maintenance guides preserve the global profile. They use a separate `MC-GUIDE` Baobab fixture and separate report state; ordinary session cases and reports are never reset or overwritten. The temporary fixture is scoped with `createdFor` for each of the four profiles.
+
+The eight-step scenario follows command center → blocked queue → account scope → three evidence attestations → human confirmation → timeline → report generation → generated output. Next and operational navigation share the same gates. A timeline/report shortcut cannot skip incomplete evidence or human review; the final step requires an actual generated guide report. Previous preserves guide work. Restart replaces only guide state with a fresh blocked case, three unchecked attestations, and no output. Exit/completion returns to Account maintenance Strategy and discards guide state. Changing profile exits to Strategy in the new scope. Unrelated navigation exits; browser history never resurrects an orphan guide case.
+
+The seven-step tour uses the same implemented surfaces but keeps case controls read-only. It ends at a blocked reporting prerequisite; it does not describe the request as completed. The global reporting Scenario/Tour remain their existing reporting demonstrations.
+
+Every stop shows target outcome IDs, a primary outcome label from the existing outcome registry, a research insight, and the UX rationale. Extended production boundaries and source attribution are expandable. All research remains directional and tied to the August 18 executive-study snapshot. No raw/private content, legal recognition, eSignature validation, provider call, or external send is introduced.
+
+The guide docks beside the workspace at desktop and above it at narrow widths, reserving space rather than covering operational actions. Its explanation area scrolls independently; Previous/Next/Restart remain available. Target outlines attach after the routed surface mounts, including evidence/review/timeline subpanels. The guide owns target scrolling while active.
+
+Validation and reproduction: see [maintenance guide QA](qa/maintenance-guide/README.md). Work remains local on `codex/strategy-research-tabs` for captain review/publication to draft PR #34; no merge or production promotion.
+
 ## Strategy hierarchy and leadership walkthrough — 10 September 2026
 
 Artifact-specific rule: **Lifecycle Intelligence** is the umbrella product. **Account maintenance** and **Reporting modernization** are peer Strategy research tracks. Account maintenance is the default. Keep the global shell profile selector as the only profile control. Keep operational dashboards functionality-driven; put strategic findings, provenance, prioritization, and sourcing questions in Strategy.

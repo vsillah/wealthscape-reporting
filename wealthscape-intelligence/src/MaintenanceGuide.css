@@ -1,0 +1,197 @@
+.mg-layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+.mg-layout > .mg-surface {
+  flex: 1;
+  min-width: 0;
+}
+.mg-guide {
+  width: 330px;
+  flex-shrink: 0;
+  background: #f5faf7;
+  border-left: 1px solid #bfd5c6;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  color: #243542;
+}
+.mg-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px;
+  background: #0b5d2e;
+  color: white;
+  font-size: 12px;
+  font-weight: 750;
+}
+.mg-top span,
+.mg-outcomes,
+.mg-controls button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mg-top button {
+  background: transparent;
+  border: 0;
+  color: white;
+  cursor: pointer;
+  min-height: 32px;
+}
+.mg-copy {
+  overflow: auto;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.mg-copy h2 {
+  font-size: 20px;
+  line-height: 1.25;
+  margin: 6px 0 12px;
+}
+.mg-copy p {
+  margin: 10px 0;
+}
+.mg-scope,
+.mg-safety {
+  font-size: 11px;
+  color: #52655b;
+}
+.mg-outcomes {
+  color: #5b4fbe;
+  font-weight: 750;
+}
+.mg-outcome-label {
+  font-weight: 700;
+  color: #5b4fbe;
+  font-size: 12px;
+}
+.mg-insight {
+  border-top: 1px solid #d5e3da;
+  padding-top: 10px;
+}
+.mg-copy summary {
+  cursor: pointer;
+  font-weight: 700;
+}
+.mg-copy a {
+  color: #35664d;
+}
+.mg-action {
+  border-left: 3px solid #0b5d2e;
+  padding: 8px 10px;
+  background: #e4f1e9;
+}
+.mg-controls {
+  margin-top: auto;
+  padding: 12px;
+  border-top: 1px solid #bfd5c6;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mg-controls button {
+  padding: 9px 10px;
+  background: white;
+  border: 1px solid #bacbc0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 650;
+  font-size: 12px;
+  min-height: 38px;
+}
+.mg-controls .mg-next {
+  background: #0b5d2e;
+  color: white;
+}
+.mg-controls button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.mg-highlight {
+  outline: 3px solid #5b4fbe;
+  outline-offset: -3px;
+  scroll-margin-top: 16px;
+  border-radius: 10px;
+}
+.mr-guide-cta {
+  background: linear-gradient(135deg, #0b5d2e, #1a7a40);
+  color: white;
+  padding: 24px;
+  border-radius: 14px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+}
+.mr-guide-cta h2 {
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+.mr-guide-cta p {
+  max-width: 560px;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 13px;
+}
+.mr-guide-cta > div:last-child {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.mr-guide-cta button {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  background: white;
+  color: #0b5d2e;
+  font-weight: 700;
+}
+@media (max-width: 1000px) {
+  .mg-layout {
+    flex-direction: column-reverse;
+  }
+  .mg-guide {
+    width: auto;
+    max-height: 42%;
+    border-left: 0;
+    border-bottom: 1px solid #bfd5c6;
+  }
+  .mg-copy {
+    padding: 10px 14px;
+  }
+  .mg-copy h2 {
+    font-size: 17px;
+  }
+  .mg-controls {
+    padding: 7px 12px;
+    flex-shrink: 0;
+  }
+  .mg-top {
+    padding: 6px 12px;
+    flex-shrink: 0;
+  }
+  .mg-controls button {
+    padding: 6px 10px;
+  }
+  .mr-guide-cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+@media (max-width: 480px) {
+  .mr-guide-cta {
+    padding: 18px;
+  }
+  .mr-guide-cta > div:last-child {
+    flex-wrap: wrap;
+  }
+  .mg-guide {
+    max-height: 44%;
+  }
+}

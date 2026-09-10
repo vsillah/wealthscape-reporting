@@ -144,7 +144,7 @@ export function LifecycleDashboard({ profile, cases, onNavigate }) {
   const rows = visibleCases(cases, profile);
   const blocked = rows.filter((c) => c.status === "Blocked");
   return (
-    <div className="am-workspace">
+    <div className="am-workspace" data-maintenance-guide="dashboard">
       <div className="am-hero">
         <div>
           <span className="am-eyebrow">Account operations</span>
@@ -410,6 +410,8 @@ export function AccountMaintenance({
   setCases,
   deepLink,
   onNavigate,
+  guided = false,
+  readOnly = false,
 }) {
   const [view, setView] = useState("queue");
   const [selected, setSelected] = useState(null);
@@ -490,6 +492,7 @@ export function AccountMaintenance({
     setNotice(text);
   };
   const open = (item) => {
+    if (guided) { onNavigate("maintenance", { caseId: item.id, panel: "overview", maintenanceView: "queue" }); return; }
     setSelected(item.id);
     setPanel("overview");
     setNotice("");
@@ -504,6 +507,8 @@ export function AccountMaintenance({
         </div>
         <button
           className="am-primary"
+          disabled={guided}
+          title={guided ? "Exit the guide to start a separate household change" : undefined}
           onClick={() => {
             setView("intake");
             setSelected(null);
@@ -531,7 +536,9 @@ export function AccountMaintenance({
           <button
             key={id}
             aria-pressed={view === id}
+            title={guided && id !== "queue" ? "Leaves the guide and returns to your session workspace" : undefined}
             onClick={() => {
+              if (guided) { onNavigate("maintenance", { maintenanceView: id, ...(id === "queue" ? { statusFilter: "Blocked" } : {}) }); return; }
               setView(id);
               setSelected(null);
               setNotice("");
@@ -696,9 +703,9 @@ export function AccountMaintenance({
             </div>
           )}
           {c ? (
-            <section className="am-card">
+            <section className="am-card" data-maintenance-guide="case">
               <div className="am-heading">
-                <button onClick={() => setSelected(null)}>
+                <button onClick={() => guided ? onNavigate("maintenance", { maintenanceView: "queue", statusFilter: "Blocked" }) : setSelected(null)}>
                   ← Back to {view === "readiness" ? "readiness" : "queue"}
                 </button>
                 <Status value={c.status} />
@@ -715,7 +722,7 @@ export function AccountMaintenance({
                   <button
                     key={p}
                     aria-pressed={panel === p}
-                    onClick={() => setPanel(p)}
+                    onClick={() => guided ? onNavigate("maintenance", { caseId: c.id, panel: p, maintenanceView: "queue" }) : setPanel(p)}
                   >
                     {p === "overview"
                       ? "Blocker & routing"
@@ -739,14 +746,14 @@ export function AccountMaintenance({
                         ? "Released to reporting readiness."
                         : "Next action: review account scope and complete missing evidence checks."}
                     </p>
-                    <button onClick={() => setPanel("evidence")}>
+                    <button onClick={() => guided ? onNavigate("maintenance", { caseId: c.id, panel: "evidence", maintenanceView: "queue" }) : setPanel("evidence")}>
                       Review evidence packet →
                     </button>
                   </div>
                   <label className="am-field">
                     Assigned owner
                     <select
-                      disabled={ready(c)}
+                      disabled={readOnly || ready(c)}
                       value={c.owner}
                       onChange={(e) =>
                         update(
@@ -778,7 +785,7 @@ export function AccountMaintenance({
                 </div>
               )}
               {panel === "evidence" && (
-                <div className="am-detail">
+                <div className="am-detail" data-maintenance-guide="evidence">
                   <p>
                     Packet {c.id}-E · Synthetic checklist for{" "}
                     {c.accounts.join(", ")}. Checks attest to every account
@@ -788,7 +795,7 @@ export function AccountMaintenance({
                     <label className="am-check" key={label}>
                       <input
                         type="checkbox"
-                        disabled={ready(c)}
+                        disabled={readOnly || ready(c)}
                         checked={c.checks[i]}
                         onChange={(e) => {
                           const checks = c.checks.map((v, j) =>
@@ -813,7 +820,7 @@ export function AccountMaintenance({
                       {label}
                     </label>
                   ))}
-                  <div className="am-callout">
+                  <div className="am-callout" data-maintenance-guide="review">
                     <strong>Human review gate</strong>
                     <p>
                       {ready(c)
@@ -824,7 +831,7 @@ export function AccountMaintenance({
                     </p>
                     <button
                       className="am-primary"
-                      disabled={ready(c) || !c.checks.every(Boolean)}
+                      disabled={readOnly || ready(c) || !c.checks.every(Boolean)}
                       onClick={() =>
                         update(
                           {
@@ -864,7 +871,7 @@ export function AccountMaintenance({
                 </div>
               )}
               {panel === "timeline" && (
-                <ol className="am-timeline">
+                <ol className="am-timeline" data-maintenance-guide="timeline">
                   {c.events.map((e, i) => (
                     <li key={i}>
                       <strong>{e.text}</strong>
@@ -877,7 +884,7 @@ export function AccountMaintenance({
               )}
             </section>
           ) : (
-            <section className="am-card">
+            <section className="am-card" data-maintenance-guide="queue">
               <h2>
                 {view === "readiness"
                   ? "Changes feeding downstream reports"

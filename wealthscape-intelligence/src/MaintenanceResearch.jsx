@@ -221,7 +221,7 @@ function RecommendationMap({ scoped, profile, onNavigate }) {
   );
 }
 
-export default function MaintenanceResearch({ onNavigate, profile, cases }) {
+export default function MaintenanceResearch({ onNavigate, profile, cases, onStartGuide }) {
   const [active, setActive] = useState(1);
   const [navHeight, setNavHeight] = useState(84);
   const navigation = useRef(null);
@@ -870,6 +870,10 @@ export default function MaintenanceResearch({ onNavigate, profile, cases }) {
         publisher sources. This walkthrough summarizes the source artifacts; it
         does not independently certify their full evidence base.
       </p>
+      <div className="mr-guide-cta">
+        <div><h2>See the research come to life</h2><p>Follow one synthetic household change from a blocked queue to reviewed evidence and an account report. The tour explains each design decision; the scenario lets you complete the checks yourself.</p></div>
+        <div><button onClick={() => onStartGuide("scenario")}><FlaskConical size={16}/> Run Scenario</button><button onClick={() => onStartGuide("tour")}><BookOpen size={16}/> Take Tour</button></div>
+      </div>
     </div>
   );
 }

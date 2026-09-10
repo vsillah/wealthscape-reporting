@@ -306,7 +306,7 @@ export function ConnectedReportBuilder({
         onNavigate={onNavigate}
       />
       <section className="am-card">
-        <h2>Maintenance prerequisites</h2>
+        <h2 data-maintenance-guide="prerequisites">Maintenance prerequisites</h2>
         <p>
           Selected changes supply the report's household, account scope,
           evidence packet, owner, and review history.
@@ -392,7 +392,7 @@ export function ConnectedReportBuilder({
         </button>
       </div>
       {mode === "account" ? (
-        <section className="am-card">
+        <section className="am-card" data-maintenance-guide="report">
           <div className="am-heading">
             <div>
               <h2>Account change report</h2>
@@ -413,6 +413,7 @@ export function ConnectedReportBuilder({
           {report ? (
             <article
               className="lx-report"
+              data-maintenance-guide="output"
               aria-label="Generated account change report"
             >
               <div className="lx-report-head">
