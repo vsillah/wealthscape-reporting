@@ -20,7 +20,7 @@ export const maintenanceCompetitors = [
   {
     question: "Can a client revise a beneficiary after opening and can staff see what remains incomplete?",
     feedback: "Altruist calls combined account opening and transfers a top-requested update; it reports that separate post-opening transfer requests had caused client confusion. This is vendor-reported feedback, not independent research or an explanation of the 2026 rating.",
-    name: "Altruist", satisfaction: 8.31, capability: 4.5, label: [440, 100],
+    name: "Altruist", satisfaction: 8.31, capability: 4.5, label: [440, 130],
     basis: "Frames rated Altruist highly for client-initiated, forms-free maintenance. The April release provides specific post-opening beneficiary evidence; the 4.5/5 remains the original assessment.",
     strength: "Altruist documents post-opening beneficiary designation edits in its client portal and app, native client-agreement signatures, and account-activity notifications.",
     limit: "The April 2024 release limits its eSignature tool to clients with an Altruist login and email on file. Per Stirpes designations apply to people, not entity beneficiaries. These are dated release limits.",
@@ -30,7 +30,7 @@ export const maintenanceCompetitors = [
   },
   {
     question: "Which of the bundled onboarding steps can be reused for a later change across the same household?",
-    name: "TradePMR", satisfaction: 7.86, capability: 3, label: [428, 142],
+    name: "TradePMR", satisfaction: 7.86, capability: 3, label: [428, 206],
     basis: "Frames described partial maintenance documentation and assigned 3/5. The source did not supply a reproducible capability rubric; the score is retained as an assessment.",
     strength: "TradePMR describes CRM-prefilled account applications, multiple household accounts in one DocuSign envelope, and parallel signatures.",
     limit: "The October 2024 announcement covers account opening. It does not verify the equivalent workflow for changing existing account ownership, beneficiaries, or authority.",
@@ -40,7 +40,7 @@ export const maintenanceCompetitors = [
   },
   {
     question: "Can an entitled user identify the next owner, resolve a NIGO message, and retrieve the completed request history?",
-    name: "Wealthscape", satisfaction: 7.73, capability: 2, label: [365, 223],
+    name: "Wealthscape", satisfaction: 7.73, capability: 2, label: [365, 344],
     basis: "Frames assigned 2/5 from limited public documentation. Fidelity's detailed Service Center help documents existing workflows, so the historical assessment needs revalidation; it is not a measured functionality limit.",
     strength: "Fidelity documents actionable service queues, item statuses, saved searches, status alerts, and request histories in Service Center.",
     limit: "Fidelity notes that entitlements limit visible requests and messages. Its help does not measure turnaround or user satisfaction. Retail Fidelity findings cannot automatically describe institutional Wealthscape.",
@@ -50,7 +50,7 @@ export const maintenanceCompetitors = [
   },
   {
     question: "How does an RIA track a maintenance request from its service liaison through resolution?",
-    name: "SEI", satisfaction: 7.49, capability: 2, label: [260, 163],
+    name: "SEI", satisfaction: 7.49, capability: 2, label: [260, 243],
     basis: "Frames based its 2/5 assessment on account-opening evidence from 2022. Current service material adds context but does not reproduce or validate that earlier scoring process.",
     strength: "SEI says every client is supported by a relationship manager and dedicated service liaison, alongside custody and open-architecture technology.",
     limit: "A stated service model does not establish response times or demonstrate self-service maintenance, household authority, or exception recovery. Those workflows need direct validation.",
@@ -60,7 +60,7 @@ export const maintenanceCompetitors = [
   },
   {
     question: "Which maintenance actions and recovery paths are available in the firm’s entitled NetX configuration?",
-    name: "Pershing", satisfaction: 6.73, capability: 1, label: [185, 269],
+    name: "Pershing", satisfaction: 6.73, capability: 1, label: [185, 421],
     basis: "Frames gave 1/5 from portfolio-focused public evidence. The revised study warns that gated release documentation makes comparisons uneven. This score cannot establish absent maintenance capability.",
     strength: "BNY describes NetX360+ as an integrated custodial platform and NetXInvestor as online and mobile access to account information with self-service options.",
     limit: "The overview does not demonstrate the full workflow for specific maintenance changes. BNY also cautions that some described functionality may not yet be available; validate scope in an authenticated demo.",
@@ -70,7 +70,7 @@ export const maintenanceCompetitors = [
   },
   {
     question: "What happens when a supported client needs a beneficiary or authority change after onboarding?",
-    name: "Goldman", satisfaction: 6.13, capability: 1, label: [95, 200],
+    name: "Goldman", satisfaction: 6.13, capability: 1, label: [95, 304],
     basis: "Frames assigned 1/5 where maintenance documentation was limited. Current onboarding and status features add evidence, but the original snapshot is preserved rather than rescored.",
     strength: "Goldman documents multiple supported account openings, transfer requests, and bank links with one signature, plus a dashboard for monitoring those requests.",
     limit: "These claims concern onboarding and supported account types. They do not establish all existing-account maintenance paths; Goldman directs firms to confirm supported types with its team.",
@@ -79,5 +79,6 @@ export const maintenanceCompetitors = [
     source: vendor("Goldman Sachs · modern client experiences", "https://www.goldmansachs.com/what-we-do/ficc-and-equities/custody-solutions/our-solutions/modern-client-experiences"),
   },
 ];
-export const competitorX = value => 52 + (value - 6) * 160;
-export const competitorY = value => 280 - value * 46;
+export const COMPETITOR_CHART = { width: 520, height: 500, left: 52, right: 492, top: 50, bottom: 440 };
+export const competitorX = value => COMPETITOR_CHART.left + (value - 6) * 160;
+export const competitorY = value => COMPETITOR_CHART.bottom - value * (COMPETITOR_CHART.bottom - COMPETITOR_CHART.top) / 5;

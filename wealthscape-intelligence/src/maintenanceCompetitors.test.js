@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { maintenanceCompetitors, competitorSurvey, competitorX, competitorY } from './maintenanceCompetitors.js';
+import { maintenanceCompetitors, competitorSurvey, competitorX, competitorY, COMPETITOR_CHART } from './maintenanceCompetitors.js';
 
 test('all seven platform identities and Frames coordinates remain unchanged', () => {
   assert.deepEqual(maintenanceCompetitors.map(c => [c.name,c.satisfaction,c.capability]), [
@@ -9,8 +9,8 @@ test('all seven platform identities and Frames coordinates remain unchanged', ()
   ]);
   for(const c of maintenanceCompetitors) {
     assert.ok(competitorX(c.satisfaction)>=52 && competitorX(c.satisfaction)<=492);
-    assert.ok(competitorY(c.capability)>=25 && competitorY(c.capability)<=280);
-    assert.ok(c.label[0]>52 && c.label[0]<492 && c.label[1]>=25 && c.label[1]<280);
+    assert.ok(competitorY(c.capability)>=25 && competitorY(c.capability)<=COMPETITOR_CHART.bottom);
+    assert.ok(c.label[0]>52 && c.label[0]<492 && c.label[1]>=25 && c.label[1]<COMPETITOR_CHART.bottom);
   }
 });
 

@@ -1,5 +1,13 @@
 # Wealthscape Lifecycle Intelligence
 
+## Compact competitor comparison preference — 10 September 2026
+
+Keep the competitor graph visually balanced with its inspector. Use a 520 × 500 viewBox with shared chart geometry and uniform scaling, giving a 458px-high graph at the 1208px desktop viewport. Keep fixed 12px name annotations and aligned leader lines; do not stretch circles or add blank-height filler. Smaller widths stack the map and inspector.
+
+Keep the platform dropdown, name, side-by-side scores, and historical-assessment caveat available across **Position**, **Evidence**, and **Assumptions** tabs. Default to Position and retain the active tab when changing platforms. Position holds the assessment basis and survey boundary; Evidence holds documented strengths/limits and vendor-reported feedback; Assumptions holds explicitly labeled appeal/friction hypotheses and the validation question. Tabs have linked panels, roving focus, Arrow Left/Right wrapping, and Home/End support. Place the selected platform and survey sources/date/type in one full-width strip below the comparison grid, two columns on desktop and stacked on mobile. The strip remains visible across tabs and is named for the selected platform. No duplicated source list, nested scroll area, or decorative card stack.
+
+Validation: existing 10 focused tests, build, and `git diff --check` pass. Integrated Browser checks at 1208/805/390px verified the taller geometry, round points, zero name-label intersections, no horizontal overflow, compact score/tab rows, all seven name selections, Enter selection for all seven points, dropdown synchronization, default Position, retained tab while comparing platforms, single visible tab panel, Arrow Right and Home/End focus, and two persistent source links on each tab. Source content and numerical scores are unchanged. The layout-only diff remains uncommitted for captain publication and human QA.
+
 ## Named competitor map and evidence context — 10 September 2026
 
 All seven competitor names remain visible beside their points, using fixed 12px HTML buttons and leader lines. Name buttons, keyboard-accessible points, and the dropdown share one selection. The Frames D2 identities and satisfaction/capability coordinates are unchanged. Desktop places the map beside the detail; 805px and 390px stack them.
