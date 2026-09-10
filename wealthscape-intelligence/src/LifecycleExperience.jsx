@@ -502,7 +502,7 @@ export function ConnectedReportBuilder({
     </div>
   );
 }
-const outcomes = [
+export const outcomes = [
   ["Data re-entry across a change", 1.86, 4.93, "Sourced"],
   ["Rejected for incomplete information", 2.14, 5, "Derived"],
   ["Exception resolution time", 2.36, 4.9, "Inferred"],
@@ -533,33 +533,42 @@ const sourceColors = {
   Derived: "#5b4fbe",
   Inferred: "#a76b09",
 };
-export function LifecycleResearch() {
-  const [tab, setTab] = useState("opportunity");
+export function LifecycleResearch({ view, embedded = false }) {
+  const [localTab, setTab] = useState("opportunity");
+  const tab = view || localTab;
   const [index, setIndex] = useState(-1);
   const [competitor, setCompetitor] = useState(3);
   const d = outcomes[index];
   const rival = competitors[competitor];
   return (
     <section className="am-workspace am-card">
-      <span className="am-eyebrow">
-        Research translated into product direction
-      </span>
-      <h2>The work behind the report</h2>
-      <p>
-        Account intake, authority, service action, and review form one operating
-        path. Reporting is one output of that verified context.
-      </p>
-      <div className="am-tabs">
-        {[
-          ["opportunity", "15-outcome map"],
-          ["positioning", "Competitive positioning"],
-          ["journey", "Journey & ownership"],
-        ].map(([id, label]) => (
-          <button key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>
-            {label}
-          </button>
-        ))}
-      </div>
+      {!embedded && (
+        <>
+          <span className="am-eyebrow">
+            Research translated into product direction
+          </span>
+          <h2>The work behind the report</h2>
+          <p>
+            Account intake, authority, service action, and review form one
+            operating path. Reporting is one output of that verified context.
+          </p>
+          <div className="am-tabs">
+            {[
+              ["opportunity", "15-outcome map"],
+              ["positioning", "Competitive positioning"],
+              ["journey", "Journey & ownership"],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                aria-pressed={tab === id}
+                onClick={() => setTab(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
       {tab === "opportunity" && (
         <>
           <p className="am-note">

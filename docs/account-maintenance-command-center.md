@@ -1,5 +1,50 @@
 # Wealthscape Lifecycle Intelligence
 
+## Strategy hierarchy and leadership walkthrough — 10 September 2026
+
+Artifact-specific rule: **Lifecycle Intelligence** is the umbrella product. **Account maintenance** and **Reporting modernization** are peer Strategy research tracks. Account maintenance is the default. Keep the global shell profile selector as the only profile control. Keep operational dashboards functionality-driven; put strategic findings, provenance, prioritization, and sourcing questions in Strategy.
+
+Maintenance research should have leadership parity with reporting research. Render all sections by default in research-first order: market research, capability comparison, customer research, desired outcomes, job map, opportunity matrix, findings/takeaways, recommendations, and resolution strategy. Use a full scrollable page with a compact sticky jump selector and Previous/Next anchors; do not paginate or hide the research sections. Use meaningful icons and restrained evidence accents. Preserve selected outcome shading, All outcomes reset, platform selection, and journey context.
+
+The `MaintenanceResearch` component renders all nine sections and three diagrams together. Anchors scroll to the section below the sticky navigation; the selected item follows scrolling in the actual shell scroll container. Each recommendation maps outcome IDs to a UX decision, implemented synthetic behavior, a persona-scoped destination, and a proposed production owner, dependency, and validation gate. When a matching fixture is outside the current profile, the link opens that profile's readiness view with an explanation instead of selecting an inaccessible case. Resolution adds discovery actions, sourcing decision criteria, and proposed baseline/research/pilot milestones. These remain proposals, not a completed internal assessment. The existing route contract uses zero-based stage strings: `2` is Exception routing, `3` is Human review.
+
+### Source mapping for this revision
+
+All three raw artifacts were inspected read-only under `/Users/vambahsillah/Downloads/`; none is copied into the repository or bundle. Hashes match the provenance table below.
+
+| Artifact | Inspected evidence | Product use |
+| --- | --- | --- |
+| `Account_Maintenance_Frames.html` | D1 outcome coordinates/provenance and D2 competitor snapshot; chart descriptions | Preserve existing Frames charts and selection behavior. Do not replace their values with executive-study values. |
+| `Wealthscape_Account_Maintenance_Executive_4.pptx` | Slides 2–30, with particular attention to 12–18 findings, 19–23 ranking/sequence, 24–25 argument/risks, and 27–30 limitations/register | Takeaways, market synthesis, customer methodology, separate revised outcome ranking, dependency sequence, ninety-day baseline gate, proposed sourcing workshop. |
+| `Wealthscape_Account_Maintenance_Executive.pptx` | Opening executive summary, scope, and market findings | Version comparison only. Later corrections take precedence; original rounded scores and broad regulatory claims are not promoted. |
+
+Research origin remains Claude Desktop project **Wealthscape Market Research**. The UI names the executive study and date instead of repeating a raw export filename. No Claude chat, forum identity, private source text, or deck is shipped.
+
+Public source links verified during this revision: [Kitces 2025](https://www.kitces.com/kitces-report-independent-financial-advisor-technology-fintech-software-tools-research-2025/), [T3 2026 survey](https://t3technologyhub.com/wp-content/uploads/2026/03/2026-T3-Inside-Information-Software-Survey.pdf), [Schwab digital workflows](https://advisorservices.schwab.com/whats-new/account-management/digital-workflows), [Altruist April 2024](https://altruist.com/news/april-2024/), and [FINRA 3110](https://www.finra.org/rules-guidance/rulebooks/finra-rules/3110). Vendor descriptions are attributed and scoped; Altruist's April release explicitly describes post-opening beneficiary designation edits. Schwab firm LPOA-IA is not treated as third-party POA. The unlinked DeVoe numeric claim was omitted from the shipped walkthrough.
+
+### Evidence and decision boundaries
+
+- The Frames and revised executive-study scores are separate snapshots. The new desired-outcome list uses slide 18 scores; the existing matrix uses Frames coordinates. Neither is a direct maintenance survey.
+- The job map is derived and the journey is assessed. Primary CSA interviews, needs-based segmentation, internal maturity mapping, and Build/Partner/Acquire evaluation remain incomplete.
+- Resolution options are explicitly proposed workshop questions. There is no completed sourcing assessment, approved vendor choice, or acquisition case.
+- The case is parity/position and an operating hypothesis, not proven churn reduction or productivity ROI. Missing volume, cost, maintenance NIGO, rework, and CSA time constrain sizing.
+- Dependency sequences validation before household authority despite the latter's higher score. The ninety-day measurement gate can resize the program.
+- Missing public vendor documentation is not proof of missing capability. Regulatory scope must be confirmed for each workflow; proposals do not fund the roadmap.
+
+Local review route: `http://127.0.0.1:5195/#view=strategy&profileId=bd-hybrid-advisor`. The existing server was reused and not stopped.
+
+### Validation for the full-scroll revision
+
+- Captain follow-up reproduced a sticky-control focus-scroll race: Previous from Resolution could skip Recommendations. Anchor jumps now complete immediately and preserve navigation intent during control interaction; wheel, touch, content/scrollbar pointer input, and page-scroll keys resume scroll tracking. Retested Resolution → Previous → Recommendations → Next → Resolution at 1280/768/390, rapid sequential selections, and mobile manual-scroll recovery into Opportunity matrix. All nine sections remain rendered.
+- `npm --prefix wealthscape-intelligence run build` and `git diff --check` passed.
+- Integrated Codex Browser: full page renders nine sections and three diagrams. Inspected desktop recommendations at 1280, tablet capability comparison at 768, and mobile job map/journey and resolution at 390 pixels; document width equaled viewport width. Sticky section navigation remained below the shell and tracked manual scrolling through the actual content container.
+- Exercised section jumps, Next, platform selection, inferred outcome emphasis, and All outcomes reset. Prior revision also verified Previous/Next boundaries, sourced/derived outcomes, internal jumps, and research-track selection persistence; these controls are retained.
+- All four recommendation links were clicked under Hybrid Advisor: validation and household authority opened MC-101 evidence, enterprise opened MC-104 overview, and compliance opened scoped readiness because no matching fixture was visible. Lifecycle and report bridge links retained the profile; reporting selected MC-101 and held generation with an actionable prerequisite.
+- Both synthetic queue links preserved `bd-hybrid-advisor`: Blocked returned 2 of 3 requests at Exception routing; Ready for review returned 1 of 3 at Human review.
+- Publisher-link click handlers and hrefs were exercised; primary publisher pages were inspected separately. External new-tab behavior is controlled by the browser host. No browser console errors observed.
+- Current local visual evidence: `/tmp/wealthscape-strategy-qa/desktop-fullscroll-recommendations.png` and `/tmp/wealthscape-strategy-qa/mobile-fullscroll-journey.png`. Earlier paginated screenshots are superseded. No raw source artifact was copied into the bundle.
+- No live customer-data smoke, provider calls, merge, or deployment. Captain review and human QA remain. Research limitations above remain product-decision gates, not implementation failures.
+
 ## Continuous account lifecycle
 
 The default product story is account change intake -> authority/signature evidence -> exception routing -> human review -> trusted account context -> reporting output. The shell, browser title, Strategy, and Build Case use Lifecycle Intelligence as the product hierarchy.

@@ -1,5 +1,6 @@
-import { ConnectedReportBuilder, LifecycleResearch, LifecycleInvestment } from "./LifecycleExperience";
-import { AccountMaintenance, LifecycleDashboard, MaintenanceStrategy, visibleCases, initialMaintenance, maintenanceHref, readMaintenanceRoute } from "./AccountMaintenance";
+import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
+import MaintenanceResearch from "./MaintenanceResearch";
+import { AccountMaintenance, LifecycleDashboard, visibleCases, initialMaintenance, maintenanceHref, readMaintenanceRoute } from "./AccountMaintenance";
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Bell, Search, BarChart2, FileText, Users, Settings, Home,
@@ -2442,7 +2443,7 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
   );
 }
 
-function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario, deepLink }) {
+function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario, deepLink, cases }) {
   const { isMobile } = bp;
   const [researchTrack, setResearchTrack] = useState("lifecycle");
   const strategy = profile.strategy;
@@ -2450,10 +2451,10 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   const maxOpp = ranked.length ? oppScore(ranked[0]) : 1;
   const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
   const isBrokerDealerProfile = profile.id !== DEFAULT_PROFILE_ID;
-  const trackTitle = researchTrack === "lifecycle" ? "Account lifecycle orchestration" : strategy.heroTitle;
-  const trackBody = researchTrack === "lifecycle" ? "Modernize the path from account change to trusted output: capture once, resolve authority and service blockers, retain review evidence, and reuse verified context in reporting. Each persona owns a different part of this shared lifecycle." : strategy.heroBody;
+  const trackTitle = researchTrack === "lifecycle" ? "Account maintenance strategy" : strategy.heroTitle;
+  const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : strategy.heroBody;
   const trackStats = researchTrack === "lifecycle"
-    ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"6",label:"Stages from intake to output"},{value:"4",label:"Operating personas"},{value:"1",label:"Shared evidence path"}]
+    ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"8",label:"Maintenance functions"},{value:"3",label:"Stakeholder groups"},{value:"4",label:"Investment priorities"}]
     : [{value:strategy.marketSignals.length,label:"Market signals"},{value:strategy.outcomes.length,label:"Reporting outcomes"},{value:strategy.recommendations.length,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
   const routeStrategyAction = (label, layer = "morning", sub = {}) => {
     onNavigate(layer, { ...sub, dashboardFocus:label, source:"strategy" });
@@ -2464,7 +2465,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
 
       <div className="am-workspace" role="group" aria-label="Strategy research tracks">
         <div className="am-tabs" style={{ marginBottom:0 }}>
-          <button aria-pressed={researchTrack === "lifecycle"} aria-controls="strategy-lifecycle" onClick={()=>setResearchTrack("lifecycle")}>Account lifecycle</button>
+          <button aria-pressed={researchTrack === "lifecycle"} aria-controls="strategy-lifecycle" onClick={()=>setResearchTrack("lifecycle")}>Account maintenance</button>
           <button aria-pressed={researchTrack === "reporting"} aria-controls="strategy-reporting" onClick={()=>setResearchTrack("reporting")}>Reporting modernization</button>
         </div>
       </div>
@@ -2496,8 +2497,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
 
       <section id="strategy-lifecycle" hidden={researchTrack !== "lifecycle"}>
         <div style={{ display:"flex", flexDirection:"column", gap:30 }}>
-          <MaintenanceStrategy onNavigate={onNavigate}/>
-          <LifecycleResearch/>
+          <MaintenanceResearch onNavigate={onNavigate} profile={profile} cases={cases}/>
         </div>
       </section>
 
@@ -4267,7 +4267,7 @@ export default function WealthscapePrototype() {
           {activeLayer==="portal"        && <ClientPortal    bp={bp} deepLink={deepLink} profile={activeProfile} reportDelivered={reportDelivered}/>}
           {activeLayer==="integrations"  && <IntegrationHub  bp={bp} deepLink={deepLink} profile={activeProfile}/>}
           {activeLayer==="insights"      && <Analytics       bp={bp} profile={activeProfile} dashboard={activeDashboard} deepLink={deepLink}/>}
-          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={navigateToLayer} onStartTour={startDemo} onStartScenario={startScenario} deepLink={deepLink}/>}
+          {activeLayer==="strategy"      && <StrategyLayer   bp={bp} profile={activeProfile} profiles={PROFILE_REGISTRY.profiles} profileOrder={PROFILE_REGISTRY.profileOrder} activeProfileId={activeProfileId} onProfileChange={handleProfileChange} onNavigate={navigateToLayer} onStartTour={startDemo} onStartScenario={startScenario} deepLink={deepLink} cases={maintenanceCases}/>}
           {activeLayer==="buildcase"     && <BuildCaseLayer  bp={bp} onNavigate={navigateToLayer}/>}
           {activeLayer==="settings"      && <SettingsLayer/>}
         </div>
