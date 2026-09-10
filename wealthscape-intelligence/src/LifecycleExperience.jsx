@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MaintenanceJourney from "./MaintenanceJourney.jsx";
 import MaintenanceCompetitorMap from "./MaintenanceCompetitorMap";
 import {
   Inbox,
@@ -550,7 +551,7 @@ export function LifecycleResearch({
   const setIndex = onOutcomeChange || setLocalIndex;
   const d = outcomes[index];
   return (
-    <section className="am-workspace am-card">
+    <section className={`am-workspace am-card ${tab === "journey" ? "mj-shell" : ""}`}>
       {!embedded && (
         <>
           <span className="am-eyebrow">
@@ -813,83 +814,7 @@ export function LifecycleResearch({
         </>
       )}
       {tab === "positioning" && <MaintenanceCompetitorMap />}
-      {tab === "journey" && (
-        <>
-          <p className="am-note">
-            Executive deck, slides 6 and 10. Assessed journey from directional
-            forum evidence; curve height is illustrative, not measured
-            confidence.
-          </p>
-          <svg
-            className="lx-chart lx-curve"
-            viewBox="0 0 680 160"
-            role="img"
-            aria-label="Illustrative journey friction at authority and service waiting"
-          >
-            <path
-              d="M35 35 C90 20 130 30 160 100 S230 55 275 45 S350 125 395 120 S480 20 540 35 L640 25"
-              fill="none"
-              stroke="#0b5d2e"
-              strokeWidth="4"
-            />
-            <circle cx="160" cy="100" r="7" fill="#ad7100" />
-            <circle cx="395" cy="120" r="7" fill="#ad7100" />
-            <text x="160" y="145" textAnchor="middle">
-              Authority / signature
-            </text>
-            <text x="425" y="153" textAnchor="middle">
-              Waiting on service
-            </text>
-          </svg>
-          <div className="lx-swimlane">
-            <div className="mr-job-progression" aria-label="Job progression">
-              <strong>Proposed sequence</strong>
-              {[
-                "Establish scope",
-                "Resolve and review",
-                "Confirm completion",
-              ].map((label, index) => (
-                <span key={label}>
-                  <b className="mr-step-number">{index + 1}</b>
-                  {label}
-                </span>
-              ))}
-            </div>
-            {[
-              [
-                "Client",
-                "Life event",
-                "Authority / signature",
-                "Receives confirmation",
-              ],
-              [
-                "Operations",
-                "Capture once",
-                "Route rejected work",
-                "Confirm account scope",
-              ],
-              [
-                "Home office",
-                "Policy context",
-                "Review exceptions",
-                "Retain review evidence",
-              ],
-            ].map(([role, ...steps]) => (
-              <div key={role}>
-                <strong>{role}</strong>
-                {steps.map((s) => (
-                  <span key={s}>{s}</span>
-                ))}
-              </div>
-            ))}
-          </div>
-          <p>
-            Design response: show the next owner and missing evidence at each
-            wait, retain the rejection history, and carry the completed packet
-            into reporting.
-          </p>
-        </>
-      )}
+      {tab === "journey" && <MaintenanceJourney />}
     </section>
   );
 }
