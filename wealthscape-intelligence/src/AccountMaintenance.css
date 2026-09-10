@@ -434,6 +434,126 @@
   gap: 24px;
   align-items: center;
 }
+.mo-workspace .lx-research-grid {
+  align-items: start;
+}
+.lx-unified-outcomes { grid-template-areas:"chart detail" "list detail"; }
+.lx-unified-outcomes > .lx-outcome-chart { grid-area:chart; }
+.lx-unified-outcomes > .lx-outcome-inspector { grid-area:detail; }
+.lx-unified-outcomes > .lx-outcome-list { grid-area:list; }
+@media(max-width:900px) { .lx-unified-outcomes { grid-template-areas:"chart" "detail" "list"; grid-template-columns:minmax(0,1fr); } }
+.mo-workspace > .am-workspace.am-card {
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.mo-source-note {
+  font-size: 12px;
+  line-height: 1.65;
+  border-left: 3px solid #7f8d96;
+  padding: 8px 12px;
+}
+.mo-list {
+  margin-top: 18px;
+  max-height: 330px;
+  overflow: auto;
+  border-top: 1px solid #ccd7df;
+}
+.mo-list-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px;
+  font-size: 11px;
+  color: #526274;
+}
+.am-workspace .mo-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 0;
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 0;
+  width: 100%;
+  text-align: left;
+  padding: 11px 10px;
+  font-size: 12px;
+  background: transparent;
+  line-height: 1.5;
+}
+.am-workspace .mo-list button[aria-pressed="true"] {
+  background: #eef0fa;
+  color: #4434a3;
+  box-shadow: inset 3px 0 #5b4fbe;
+}
+.mo-list button b {
+  flex-shrink: 0;
+}
+.mo-detail {
+  border-top: 3px solid #5b4fbe;
+  padding-top: 14px;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.mo-detail h4 {
+  font-size: 12px;
+  margin: 18px 0 5px;
+  color: #334b40;
+}
+.mo-detail .am-primary {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  white-space: normal;
+  text-align: left;
+}
+.mo-values {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+  padding: 12px 0;
+  border-top: 1px solid #dfe5ea;
+  border-bottom: 1px solid #dfe5ea;
+}
+.mo-values dt {
+  font-size: 11px;
+  color: #526274;
+}
+.mo-values dd {
+  margin: 0;
+  font-weight: 700;
+}
+.mo-values dd span {
+  font-weight: 400;
+  font-size: 11px;
+}
+.am-workspace .mo-tag {
+  font-size: 11px;
+  color: #5b4fbe;
+}
+.am-workspace .mo-route-note {
+  font-size: 12px;
+  border-left: 2px solid #8a9b91;
+  padding-left: 10px;
+}
+.mo-reset {
+  margin-bottom: 12px;
+}
+.lx-chart .lx-quadrant-label {
+  font: 600 18px system-ui;
+  fill: #3f5354;
+  pointer-events: none;
+}
+.lx-chart g[role="button"]:focus {
+  outline: none;
+}
+.lx-chart g[role="button"]:focus-visible circle {
+  stroke: #111;
+  stroke-width: 4px;
+}
 .lx-chart {
   width: 100%;
   height: auto;

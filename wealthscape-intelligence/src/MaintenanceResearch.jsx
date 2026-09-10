@@ -3,7 +3,6 @@ import {
   BookOpen,
   Columns3,
   Users,
-  ListChecks,
   Route,
   ChartScatter,
   Lightbulb,
@@ -16,7 +15,8 @@ import {
   FlaskConical,
   ClipboardCheck,
 } from "lucide-react";
-import { LifecycleResearch, outcomes } from "./LifecycleExperience";
+import { LifecycleResearch } from "./LifecycleExperience";
+import MaintenanceOutcomes from "./MaintenanceOutcomes.jsx";
 import { visibleCases } from "./AccountMaintenance";
 
 const sources = {
@@ -42,16 +42,16 @@ const sections = [
   { id: 1, label: "Market research", icon: BookOpen, tone: "research" },
   { id: 2, label: "Capability comparison", icon: Columns3, tone: "research" },
   { id: 3, label: "Customer research", icon: Users, tone: "research" },
-  { id: 4, label: "Desired outcomes", icon: ListChecks, tone: "research" },
+  {
+    id: 4,
+    label: "Outcomes & opportunities",
+    icon: ChartScatter,
+    tone: "research",
+  },
   { id: 5, label: "Job map", icon: Route, tone: "derived" },
-  { id: 6, label: "Opportunity matrix", icon: ChartScatter, tone: "derived" },
   { id: 0, label: "Findings & takeaways", icon: Lightbulb, tone: "derived" },
   { id: 7, label: "Recommendations", icon: Milestone, tone: "decision" },
   { id: 8, label: "Resolution strategy", icon: Workflow, tone: "decision" },
-];
-const deckScores = [
-  8, 7.86, 7.46, 7.26, 6.48, 6.22, 5.54, 6.58, 6.2, 5.52, 6.84, 6.5, 5.58, 5.64,
-  4.68,
 ];
 function Evidence({ slide, links = [], children }) {
   return (
@@ -221,7 +221,12 @@ function RecommendationMap({ scoped, profile, onNavigate }) {
   );
 }
 
-export default function MaintenanceResearch({ onNavigate, profile, cases, onStartGuide }) {
+export default function MaintenanceResearch({
+  onNavigate,
+  profile,
+  cases,
+  onStartGuide,
+}) {
   const [active, setActive] = useState(1);
   const [navHeight, setNavHeight] = useState(84);
   const navigation = useRef(null);
@@ -604,37 +609,10 @@ export default function MaintenanceResearch({ onNavigate, profile, cases, onStar
             )}
             {section === 4 && (
               <>
-                <p className="mr-lead">
-                  Use outcomes to identify the work to improve, then validate
-                  the size of the gap.
-                </p>
-                <p className="am-note">
-                  This list uses the revised executive study opportunity scores
-                  (slide 18). The matrix uses the earlier Frames coordinates.
-                  These snapshots differ; scores are not silently combined. The
-                  formula is importance + max(importance − satisfaction, 0), on
-                  1–5 inputs. Even “Sourced” labels refer to adjacent
-                  categories.
-                </p>
-                <div className="mr-outcomes">
-                  {outcomes.map((row, i) => (
-                    <div key={row[0]}>
-                      <span className="mr-outcome-number">{i + 1}</span>
-                      <span>
-                        <strong>{row[0]}</strong>
-                        <small>{row[3]} input · 18 Aug study snapshot</small>
-                      </span>
-                      <b>{deckScores[i].toFixed(2)}</b>
-                    </div>
-                  ))}
-                </div>
+                <MaintenanceOutcomes profile={profile} cases={cases} onNavigate={onNavigate}/>
                 <Evidence slide="18, 25, 28" links={["kitces", "t3"]}>
-                  Outcomes 3 and 14 are Inferred. All scores are cross-source
-                  proxies, not direct maintenance survey results.
+                  Study methodology: opportunity = importance + max(importance − satisfaction, 0), using the revised study inputs. Its published scores are retained; the Frames coordinates are not recomputed.
                 </Evidence>
-                <button onClick={() => advance(6)}>
-                  Explore the Frames opportunity matrix →
-                </button>
               </>
             )}
             {section === 5 && (
@@ -660,25 +638,6 @@ export default function MaintenanceResearch({ onNavigate, profile, cases, onStar
                   completed ODI job map or needs-based segmentation study. The
                   curve below illustrates friction; it does not measure
                   confidence.
-                </Evidence>
-              </>
-            )}
-            {section === 6 && (
-              <>
-                <p className="mr-lead">
-                  Shared handling problems dominate the priority discussion.
-                  Data re-entry, incomplete requests, and exception resolution
-                  cut across individual maintenance functions; the third remains
-                  an inferred need.
-                </p>
-                <Evidence
-                  slide="18 and version comparison"
-                  links={["kitces", "t3"]}
-                >
-                  The earlier Frames snapshot supplies the coordinates below.
-                  The revised executive study changes some inputs and recomputes
-                  scores; see Desired outcomes for that separate ranking. Bubble
-                  emphasis indicates selection, not research certainty.
                 </Evidence>
               </>
             )}
@@ -859,7 +818,6 @@ export default function MaintenanceResearch({ onNavigate, profile, cases, onStar
             )}
             {section === 2 && <LifecycleResearch embedded view="positioning" />}
             {section === 5 && <LifecycleResearch embedded view="journey" />}
-            {section === 6 && <LifecycleResearch embedded view="opportunity" />}
           </section>
         );
       })}
@@ -871,8 +829,22 @@ export default function MaintenanceResearch({ onNavigate, profile, cases, onStar
         does not independently certify their full evidence base.
       </p>
       <div className="mr-guide-cta">
-        <div><h2>See the research come to life</h2><p>Follow one synthetic household change from a blocked queue to reviewed evidence and an account report. The tour explains each design decision; the scenario lets you complete the checks yourself.</p></div>
-        <div><button onClick={() => onStartGuide("scenario")}><FlaskConical size={16}/> Run Scenario</button><button onClick={() => onStartGuide("tour")}><BookOpen size={16}/> Take Tour</button></div>
+        <div>
+          <h2>See the research come to life</h2>
+          <p>
+            Follow one synthetic household change from a blocked queue to
+            reviewed evidence and an account report. The tour explains each
+            design decision; the scenario lets you complete the checks yourself.
+          </p>
+        </div>
+        <div>
+          <button onClick={() => onStartGuide("scenario")}>
+            <FlaskConical size={16} /> Run Scenario
+          </button>
+          <button onClick={() => onStartGuide("tour")}>
+            <BookOpen size={16} /> Take Tour
+          </button>
+        </div>
       </div>
     </div>
   );

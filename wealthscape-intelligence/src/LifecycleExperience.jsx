@@ -9,6 +9,12 @@ import {
   ArrowRight,
 } from "lucide-react";
 import "./AccountMaintenance.css";
+import {
+  outcomeQuadrants,
+  OUTCOME_MIDPOINT,
+  outcomeChartX,
+  outcomeChartY,
+} from "./maintenanceQuadrants.js";
 
 const stages = [
   ["Intake", "Advisor / service team"],
@@ -306,7 +312,9 @@ export function ConnectedReportBuilder({
         onNavigate={onNavigate}
       />
       <section className="am-card">
-        <h2 data-maintenance-guide="prerequisites">Maintenance prerequisites</h2>
+        <h2 data-maintenance-guide="prerequisites">
+          Maintenance prerequisites
+        </h2>
         <p>
           Selected changes supply the report's household, account scope,
           evidence packet, owner, and review history.
@@ -534,10 +542,20 @@ const sourceColors = {
   Derived: "#5b4fbe",
   Inferred: "#a76b09",
 };
-export function LifecycleResearch({ view, embedded = false }) {
+export function LifecycleResearch({
+  view,
+  embedded = false,
+  selectedOutcome,
+  onOutcomeChange,
+  outcomeDetail,
+  outcomeList,
+  compactSourceNote = false,
+}) {
   const [localTab, setTab] = useState("opportunity");
   const tab = view || localTab;
-  const [index, setIndex] = useState(-1);
+  const [localIndex, setLocalIndex] = useState(-1);
+  const index = selectedOutcome === undefined ? localIndex : selectedOutcome;
+  const setIndex = onOutcomeChange || setLocalIndex;
   const [competitor, setCompetitor] = useState(3);
   const d = outcomes[index];
   const rival = competitors[competitor];
@@ -572,21 +590,40 @@ export function LifecycleResearch({ view, embedded = false }) {
       )}
       {tab === "opportunity" && (
         <>
-          <p className="am-note">
-            Source snapshot: Account Maintenance Frames. Importance and
-            satisfaction use adjacent survey categories; they are directional
-            proxies, not direct maintenance measurements. Source tags are
-            retained from the artifact.
-          </p>
-          <div className="lx-research-grid">
-            <div>
+          {!compactSourceNote && (
+            <p className="am-note">
+              Source snapshot: Account Maintenance Frames. Importance and
+              satisfaction use adjacent survey categories; they are directional
+              proxies, not direct maintenance measurements. Source tags are
+              retained from the artifact.
+            </p>
+          )}
+          <div className={`lx-research-grid ${outcomeList ? "lx-unified-outcomes" : ""}`}>
+            <div className="lx-outcome-chart">
               <svg
                 className="lx-chart"
                 viewBox="0 0 520 340"
-                role="img"
+                role="group"
                 aria-label="Fifteen maintenance outcomes plotted by satisfaction and importance"
               >
-                <rect x="52" y="25" width="220" height="255" fill="#e8f5ee" />
+                <desc>
+                  Four source quadrants, divided at 3 on both 1–5 axes. High
+                  importance and low satisfaction: Opportunity / underserved.
+                  High importance and high satisfaction: Table stakes. Low
+                  importance and high satisfaction: Overserved. Low importance
+                  and low satisfaction: Ignore.
+                </desc>
+                {outcomeQuadrants.map((q) => (
+                  <rect
+                    key={q.label}
+                    aria-label={q.label}
+                    x={outcomeChartX(q.minS)}
+                    y={outcomeChartY(q.maxI)}
+                    width={outcomeChartX(q.maxS) - outcomeChartX(q.minS)}
+                    height={outcomeChartY(q.minI) - outcomeChartY(q.maxI)}
+                    fill={q.fill}
+                  />
+                ))}
                 {[1, 2, 3, 4, 5].map((n) => (
                   <g key={n}>
                     <line
@@ -611,11 +648,62 @@ export function LifecycleResearch({ view, embedded = false }) {
                     </text>
                   </g>
                 ))}
+                <line
+                  x1={outcomeChartX(OUTCOME_MIDPOINT)}
+                  x2={outcomeChartX(OUTCOME_MIDPOINT)}
+                  y1="25"
+                  y2="280"
+                  stroke="#869398"
+                  strokeWidth="1.5"
+                  strokeDasharray="6 5"
+                />
+                <line
+                  x1="52"
+                  x2="492"
+                  y1={outcomeChartY(OUTCOME_MIDPOINT)}
+                  y2={outcomeChartY(OUTCOME_MIDPOINT)}
+                  stroke="#869398"
+                  strokeWidth="1.5"
+                  strokeDasharray="6 5"
+                />
+                {outcomeQuadrants.map((q) => (
+                  <text
+                    key={q.label}
+                    className="lx-quadrant-label"
+                    x={outcomeChartX((q.minS + q.maxS) / 2)}
+                    y={q.minI === 3 ? 130 : 259}
+                    textAnchor="middle"
+                  >
+                    {q.lines.map((line, i) => (
+                      <tspan
+                        key={line}
+                        x={outcomeChartX((q.minS + q.maxS) / 2)}
+                        dy={i === 0 ? 0 : 18}
+                      >
+                        {line}
+                      </tspan>
+                    ))}
+                  </text>
+                ))}
                 {outcomes
                   .map((o, i) => ({ o, i }))
                   .sort((a, b) => Number(a.i === index) - Number(b.i === index))
                   .map(({ o, i }) => (
-                    <g key={o[0]}>
+                    <g
+                      key={o[0]}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Select outcome ${i + 1}: ${o[0]}`}
+                      aria-pressed={i === index}
+                      onClick={() => setIndex(i)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          setIndex(i);
+                        }
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
                       {i === index && (
                         <circle
                           cx={52 + (o[1] - 1) * 110}
@@ -685,7 +773,7 @@ export function LifecycleResearch({ view, embedded = false }) {
                 ))}
               </div>
             </div>
-            <div>
+            <div className="lx-outcome-inspector">
               <label className="am-field">
                 Explore an outcome
                 <select
@@ -700,42 +788,54 @@ export function LifecycleResearch({ view, embedded = false }) {
                   ))}
                 </select>
               </label>
-              <div className="am-callout">
-                {d ? (
-                  <>
-                    <strong>
-                      {index + 1}. {d[0]}
-                    </strong>
-                    <p>
-                      {d[3]} input · importance {d[2].toFixed(2)} / 5 ·
-                      satisfaction {d[1].toFixed(2)} / 5
-                    </p>
-                    <p>
-                      {d[3] === "Inferred"
-                        ? "An inference to test with operations teams; do not treat this as a measured rate."
-                        : "Retained artifact label. Cross-category mapping still introduces uncertainty."}
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <strong>All outcomes</strong>
-                    <p>
-                      Compare all 15 outcomes by importance and satisfaction.
-                      Select an outcome to see its values and evidence category.
-                    </p>
-                    <p>
-                      These directional proxies retain the source artifact’s
-                      category labels and uncertainty.
-                    </p>
-                  </>
-                )}
-              </div>
-              <p className="am-note">
-                Kitces 2025 and T3/Inside Information 2026 inform the artifact.
-                Their samples and categories differ. The later executive deck
-                revises some scores; this map is explicitly the Frames snapshot.
-              </p>
+              {index !== -1 && (
+                <button className="mo-reset" onClick={() => setIndex(-1)}>
+                  All outcomes
+                </button>
+              )}
+              {outcomeDetail || (
+                <div className="am-callout">
+                  {d ? (
+                    <>
+                      <strong>
+                        {index + 1}. {d[0]}
+                      </strong>
+                      <p>
+                        {d[3]} input · importance {d[2].toFixed(2)} / 5 ·
+                        satisfaction {d[1].toFixed(2)} / 5
+                      </p>
+                      <p>
+                        {d[3] === "Inferred"
+                          ? "An inference to test with operations teams; do not treat this as a measured rate."
+                          : "Retained artifact label. Cross-category mapping still introduces uncertainty."}
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <strong>All outcomes</strong>
+                      <p>
+                        Compare all 15 outcomes by importance and satisfaction.
+                        Select an outcome to see its values and evidence
+                        category.
+                      </p>
+                      <p>
+                        These directional proxies retain the source artifact’s
+                        category labels and uncertainty.
+                      </p>
+                    </>
+                  )}
+                </div>
+              )}
+              {!compactSourceNote && (
+                <p className="am-note">
+                  Kitces 2025 and T3/Inside Information 2026 inform the
+                  artifact. Their samples and categories differ. The later
+                  executive deck revises some scores; this map is explicitly the
+                  Frames snapshot.
+                </p>
+              )}
             </div>
+            {outcomeList && <div className="lx-outcome-list">{outcomeList}</div>}
           </div>
         </>
       )}
