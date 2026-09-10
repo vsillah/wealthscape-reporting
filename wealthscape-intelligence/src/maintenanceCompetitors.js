@@ -9,7 +9,7 @@ const vendor = (title, url, date = "Undated · checked 10 Sep 2026") => ({ title
 export const maintenanceCompetitors = [
   {
     question: "Can a service associate complete an existing-account authority change, including an exception, without re-entering household data?",
-    name: "Schwab", satisfaction: 7.95, capability: 5, label: [320, 25],
+    name: "Schwab", satisfaction: 7.95, capability: 5, label: [305, 25],
     basis: "Frames placed Schwab highest for its continuous, dated release program. The revised study narrows much of that evidence to onboarding; the 5/5 assessment is retained, not independently validated.",
     strength: "Schwab documents adding or modifying firm authority across up to 20 client accounts in one digital envelope, with prefilled existing-client data.",
     limit: "This is firm LPOA-IA authority. It does not establish third-party POA coverage or show that every onboarding improvement also works on existing accounts.",
@@ -30,7 +30,7 @@ export const maintenanceCompetitors = [
   },
   {
     question: "Which of the bundled onboarding steps can be reused for a later change across the same household?",
-    name: "TradePMR", satisfaction: 7.86, capability: 3, label: [428, 206],
+    name: "TradePMR", satisfaction: 7.86, capability: 3, label: [440, 250],
     basis: "Frames described partial maintenance documentation and assigned 3/5. The source did not supply a reproducible capability rubric; the score is retained as an assessment.",
     strength: "TradePMR describes CRM-prefilled account applications, multiple household accounts in one DocuSign envelope, and parallel signatures.",
     limit: "The October 2024 announcement covers account opening. It does not verify the equivalent workflow for changing existing account ownership, beneficiaries, or authority.",
@@ -50,7 +50,7 @@ export const maintenanceCompetitors = [
   },
   {
     question: "How does an RIA track a maintenance request from its service liaison through resolution?",
-    name: "SEI", satisfaction: 7.49, capability: 2, label: [260, 243],
+    name: "SEI", satisfaction: 7.49, capability: 2, label: [260, 235],
     basis: "Frames based its 2/5 assessment on account-opening evidence from 2022. Current service material adds context but does not reproduce or validate that earlier scoring process.",
     strength: "SEI says every client is supported by a relationship manager and dedicated service liaison, alongside custody and open-architecture technology.",
     limit: "A stated service model does not establish response times or demonstrate self-service maintenance, household authority, or exception recovery. Those workflows need direct validation.",

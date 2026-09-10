@@ -1394,3 +1394,15 @@
 .mc-competitor-source-strip { border-top:1px solid #ccd7df; margin-top:18px; padding-top:4px; }
 .mc-competitor-source-strip .mc-competitor-sources { display:grid; grid-template-columns:1fr 1fr; gap:8px 24px; list-style:none; padding:0; margin:0; }
 @media(max-width:900px) { .mc-competitor-source-strip .mc-competitor-sources { grid-template-columns:1fr; gap:0; } }
+
+.am-workspace .mc-brand-label { width:calc(var(--brand-width) + 8px); height:40px; padding:4px; display:flex; align-items:center; justify-content:center; background:#fff; border-radius:4px; }
+.mc-brand-art { display:flex; align-items:center; justify-content:center; width:var(--brand-width); height:32px; }
+.mc-brand-art img { display:block; width:auto; height:auto; max-width:100%; max-height:32px; object-fit:contain; }
+.am-workspace .mc-brand-label.reverse { background:#142d3d; }
+.am-workspace .mc-brand-label.schwab { height:48px; }
+.mc-brand-label.schwab .mc-brand-art { height:44px; overflow:hidden; }
+.mc-brand-label.schwab img { width:105.6px; max-width:none; max-height:none; flex-shrink:0; }
+.am-workspace .mc-brand-label:hover { box-shadow:0 0 0 2px #7896a5; }
+.am-workspace .mc-brand-label[aria-pressed="true"] { box-shadow:0 0 0 2px #0b5d2e; }
+.mc-brand-fallback { color:#243542; font:400 12px/14px system-ui; white-space:normal; overflow-wrap:anywhere; }
+.mc-brand-label.reverse .mc-brand-fallback { color:white; }

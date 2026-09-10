@@ -1,5 +1,13 @@
 # Wealthscape Lifecycle Intelligence
 
+## Official competitor logo labels — 10 September 2026
+
+Use the seven official local logo assets as chart controls, preserving intrinsic aspect ratios and bounded hit targets. Tooltips and accessible button names retain each platform name; a failed image visibly falls back to the name without changing selection behavior. Hover, focus and selected states remain distinct. Three leader anchors moved to keep mobile points unobstructed; scores, tabs and evidence are unchanged.
+
+Asset provenance and SHA-256 hashes are in `wealthscape-intelligence/public/competitor-brands/README.md`; runtime mappings are in `competitorBrandAssets.js`. No third-party logo requests occur at runtime. The actual Wealthscape mark, current BNY Pershing lockup and TradePMR by Robinhood lockup are explicit. SVGs contain static artwork only. Schwab clips only excess white canvas; other logos use uncropped containment. Full SEI source and small rendering were compared. Light-route and temporary dark-backing visual checks passed; this app has no separate dark-theme control, and the temporary QA page was removed.
+
+Validation: all 11 focused tests (brand assets, competitor values/evidence, outcomes and guide), production build and `git diff --check` pass. Actual lane screenshots at 390/1280px showed all seven loaded logos, readable bounded marks, no logo-label overlap and no horizontal overflow. All seven logo selections work; Altruist's missing-file fallback displayed its accessible name and remained selectable, then the asset was restored. Captain completes final 805/1208px checks. No commit or publication from this lane.
+
 ## Compact competitor comparison preference — 10 September 2026
 
 Keep the competitor graph visually balanced with its inspector. Use a 520 × 500 viewBox with shared chart geometry and uniform scaling, giving a 458px-high graph at the 1208px desktop viewport. Keep fixed 12px name annotations and aligned leader lines; do not stretch circles or add blank-height filler. Smaller widths stack the map and inspector.

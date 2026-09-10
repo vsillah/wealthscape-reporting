@@ -1,3 +1,4 @@
+import CompetitorBrandLabel from "./CompetitorBrandLabel";
 import { useId, useRef, useState } from "react";
 import { maintenanceCompetitors, competitorSurvey, competitorX, competitorY, COMPETITOR_CHART } from "./maintenanceCompetitors.js";
 
@@ -39,9 +40,9 @@ export default function MaintenanceCompetitorMap() {
             <text x="265" y={COMPETITOR_CHART.height - 10} textAnchor="middle">Advisor satisfaction →</text>
             <text x="15" y={competitorY(2.5)} transform={`rotate(-90 15 ${competitorY(2.5)})`} textAnchor="middle">Assessed capability →</text>
           </svg>
-          {maintenanceCompetitors.map((c,i)=><button key={c.name} className="mc-competitor-name" aria-label={`Inspect ${c.name} evidence`} aria-pressed={selected===i} style={{left:`${c.label[0]/COMPETITOR_CHART.width*100}%`,top:`${c.label[1]/COMPETITOR_CHART.height*100}%`}} onClick={()=>setSelected(i)}>{c.name}</button>)}
+          {maintenanceCompetitors.map((c,i)=><CompetitorBrandLabel key={c.name} name={c.name} selected={selected===i} position={{left:`${c.label[0]/COMPETITOR_CHART.width*100}%`,top:`${c.label[1]/COMPETITOR_CHART.height*100}%`}} onSelect={()=>setSelected(i)} />)}
         </div>
-        <p className="am-note">Select a name, dot, or dropdown option. All seven platforms stay visible.</p>
+        <p className="am-note">Select a logo, dot, or dropdown option. All seven platforms stay visible.</p>
       </div>
       <div className="mc-competitor-inspector">
         <label className="am-field">Explore a platform<select value={selected} onChange={event=>setSelected(Number(event.target.value))}>{maintenanceCompetitors.map((c,i)=><option key={c.name} value={i}>{i+1}. {c.name}</option>)}</select></label>
