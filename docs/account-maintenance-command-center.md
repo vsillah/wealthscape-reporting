@@ -2,6 +2,8 @@
 
 ## Unified outcomes and opportunities — 10 September 2026
 
+Visual preference: quadrant labels are secondary annotations; outcome points lead. Use fixed 12px, regular-weight, muted-slate HTML annotations over the chart so text remains readable at every viewport without scaling the font. Annotations do not intercept point interactions; the SVG retains the accessible quadrant description.
+
 Current artifact rule: Account maintenance has **eight** full-scroll research sections. **Outcomes & opportunities** replaces the separate Desired outcomes and Opportunity matrix sections and their redundant cross-jump. Market, capability, customer, unified outcomes, job map, findings, recommendations, and resolution remain in research-first order. All three diagrams and the scenario/tour footer remain available.
 
 One controlled selection now drives the clickable list, dropdown, and chart. Each of the 15 stable outcome IDs has a plain-language problem description, proposed UX response, implemented or adjacent demo coverage, and a profile-safe destination. All outcomes resets every point to equal emphasis and removes the selected solution/link. The unchanged outcome registry remains exported for MaintenanceGuide. At stacked widths the chart/legend are followed by the selector/detail and then the scrollable outcome list; desktop retains the chart/list beside the detail.

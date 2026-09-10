@@ -542,11 +542,17 @@
 .mo-reset {
   margin-bottom: 12px;
 }
-.lx-chart .lx-quadrant-label {
-  font: 600 18px system-ui;
-  fill: #3f5354;
+.lx-outcome-plot { position: relative; }
+.lx-quadrant-label {
+  position: absolute;
+  transform: translateX(-50%);
+  font: 400 12px/12px system-ui;
+  color: #64717d;
+  text-align: center;
+  white-space: nowrap;
   pointer-events: none;
 }
+.lx-quadrant-label > span { display: block; }
 .lx-chart g[role="button"]:focus {
   outline: none;
 }

@@ -600,6 +600,7 @@ export function LifecycleResearch({
           )}
           <div className={`lx-research-grid ${outcomeList ? "lx-unified-outcomes" : ""}`}>
             <div className="lx-outcome-chart">
+              <div className="lx-outcome-plot">
               <svg
                 className="lx-chart"
                 viewBox="0 0 520 340"
@@ -666,25 +667,6 @@ export function LifecycleResearch({
                   strokeWidth="1.5"
                   strokeDasharray="6 5"
                 />
-                {outcomeQuadrants.map((q) => (
-                  <text
-                    key={q.label}
-                    className="lx-quadrant-label"
-                    x={outcomeChartX((q.minS + q.maxS) / 2)}
-                    y={q.minI === 3 ? 130 : 259}
-                    textAnchor="middle"
-                  >
-                    {q.lines.map((line, i) => (
-                      <tspan
-                        key={line}
-                        x={outcomeChartX((q.minS + q.maxS) / 2)}
-                        dy={i === 0 ? 0 : 18}
-                      >
-                        {line}
-                      </tspan>
-                    ))}
-                  </text>
-                ))}
                 {outcomes
                   .map((o, i) => ({ o, i }))
                   .sort((a, b) => Number(a.i === index) - Number(b.i === index))
@@ -759,6 +741,8 @@ export function LifecycleResearch({
                   Importance proxy →
                 </text>
               </svg>
+                {outcomeQuadrants.map(q => <span key={q.label} className="lx-quadrant-label" aria-hidden="true" style={{ left: `${outcomeChartX((q.minS + q.maxS) / 2) / 520 * 100}%`, ...(q.minI === 3 ? { bottom: "calc(55.147% + 6px)", top: "auto" } : { top: "75%" }) }}>{q.lines.map(line => <span key={line}>{line}</span>)}</span>)}
+              </div>
               <p className="am-note" role="status">
                 {d
                   ? `Highlighted: ${index + 1}. ${d[0]}. Muted bubbles remain visible for comparison.`
