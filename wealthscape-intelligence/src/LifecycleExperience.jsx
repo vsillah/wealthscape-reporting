@@ -372,7 +372,7 @@ export function ConnectedReportBuilder({
             </div>
           ))}
         </div>
-        <div className="am-callout" role="status">
+        <div className="am-callout" role="status" data-maintenance-tour="prerequisites">
           <strong>
             {eligible
               ? `${chosen.length} verified change${chosen.length === 1 ? "" : "s"} ready for reporting`

@@ -224,3 +224,22 @@ Validation: production build and `git diff --check` passed. Integrated Browser Q
 The outcome selector now defaults to All outcomes and can return there after any selection. All bubbles use full evidence-category styling without a selection ring; the status and detail panel show a neutral comparison summary. Selecting a specific outcome restores selected-versus-muted styling. Source caveats remain visible.
 
 Validation: production build and `git diff --check` passed. Integrated Browser QA at 1280px and 390px covered All outcomes, derived outcome 5, inferred outcome 3, sourced outcome 12, and clearing back to All outcomes. No visible horizontal overflow or console errors observed. No deployment or live customer-data smoke; captain review and human QA remain.
+
+
+## Contextual maintenance tour — September 10, 2026
+
+The seven-stop read-only maintenance tour now uses a floating dialog and a measured spotlight instead of the scenario sidebar. Each stop separates a proposed desired result with stable outcome IDs, a source-qualified current gap, and the proposed UI solution. Proposed desired results describe the intended experience, not completed or validated research outcomes. Source and production boundaries are expandable. Previous, Next, Restart, Exit, and final Finish remain available in a fixed dialog footer; long copy scrolls within the dialog. The existing eight-step interactive scenario retains its original gates and layout.
+
+Targets are intentionally narrow: blocked KPI, Baobab queue row, account scope, evidence packet, disabled human review gate, captured history, and report-generation hold. DOM mounting, resize, and scroll trigger fresh measurement. Step changes discard the prior spotlight; unavailable targets show a retry explanation and disable advancement. The floating panel reserves an upper target band and becomes a bottom sheet at narrow widths. Motion respects reduced-motion preferences.
+
+The background is inert during the tour. Initial focus enters the dialog, Tab is contained, Escape exits, and focus returns to the launch control when available. Exit and Restart discard only the isolated guide fixture. Tour checks remain false, the request remains Blocked, and the tour generates no reports.
+
+Validation in this implementation lane:
+- Production build passed: `npm --prefix wealthscape-intelligence run build`.
+- All 14 tests passed: `node --test wealthscape-intelligence/src/competitorBrandAssets.test.js wealthscape-intelligence/src/maintenanceCompetitors.test.js wealthscape-intelligence/src/maintenanceOutcomeSolutions.test.js wealthscape-intelligence/src/maintenanceGuide.test.js wealthscape-intelligence/src/maintenanceTourGeometry.test.js`. This includes the existing 11 tests and new viewport geometry, absent-target, and seven-stop contract coverage.
+- Integrated Browser inspection at 1280 × 720 confirmed the first two stops spotlight the actual blocked KPI and Baobab row with dimming and no dialog overlap. The background inert attribute was observed.
+- Captain is checking all seven stops at 1208, 805, and 390 widths, source expansion, keyboard/focus behavior, and scenario/reporting regressions; those checks are pending in this lane's record. No MP4 has been produced in this lane.
+
+Changes remain uncommitted for captain review. No merge, deployment, live provider workflow, or customer-data smoke was performed.
+
+Captain subsequently reported all seven tour stops passing at desktop, 805px, and 390px widths; the second 805px target settled after a transient measurement. Captain also reported focus wrapping, Escape and focus restoration, and the eight-step scenario evidence, review, and report gates passing. Reporting regression and review media remain outside this lane's confirmed evidence.

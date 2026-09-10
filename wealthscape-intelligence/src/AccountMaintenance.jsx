@@ -175,6 +175,7 @@ export function LifecycleDashboard({ profile, cases, onNavigate }) {
         ].map(([label, count, statusFilter]) => (
           <button
             className="am-card am-kpi"
+            data-maintenance-tour={statusFilter === "Blocked" ? "dashboard" : undefined}
             key={label}
             onClick={() =>
               onNavigate("maintenance", {
@@ -778,10 +779,10 @@ export function AccountMaintenance({
                     Routing updates this demo queue only. Service action and
                     response remain simulated.
                   </p>
-                  <h3>Accounts in scope</h3>
+                  <div data-maintenance-tour="case"><h3>Accounts in scope</h3>
                   {c.accounts.map((a) => (
                     <p key={a}>{a}</p>
-                  ))}
+                  ))}</div>
                 </div>
               )}
               {panel === "evidence" && (
@@ -791,7 +792,7 @@ export function AccountMaintenance({
                     {c.accounts.join(", ")}. Checks attest to every account
                     listed; no real documents are verified.
                   </p>
-                  {checkLabels.map((label, i) => (
+                  <div data-maintenance-tour="evidence">{checkLabels.map((label, i) => (
                     <label className="am-check" key={label}>
                       <input
                         type="checkbox"
@@ -820,7 +821,7 @@ export function AccountMaintenance({
                       {label}
                     </label>
                   ))}
-                  <div className="am-callout" data-maintenance-guide="review">
+                  </div><div className="am-callout" data-maintenance-guide="review" data-maintenance-tour="review">
                     <strong>Human review gate</strong>
                     <p>
                       {ready(c)
@@ -871,7 +872,7 @@ export function AccountMaintenance({
                 </div>
               )}
               {panel === "timeline" && (
-                <ol className="am-timeline" data-maintenance-guide="timeline">
+                <ol className="am-timeline" data-maintenance-guide="timeline" data-maintenance-tour="timeline">
                   {c.events.map((e, i) => (
                     <li key={i}>
                       <strong>{e.text}</strong>
@@ -894,6 +895,7 @@ export function AccountMaintenance({
                 <button
                   key={item.id}
                   className="am-row"
+                  data-maintenance-tour={item.id === "MC-GUIDE" ? "queue" : undefined}
                   onClick={() => open(item)}
                 >
                   <span>

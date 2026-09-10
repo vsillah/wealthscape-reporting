@@ -147,6 +147,25 @@ export function guideSteps(mode) {
   return maintenanceGuideSteps.slice(0, 7).map((step, index) => ({
     ...step,
     gate: undefined,
+    desiredOutcome: [
+      "Know which maintenance request is blocked and who owns the next action.",
+      "Find incomplete or rejected work without chasing status.",
+      "Carry the correct account scope forward without re-entering the same information.",
+      "Identify missing evidence and authority checks before submission.",
+      "Know when a change is reviewed and complete, rather than merely submitted.",
+      "Retrieve request status and the record behind a review decision.",
+      "Carry reviewed account context into reporting while keeping unresolved prerequisites visible."
+    ][index],
+    targetLabel: ["blocked queue count", "Baobab request and owner", "two accounts in scope", "unchecked evidence packet", "disabled human review gate", "captured request history", "report generation hold"][index],
+    gap: [
+      "The source study identifies status visibility and service handoffs as shared needs; their frequency and maintenance-specific impact remain unmeasured.",
+      "The study prioritizes incomplete requests and exception recovery. Resolution time is inferred, not a measured customer result.",
+      "The research links repeated data handling with household scope and authority. Existing workflow coverage needs validation.",
+      "The study prioritizes validation before household authority; missing evidence and authority checks remain problems to validate in maintenance workflows.",
+      "Submission does not establish completion. The confirmation outcome is inferred and needs direct user research.",
+      "The study identifies status visibility as a need; whether users can retrieve confirmation and the review record still needs direct validation.",
+      "A blocked request cannot support a completed account report. Durable source records and report integration remain production work."
+    ][index],
     ...(index === 3
       ? {
           ux: "The packet shows three unchecked synthetic attestations. The human review action remains disabled until all are present.",

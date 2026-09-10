@@ -1,3 +1,4 @@
+import MaintenanceTour from "./MaintenanceTour.jsx";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -11,7 +12,11 @@ import { guideSteps, guideGate } from "./maintenanceGuide.js";
 import { outcomes } from "./LifecycleExperience.jsx";
 import "./MaintenanceGuide.css";
 
-export default function MaintenanceGuide({
+export default function MaintenanceGuide(props) {
+  return props.guide.mode === "tour" ? <MaintenanceTour {...props}/> : <MaintenanceScenario {...props}/>;
+}
+
+function MaintenanceScenario({
   guide,
   item,
   reports,

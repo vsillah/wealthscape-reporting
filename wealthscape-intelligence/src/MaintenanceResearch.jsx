@@ -841,7 +841,7 @@ export default function MaintenanceResearch({
           <button onClick={() => onStartGuide("scenario")}>
             <FlaskConical size={16} /> Run Scenario
           </button>
-          <button onClick={() => onStartGuide("tour")}>
+          <button data-maintenance-guide-launch="tour" onClick={() => onStartGuide("tour")}>
             <BookOpen size={16} /> Take Tour
           </button>
         </div>
