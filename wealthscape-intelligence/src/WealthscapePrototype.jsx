@@ -2727,7 +2727,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       <div style={{ background:`linear-gradient(135deg, ${T.green} 0%, ${T.greenMid} 100%)`, borderRadius:14, padding:isMobile?"20px 18px":"24px 28px", color:T.white, display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center", justifyContent:"space-between" }}>
         <div>
           <div style={{ fontSize:isMobile?16:18, fontWeight:800, marginBottom:4 }}>See the research come to life</div>
-          <div style={{ fontSize:13, color:"rgba(255,255,255,0.85)", lineHeight:1.55, maxWidth:560 }}>Take the guided tour to walk every component and its outcome, or run the end-to-end scenario to watch one alert become a delivered client report.</div>
+          <div style={{ fontSize:13, color:"#fff", lineHeight:1.55, maxWidth:560 }}>Take the guided tour to walk every component and its outcome, or run the end-to-end scenario to watch one alert become a delivered client report.</div>
         </div>
         <div style={{ display:"flex", gap:10, flexShrink:0 }}>
           <button onClick={onStartScenario} style={{ display:"flex", alignItems:"center", gap:6, background:T.white, color:T.green, border:"none", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><Target size={15}/> Run Scenario</button>
