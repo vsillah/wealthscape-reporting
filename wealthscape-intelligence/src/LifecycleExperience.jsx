@@ -12,6 +12,7 @@ import "./AccountMaintenance.css";
 import {
   outcomeQuadrants,
   OUTCOME_MIDPOINT,
+  OUTCOME_CHART,
   outcomeChartX,
   outcomeChartY,
 } from "./maintenanceQuadrants.js";
@@ -548,7 +549,6 @@ export function LifecycleResearch({
   selectedOutcome,
   onOutcomeChange,
   outcomeDetail,
-  outcomeList,
   compactSourceNote = false,
 }) {
   const [localTab, setTab] = useState("opportunity");
@@ -598,12 +598,12 @@ export function LifecycleResearch({
               retained from the artifact.
             </p>
           )}
-          <div className={`lx-research-grid ${outcomeList ? "lx-unified-outcomes" : ""}`}>
+          <div className="lx-research-grid">
             <div className="lx-outcome-chart">
               <div className="lx-outcome-plot">
               <svg
                 className="lx-chart"
-                viewBox="0 0 520 340"
+                viewBox={`0 0 ${OUTCOME_CHART.width} ${OUTCOME_CHART.height}`}
                 role="group"
                 aria-label="Fifteen maintenance outcomes plotted by satisfaction and importance"
               >
@@ -628,23 +628,23 @@ export function LifecycleResearch({
                 {[1, 2, 3, 4, 5].map((n) => (
                   <g key={n}>
                     <line
-                      x1={52 + (n - 1) * 110}
-                      x2={52 + (n - 1) * 110}
-                      y1="25"
-                      y2="280"
+                      x1={outcomeChartX(n)}
+                      x2={outcomeChartX(n)}
+                      y1={OUTCOME_CHART.top}
+                      y2={OUTCOME_CHART.bottom}
                       stroke="#e2e8f0"
                     />
                     <line
                       x1="52"
                       x2="492"
-                      y1={280 - (n - 1) * 63.75}
-                      y2={280 - (n - 1) * 63.75}
+                      y1={outcomeChartY(n)}
+                      y2={outcomeChartY(n)}
                       stroke="#e2e8f0"
                     />
-                    <text x={52 + (n - 1) * 110} y="302" textAnchor="middle">
+                    <text x={outcomeChartX(n)} y={OUTCOME_CHART.bottom + 22} textAnchor="middle">
                       {n}
                     </text>
-                    <text x="35" y={285 - (n - 1) * 63.75}>
+                    <text x="35" y={outcomeChartY(n) + 5}>
                       {n}
                     </text>
                   </g>
@@ -652,8 +652,8 @@ export function LifecycleResearch({
                 <line
                   x1={outcomeChartX(OUTCOME_MIDPOINT)}
                   x2={outcomeChartX(OUTCOME_MIDPOINT)}
-                  y1="25"
-                  y2="280"
+                  y1={OUTCOME_CHART.top}
+                  y2={OUTCOME_CHART.bottom}
                   stroke="#869398"
                   strokeWidth="1.5"
                   strokeDasharray="6 5"
@@ -688,8 +688,8 @@ export function LifecycleResearch({
                     >
                       {i === index && (
                         <circle
-                          cx={52 + (o[1] - 1) * 110}
-                          cy={280 - (o[2] - 1) * 63.75}
+                          cx={outcomeChartX(o[1])}
+                          cy={outcomeChartY(o[2])}
                           r={20}
                           fill="white"
                           stroke="#243542"
@@ -697,8 +697,8 @@ export function LifecycleResearch({
                         />
                       )}
                       <circle
-                        cx={52 + (o[1] - 1) * 110}
-                        cy={280 - (o[2] - 1) * 63.75}
+                        cx={outcomeChartX(o[1])}
+                        cy={outcomeChartY(o[2])}
                         r={i === index ? 14 : 9}
                         fill={
                           o[3] === "Inferred" ? "white" : sourceColors[o[3]]
@@ -712,8 +712,8 @@ export function LifecycleResearch({
                         }
                       />
                       <text
-                        x={52 + (o[1] - 1) * 110}
-                        y={284 - (o[2] - 1) * 63.75}
+                        x={outcomeChartX(o[1])}
+                        y={outcomeChartY(o[2]) + 4}
                         textAnchor="middle"
                         fill={
                           index !== -1 && i !== index
@@ -729,19 +729,19 @@ export function LifecycleResearch({
                       </text>
                     </g>
                   ))}
-                <text x="270" y="330" textAnchor="middle">
+                <text x="270" y={OUTCOME_CHART.height - 10} textAnchor="middle">
                   Satisfaction proxy →
                 </text>
                 <text
                   x="15"
-                  y="175"
-                  transform="rotate(-90 15 175)"
+                  y={outcomeChartY(OUTCOME_MIDPOINT)}
+                  transform={`rotate(-90 15 ${outcomeChartY(OUTCOME_MIDPOINT)})`}
                   textAnchor="middle"
                 >
                   Importance proxy →
                 </text>
               </svg>
-                {outcomeQuadrants.map(q => <span key={q.label} className="lx-quadrant-label" aria-hidden="true" style={{ left: `${outcomeChartX((q.minS + q.maxS) / 2) / 520 * 100}%`, ...(q.minI === 3 ? { bottom: "calc(55.147% + 6px)", top: "auto" } : { top: "75%" }) }}>{q.lines.map(line => <span key={line}>{line}</span>)}</span>)}
+                {outcomeQuadrants.map(q => <span key={q.label} className="lx-quadrant-label" aria-hidden="true" style={{ left: `${outcomeChartX((q.minS + q.maxS) / 2) / OUTCOME_CHART.width * 100}%`, ...(q.minI === 3 ? { bottom: `calc(${(1 - outcomeChartY(OUTCOME_MIDPOINT) / OUTCOME_CHART.height) * 100}% + 6px)`, top: "auto" } : { top: `${outcomeChartY(1.5) / OUTCOME_CHART.height * 100}%` }) }}>{q.lines.map(line => <span key={line}>{line}</span>)}</span>)}
               </div>
               <p className="am-note" role="status">
                 {d
@@ -819,7 +819,6 @@ export function LifecycleResearch({
                 </p>
               )}
             </div>
-            {outcomeList && <div className="lx-outcome-list">{outcomeList}</div>}
           </div>
         </>
       )}

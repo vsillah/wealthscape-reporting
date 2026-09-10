@@ -97,7 +97,7 @@ test("empty scopes never invent a case; All outcomes has no solution destination
 test("quadrants reproduce Frames midpoint 3 and orientation, not its inconsistent prose", () => {
   assert.equal(OUTCOME_MIDPOINT, 3);
   assert.equal(outcomeChartX(3), 272);
-  assert.equal(outcomeChartY(3), 152.5);
+  assert.equal(outcomeChartY(3), 202.5);
   assert.deepEqual(
     outcomeQuadrants.map((q) => q.label),
     ["Opportunity / underserved", "Table stakes", "Ignore", "Overserved"],

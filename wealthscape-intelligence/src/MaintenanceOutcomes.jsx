@@ -18,26 +18,6 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
     profile.id,
     visibleCases(cases, profile),
   );
-  const list = (
-    <div className="mo-list" aria-label="Maintenance outcome list">
-      <div className="mo-list-label">
-        <span>Outcome</span>
-        <span>Revised study score</span>
-      </div>
-      {outcomes.map((row, index) => (
-        <button
-          key={row[0]}
-          aria-pressed={selected === index}
-          onClick={() => select(index)}
-        >
-          <span>
-            {index + 1}. {row[0]}
-          </span>
-          <b>{outcomeSolutions[index].score.toFixed(2)}</b>
-        </button>
-      ))}
-    </div>
-  );
   const detail = solution ? (
     <article className="mo-detail" aria-label="Selected outcome solution">
       <h3>
@@ -83,7 +63,7 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
     <div className="mo-empty">
       <h3>All outcomes</h3>
       <p>
-        Compare all 15 outcomes with equal emphasis. Select a row, chart point,
+        Compare all 15 outcomes with equal emphasis. Select a chart point
         or dropdown option to inspect the problem, proposed response, and
         relevant demo.
       </p>
@@ -97,7 +77,7 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
       <p className="mo-source-note">
         Two source snapshots: the chart retains{" "}
         <strong>Account Maintenance Frames</strong> coordinates and its midpoint
-        of <strong>3 on both axes</strong>; list scores retain the{" "}
+        of <strong>3 on both axes</strong>; selected detail scores retain the{" "}
         <strong>18 Aug executive study, slide 18</strong>. Values are not
         combined or recomputed. All are adjacent-category proxies; outcomes 3
         and 14 are inferred. The plotted values place outcomes 12 and 15 in
@@ -109,7 +89,6 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         selectedOutcome={selected}
         onOutcomeChange={select}
         outcomeDetail={detail}
-        outcomeList={list}
         compactSourceNote
       />
     </div>

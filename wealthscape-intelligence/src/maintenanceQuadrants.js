@@ -1,5 +1,6 @@
 // Account_Maintenance_Frames.html, chart s1: both dashed dividers are at 3.
 export const OUTCOME_MIDPOINT = 3;
+export const OUTCOME_CHART = { width: 520, height: 440, left: 52, right: 492, top: 25, bottom: 380 };
 export const outcomeQuadrants = [
   {
     label: "Opportunity / underserved",
@@ -38,8 +39,8 @@ export const outcomeQuadrants = [
     fill: "#fff5e5",
   },
 ];
-export const outcomeChartX = (satisfaction) => 52 + (satisfaction - 1) * 110;
-export const outcomeChartY = (importance) => 280 - (importance - 1) * 63.75;
+export const outcomeChartX = (satisfaction) => OUTCOME_CHART.left + (satisfaction - 1) * (OUTCOME_CHART.right - OUTCOME_CHART.left) / 4;
+export const outcomeChartY = (importance) => OUTCOME_CHART.bottom - (importance - 1) * (OUTCOME_CHART.bottom - OUTCOME_CHART.top) / 4;
 export function outcomeQuadrant(satisfaction, importance) {
   if (satisfaction === OUTCOME_MIDPOINT || importance === OUTCOME_MIDPOINT)
     return "On the midpoint divider";
