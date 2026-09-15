@@ -97,25 +97,6 @@ function Detail({ title, children }) {
     </div>
   );
 }
-export function ReportingRecommendationContext({ deepLink }) {
-  if (!deepLink?.recommendationFocus) return null;
-  return (
-    <aside
-      className="rr-recommendation-context"
-      aria-label="Reporting recommendation context"
-    >
-      <Lightbulb size={20} aria-hidden="true" />
-      <div>
-        <strong>Exploring a reporting recommendation</strong>
-        <p>{deepLink.recommendationFocus}</p>
-        <small>
-          Synthetic demonstration · Production proposal remains subject to
-          validation.
-        </small>
-      </div>
-    </aside>
-  );
-}
 export default function ReportingResearch({ profile, onNavigate }) {
   const strategy = profile.strategy;
   const [active, setActive] = useState(0);

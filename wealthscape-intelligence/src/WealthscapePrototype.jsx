@@ -1,6 +1,6 @@
 import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
 import MaintenanceResearch from "./MaintenanceResearch";
-import ReportingResearch, { ReportingRecommendationContext } from "./ReportingResearch.jsx";
+import ReportingResearch from "./ReportingResearch.jsx";
 import { reportingCompetitors } from "./reportingResearch.js";
 import MaintenanceGuide from "./MaintenanceGuide.jsx";
 import { createGuideCase, guideSteps, canVisitGuideStep, GUIDE_CASE_ID } from "./maintenanceGuide.js";
@@ -1260,36 +1260,17 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
   );
 }
 
-function ReportingModernizationWorkspace({ bp, deepLink, profile, onNavigate, onSendToClient, onStartScenario, onStartTour }) {
-  const { isMobile } = bp;
+function ReportingWorkspace({ bp, deepLink, profile, onNavigate, onSendToClient }) {
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-      <section style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:isMobile?"16px":"18px 20px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.3fr 1fr", gap:16, alignItems:"start" }}>
-        <div>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:7, color:T.indigo, fontSize:11, fontWeight:800, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>
-            <FileText size={14}/> Reporting modernization
-          </div>
-          <h1 style={{ margin:0, fontSize:isMobile?22:28, lineHeight:1.15, color:T.gray900, letterSpacing:0 }}>A standalone report-to-client workflow</h1>
-          <p style={{ margin:"9px 0 0", fontSize:14, lineHeight:1.6, color:T.gray600, maxWidth:680 }}>
-            This path shows the reporting experience without depending on an account-maintenance transaction: detect a book-level signal, configure a client-ready report, run the auditable generation pipeline, customize the output, and deliver it to the portal.
-          </p>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-          <button onClick={onStartScenario} style={{ background:T.green, color:T.white, border:"none", borderRadius:8, padding:"11px 12px", fontSize:12, fontWeight:800, cursor:"pointer", minHeight:44, display:"flex", alignItems:"center", justifyContent:"center", gap:7 }}>
-            <Target size={15}/> Run reporting flow
-          </button>
-          <button onClick={onStartTour} style={{ background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"11px 12px", fontSize:12, fontWeight:800, cursor:"pointer", minHeight:44, display:"flex", alignItems:"center", justifyContent:"center", gap:7 }}>
-            <PlayCircle size={15}/> Explain surface
-          </button>
-          <button onClick={()=>onNavigate("integrations")} style={{ background:T.gray50, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:42 }}>
-            View data layer
-          </button>
-          <button onClick={()=>onNavigate("portal", { portalTab:"documents" })} style={{ background:T.gray50, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:42 }}>
-            View client delivery
-          </button>
-        </div>
-      </section>
-
+      <div style={{ display:"flex", flexWrap:"wrap", justifyContent:"flex-end", gap:10 }}>
+        <button onClick={()=>onNavigate("integrations")} style={{ background:T.white, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:42 }}>
+          Data connections
+        </button>
+        <button onClick={()=>onNavigate("portal", { portalTab:"documents" })} style={{ background:T.white, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:42 }}>
+          Client documents
+        </button>
+      </div>
       <ReportBuilder bp={bp} deepLink={deepLink} profile={profile} onSendToClient={onSendToClient}/>
     </div>
   );
@@ -4080,13 +4061,15 @@ export default function WealthscapePrototype() {
                 <input placeholder="Search..." style={{ border:"none", background:"transparent", fontSize:13, outline:"none", width:140, color:T.gray900 }}/>
               </div>
             )}
-            {isMobile && <button aria-label="Search prototype" title="Search" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
+            {isMobile && <button aria-label="Search" title="Search" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
+            {!["reports", "portal", "integrations", "insights"].includes(activeLayer) && <>
             <button aria-label={scenarioActive?"Restart scenario":"Run scenario"} title={scenarioActive?"Restart scenario":"Run scenario"} onClick={startScenario} data-demo="scenario-button" style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
               <Target size={14}/>{isDesktop&&(scenarioActive?" Restart":" Scenario")}
             </button>
             <button aria-label="Take tour" title="Take tour" onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
               <PlayCircle size={14}/>{isDesktop&&" Tour"}
             </button>
+            </>}
             <button aria-label="Open alert center" title="Open alert center" onClick={()=>setAlertsOpen(o=>!o)} data-demo="alert-bell" style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
               <Bell size={18} color={alertsOpen?T.gray900:T.slate}/>
               {unreadAlerts > 0 && (
@@ -4114,7 +4097,6 @@ export default function WealthscapePrototype() {
 
         <div className="mg-layout">
         <div className="mg-surface" ref={contentRef} style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          <ReportingRecommendationContext deepLink={deepLink}/>
           {activeLayer==="morning" && !demoActive && !scenarioActive && <LifecycleDashboard profile={activeProfile} cases={displayedCases} onNavigate={navigateToLayer}/>}
           {activeLayer==="maintenance" && <AccountMaintenance key={maintenanceGuide ? `guide-${maintenanceGuide.step}` : "session"} guided={!!maintenanceGuide} readOnly={maintenanceGuide?.mode === "tour"} profile={activeProfile} cases={displayedCases} setCases={updateDisplayedCases} deepLink={deepLink} onNavigate={navigateToLayer}/>}
           {activeLayer==="morning" && (demoActive || scenarioActive) && <MorningBrief    bp={bp} profile={activeProfile} dashboard={activeDashboard} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onNavigate={navigateToLayer} deepLink={deepLink} scenarioStep={scenarioActive?scenarioStep:null}/>}
@@ -4126,7 +4108,7 @@ export default function WealthscapePrototype() {
                     <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onSendToClient={()=>setEmailModalOpen(true)}/>
                   </ConnectedReportBuilder>
                 ) : (
-                  <ReportingModernizationWorkspace bp={bp} deepLink={deepLink} profile={activeProfile} onNavigate={navigateToLayer} onSendToClient={()=>setEmailModalOpen(true)} onStartScenario={startScenario} onStartTour={startDemo}/>
+                  <ReportingWorkspace bp={bp} deepLink={deepLink} profile={activeProfile} onNavigate={navigateToLayer} onSendToClient={()=>setEmailModalOpen(true)}/>
                 )
               )}
             </>

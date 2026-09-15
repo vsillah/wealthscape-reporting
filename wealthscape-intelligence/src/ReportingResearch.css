@@ -390,36 +390,6 @@
   line-height: 1.6;
   margin: 0 0 8px;
 }
-.rr-recommendation-context {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 14px 16px;
-  margin-bottom: 16px;
-  border-radius: 10px;
-  background: #eef0ff;
-  border: 1px solid #d9d5ed;
-  color: #354d5a;
-}
-.rr-recommendation-context > svg {
-  flex-shrink: 0;
-}
-.rr-recommendation-context > div {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-.rr-recommendation-context strong {
-  font-size: 12px;
-}
-.rr-recommendation-context p {
-  font-size: 13px;
-  line-height: 1.6;
-  margin: 4px 0;
-}
-.rr-recommendation-context small {
-  font-size: 11px;
-  line-height: 1.5;
-}
 .rr-recommendation .rr-evidence {
   margin: 10px 0 14px;
 }
