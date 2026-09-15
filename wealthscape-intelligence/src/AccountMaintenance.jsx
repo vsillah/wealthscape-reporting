@@ -378,6 +378,8 @@ export function maintenanceHref(layer, sub = {}) {
   for (const key of [
     "profileId",
     "reportTab",
+    "portalTab",
+    "recommendationFocus",
     "strategyTrack",
     "caseId",
     "panel",

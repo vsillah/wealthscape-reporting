@@ -1,6 +1,6 @@
 import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
 import MaintenanceResearch from "./MaintenanceResearch";
-import ReportingResearch from "./ReportingResearch.jsx";
+import ReportingResearch, { ReportingRecommendationContext } from "./ReportingResearch.jsx";
 import { reportingCompetitors } from "./reportingResearch.js";
 import MaintenanceGuide from "./MaintenanceGuide.jsx";
 import { createGuideCase, guideSteps, canVisitGuideStep, GUIDE_CASE_ID } from "./maintenanceGuide.js";
@@ -4114,6 +4114,7 @@ export default function WealthscapePrototype() {
 
         <div className="mg-layout">
         <div className="mg-surface" ref={contentRef} style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
+          <ReportingRecommendationContext deepLink={deepLink}/>
           {activeLayer==="morning" && !demoActive && !scenarioActive && <LifecycleDashboard profile={activeProfile} cases={displayedCases} onNavigate={navigateToLayer}/>}
           {activeLayer==="maintenance" && <AccountMaintenance key={maintenanceGuide ? `guide-${maintenanceGuide.step}` : "session"} guided={!!maintenanceGuide} readOnly={maintenanceGuide?.mode === "tour"} profile={activeProfile} cases={displayedCases} setCases={updateDisplayedCases} deepLink={deepLink} onNavigate={navigateToLayer}/>}
           {activeLayer==="morning" && (demoActive || scenarioActive) && <MorningBrief    bp={bp} profile={activeProfile} dashboard={activeDashboard} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onNavigate={navigateToLayer} deepLink={deepLink} scenarioStep={scenarioActive?scenarioStep:null}/>}

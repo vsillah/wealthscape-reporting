@@ -10,7 +10,10 @@ import {
   Lightbulb,
   Route,
   Users,
+  FlaskConical,
+  TriangleAlert,
 } from "lucide-react";
+import { reportingRecommendationDetail } from "./reportingRecommendations.js";
 import {
   reportingCompetitors,
   reportingOutcomeDetail,
@@ -58,6 +61,25 @@ function Detail({ title, children }) {
       <h4>{title}</h4>
       <p>{children}</p>
     </div>
+  );
+}
+export function ReportingRecommendationContext({ deepLink }) {
+  if (!deepLink?.recommendationFocus) return null;
+  return (
+    <aside
+      className="rr-recommendation-context"
+      aria-label="Reporting recommendation context"
+    >
+      <Lightbulb size={20} aria-hidden="true" />
+      <div>
+        <strong>Exploring a reporting recommendation</strong>
+        <p>{deepLink.recommendationFocus}</p>
+        <small>
+          Synthetic demonstration · Production proposal remains subject to
+          validation.
+        </small>
+      </div>
+    </aside>
   );
 }
 export default function ReportingResearch({ profile, onNavigate }) {
@@ -659,37 +681,104 @@ export default function ReportingResearch({ profile, onNavigate }) {
               </p>
               <div className="rr-stack">
                 {strategy.recommendations.map((item) => {
-                  const outcome = strategy.outcomes.find((outcome) =>
-                    item.outcomes.includes(outcome.id),
-                  );
-                  const target = outcome
-                    ? reportingOutcomeDetail(outcome, strategy)
-                    : {
-                        layer: "reports",
-                        sub: { reportTab: "build" },
-                        action: "Open Reporting outputs",
-                      };
+                  const target = reportingRecommendationDetail(profile, item);
+                  const Icon = {
+                    users: Users,
+                    alert: TriangleAlert,
+                    route: Route,
+                    review: ClipboardCheck,
+                    report: FileText,
+                    chart: ChartScatter,
+                    layers: Layers,
+                  }[target.icon];
                   return (
-                    <article className="rr-recommendation" key={item.n}>
-                      <span className="rr-number">{item.n}</span>
-                      <div>
-                        <h3>{item.title}</h3>
-                        <p>{item.body}</p>
-                        <p className="rr-evidence">
-                          Proposed response · {item.outcomes.join(" · ")}
-                        </p>
-                        <Action
-                          onNavigate={onNavigate}
-                          layer={target.layer}
-                          sub={target.sub}
-                        >
-                          {target.action}
-                        </Action>
+                    <article
+                      className="rr-recommendation"
+                      key={item.n}
+                      aria-labelledby={`reporting-rec-${item.n}`}
+                    >
+                      <header>
+                        <span className="rr-icon">
+                          <Icon size={24} aria-hidden="true" />
+                        </span>
+                        <div>
+                          <span className="am-eyebrow">
+                            Proposed direction · {item.n}
+                          </span>
+                          <h3 id={`reporting-rec-${item.n}`}>{item.title}</h3>
+                        </div>
+                      </header>
+                      <div
+                        className="rr-rec-outcomes"
+                        aria-label="Outcomes addressed"
+                      >
+                        <strong>Outcomes addressed</strong>
+                        {item.outcomes.map((id) => {
+                          const outcome = strategy.outcomes.find(
+                            (o) => o.id === id,
+                          );
+                          return outcome ? (
+                            <button
+                              key={id}
+                              title={outcome.text}
+                              aria-label={`Inspect ${id}: ${outcome.text}`}
+                              onClick={() => {
+                                setSelectedId(id);
+                                jump(4);
+                              }}
+                            >
+                              {id}
+                              <ArrowRight size={12} aria-hidden="true" />
+                            </button>
+                          ) : (
+                            <span key={id}>{id}</span>
+                          );
+                        })}
+                      </div>
+                      <p className="rr-rec-ux">
+                        <strong>UX decision</strong> {item.body}
+                      </p>
+                      <div className="rr-rec-columns">
+                        <section className="rr-rec-demo">
+                          <h4>
+                            <FlaskConical size={17} aria-hidden="true" />
+                            Demonstrated today
+                          </h4>
+                          <p>{target.demonstrated}</p>
+                          <p className="rr-evidence">{target.limitation}</p>
+                          <Action
+                            onNavigate={onNavigate}
+                            layer={target.layer}
+                            sub={target.sub}
+                          >
+                            {target.action}
+                          </Action>
+                        </section>
+                        <section className="rr-rec-production">
+                          <h4>
+                            <ClipboardCheck size={17} aria-hidden="true" />
+                            Production proposal
+                          </h4>
+                          <p>{target.production}</p>
+                          <dl>
+                            <dt>Dependency</dt>
+                            <dd>{target.dependency}</dd>
+                            <dt>Validation gate</dt>
+                            <dd>{target.gate}</dd>
+                          </dl>
+                        </section>
                       </div>
                     </article>
                   );
                 })}
               </div>
+              <p className="rr-evidence">
+                Recommendation titles and outcome mappings come from the
+                existing strategy inputs. Demo coverage and production steps are
+                proposed interpretation; directional scores and public
+                references do not establish production readiness or measured
+                customer impact.
+              </p>
               <div className="rr-footer rr-report-links">
                 <span>
                   <FileText size={18} /> Explore Reporting outputs
