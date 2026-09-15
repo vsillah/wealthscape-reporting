@@ -1261,12 +1261,12 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
 function ReportingModernizationWorkspace({ bp, deepLink, profile, onNavigate, onSendToClient, onStartScenario, onStartTour }) {
   const { isMobile } = bp;
   const flowSteps = [
-    { icon: Home, label: "Prioritize", desc: "Morning brief, KPI strip, insights, and alert routing.", layer: "morning" },
+    { icon: Home, label: "Prioritize", desc: "Morning brief, KPI strip, insights, and alert routing.", action: "scenario" },
     { icon: FileText, label: "Configure", desc: "Template, client selection, AI narrative, and live preview.", layer: "reports", sub: { reportTab: "build" } },
     { icon: Cpu, label: "Generate", desc: "Observable data sync, validation, narrative, review, and delivery pipeline.", layer: "reports", sub: { reportTab: "generate" } },
     { icon: Layers, label: "Standardize", desc: "Reusable branding, chart, section, benchmark, and date-range controls.", layer: "reports", sub: { reportTab: "customize" } },
   ];
-  const route = (step) => onNavigate(step.layer, step.sub || null);
+  const route = (step) => step.action === "scenario" ? onStartScenario() : onNavigate(step.layer, step.sub || null);
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       <section style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:isMobile?"16px":"18px 20px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.3fr 1fr", gap:16, alignItems:"start" }}>
