@@ -1,3 +1,13 @@
+import {
+  reportingMarketEvidence,
+  reportingClientEvidence,
+  reportingControls,
+  reportingNarrativeEvidence,
+  reportingControlGap,
+  reportingMoves,
+  reportingPriorityOutcomes,
+  reportingMeasures,
+} from "./reportingEvidence.js";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -16,8 +26,6 @@ import {
 import { reportingRecommendationDetail } from "./reportingRecommendations.js";
 import {
   reportingCompetitors,
-  reportingOutcomeDetail,
-  reportingScore,
   reportingSources,
   reportingComparison,
   reportingComparisonColumns,
@@ -25,7 +33,6 @@ import {
 import "./ReportingResearch.css";
 import {
   ReportingEvidenceGrid,
-  ReportingOpportunityMap,
   ReportingJourney,
 } from "./ReportingVisuals.jsx";
 
@@ -38,13 +45,40 @@ const sections = [
   ["job", "Job map", Route],
   ["recommendations", "Recommendations", ClipboardCheck],
   ["sourcing", "Resolution strategy", Layers],
+  ["governance", "Reporting controls", ClipboardCheck],
+  ["measurement", "Roadmap & decision gates", Route],
+  ["sources", "Source register", BookOpen],
 ];
 function Source({ source = "packet" }) {
   const item = reportingSources[source];
+  if (!item.href) return <span>{item.label} · Primary link pending</span>;
   return (
     <a href={item.href} target="_blank" rel="noreferrer">
       {item.label} ↗
     </a>
+  );
+}
+function EvidenceCards({ items }) {
+  return (
+    <div className="rr-grid">
+      {items.map((item) => (
+        <article className="rr-detail" key={item.title}>
+          {item.value && (
+            <strong className="rr-evidence-value">{item.value}</strong>
+          )}
+          <h3>{item.title}</h3>
+          <p>{item.finding}</p>
+          {item.implication && (
+            <Detail title="Strategy implication">{item.implication}</Detail>
+          )}
+          <div className="rr-source-links">
+            {item.sources.map((source) => (
+              <Source key={source} source={source} />
+            ))}
+          </div>
+        </article>
+      ))}
+    </div>
   );
 }
 function Action({ children, layer = "reports", sub = {}, onNavigate }) {
@@ -84,15 +118,11 @@ export function ReportingRecommendationContext({ deepLink }) {
 }
 export default function ReportingResearch({ profile, onNavigate }) {
   const strategy = profile.strategy;
-  const ranked = [...strategy.outcomes].sort(
-    (a, b) => reportingScore(b) - reportingScore(a),
-  );
   const [active, setActive] = useState(0);
   const [selectedId, setSelectedId] = useState(null);
   const [competitor, setCompetitor] = useState(0);
   const [capability, setCapability] = useState(0);
   const [step, setStep] = useState(null);
-  const [outcomeView, setOutcomeView] = useState("map");
   const [competitorView, setCompetitorView] = useState("grid");
   const [comparisonCell, setComparisonCell] = useState(null);
   const journeyPanel = useRef(null);
@@ -122,8 +152,9 @@ export default function ReportingResearch({ profile, onNavigate }) {
     setSelectedId(id);
     if (id) revealOnNarrowScreen(outcomePanel);
   };
-  const selected = ranked.find((item) => item.id === selectedId);
-  const detail = selected ? reportingOutcomeDetail(selected, strategy) : null;
+  const selected = reportingPriorityOutcomes.find(
+    (item) => item.id === selectedId,
+  );
   const vendor = reportingCompetitors[competitor];
   const selectedCapability = strategy.capabilities[capability];
   const jump = (index) => {
@@ -229,21 +260,20 @@ export default function ReportingResearch({ profile, onNavigate }) {
           {id === "thesis" && (
             <>
               <p className="mr-lead">
-                A client needs one clear explanation. The team still has to
-                bring together account data, report content, disclosures, and
-                review. Make that path continuous so the client-ready output
-                carries the context behind it.
+                Governed client report production brings account context, source
+                data, content rules, approval and delivery into one traceable
+                path. The investment decision is whether a bounded workflow can
+                reduce preparation and review work while retaining the evidence
+                behind the client report.
               </p>
               <div className="rr-thesis">
                 <span className="am-eyebrow">Proposed leadership decision</span>
-                <h3>
-                  Validate one reporting workflow before expanding the platform.
-                </h3>
+                <h3>Governed client report production</h3>
                 <p>
                   Prioritize report assembly, review, and delivery for the{" "}
                   {profile.label.toLowerCase()} workflow. Establish the current
-                  preparation time and rework rate, then test whether the
-                  prototype removes those handoffs.
+                  preparation time and rework rate, then test a bounded pilot
+                  with approval, source evidence and retention controls.
                 </p>
                 <Action onNavigate={onNavigate} sub={{ reportTab: "build" }}>
                   Open Reporting outputs
@@ -262,19 +292,23 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 </Detail>
               </div>
               <p className="rr-evidence">
-                Strategy synthesis · Synthetic prototype. Persona details and
-                outcome scores are directional inputs, not measured customer
-                results.
+                Illustrative pilots on synthetic data. Persona details and
+                outcome priorities are management estimates / strategic
+                hypotheses. No production readiness, customer-data validation or
+                compliance approval is claimed.
               </p>
             </>
           )}
           {id === "market" && (
             <>
               <p className="rr-intro">
-                Compare Addepar and Advyzon with Fidelity’s public Wealthscape
-                baseline. Select an icon or reference card to inspect the source
-                evidence and the related prototype response.
+                Nine vendors frame the competitive trajectory. Public sources
+                describe templates, batch generation, scheduled delivery, client
+                portals, access permissions, advisor branding, generated
+                narrative and multi-source consolidation across the market.
+                Select a reference to inspect its scope.
               </p>
+              <EvidenceCards items={reportingMarketEvidence} />
               <div
                 className="am-tabs rr-view-switch"
                 role="group"
@@ -371,7 +405,9 @@ export default function ReportingResearch({ profile, onNavigate }) {
                     {vendor.implication}
                   </Detail>
                 </div>
-                <Detail title="Prototype coverage & gap">{vendor.gap}</Detail>
+                <Detail title="Illustrative pilot & production gap">
+                  {vendor.gap}
+                </Detail>
                 <div className="rr-footer">
                   <div className="rr-source-links">
                     <Source source={vendor.source} />
@@ -388,6 +424,11 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   </Action>
                 </div>
               </article>
+              <EvidenceCards items={reportingNarrativeEvidence} />
+              <div className="rr-thesis">
+                <h3>The control-layer opportunity</h3>
+                <p>{reportingControlGap}</p>
+              </div>
               <p className="rr-evidence">
                 Vendor pages reviewed 15 September 2026. Public positioning
                 establishes a comparison point; it does not prove integration
@@ -469,6 +510,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
           )}
           {id === "customer" && (
             <>
+              <EvidenceCards items={reportingClientEvidence} />
               <p className="rr-intro">
                 Illustrative persona · {strategy.persona.role}. These pain
                 statements frame discovery; they are not verbatim interview
@@ -507,162 +549,89 @@ export default function ReportingResearch({ profile, onNavigate }) {
           {id === "outcomes" && (
             <>
               <p className="rr-intro">
-                Select an outcome to connect the customer problem to a proposed
-                response and an implemented demo. Scores prioritize discovery
-                and remain directional.
+                Five reporting outcomes for the dual-registered segment.
+                Priority order and the underserved position are management
+                estimates and strategic hypotheses, not survey scores. No
+                numeric opportunity score is computed.
               </p>
-              <label className="am-field rr-select">
-                Explore an outcome
-                <select
-                  value={selected?.id || "all"}
-                  onChange={(event) =>
-                    selectOutcome(
-                      event.target.value === "all" ? null : event.target.value,
-                    )
-                  }
-                >
-                  <option value="all">All outcomes</option>
-                  {ranked.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.id} · {item.text}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <div className="rr-thesis">
+                <h3>Proposed underserved opportunity</h3>
+                <p>
+                  High importance and low satisfaction are hypotheses at outcome
+                  level. Category-level Kitces ratings do not measure these five
+                  jobs. Validate each with the selected profile.
+                </p>
+              </div>
               <div
-                className="am-tabs rr-view-switch"
+                className="rr-grid"
                 role="group"
-                aria-label="Reporting outcome presentation"
+                aria-label="Reporting outcome priorities"
               >
-                <button
-                  aria-pressed={outcomeView === "map"}
-                  onClick={() => setOutcomeView("map")}
-                >
-                  Opportunity map
-                </button>
-                <button
-                  aria-pressed={outcomeView === "ranked"}
-                  onClick={() => setOutcomeView("ranked")}
-                >
-                  Ranked outcomes
-                </button>
-                <button
-                  aria-pressed={!selected}
-                  onClick={() => selectOutcome(null)}
-                >
-                  All outcomes
-                </button>
-              </div>
-              <div
-                className={`rr-outcomes ${outcomeView === "map" ? "rr-map-mode" : ""}`}
-              >
-                {outcomeView === "map" ? (
-                  <ReportingOpportunityMap
-                    outcomes={ranked}
-                    selectedId={selectedId}
-                    onSelect={selectOutcome}
-                  />
-                ) : (
-                  <div
-                    className="rr-ranking"
-                    role="group"
-                    aria-label="Reporting outcome ranking"
+                {reportingPriorityOutcomes.map((item, i) => (
+                  <button
+                    key={item.id}
+                    className="rr-choice"
+                    aria-pressed={selectedId === item.id}
+                    aria-controls="reporting-outcome-detail"
+                    onClick={() => selectOutcome(item.id)}
                   >
-                    {ranked.map((item) => (
-                      <button
-                        key={item.id}
-                        className="rr-outcome"
-                        aria-pressed={item.id === selected?.id}
-                        aria-controls="reporting-outcome-detail"
-                        onClick={() => selectOutcome(item.id)}
-                      >
-                        <span className="rr-outcome-top">
-                          <strong>{item.id}</strong>
-                          <b>{reportingScore(item).toFixed(1)}</b>
-                        </span>
-                        <span>{item.text}</span>
-                        <span className="rr-bar">
-                          <span
-                            style={{
-                              width: `${(reportingScore(item) / 20) * 100}%`,
-                            }}
-                          />
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <article
-                  ref={outcomePanel}
-                  tabIndex={-1}
-                  className="rr-detail"
-                  id="reporting-outcome-detail"
-                  aria-live="polite"
-                >
-                  {selected ? (
-                    <>
-                      <span className="am-eyebrow">
-                        {selected.id} · Directional opportunity
-                      </span>
-                      <h3>{detail.problem}</h3>
-                      <div className="rr-scores">
-                        <span>
-                          Importance <b>{selected.imp.toFixed(1)} / 10</b>
-                        </span>
-                        <span>
-                          Satisfaction <b>{selected.sat.toFixed(1)} / 10</b>
-                        </span>
-                        <span>
-                          Opportunity{" "}
-                          <b>{reportingScore(selected).toFixed(1)} / 20</b>
-                        </span>
-                      </div>
-                      <Detail title="Current gap">{detail.gap}</Detail>
-                      <Detail title="Proposed UX response">
-                        {detail.response}
-                      </Detail>
-                      <Detail title="Implemented prototype & limits">
-                        {detail.limitation}
-                      </Detail>
-                      <Action
-                        onNavigate={onNavigate}
-                        layer={detail.layer}
-                        sub={detail.sub}
-                      >
-                        {detail.action}
-                      </Action>
-                      <p className="rr-evidence">{detail.evidence}</p>
-                      {profile.id !== "ria" && <Source />}
-                    </>
-                  ) : (
-                    <>
-                      <h3>All reporting outcomes</h3>
-                      <p>
-                        Every outcome has equal emphasis. Select a numbered
-                        point, ranked row, or dropdown option to inspect the
-                        problem, response, evidence, and prototype destination.
-                      </p>
-                      <p className="rr-evidence">
-                        The map uses the same directional scores as the ranking.
-                        Switching views preserves your selection.
-                      </p>
-                    </>
-                  )}
-                </article>
+                    <strong>
+                      {i + 1}. {item.id}
+                    </strong>
+                    <span>{item.text}</span>
+                    <span className="rr-link">
+                      Explore proposal <ArrowRight size={14} />
+                    </span>
+                  </button>
+                ))}
               </div>
-              <p className="rr-evidence">
-                Opportunity = importance + max(importance − satisfaction, 0).
-                Source ratings are synthesis estimates; the ranking is not a
-                funded roadmap or a measured impact claim.
-              </p>
+              <article
+                className="rr-detail"
+                id="reporting-outcome-detail"
+                ref={outcomePanel}
+                tabIndex={-1}
+                aria-live="polite"
+              >
+                {selected ? (
+                  <>
+                    <h3>{selected.id}</h3>
+                    <p>{selected.text}</p>
+                    <p>
+                      Proposed move: {reportingMoves[selected.move - 1].title}
+                    </p>
+                    <button
+                      className="rr-action"
+                      onClick={() =>
+                        jump(
+                          sections.findIndex(
+                            ([key]) => key === "recommendations",
+                          ),
+                        )
+                      }
+                    >
+                      Inspect evidence, pilot and validation gate{" "}
+                      <ArrowRight size={15} />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <h3>Explore the five outcomes</h3>
+                    <p>
+                      Select an outcome to follow its recommendation,
+                      illustrative pilot and production gate.
+                    </p>
+                  </>
+                )}
+              </article>
             </>
           )}
           {id === "job" && (
             <>
               <p className="rr-intro">
-                Follow a reporting request from agreed scope to a client
-                conversation. Select a phase to highlight the client event,
-                operations concern, and handoff across the full experience.
+                Reporting effort is hypothesized to concentrate in Locate,
+                Prepare and Confirm. This is a management estimate, not a
+                measured time study. Select a phase to inspect the client event,
+                operating concern, owner handoff and evidence required.
               </p>
               <ReportingJourney
                 selectedStep={step}
@@ -675,13 +644,18 @@ export default function ReportingResearch({ profile, onNavigate }) {
           {id === "recommendations" && (
             <>
               <p className="rr-intro">
-                Use these moves to scope the pilot. Each recommendation links to
-                the closest implemented prototype and identifies the outcome it
-                is intended to support.
+                Sequence four moves: unify household/context; surface blockers
+                before assembly; govern narrative with approved controls; route
+                work with operational owner, status and evidence. Establish
+                control design before production integration, and keep generated
+                narrative inside that boundary.
               </p>
               <div className="rr-stack">
-                {strategy.recommendations.map((item) => {
-                  const target = reportingRecommendationDetail(profile, item);
+                {reportingMoves.map((item) => {
+                  const target = reportingRecommendationDetail(
+                    { id: "bd-hybrid-advisor" },
+                    item,
+                  );
                   const Icon = {
                     users: Users,
                     alert: TriangleAlert,
@@ -714,7 +688,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
                       >
                         <strong>Outcomes addressed</strong>
                         {item.outcomes.map((id) => {
-                          const outcome = strategy.outcomes.find(
+                          const outcome = reportingPriorityOutcomes.find(
                             (o) => o.id === id,
                           );
                           return outcome ? (
@@ -724,7 +698,11 @@ export default function ReportingResearch({ profile, onNavigate }) {
                               aria-label={`Inspect ${id}: ${outcome.text}`}
                               onClick={() => {
                                 setSelectedId(id);
-                                jump(4);
+                                jump(
+                                  sections.findIndex(
+                                    ([key]) => key === "outcomes",
+                                  ),
+                                );
                               }}
                             >
                               {id}
@@ -738,18 +716,24 @@ export default function ReportingResearch({ profile, onNavigate }) {
                       <p className="rr-rec-ux">
                         <strong>UX decision</strong> {item.body}
                       </p>
+                      <Detail title="Evidence">{item.evidence}</Detail>
+                      <div className="rr-source-links">
+                        {item.sources.map((source) => (
+                          <Source key={source} source={source} />
+                        ))}
+                      </div>
                       <div className="rr-rec-columns">
                         <section className="rr-rec-demo">
                           <h4>
                             <FlaskConical size={17} aria-hidden="true" />
-                            Demonstrated today
+                            Illustrative pilot today
                           </h4>
                           <p>{target.demonstrated}</p>
                           <p className="rr-evidence">{target.limitation}</p>
                           <Action
                             onNavigate={onNavigate}
                             layer={target.layer}
-                            sub={target.sub}
+                            sub={{ ...target.sub, profileId: profile.id }}
                           >
                             {target.action}
                           </Action>
@@ -773,11 +757,11 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 })}
               </div>
               <p className="rr-evidence">
-                Recommendation titles and outcome mappings come from the
-                existing strategy inputs. Demo coverage and production steps are
-                proposed interpretation; directional scores and public
-                references do not establish production readiness or measured
-                customer impact.
+                The four moves are strategic proposals. Pilot surfaces
+                illustrate interactions; they do not establish live data,
+                enforced controls, durable evidence, production readiness or
+                measured customer impact. Governance requirements must be met
+                before any generated narrative reaches a client.
               </p>
               <div className="rr-footer rr-report-links">
                 <span>
@@ -796,6 +780,100 @@ export default function ReportingResearch({ profile, onNavigate }) {
                     {label}
                   </Action>
                 ))}
+              </div>
+            </>
+          )}
+          {id === "governance" && (
+            <>
+              <p className="rr-intro">
+                Rule snapshot: in force/current as of 15 September 2026.
+                Compliance must classify each report, audience and account
+                context, confirm exceptions and approve implementation. These
+                are design inputs, not a compliance sign-off.
+              </p>
+              <EvidenceCards items={reportingControls} />
+              <div className="rr-thesis">
+                <h3>Control-layer acceptance gate</h3>
+                <p>
+                  Demonstrate permitted claims and disclosures, claim-to-source
+                  attribution and refusal, entitled reviewers with named
+                  decisions, and retention with prompt/output and model-version
+                  logs. Retrieve the approved version actually delivered. The
+                  current illustrative pilots establish none of these production
+                  controls.
+                </p>
+              </div>
+            </>
+          )}
+          {id === "measurement" && (
+            <>
+              <p className="rr-intro">
+                Stage boundaries are evidence gates. No delivery dates or
+                measured benefit are committed.
+              </p>
+              <ol className="rr-roadmap">
+                <li>
+                  <strong>Instrument the current path.</strong> Name owners and
+                  establish preparation, rework and review baselines.
+                </li>
+                <li>
+                  <strong>Reconcile one household.</strong> Explain every
+                  missing or conflicting account across products.
+                </li>
+                <li>
+                  <strong>Run one bounded report path.</strong> One segment and
+                  report type; assemble, review, deliver and follow up under the
+                  required controls.
+                </li>
+                <li>
+                  <strong>Evidence the control layer.</strong> Prove approval,
+                  source attribution, retention, model logging and retrieval
+                  before expanding generated narrative.
+                </li>
+                <li>
+                  <strong>Decide: scale, re-scope or stop.</strong> Use the
+                  measured results; demonstration polish is not an investment
+                  gate.
+                </li>
+              </ol>
+              <div className="rr-grid">
+                {reportingMeasures.map(([title, definition]) => (
+                  <article className="rr-detail" key={title}>
+                    <span className="rr-badge">No baseline yet</span>
+                    <h3>{title}</h3>
+                    <p>{definition}</p>
+                  </article>
+                ))}
+              </div>
+              <p className="rr-evidence">
+                Falsification gate: if preparation is already low, rework is
+                near zero or review takes minutes, investigate a different
+                constraint and stop or re-scope. Increased narrative rejection
+                or failed approval retrieval blocks scale. Targets follow
+                baseline measurement.
+              </p>
+            </>
+          )}
+          {id === "sources" && (
+            <>
+              <p className="rr-intro">
+                Public-source register · 15 September 2026. Sourced findings,
+                management estimates and strategic hypotheses are distinct.
+                Vendor documentation is not a product audit; interested-party
+                studies do not establish causal benefits.
+              </p>
+              <div className="rr-stack">
+                {Object.entries(reportingSources)
+                  .filter(([key]) => key !== "packet")
+                  .map(([key, source]) => (
+                    <article className="rr-sourcing" key={key}>
+                      <Source source={key} />
+                      <p>
+                        {source.note ||
+                          "Vendor-published reporting reference; reviewed 15 September 2026. Confirm capability scope and availability with the provider."}
+                      </p>
+                    </article>
+                  ))}
               </div>
             </>
           )}

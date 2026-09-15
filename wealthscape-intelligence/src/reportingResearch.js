@@ -1,8 +1,10 @@
+import { reportingEvidenceSources } from "./reportingEvidence.js";
 // Reporting strategy synthesis. Scores and personas come from the existing
 // strategy packet; they are discovery inputs, not measured customer results.
 export const reportingScore = (outcome) =>
   outcome.imp + Math.max(outcome.imp - outcome.sat, 0);
 export const reportingSources = {
+  ...reportingEvidenceSources,
   packet: {
     label: "Broker-dealer strategy packet · July 2026",
     href: "https://github.com/vsillah/wealthscape-reporting/blob/main/docs/broker-dealer-strategy-expansion.md",
@@ -87,6 +89,63 @@ export const reportingCompetitors = [
     sub: { reportTab: "build" },
     action: "Inspect prototype report assembly",
   },
+  ...[
+    [
+      "Envestnet Tamarac",
+      "Dynamic reporting and AI beta",
+      "tamaracWorkflow",
+      "tamarac",
+      "Report Studio describes configurable grouping and dynamic views; the September AI narrative announcement is preview/beta with expected production availability.",
+    ],
+    [
+      "Orion",
+      "Template-based report drafts",
+      "orion",
+      null,
+      "Denali AI Report Assistant describes drafts using firm templates and approved components, with professional review language.",
+    ],
+    [
+      "Altruist",
+      "Custodial performance reporting",
+      "altruist",
+      null,
+      "Altruist describes scheduled, advisor-branded performance-summary emails and investment/activity PDFs delivered through mobile and desktop portals. Confirm report-specific approval and retention controls in discovery.",
+    ],
+    [
+      "SS&C Black Diamond",
+      "Batch reports and portal posting",
+      "blackdiamond",
+      "blackdiamondPortal",
+      "Black Diamond describes template building, batch quarterly statements and portal posting. Its client-experience documentation adds branding, secure documents and outside-account aggregation.",
+    ],
+    [
+      "Schwab Advisor Services",
+      "Portfolio Connect report review",
+      "schwab",
+      null,
+      "The Portfolio Connect guide includes report creation and review. A report-review screen alone does not establish supervisory approval or retention.",
+    ],
+    [
+      "BNY Pershing",
+      "Investor and wealth-reporting unification",
+      "pershing",
+      null,
+      "The June 2025 INSITE announcement describes planned Wove Investor / NetX / Wealth Reporting unification. Availability is not established by that forward-looking announcement.",
+    ],
+  ].map(([name, focus, source, additionalSource, evidence]) => ({
+    name,
+    focus,
+    source,
+    additionalSource,
+    evidence,
+    icon: "report",
+    implication:
+      "Use public workflow evidence to frame a product teardown and test the remaining approval, source and retention requirements.",
+    gap: "Illustrative pilot on synthetic data. No live integration, supervisory approval, durable audit trail or production readiness is established.",
+    layer: "reports",
+    sub: { reportTab: "build" },
+    action: "Inspect illustrative report assembly",
+  })),
 ];
 
 const outcomeGaps = {
@@ -271,6 +330,47 @@ export const reportingComparison = [
       },
     ],
   },
+  ...[
+    [
+      "Envestnet Tamarac",
+      4,
+      [true, false, false, false],
+      "Dynamic report grouping is documented; AI Report Studio remains a beta/expected release. Other capabilities are not assessed by these retained pages.",
+    ],
+    [
+      "Orion",
+      5,
+      [true, false, false, false],
+      "Firm templates and approved components support report drafts. The linked Denali release does not establish all distribution or entitlement capabilities.",
+    ],
+    [
+      "Altruist",
+      6,
+      [true, false, true, false],
+      "Branded performance emails, scheduled communications and portal PDFs are documented. Batch processing and reporting entitlements are not established by this reference.",
+    ],
+    [
+      "SS&C Black Diamond",
+      7,
+      [true, true, true, false],
+      "The product page describes template building, batch quarterly statements and portal posting; report-specific entitlements are not assessed.",
+    ],
+    [
+      "Schwab Advisor Services",
+      8,
+      [true, false, false, false],
+      "The Portfolio Connect guide describes reports and report review; review is not equivalent to a named supervisory approval workflow.",
+    ],
+    [
+      "BNY Pershing",
+      9,
+      [false, false, false, false],
+      "Wove Investor unification is forward-looking in the retained June 2025 announcement; delivered capabilities require confirmation.",
+    ],
+  ].map(([name, reference, coverage, note]) => ({
+    name,
+    cells: coverage.map((described) => ({ described, reference, note })),
+  })),
 ];
 
 export function reportingQuadrant(outcome) {
@@ -380,7 +480,7 @@ export const reportingJourney = [
   {
     step: "Prepare",
     label: "Assemble a consistent draft",
-    tone: "neutral",
+    tone: "friction",
     client: "The report should use familiar branding and relevant sections.",
     operations: "Apply a reusable template to reconciled data.",
     friction: "Repeated exports and manual formatting create rework.",
@@ -480,3 +580,5 @@ export const reportingJourney = [
       "Approved output, delivery record, follow-up owner; live receipt is outside this demo.",
   },
 ];
+
+// v2 evidence is separated from strategic interpretations and synthetic pilots.

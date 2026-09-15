@@ -17,9 +17,11 @@ export function ReportingEvidenceGrid({ selected, onSelect }) {
   return (
     <div className="rr-comparison">
       <p className="rr-evidence">
-        Three public references · four reporting capabilities. Fidelity is the
-        incumbent Wealthscape baseline. This grid shows what the linked pages
-        describe; satisfaction and relative quality are not scored.
+        Nine vendors · four inspectable capability columns. Narrative,
+        scheduling, branding and consolidation are discussed in the reference
+        cards. Fidelity is the incumbent Wealthscape baseline. This grid shows
+        what the linked pages describe; satisfaction and relative quality are
+        not scored.
       </p>
       <div className="rr-evidence-legend" aria-label="Evidence icon legend">
         <span>
