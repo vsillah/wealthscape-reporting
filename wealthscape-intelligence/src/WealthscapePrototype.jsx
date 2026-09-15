@@ -1,6 +1,7 @@
 import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
 import MaintenanceResearch from "./MaintenanceResearch";
 import ReportingResearch from "./ReportingResearch.jsx";
+import { reportingCompetitors } from "./reportingResearch.js";
 import MaintenanceGuide from "./MaintenanceGuide.jsx";
 import { createGuideCase, guideSteps, canVisitGuideStep, GUIDE_CASE_ID } from "./maintenanceGuide.js";
 import { AccountMaintenance, LifecycleDashboard, visibleCases, initialMaintenance, maintenanceHref, readMaintenanceRoute } from "./AccountMaintenance";
@@ -2492,7 +2493,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : "Connect the client relationship to report assembly, review, and delivery. Use the evidence and prototype to choose a bounded pilot for this profile.";
   const trackStats = researchTrack === "lifecycle"
     ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"8",label:"Maintenance functions"},{value:"3",label:"Stakeholder groups"},{value:"4",label:"Investment priorities"}]
-    : [{value:"3",label:"Public reference views"},{value:strategy.outcomes.length,label:"Directional outcomes"},{value:strategy.recommendations.length,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
+    : [{value:reportingCompetitors.length,label:"Public reference views"},{value:strategy.outcomes.length,label:"Directional outcomes"},{value:strategy.recommendations.length,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>

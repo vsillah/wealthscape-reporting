@@ -7,6 +7,8 @@ import {
   reportingPlot,
   reportingQuadrant,
   reportingComparison,
+  reportingCompetitors,
+  reportingSources,
 } from "./reportingResearch.js";
 
 test("reporting recommendations reach report review instead of returning to Strategy", () => {
@@ -98,19 +100,35 @@ test("quadrants use an explicit 5/10 boundary, independent of opportunity rank",
   assert.equal(reportingQuadrant({ imp: 4, sat: 2 }), "Lower priority");
 });
 test("competitor map preserves unknown evidence and does not assign satisfaction scores", () => {
-  assert.equal(reportingComparison.length, 2);
+  assert.equal(reportingComparison.length, 3);
   const unknown = reportingComparison
     .flatMap((row) => row.cells)
     .filter((cell) => !cell.described);
-  assert.equal(unknown.length, 2);
+  assert.equal(unknown.length, 5);
   for (const row of reportingComparison) {
     assert.equal(row.cells.length, 4);
     assert.equal("satisfaction" in row, false);
     for (const cell of row.cells)
-      assert.ok(
-        cell.reference >= 0 && cell.reference <= 2 && cell.note.length > 20,
-      );
+      assert.ok(reportingCompetitors[cell.reference] && cell.note.length > 20);
   }
+});
+test("Fidelity remains a public incumbent baseline with bounded reporting evidence", () => {
+  const row = reportingComparison.find(
+    (item) => item.name === "Fidelity (Wealthscape)",
+  );
+  assert.deepEqual(
+    row.cells.map((cell) => cell.described),
+    [true, false, false, false],
+  );
+  const reference = reportingCompetitors[row.cells[0].reference];
+  assert.equal(reference.incumbent, true);
+  for (const source of [reference.source, reference.additionalSource]) {
+    assert.ok(
+      new URL(reportingSources[source].href).hostname.endsWith(".fidelity.com"),
+    );
+  }
+  assert.equal(reference.layer, "reports");
+  assert.equal(reference.sub.reportTab, "build");
 });
 test("all reporting phases carry a complete handoff and stay independent of maintenance routes", () => {
   assert.equal(reportingJourney.length, 8);

@@ -17,10 +17,18 @@ export function ReportingEvidenceGrid({ selected, onSelect }) {
   return (
     <div className="rr-comparison">
       <p className="rr-evidence">
-        Two platforms · four reporting capabilities. This grid shows what the
-        linked public pages describe. Satisfaction and relative quality are not
-        scored.
+        Three public references · four reporting capabilities. Fidelity is the
+        incumbent Wealthscape baseline. This grid shows what the linked pages
+        describe; satisfaction and relative quality are not scored.
       </p>
+      <div className="rr-evidence-legend" aria-label="Evidence icon legend">
+        <span>
+          <CheckCircle2 size={18} aria-hidden="true" /> Described
+        </span>
+        <span>
+          <CircleHelp size={18} aria-hidden="true" /> Not assessed
+        </span>
+      </div>
       <div
         className="rr-visual-scroll"
         role="region"
@@ -48,6 +56,7 @@ export function ReportingEvidenceGrid({ selected, onSelect }) {
                     <td key={c}>
                       <button
                         aria-label={`${row.name}: ${reportingComparisonColumns[c]} — ${cell.described ? "Described" : "Not assessed"}`}
+                        title={`${row.name}: ${reportingComparisonColumns[c]} — ${cell.described ? "Described" : "Not assessed"}`}
                         aria-pressed={
                           selected?.row === r && selected?.column === c
                         }
@@ -58,9 +67,6 @@ export function ReportingEvidenceGrid({ selected, onSelect }) {
                         }
                       >
                         <Icon size={22} aria-hidden="true" />
-                        <span>
-                          {cell.described ? "Described" : "Not assessed"}
-                        </span>
                       </button>
                     </td>
                   );

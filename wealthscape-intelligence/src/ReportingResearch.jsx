@@ -249,9 +249,9 @@ export default function ReportingResearch({ profile, onNavigate }) {
           {id === "market" && (
             <>
               <p className="rr-intro">
-                Compare the reporting capabilities vendors describe, then
-                inspect the related prototype response. Select a card to explore
-                the evidence and the remaining gap.
+                Compare Addepar and Advyzon with Fidelity’s public Wealthscape
+                baseline. Select an icon or reference card to inspect the source
+                evidence and the related prototype response.
               </p>
               <div
                 className="am-tabs rr-view-switch"
@@ -277,9 +277,14 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   onSelect={selectComparison}
                 />
               ) : (
-                <div className="rr-grid rr-three">
+                <div className="rr-grid">
                   {reportingCompetitors.map((item, i) => {
-                    const VendorIcon = [Layers, ChartScatter, Users][i];
+                    const VendorIcon = {
+                      layers: Layers,
+                      chart: ChartScatter,
+                      users: Users,
+                      report: FileText,
+                    }[item.icon];
                     return (
                       <button
                         className="rr-choice"
@@ -292,7 +297,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
                         }}
                       >
                         <span className="rr-icon">
-                          <VendorIcon size={22} />
+                          <VendorIcon size={22} aria-hidden="true" />
                         </span>
                         <strong>{item.name}</strong>
                         <span>{item.focus}</span>
@@ -311,7 +316,11 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 tabIndex={-1}
                 aria-live="polite"
               >
-                <span className="am-eyebrow">Vendor-described capability</span>
+                <span className="am-eyebrow">
+                  {vendor.incumbent
+                    ? "Incumbent Wealthscape baseline"
+                    : "Vendor-described capability"}
+                </span>
                 <h3>
                   {vendor.name} · {vendor.focus}
                 </h3>
@@ -342,7 +351,12 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 </div>
                 <Detail title="Prototype coverage & gap">{vendor.gap}</Detail>
                 <div className="rr-footer">
-                  <Source source={vendor.source} />
+                  <div className="rr-source-links">
+                    <Source source={vendor.source} />
+                    {vendor.additionalSource && (
+                      <Source source={vendor.additionalSource} />
+                    )}
+                  </div>
                   <Action
                     onNavigate={onNavigate}
                     layer={vendor.layer}

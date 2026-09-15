@@ -19,6 +19,14 @@ export const reportingSources = {
     label: "Advyzon · client portal",
     href: "https://www.advyzon.com/client-portal/",
   },
+  fidelity: {
+    label: "Fidelity · Wealthscape Intelligence launch, September 2025",
+    href: "https://newsroom.fidelity.com/thought-leaders/fidelity-investments-launches-wealthscapesm-intelligence-and-introduces-new--fully-digital-onboardin/s/aaf9079d-0ecd-49b2-84f2-7e546a4fc693",
+  },
+  fidelityOperations: {
+    label: "Fidelity · Wealthscape operations experience",
+    href: "https://clearingcustody.fidelity.com/solutions/technology/brokerage/operations",
+  },
 };
 export const reportingCompetitors = [
   {
@@ -62,6 +70,22 @@ export const reportingCompetitors = [
     layer: "portal",
     sub: {},
     action: "Inspect client portal",
+  },
+  {
+    name: "Fidelity",
+    focus: "Wealthscape reporting baseline",
+    icon: "report",
+    incumbent: true,
+    source: "fidelity",
+    additionalSource: "fidelityOperations",
+    evidence:
+      "Fidelity describes centralized operational reports in Wealthscape Intelligence and configurable reporting in its operations experience.",
+    implication:
+      "Start discovery with the incumbent reporting capability. Validate reuse before proposing another report workflow.",
+    gap: "This is a public Wealthscape baseline. The synthetic prototype does not establish production coverage, report delivery, batch scheduling, or report-specific permissions.",
+    layer: "reports",
+    sub: { reportTab: "build" },
+    action: "Inspect prototype report assembly",
   },
 ];
 
@@ -219,6 +243,31 @@ export const reportingComparison = [
         described: false,
         reference: 2,
         note: "Detailed permission controls were not assessed in the retained Advyzon references. Validate them in a product teardown.",
+      },
+    ],
+  },
+  {
+    name: "Fidelity (Wealthscape)",
+    cells: [
+      {
+        described: true,
+        reference: 3,
+        note: "The operations page describes configurable reports; the Intelligence launch describes centralized operational reporting. Template authoring depth remains unassessed.",
+      },
+      {
+        described: false,
+        reference: 3,
+        note: "Scheduled batch report generation was not assessed in these Fidelity references. Bulk account opening is an onboarding capability, not reporting evidence.",
+      },
+      {
+        described: false,
+        reference: 3,
+        note: "Client report delivery was not assessed in these Fidelity references. The advisor dashboard does not establish client-facing distribution.",
+      },
+      {
+        described: false,
+        reference: 3,
+        note: "Report-specific permissions were not assessed in these Fidelity references. General operations and supervision controls do not establish reporting access controls.",
       },
     ],
   },
