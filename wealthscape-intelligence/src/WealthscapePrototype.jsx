@@ -1,5 +1,6 @@
 import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
 import MaintenanceResearch from "./MaintenanceResearch";
+import ReportingResearch from "./ReportingResearch.jsx";
 import MaintenanceGuide from "./MaintenanceGuide.jsx";
 import { createGuideCase, guideSteps, canVisitGuideStep, GUIDE_CASE_ID } from "./maintenanceGuide.js";
 import { AccountMaintenance, LifecycleDashboard, visibleCases, initialMaintenance, maintenanceHref, readMaintenanceRoute } from "./AccountMaintenance";
@@ -2483,28 +2484,23 @@ function BrokerDealerWorkspace({ workspace, isMobile, onNavigate }) {
 
 function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, onProfileChange, onNavigate, onStartTour, onStartScenario, onStartMaintenanceGuide, deepLink, cases }) {
   const { isMobile } = bp;
-  const [researchTrack, setResearchTrack] = useState("lifecycle");
+  const [researchTrack, setResearchTrack] = useState(deepLink?.strategyTrack === "reporting" ? "reporting" : "lifecycle");
+  useEffect(() => { if (deepLink?.strategyTrack) setResearchTrack(deepLink.strategyTrack === "reporting" ? "reporting" : "lifecycle"); }, [deepLink?.strategyTrack]);
+  const selectResearchTrack = track => { setResearchTrack(track); onNavigate("strategy", { strategyTrack: track }); };
   const strategy = profile.strategy;
-  const ranked = [...strategy.outcomes].sort((a,b)=>oppScore(b)-oppScore(a));
-  const maxOpp = ranked.length ? oppScore(ranked[0]) : 1;
-  const card = { background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12 };
-  const isBrokerDealerProfile = profile.id !== DEFAULT_PROFILE_ID;
-  const trackTitle = researchTrack === "lifecycle" ? "Account maintenance strategy" : strategy.heroTitle;
-  const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : strategy.heroBody;
+  const trackTitle = researchTrack === "lifecycle" ? "Account maintenance strategy" : "Reporting modernization strategy";
+  const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : "Connect the client relationship to report assembly, review, and delivery. Use the evidence and prototype to choose a bounded pilot for this profile.";
   const trackStats = researchTrack === "lifecycle"
     ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"8",label:"Maintenance functions"},{value:"3",label:"Stakeholder groups"},{value:"4",label:"Investment priorities"}]
-    : [{value:strategy.marketSignals.length,label:"Market signals"},{value:strategy.outcomes.length,label:"Reporting outcomes"},{value:strategy.recommendations.length,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
-  const routeStrategyAction = (label, layer = "morning", sub = {}) => {
-    onNavigate(layer, { ...sub, dashboardFocus:label, source:"strategy" });
-  };
+    : [{value:"3",label:"Public reference views"},{value:strategy.outcomes.length,label:"Directional outcomes"},{value:strategy.recommendations.length,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>
 
       <div className="am-workspace" role="group" aria-label="Strategy research tracks">
         <div className="am-tabs" style={{ marginBottom:0 }}>
-          <button aria-pressed={researchTrack === "lifecycle"} aria-controls="strategy-lifecycle" onClick={()=>setResearchTrack("lifecycle")}>Account maintenance</button>
-          <button aria-pressed={researchTrack === "reporting"} aria-controls="strategy-reporting" onClick={()=>setResearchTrack("reporting")}>Reporting modernization</button>
+          <button aria-pressed={researchTrack === "lifecycle"} aria-controls="strategy-lifecycle" onClick={()=>selectResearchTrack("lifecycle")}>Account maintenance</button>
+          <button aria-pressed={researchTrack === "reporting"} aria-controls="strategy-reporting" onClick={()=>selectResearchTrack("reporting")}>Reporting modernization</button>
         </div>
       </div>
 
@@ -2540,236 +2536,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
       </section>
 
       <section id="strategy-reporting" hidden={researchTrack !== "reporting"} aria-label="Reporting modernization research">
-        <div className="am-workspace am-card" style={{ marginBottom:20 }}>
-          <h2>Reporting research takeaways</h2>
-          <p>Use persona-specific outcome gaps to guide reporting priorities, then compare the recommended capabilities and build-or-buy choices below.</p>
-          <p className="am-note">This research track retains its original market sources, customer-research framing, and Claude Project references. Its outcome scores are separate from the account-maintenance proxy map.</p>
-        </div>
-        <div style={{ display:"flex", flexDirection:"column", gap:30, marginTop:20 }}>
-      {/* 1 · Market research */}
-      <StratSection eyebrow="01 · Market Research" title="The category is moving — Wealthscape wasn't" intro="Six external signals defined the competitive and regulatory pressure. Each one maps to a capability the legacy platform lacked.">
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr 1fr", gap:12 }}>
-          {strategy.marketSignals.map(m=>{
-            const Icon = m.icon;
-            return (
-              <div key={m.tag} style={{ ...card, padding:"15px 16px", display:"flex", flexDirection:"column", gap:8 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
-                  <div style={{ width:32, height:32, borderRadius:8, background:T.indigoLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Icon size={16} color={T.indigo}/></div>
-                  <div style={{ fontSize:19, fontWeight:800, color:T.gray900, letterSpacing:"-0.02em" }}>{m.stat}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>{m.tag}</div>
-                  <div style={{ fontSize:10, color:T.slate, fontWeight:600, marginTop:1 }}>{m.source}</div>
-                </div>
-                <div style={{ fontSize:12, color:T.gray600, lineHeight:1.55 }}>{m.body}</div>
-              </div>
-            );
-          })}
-        </div>
-      </StratSection>
-
-      {strategy.capabilities.length > 0 && (
-        <StratSection eyebrow="02 · Capability Comparison" title="Where the current stack has gaps" intro="A broker-dealer lens changes the comparison: Wealthscape needs supervision, AI governance, platform telemetry, and hybrid-book context in addition to client-ready reporting.">
-          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
-            {strategy.capabilities.map(c=>(
-              <div key={c.capability} style={{ ...card, padding:isMobile?"14px":"15px 18px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.1fr 1.1fr 0.45fr 1.25fr", gap:12, alignItems:"start" }}>
-                <div>
-                  <div style={{ fontSize:13, fontWeight:800, color:T.gray900, marginBottom:4 }}>{c.capability}</div>
-                  <div style={{ fontSize:11.5, color:T.slate, lineHeight:1.45 }}>{c.gap}</div>
-                </div>
-                <div>
-                  <div style={{ fontSize:9.5, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:4 }}>Current Wealthscape</div>
-                  <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{c.fidelity}</div>
-                </div>
-                <div>
-                  <span style={{ display:"inline-flex", background:`${ratingColor(c.rating)}18`, color:ratingColor(c.rating), border:`1px solid ${ratingColor(c.rating)}40`, borderRadius:99, padding:"4px 9px", fontSize:10, fontWeight:800 }}>{ratingLabel(c.rating)}</span>
-                </div>
-                <div>
-                  <div style={{ fontSize:9.5, fontWeight:800, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:4 }}>Reference</div>
-                  <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{c.competitor}</div>
-                  <div style={{ fontSize:10.5, color:T.indigo, fontWeight:700, marginTop:5 }}>{c.source}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </StratSection>
-      )}
-
-      {/* 2 · Customer research */}
-      <StratSection eyebrow="02 · Customer Research" title="Who we studied & what hurt" intro={strategy.customerIntro}>
-        <div style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:14 }}>
-          <div style={{ ...card, padding:"18px 20px", width:isMobile?"auto":260, flexShrink:0, background:T.navy, border:"none", color:T.white }}>
-            <div style={{ width:44, height:44, borderRadius:"50%", background:T.greenMid, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:700, marginBottom:12 }}>{strategy.persona.initials}</div>
-            <div style={{ fontSize:15, fontWeight:700 }}>{strategy.persona.name}</div>
-            <div style={{ fontSize:12, color:"rgba(255,255,255,0.6)", marginBottom:14 }}>{strategy.persona.role}</div>
-            {strategy.persona.details.map(([k,v])=>(
-              <div key={k} style={{ marginBottom:10 }}>
-                <div style={{ fontSize:9.5, fontWeight:700, color:"rgba(255,255,255,0.45)", letterSpacing:"0.06em", textTransform:"uppercase" }}>{k}</div>
-                <div style={{ fontSize:12.5, color:"rgba(255,255,255,0.92)", lineHeight:1.45, marginTop:2 }}>{v}</div>
-              </div>
-            ))}
-          </div>
-          <div style={{ flex:1, display:"flex", flexDirection:"column", gap:10 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Top pains, in their words</div>
-            {strategy.customerPains.map((p,i)=>(
-              <div key={i} style={{ ...card, padding:"12px 16px", display:"flex", gap:14, alignItems:"center" }}>
-                <div style={{ minWidth:74, fontSize:15, fontWeight:800, color:T.green, letterSpacing:"-0.01em" }}>{p.metric}</div>
-                <div style={{ fontSize:12.5, color:T.gray600, lineHeight:1.5 }}>{p.pain}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </StratSection>
-
-      {/* 3 · Desired outcomes */}
-      <StratSection eyebrow="03 · Desired Outcomes" title="The outcomes this profile is trying to achieve" intro="Each outcome statement was rated for importance and current satisfaction. The opportunity score = Importance + max(Importance − Satisfaction, 0).">
-        <div style={{ ...card, overflow:"hidden" }}>
-          {ranked.map((o,i)=>{
-            const v = oppScore(o);
-            return (
-              <div key={o.id} style={{ display:"flex", alignItems:"center", gap:14, padding:"12px 16px", borderTop:i?`1px solid ${T.gray100}`:"none" }}>
-                <div style={{ fontSize:11, fontWeight:700, color:T.slate, minWidth:56 }}>{o.id}</div>
-                <div style={{ flex:1, fontSize:13, color:T.gray900, fontWeight:500, lineHeight:1.45 }}>{o.text}</div>
-                <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0 }}>
-                  <div style={{ width:isMobile?40:120, height:6, background:T.gray100, borderRadius:99, overflow:"hidden", display:isMobile?"none":"block" }}>
-                    <div style={{ height:"100%", width:`${(v/maxOpp)*100}%`, background:oppColor(v), borderRadius:99 }}/>
-                  </div>
-                  <div style={{ fontSize:13, fontWeight:800, color:oppColor(v), minWidth:34, textAlign:"right" }}>{v.toFixed(1)}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </StratSection>
-
-      {/* 4 · Job map */}
-      <StratSection eyebrow="04 · Job Map" title="The universal job, step by step" intro={strategy.jobIntro}>
-        <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr 1fr":"repeat(4, 1fr)", gap:10 }}>
-          {strategy.jobMap.map(j=>(
-            <button key={j.n} onClick={()=>isBrokerDealerProfile ? routeStrategyAction(j.step, "morning", { workflowContext:j.goal }) : onNavigate(j.layer)} style={{ ...card, padding:"14px", textAlign:"left", cursor:"pointer", display:"flex", flexDirection:"column", gap:7, position:"relative" }}>
-              <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                <div style={{ width:24, height:24, borderRadius:"50%", background:T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, flexShrink:0 }}>{j.n}</div>
-                <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>{j.step}</div>
-              </div>
-              <div style={{ fontSize:11.5, color:T.gray600, lineHeight:1.5 }}>{j.goal}</div>
-              <div style={{ fontSize:10, fontWeight:700, color:T.indigo, display:"flex", alignItems:"center", gap:3, marginTop:"auto" }}>{isBrokerDealerProfile ? "Dashboard workflow" : layerName(j.layer)} <ChevronRight size={11}/></div>
-            </button>
-          ))}
-        </div>
-      </StratSection>
-
-      {/* 5 · Opportunity matrix */}
-      <StratSection eyebrow="05 · Opportunity Matrix" title="Where to invest first" intro="Plotting every outcome by importance against current satisfaction. The upper-left band — high importance, low satisfaction — is underserved and where the highest opportunity scores cluster.">
-        <div style={{ ...card, padding:isMobile?"16px":"22px" }}>
-          <div style={{ display:"flex", gap:18, flexDirection:isMobile?"column":"row" }}>
-            {/* Plot */}
-            <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ position:"relative", height:isMobile?280:340, marginLeft:30, marginBottom:26 }}>
-                {/* underserved diagonal band */}
-                <div style={{ position:"absolute", inset:0, borderRadius:8, background:`linear-gradient(135deg, ${T.green}1F 0%, ${T.green}14 38%, transparent 46%)`, border:`1px solid ${T.gray200}` }}/>
-                {/* grid lines */}
-                {[25,50,75].map(p=>(
-                  <div key={"h"+p} style={{ position:"absolute", left:0, right:0, top:`${p}%`, borderTop:`1px dashed ${T.gray200}` }}/>
-                ))}
-                {[25,50,75].map(p=>(
-                  <div key={"v"+p} style={{ position:"absolute", top:0, bottom:0, left:`${p}%`, borderLeft:`1px dashed ${T.gray200}` }}/>
-                ))}
-                {/* zone label */}
-                <div style={{ position:"absolute", top:10, left:10, fontSize:9.5, fontWeight:800, color:T.green, letterSpacing:"0.06em", textTransform:"uppercase", lineHeight:1.3 }}>Underserved<br/>Opportunity Zone</div>
-                {/* points */}
-                {strategy.outcomes.map(o=>{
-                  const v = oppScore(o);
-                  const left = Math.max(2, Math.min(96, (o.sat/6)*100));
-                  const top  = Math.max(2, Math.min(94, (1-(o.imp-7.5)/(10-7.5))*100));
-                  return (
-                    <div key={o.id} title={`${o.id} · Opp ${v.toFixed(1)}`} style={{ position:"absolute", left:`${left}%`, top:`${top}%`, transform:"translate(-50%,-50%)", display:"flex", alignItems:"center", gap:4 }}>
-                      <div style={{ width:13, height:13, borderRadius:"50%", background:oppColor(v), border:`2px solid ${T.white}`, boxShadow:"0 1px 4px rgba(0,0,0,0.2)", flexShrink:0 }}/>
-                      <span style={{ fontSize:8.5, fontWeight:700, color:T.gray600, whiteSpace:"nowrap" }}>{o.id.replace("ODI ","")}</span>
-                    </div>
-                  );
-                })}
-                {/* Y axis label */}
-                <div style={{ position:"absolute", left:-30, top:0, bottom:0, display:"flex", alignItems:"center" }}>
-                  <span style={{ fontSize:9.5, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", transform:"rotate(-90deg)", whiteSpace:"nowrap" }}>Importance →</span>
-                </div>
-                {/* X axis label */}
-                <div style={{ position:"absolute", left:0, right:0, bottom:-22, textAlign:"center", fontSize:9.5, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Current Satisfaction →</div>
-              </div>
-            </div>
-            {/* Legend */}
-            <div style={{ width:isMobile?"auto":170, flexShrink:0, display:"flex", flexDirection:"column", gap:10 }}>
-              <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Opportunity Tier</div>
-              {[["Critical · ≥16",T.green],["High · 14–16",T.indigo],["Moderate · <14",T.slate]].map(([l,c])=>(
-                <div key={l} style={{ display:"flex", alignItems:"center", gap:8 }}>
-                  <div style={{ width:11, height:11, borderRadius:"50%", background:c, flexShrink:0 }}/>
-                  <span style={{ fontSize:12, color:T.gray600, fontWeight:600 }}>{l}</span>
-                </div>
-              ))}
-              <div style={{ background:T.greenLt, borderRadius:8, padding:"10px 12px", marginTop:4 }}>
-                <div style={{ fontSize:11, color:T.gray600, lineHeight:1.5 }}>{strategy.opportunitySummary}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </StratSection>
-
-      {/* 6 · Recommendations → prototype */}
-      <StratSection eyebrow="06 · Recommendations" title="Recommended moves — and where to see each one live" intro="Every recommendation traces to the outcomes it serves and the prototype surface that delivers it. Open any surface to see the recommendation in action.">
-        <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-          {strategy.recommendations.map(r=>(
-            <div key={r.n} style={{ ...card, padding:isMobile?"16px":"18px 20px", display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center" }}>
-              <div style={{ width:34, height:34, borderRadius:9, background:T.green, color:T.white, display:"flex", alignItems:"center", justifyContent:"center", fontSize:15, fontWeight:800, flexShrink:0 }}>{r.n}</div>
-              <div style={{ flex:1 }}>
-                <div style={{ fontSize:14.5, fontWeight:700, color:T.gray900, marginBottom:4, lineHeight:1.35 }}>{r.title}</div>
-                <div style={{ fontSize:12.5, color:T.gray600, lineHeight:1.55, marginBottom:8 }}>{r.body}</div>
-                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                  {r.outcomes.map(id=><span key={id} style={{ fontSize:10, fontWeight:700, color:T.indigo, background:T.indigoLt, borderRadius:99, padding:"3px 9px" }}>{id}</span>)}
-                </div>
-              </div>
-              <button onClick={()=>isBrokerDealerProfile ? routeStrategyAction(r.title, r.layer === "strategy" ? "morning" : r.layer, r.sub || {}) : onNavigate(r.layer, r.sub)} style={{ flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center", gap:6, background:T.green, color:T.white, border:"none", borderRadius:8, padding:"9px 16px", fontSize:12.5, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
-                <Zap size={13}/> Open {r.surface} <ChevronRight size={14}/>
-              </button>
-            </div>
-          ))}
-        </div>
-      </StratSection>
-
-      {strategy.buildBuy.length > 0 && (
-        <StratSection eyebrow="07 · Resolution Strategy" title="Build, buy, partner, or wrap" intro="Each key gap gets a sourcing call based on whether it is core or context, how mature external solutions are, and how urgent the active profile's outcome is.">
-          <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 1fr", gap:12 }}>
-            {strategy.buildBuy.map(b=>(
-              <div key={b.gap} style={{ ...card, padding:"15px 16px", display:"flex", flexDirection:"column", gap:9 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:10 }}>
-                  <div style={{ fontSize:13, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{b.gap}</div>
-                  <span style={{ flexShrink:0, background:`${callColor(b.call)}18`, color:callColor(b.call), border:`1px solid ${callColor(b.call)}40`, borderRadius:99, padding:"4px 9px", fontSize:10, fontWeight:800 }}>{callLabel(b.call)}</span>
-                </div>
-                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                  {[`Role: ${b.role}`, `Maturity: ${b.maturity}`, `Urgency: ${b.urgency}`].map(tag=>(
-                    <span key={tag} style={{ fontSize:10, fontWeight:700, color:T.slate, background:T.gray100, borderRadius:99, padding:"3px 8px" }}>{tag}</span>
-                  ))}
-                </div>
-                <div style={{ fontSize:12, color:T.gray600, lineHeight:1.55 }}>{b.rationale}</div>
-                <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
-                  {b.outcomes.map(id=><span key={id} style={{ fontSize:10, fontWeight:700, color:T.indigo, background:T.indigoLt, borderRadius:99, padding:"3px 8px" }}>{id}</span>)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </StratSection>
-      )}
-
-      {/* Closing CTA */}
-      <div style={{ background:`linear-gradient(135deg, ${T.green} 0%, ${T.greenMid} 100%)`, borderRadius:14, padding:isMobile?"20px 18px":"24px 28px", color:T.white, display:"flex", flexDirection:isMobile?"column":"row", gap:16, alignItems:isMobile?"stretch":"center", justifyContent:"space-between" }}>
-        <div>
-          <div style={{ fontSize:isMobile?16:18, fontWeight:800, marginBottom:4 }}>See the research come to life</div>
-          <div style={{ fontSize:13, color:"#fff", lineHeight:1.55, maxWidth:560 }}>Take the guided tour to walk every component and its outcome, or run the end-to-end scenario to watch one alert become a delivered client report.</div>
-        </div>
-        <div style={{ display:"flex", gap:10, flexShrink:0 }}>
-          <button onClick={onStartScenario} style={{ display:"flex", alignItems:"center", gap:6, background:T.white, color:T.green, border:"none", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><Target size={15}/> Run Scenario</button>
-          <button onClick={onStartTour} style={{ display:"flex", alignItems:"center", gap:6, background:"rgba(255,255,255,0.15)", color:T.white, border:"1px solid rgba(255,255,255,0.3)", borderRadius:8, padding:"10px 16px", fontSize:13, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}><PlayCircle size={15}/> Take Tour</button>
-        </div>
-      </div>
-        </div>
+        <ReportingResearch key={profile.id} profile={profile} onNavigate={onNavigate} />
       </section>
     </div>
   );

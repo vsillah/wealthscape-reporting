@@ -377,6 +377,8 @@ export function maintenanceHref(layer, sub = {}) {
   const params = new URLSearchParams({ view: layer });
   for (const key of [
     "profileId",
+    "reportTab",
+    "strategyTrack",
     "caseId",
     "panel",
     "maintenanceView",
