@@ -873,29 +873,46 @@ export function LifecycleInvestment({ onNavigate }) {
             excludes proposals; this prototype does not determine legal
             applicability.
           </p>
+          <section className="lx-scoring-guide" aria-labelledby="scoring-weights-title">
+            <h2 id="scoring-weights-title">Scoring weights</h2>
+            <p>
+              These weights apply to every opportunity and total 100%. Each
+              criterion is scored from 1 to 5; the weighted total is the sum of
+              each score multiplied by its weight, out of 5.
+            </p>
+            <dl className="lx-scoring-weights">
+              {dimensions.map(([label, weight]) => (
+                <div key={label}>
+                  <dt>{label}</dt>
+                  <dd>{weight * 100}%</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
           <div className="lx-scorecards">
             {priorities.map(([title, scores, phase]) => (
               <article className="lx-scorecard" key={title}>
                 <div className="am-heading">
                   <h3>{title}</h3>
-                  <strong className="lx-score">
-                    {scores
-                      .reduce((n, s, i) => n + s * dimensions[i][1], 0)
-                      .toFixed(2)}
-                  </strong>
+                  <div className="lx-score-total">
+                    <span>Weighted total</span>
+                    <strong className="lx-score">
+                      {scores
+                        .reduce((n, s, i) => n + s * dimensions[i][1], 0)
+                        .toFixed(2)}<small> / 5</small>
+                    </strong>
+                  </div>
                 </div>
-                {dimensions.map(([label, w], i) => (
+                {dimensions.map(([label], i) => (
                   <div className="lx-score-row" key={label}>
-                    <span>
-                      {label} <small>{w * 100}%</small>
-                    </span>
+                    <span>{label}</span>
                     <meter
                       min="0"
                       max="5"
                       value={scores[i]}
                       aria-label={`${title}: ${label}`}
                     />
-                    <b>{scores[i]}</b>
+                    <b>{scores[i]}<small> / 5</small></b>
                   </div>
                 ))}
                 <p>{phase}</p>
