@@ -164,65 +164,270 @@ export function reportingOutcomeDetail(outcome, strategy) {
           : "Implemented demo: synthetic data and interactions. Live data, predictive accuracy, and operational outcomes have not been validated.",
   };
 }
-export const reportingStepDetails = [
+// This comparison records evidence coverage, not vendor quality or satisfaction.
+export const reportingComparisonColumns = [
+  "Report design",
+  "Batch generation",
+  "Client delivery",
+  "Access controls",
+];
+export const reportingComparison = [
   {
-    layer: "morning",
-    action: "Open lifecycle dashboard",
-    detail:
-      "Start with the client or operating priority that makes a report necessary.",
-    proof: "A named objective and the affected relationship.",
+    name: "Addepar",
+    cells: [
+      {
+        described: true,
+        reference: 0,
+        note: "The reporting update describes shared templates and report creation workflows.",
+      },
+      {
+        described: false,
+        reference: 0,
+        note: "Scheduled batch generation was not assessed in the retained Addepar reference. This is not evidence of a missing capability.",
+      },
+      {
+        described: true,
+        reference: 0,
+        note: "The reporting update describes coordinated report distribution workflows.",
+      },
+      {
+        described: true,
+        reference: 0,
+        note: "The reporting update describes permissions as part of firm-wide reporting workflows.",
+      },
+    ],
   },
   {
-    layer: "morning",
-    action: "Inspect lifecycle context",
-    detail:
-      "Gather the relevant client signals before choosing report content.",
-    proof: "The accounts, products, and open issues in scope.",
+    name: "Advyzon",
+    cells: [
+      {
+        described: true,
+        reference: 1,
+        note: "The portfolio-management page describes branded report components and configurable investment data.",
+      },
+      {
+        described: true,
+        reference: 1,
+        note: "The portfolio-management page describes scheduled batch report generation.",
+      },
+      {
+        described: true,
+        reference: 2,
+        note: "The portal page describes branded access, interactive reports, and client action items.",
+      },
+      {
+        described: false,
+        reference: 2,
+        note: "Detailed permission controls were not assessed in the retained Advyzon references. Validate them in a product teardown.",
+      },
+    ],
   },
+];
+
+export function reportingQuadrant(outcome) {
+  if (outcome.imp >= 5)
+    return outcome.sat < 5 ? "Underserved opportunity" : "Table stakes";
+  return outcome.sat < 5 ? "Lower priority" : "Overserved";
+}
+// Coordinates preserve source values. Label displacement prevents overlapping
+// buttons; the chart retains an anchor and leader line to each exact coordinate.
+export function reportingPlot(outcomes, zoom = false) {
+  const bounds = zoom
+    ? {
+        xMin: Math.max(
+          0,
+          Math.floor(Math.min(...outcomes.map((o) => o.sat))) - 0.5,
+        ),
+        xMax: Math.min(
+          10,
+          Math.ceil(Math.max(...outcomes.map((o) => o.sat))) + 0.5,
+        ),
+        yMin: Math.max(
+          0,
+          Math.floor(Math.min(...outcomes.map((o) => o.imp))) - 0.5,
+        ),
+        yMax: 10,
+      }
+    : { xMin: 0, xMax: 10, yMin: 0, yMax: 10 };
+  const points = [];
+  for (const outcome of outcomes) {
+    const x =
+      70 + ((outcome.sat - bounds.xMin) / (bounds.xMax - bounds.xMin)) * 480;
+    const y =
+      365 - ((outcome.imp - bounds.yMin) / (bounds.yMax - bounds.yMin)) * 300;
+    let label = { x, y };
+    outer: for (let ring = 0; ring < 12; ring++) {
+      for (let angle = 0; angle < 8; angle++) {
+        const candidate = {
+          x: Math.max(
+            82,
+            Math.min(538, x + Math.cos((angle * Math.PI) / 4) * ring * 29),
+          ),
+          y: Math.max(
+            77,
+            Math.min(353, y + Math.sin((angle * Math.PI) / 4) * ring * 29),
+          ),
+        };
+        if (
+          points.every(
+            (point) =>
+              Math.hypot(
+                point.label.x - candidate.x,
+                point.label.y - candidate.y,
+              ) >= 28,
+          )
+        ) {
+          label = candidate;
+          break outer;
+        }
+      }
+    }
+    points.push({
+      id: outcome.id,
+      x,
+      y,
+      label,
+      quadrant: reportingQuadrant(outcome),
+    });
+  }
+  return { bounds, points };
+}
+
+export const reportingJourney = [
   {
-    layer: "integrations",
-    action: "Inspect data preparation",
-    detail:
-      "Review the connected-data model and field mapping that would feed reporting.",
-    proof: "A source and owner for each required data field.",
-  },
-  {
-    layer: "reports",
-    sub: { reportTab: "customize" },
-    action: "Review report context",
-    detail:
-      "Check the narrative, disclosures, and report sections before generation.",
-    proof: "A human review decision and a list of unresolved checks.",
-  },
-  {
-    layer: "reports",
-    sub: { reportTab: "generate" },
-    action: "Inspect report generation",
-    detail:
-      "Follow the simulated pipeline from assembled inputs to a report preview.",
-    proof: "An output linked to its generation and review history.",
-  },
-  {
-    layer: "insights",
-    action: "Open analytics",
-    detail:
-      "Inspect illustrative monitoring signals and decide which measures belong in a pilot.",
-    proof:
-      "Defined measures for reporting effort, exceptions, and client response.",
-  },
-  {
+    step: "Define",
+    label: "Agree the reporting need",
+    tone: "neutral",
+    client:
+      "A review date, market event, or client question creates a reporting request.",
+    operations:
+      "Confirm audience, period, accounts, and purpose before work begins.",
+    friction: "An unclear brief becomes a late scope change.",
+    handoff: "Advisor → reporting owner: a written scope and due date.",
+    response:
+      "Capture audience, account scope, and report type in the builder.",
     layer: "reports",
     sub: { reportTab: "build" },
-    action: "Revise report assembly",
-    detail: "Adjust content or scope when review uncovers a gap.",
-    proof: "A revision with a clear reason and another review when required.",
+    action: "Define report scope",
+    proof: "Agreed scope, reporting period, recipient, and accountable owner.",
   },
   {
+    step: "Locate",
+    label: "Find the right inputs",
+    tone: "friction",
+    client: "The client expects the report to explain the whole relationship.",
+    operations:
+      "Locate positions, prices, transactions, and account context for the agreed period.",
+    friction:
+      "Missing or inconsistent inputs send the team back to source systems.",
+    handoff:
+      "Reporting owner → data owner: a list of required and missing inputs.",
+    response:
+      "Show source coverage and mapping before the report is assembled.",
+    layer: "integrations",
+    action: "Inspect source mapping",
+    proof: "Input inventory with source, as-of time, coverage, and exceptions.",
+  },
+  {
+    step: "Prepare",
+    label: "Assemble a consistent draft",
+    tone: "neutral",
+    client: "The report should use familiar branding and relevant sections.",
+    operations: "Apply a reusable template to reconciled data.",
+    friction: "Repeated exports and manual formatting create rework.",
+    handoff:
+      "Data owner → report preparer: an accepted input set and unresolved exceptions.",
+    response:
+      "Keep report composition, data choices, and reusable sections in one workspace.",
+    layer: "reports",
+    sub: { reportTab: "build" },
+    action: "Assemble the report",
+    proof: "Template version, selected sections, and accepted input set.",
+  },
+  {
+    step: "Confirm",
+    label: "Resolve review friction",
+    tone: "friction",
+    client:
+      "The explanation needs to fit the client’s account and product context.",
+    operations:
+      "Confirm data completeness, disclosures, narrative accuracy, and review ownership.",
+    friction:
+      "A reviewer may return the draft without a clear correction owner.",
+    handoff:
+      "Preparer → reviewer → correction owner: a specific issue and resolution record.",
+    response: "Keep the draft, review context, and requested changes together.",
+    layer: "reports",
+    sub: { reportTab: "customize" },
+    action: "Review report content",
+    proof:
+      "Named reviewer, completed checks, exceptions, and approval decision.",
+  },
+  {
+    step: "Execute",
+    label: "Generate the output",
+    tone: "positive",
+    client: "The client is waiting for a usable, consistent report.",
+    operations: "Generate from the reviewed inputs and retain a run record.",
+    friction: "An opaque failure can trigger another manual rebuild.",
+    handoff:
+      "Reviewer → report operator: the approved version and generation status.",
+    response:
+      "Make pipeline stages and failures inspectable; retain the output version.",
+    layer: "reports",
+    sub: { reportTab: "generate" },
+    action: "Inspect generation",
+    proof: "Input and output versions, run status, and generation history.",
+  },
+  {
+    step: "Monitor",
+    label: "Check delivery readiness",
+    tone: "neutral",
+    client: "The client needs to know what is ready and what needs follow-up.",
+    operations: "Track completion, exceptions, and delivery status separately.",
+    friction: "A completed job may be mistaken for a delivered or read report.",
+    handoff:
+      "Report operator → advisor: output status and outstanding delivery work.",
+    response:
+      "Separate processing status from client engagement; define pilot measures.",
+    layer: "insights",
+    action: "Inspect monitoring concepts",
+    proof:
+      "Definitions and records for generated, reviewed, delivered, and viewed states.",
+  },
+  {
+    step: "Modify",
+    label: "Revise with context",
+    tone: "friction",
+    client: "A client question or review finding requires a correction.",
+    operations:
+      "Change the relevant content while preserving the reason and review history.",
+    friction:
+      "Corrections can create competing versions or repeat earlier checks.",
+    handoff:
+      "Advisor / reviewer → preparer: requested change, owner, and due date.",
+    response:
+      "Revise the report in context and route material changes through review again.",
+    layer: "reports",
+    sub: { reportTab: "customize" },
+    action: "Revise the report",
+    proof: "Change reason, new version, and renewed review where required.",
+  },
+  {
+    step: "Conclude",
+    label: "Deliver and follow through",
+    tone: "positive",
+    client: "The client reads the explanation and asks the next question.",
+    operations: "Deliver the approved version and assign follow-up ownership.",
+    friction:
+      "A static attachment can separate the conversation from its evidence.",
+    handoff:
+      "Advisor → client → advisor: report context and a traceable next action.",
+    response:
+      "Present the report in the client portal with contextual follow-up.",
     layer: "portal",
     action: "Inspect client delivery",
-    detail:
-      "Show the report in the client experience and preserve the next conversation.",
     proof:
-      "A delivery and follow-up record; live receipt is outside this demo.",
+      "Approved output, delivery record, follow-up owner; live receipt is outside this demo.",
   },
 ];

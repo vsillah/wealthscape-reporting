@@ -16,9 +16,15 @@ import {
   reportingOutcomeDetail,
   reportingScore,
   reportingSources,
-  reportingStepDetails,
+  reportingComparison,
+  reportingComparisonColumns,
 } from "./reportingResearch.js";
 import "./ReportingResearch.css";
+import {
+  ReportingEvidenceGrid,
+  ReportingOpportunityMap,
+  ReportingJourney,
+} from "./ReportingVisuals.jsx";
 
 const sections = [
   ["thesis", "Leadership decision", Lightbulb],
@@ -60,10 +66,31 @@ export default function ReportingResearch({ profile, onNavigate }) {
     (a, b) => reportingScore(b) - reportingScore(a),
   );
   const [active, setActive] = useState(0);
-  const [selectedId, setSelectedId] = useState(ranked[0].id);
+  const [selectedId, setSelectedId] = useState(null);
   const [competitor, setCompetitor] = useState(0);
   const [capability, setCapability] = useState(0);
-  const [step, setStep] = useState(0);
+  const [step, setStep] = useState(null);
+  const [outcomeView, setOutcomeView] = useState("map");
+  const [competitorView, setCompetitorView] = useState("grid");
+  const [comparisonCell, setComparisonCell] = useState(null);
+  const journeyPanel = useRef(null);
+  const vendorPanel = useRef(null);
+  const revealOnNarrowScreen = (ref) => {
+    if (window.matchMedia("(max-width: 1000px)").matches)
+      requestAnimationFrame(() => {
+        ref.current?.focus({ preventScroll: true });
+        ref.current?.scrollIntoView({ block: "start", behavior: "instant" });
+      });
+  };
+  const selectStep = (index) => {
+    setStep(index);
+    if (index !== null) revealOnNarrowScreen(journeyPanel);
+  };
+  const selectComparison = (row, column) => {
+    setComparisonCell({ row, column });
+    setCompetitor(reportingComparison[row].cells[column].reference);
+    revealOnNarrowScreen(vendorPanel);
+  };
   const [navHeight, setNavHeight] = useState(84);
   const nav = useRef(null);
   const panels = useRef({});
@@ -71,18 +98,12 @@ export default function ReportingResearch({ profile, onNavigate }) {
   const outcomePanel = useRef(null);
   const selectOutcome = (id) => {
     setSelectedId(id);
-    if (window.matchMedia("(max-width: 1000px)").matches)
-      outcomePanel.current?.scrollIntoView({
-        block: "start",
-        behavior: "instant",
-      });
+    if (id) revealOnNarrowScreen(outcomePanel);
   };
-  const selected = ranked.find((item) => item.id === selectedId) || ranked[0];
-  const detail = reportingOutcomeDetail(selected, strategy);
+  const selected = ranked.find((item) => item.id === selectedId);
+  const detail = selected ? reportingOutcomeDetail(selected, strategy) : null;
   const vendor = reportingCompetitors[competitor];
   const selectedCapability = strategy.capabilities[capability];
-  const job = strategy.jobMap[step];
-  const jobDetail = reportingStepDetails[step];
   const jump = (index) => {
     lockTracking.current = true;
     setActive(index);
@@ -232,38 +253,87 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 inspect the related prototype response. Select a card to explore
                 the evidence and the remaining gap.
               </p>
-              <div className="rr-grid rr-three">
-                {reportingCompetitors.map((item, i) => {
-                  const VendorIcon = [Layers, ChartScatter, Users][i];
-                  return (
-                    <button
-                      className="rr-choice"
-                      key={item.focus}
-                      aria-pressed={competitor === i}
-                      aria-controls="reporting-vendor-detail"
-                      onClick={() => setCompetitor(i)}
-                    >
-                      <span className="rr-icon">
-                        <VendorIcon size={22} />
-                      </span>
-                      <strong>{item.name}</strong>
-                      <span>{item.focus}</span>
-                      <span className="rr-link">
-                        Explore capability <ArrowRight size={14} />
-                      </span>
-                    </button>
-                  );
-                })}
+              <div
+                className="am-tabs rr-view-switch"
+                role="group"
+                aria-label="Competitor presentation"
+              >
+                <button
+                  aria-pressed={competitorView === "grid"}
+                  onClick={() => setCompetitorView("grid")}
+                >
+                  Capability evidence map
+                </button>
+                <button
+                  aria-pressed={competitorView === "cards"}
+                  onClick={() => setCompetitorView("cards")}
+                >
+                  Reference cards
+                </button>
               </div>
+              {competitorView === "grid" ? (
+                <ReportingEvidenceGrid
+                  selected={comparisonCell}
+                  onSelect={selectComparison}
+                />
+              ) : (
+                <div className="rr-grid rr-three">
+                  {reportingCompetitors.map((item, i) => {
+                    const VendorIcon = [Layers, ChartScatter, Users][i];
+                    return (
+                      <button
+                        className="rr-choice"
+                        key={item.focus}
+                        aria-pressed={competitor === i}
+                        aria-controls="reporting-vendor-detail"
+                        onClick={() => {
+                          setCompetitor(i);
+                          setComparisonCell(null);
+                        }}
+                      >
+                        <span className="rr-icon">
+                          <VendorIcon size={22} />
+                        </span>
+                        <strong>{item.name}</strong>
+                        <span>{item.focus}</span>
+                        <span className="rr-link">
+                          Explore capability <ArrowRight size={14} />
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
               <article
                 className="rr-detail"
                 id="reporting-vendor-detail"
+                ref={vendorPanel}
+                tabIndex={-1}
                 aria-live="polite"
               >
                 <span className="am-eyebrow">Vendor-described capability</span>
                 <h3>
                   {vendor.name} · {vendor.focus}
                 </h3>
+                {comparisonCell && (
+                  <div className="rr-comparison-note">
+                    <h4>
+                      {reportingComparisonColumns[comparisonCell.column]} ·{" "}
+                      {reportingComparison[comparisonCell.row].cells[
+                        comparisonCell.column
+                      ].described
+                        ? "Described in source"
+                        : "Not assessed"}
+                    </h4>
+                    <p>
+                      {
+                        reportingComparison[comparisonCell.row].cells[
+                          comparisonCell.column
+                        ].note
+                      }
+                    </p>
+                  </div>
+                )}
                 <div className="rr-grid">
                   <Detail title="Public evidence">{vendor.evidence}</Detail>
                   <Detail title="Proposed response">
@@ -408,9 +478,14 @@ export default function ReportingResearch({ profile, onNavigate }) {
               <label className="am-field rr-select">
                 Explore an outcome
                 <select
-                  value={selected.id}
-                  onChange={(event) => selectOutcome(event.target.value)}
+                  value={selected?.id || "all"}
+                  onChange={(event) =>
+                    selectOutcome(
+                      event.target.value === "all" ? null : event.target.value,
+                    )
+                  }
                 >
+                  <option value="all">All outcomes</option>
                   {ranked.map((item) => (
                     <option key={item.id} value={item.id}>
                       {item.id} · {item.text}
@@ -418,73 +493,125 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   ))}
                 </select>
               </label>
-              <div className="rr-outcomes">
-                <div
-                  className="rr-ranking"
-                  role="group"
-                  aria-label="Reporting outcome ranking"
+              <div
+                className="am-tabs rr-view-switch"
+                role="group"
+                aria-label="Reporting outcome presentation"
+              >
+                <button
+                  aria-pressed={outcomeView === "map"}
+                  onClick={() => setOutcomeView("map")}
                 >
-                  {ranked.map((item) => (
-                    <button
-                      key={item.id}
-                      className="rr-outcome"
-                      aria-pressed={item.id === selected.id}
-                      aria-controls="reporting-outcome-detail"
-                      onClick={() => selectOutcome(item.id)}
-                    >
-                      <span className="rr-outcome-top">
-                        <strong>{item.id}</strong>
-                        <b>{reportingScore(item).toFixed(1)}</b>
-                      </span>
-                      <span>{item.text}</span>
-                      <span className="rr-bar">
-                        <span
-                          style={{
-                            width: `${(reportingScore(item) / 20) * 100}%`,
-                          }}
-                        />
-                      </span>
-                    </button>
-                  ))}
-                </div>
+                  Opportunity map
+                </button>
+                <button
+                  aria-pressed={outcomeView === "ranked"}
+                  onClick={() => setOutcomeView("ranked")}
+                >
+                  Ranked outcomes
+                </button>
+                <button
+                  aria-pressed={!selected}
+                  onClick={() => selectOutcome(null)}
+                >
+                  All outcomes
+                </button>
+              </div>
+              <div
+                className={`rr-outcomes ${outcomeView === "map" ? "rr-map-mode" : ""}`}
+              >
+                {outcomeView === "map" ? (
+                  <ReportingOpportunityMap
+                    outcomes={ranked}
+                    selectedId={selectedId}
+                    onSelect={selectOutcome}
+                  />
+                ) : (
+                  <div
+                    className="rr-ranking"
+                    role="group"
+                    aria-label="Reporting outcome ranking"
+                  >
+                    {ranked.map((item) => (
+                      <button
+                        key={item.id}
+                        className="rr-outcome"
+                        aria-pressed={item.id === selected?.id}
+                        aria-controls="reporting-outcome-detail"
+                        onClick={() => selectOutcome(item.id)}
+                      >
+                        <span className="rr-outcome-top">
+                          <strong>{item.id}</strong>
+                          <b>{reportingScore(item).toFixed(1)}</b>
+                        </span>
+                        <span>{item.text}</span>
+                        <span className="rr-bar">
+                          <span
+                            style={{
+                              width: `${(reportingScore(item) / 20) * 100}%`,
+                            }}
+                          />
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <article
                   ref={outcomePanel}
+                  tabIndex={-1}
                   className="rr-detail"
                   id="reporting-outcome-detail"
                   aria-live="polite"
                 >
-                  <span className="am-eyebrow">
-                    {selected.id} · Directional opportunity
-                  </span>
-                  <h3>{detail.problem}</h3>
-                  <div className="rr-scores">
-                    <span>
-                      Importance <b>{selected.imp.toFixed(1)} / 10</b>
-                    </span>
-                    <span>
-                      Satisfaction <b>{selected.sat.toFixed(1)} / 10</b>
-                    </span>
-                    <span>
-                      Opportunity{" "}
-                      <b>{reportingScore(selected).toFixed(1)} / 20</b>
-                    </span>
-                  </div>
-                  <Detail title="Current gap">{detail.gap}</Detail>
-                  <Detail title="Proposed UX response">
-                    {detail.response}
-                  </Detail>
-                  <Detail title="Implemented prototype & limits">
-                    {detail.limitation}
-                  </Detail>
-                  <Action
-                    onNavigate={onNavigate}
-                    layer={detail.layer}
-                    sub={detail.sub}
-                  >
-                    {detail.action}
-                  </Action>
-                  <p className="rr-evidence">{detail.evidence}</p>
-                  {profile.id !== "ria" && <Source />}
+                  {selected ? (
+                    <>
+                      <span className="am-eyebrow">
+                        {selected.id} · Directional opportunity
+                      </span>
+                      <h3>{detail.problem}</h3>
+                      <div className="rr-scores">
+                        <span>
+                          Importance <b>{selected.imp.toFixed(1)} / 10</b>
+                        </span>
+                        <span>
+                          Satisfaction <b>{selected.sat.toFixed(1)} / 10</b>
+                        </span>
+                        <span>
+                          Opportunity{" "}
+                          <b>{reportingScore(selected).toFixed(1)} / 20</b>
+                        </span>
+                      </div>
+                      <Detail title="Current gap">{detail.gap}</Detail>
+                      <Detail title="Proposed UX response">
+                        {detail.response}
+                      </Detail>
+                      <Detail title="Implemented prototype & limits">
+                        {detail.limitation}
+                      </Detail>
+                      <Action
+                        onNavigate={onNavigate}
+                        layer={detail.layer}
+                        sub={detail.sub}
+                      >
+                        {detail.action}
+                      </Action>
+                      <p className="rr-evidence">{detail.evidence}</p>
+                      {profile.id !== "ria" && <Source />}
+                    </>
+                  ) : (
+                    <>
+                      <h3>All reporting outcomes</h3>
+                      <p>
+                        Every outcome has equal emphasis. Select a numbered
+                        point, ranked row, or dropdown option to inspect the
+                        problem, response, evidence, and prototype destination.
+                      </p>
+                      <p className="rr-evidence">
+                        The map uses the same directional scores as the ranking.
+                        Switching views preserves your selection.
+                      </p>
+                    </>
+                  )}
                 </article>
               </div>
               <p className="rr-evidence">
@@ -497,56 +624,16 @@ export default function ReportingResearch({ profile, onNavigate }) {
           {id === "job" && (
             <>
               <p className="rr-intro">
-                {strategy.jobIntro} Select a step to inspect the proposed
-                handoff and its prototype surface.
+                Follow a reporting request from agreed scope to a client
+                conversation. Select a phase to highlight the client event,
+                operations concern, and handoff across the full experience.
               </p>
-              <div
-                className="rr-steps"
-                role="group"
-                aria-label="Reporting job steps"
-              >
-                {strategy.jobMap.map((item, i) => (
-                  <button
-                    key={item.n}
-                    aria-pressed={step === i}
-                    aria-controls="reporting-job-detail"
-                    onClick={() => setStep(i)}
-                  >
-                    <span>{item.n}</span>
-                    <strong>{item.step}</strong>
-                  </button>
-                ))}
-              </div>
-              <article
-                className="rr-detail"
-                id="reporting-job-detail"
-                aria-live="polite"
-              >
-                <span className="am-eyebrow">
-                  Step {job.n} of {strategy.jobMap.length} · {job.step}
-                </span>
-                <h3>{job.goal}</h3>
-                <div className="rr-grid">
-                  <Detail title="Proposed interaction">
-                    {jobDetail.detail}
-                  </Detail>
-                  <Detail title="Evidence needed to advance">
-                    {jobDetail.proof}
-                  </Detail>
-                </div>
-                <Action
-                  onNavigate={onNavigate}
-                  layer={jobDetail.layer}
-                  sub={jobDetail.sub}
-                >
-                  {jobDetail.action}
-                </Action>
-                <p className="rr-evidence">
-                  Job-map synthesis mapped to existing demo surfaces. Moving
-                  between screens does not complete a live review or operational
-                  handoff.
-                </p>
-              </article>
+              <ReportingJourney
+                selectedStep={step}
+                onSelect={selectStep}
+                onNavigate={onNavigate}
+                detailRef={journeyPanel}
+              />
             </>
           )}
           {id === "recommendations" && (
