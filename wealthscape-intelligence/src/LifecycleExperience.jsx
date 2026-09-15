@@ -874,20 +874,29 @@ export function LifecycleInvestment({ onNavigate }) {
             applicability.
           </p>
           <section className="lx-scoring-guide" aria-labelledby="scoring-weights-title">
-            <h2 id="scoring-weights-title">Scoring weights</h2>
-            <p>
-              These weights apply to every opportunity and total 100%. Each
-              criterion is scored from 1 to 5; the weighted total is the sum of
-              each score multiplied by its weight, out of 5.
-            </p>
+            <div className="lx-scoring-heading">
+              <h2 id="scoring-weights-title">Scoring weights</h2>
+              <span>Shared across all opportunities</span>
+            </div>
             <dl className="lx-scoring-weights">
               {dimensions.map(([label, weight]) => (
                 <div key={label}>
                   <dt>{label}</dt>
-                  <dd>{weight * 100}%</dd>
+                  <dd>
+                    {weight * 100}<small>%</small>
+                    <div className="lx-weight-track" aria-hidden="true">
+                      <span style={{ width: `${weight * 100}%` }} />
+                    </div>
+                  </dd>
                 </div>
               ))}
             </dl>
+            <p className="lx-scoring-definition">
+              <strong>How the score is calculated</strong>
+              These weights apply to every opportunity and total 100%. Each
+              criterion is scored from 1 to 5; the weighted total is the sum of
+              each score multiplied by its weight, out of 5.
+            </p>
           </section>
           <div className="lx-scorecards">
             {priorities.map(([title, scores, phase]) => (
