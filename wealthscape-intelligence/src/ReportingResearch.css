@@ -973,12 +973,53 @@
   height: 6px;
   background: #e7eeea;
   border-radius: 3px;
-  overflow: hidden;
+  margin: 10px 0 18px;
+  overflow: visible;
+  position: relative;
 }
-.rr-rank-bar > span {
+.rr-rank-fill {
+  border-radius: inherit;
   display: block;
   height: 100%;
+  width: var(--score-pct);
   background: #246244;
+}
+.rr-rank-marker {
+  align-items: center;
+  display: inline-flex;
+  height: 18px;
+  justify-content: center;
+  left: var(--score-pct);
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+}
+.rr-rank-marker::before {
+  background: #246244;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(36, 98, 68, 0.25);
+  content: "";
+  height: 10px;
+  width: 10px;
+}
+.rr-rank-score {
+  background: #ffffff;
+  border: 1px solid #c9d7cf;
+  border-radius: 999px;
+  bottom: 15px;
+  color: #0b5d34;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 3px 6px;
+  position: absolute;
+  white-space: nowrap;
+}
+.rr-ranked-outcomes .rr-choice[aria-pressed="true"] .rr-rank-score {
+  background: #f4faf6;
+  border-color: #80a891;
 }
 @media (max-width: 760px) {
   .rr-map-key {

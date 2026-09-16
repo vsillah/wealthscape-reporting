@@ -6,6 +6,8 @@ Section 5 now shows 15 reporting-specific outcomes with importance and satisfact
 
 The map reuses the earlier `ReportingOpportunityMap` and collision-aware plot from `d5ca161`, with derived/inferred marker shapes. Its full scale uses a disclosed 5/10 quadrant boundary. Expanded scale preserves the satisfaction boundary between underserved opportunity and table stakes. Two new assumptions fall in table stakes; no values were fabricated to populate the other two quadrants.
 
+The ranked-outcomes view now anchors each opportunity score at the end of its bar with a visible marker and score chip, so adjacent scores can be compared without relying only on the text line below the chart.
+
 The section remains separate from account maintenance. Account-maintenance values were not reused. The five executive themes remain as recommendation groupings, linked to representative detailed outcomes. The headline count now reads 15.
 
 Section 4 customer-context evidence now separates the metric being shown from the customer/workflow context and the downstream strategy implication. The large value is labelled as the source metric, the card headline describes the customer context, and the implication states what the strategy should test. The 41.4-hour Kitces figure is explicitly framed as an illustrative senior-advisor workweek, not a measured reporting-preparation baseline.
@@ -88,3 +90,5 @@ Additional 16 September parity evidence is in `/private/tmp/wealthscape-pr37-hum
 - `04-ranked-outcomes.png`
 
 To reproduce: open `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting`, select section 5, choose R2 from the map or dropdown, confirm non-selected outcomes are muted, confirm the derived/inferred provenance legend remains outside the problem description, review the job-map context and UX response in the selected detail panel, reset All outcomes, then switch to Ranked outcomes.
+
+Ranked-bar score marker evidence is in `/private/tmp/wealthscape-pr37-humanqa-ranked-bars/wealthscape-pr37-ranked-bar-score-markers.mp4`.

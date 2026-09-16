@@ -690,12 +690,19 @@ export default function ReportingResearch({ profile, onNavigate }) {
                           {i + 1}. {item.id}
                         </strong>
                         <span>{item.text}</span>
-                        <span className="rr-rank-bar" aria-hidden="true">
-                          <span
-                            style={{
-                              width: `${(reportingScore(item) / 20) * 100}%`,
-                            }}
-                          />
+                        <span
+                          className="rr-rank-bar"
+                          aria-hidden="true"
+                          style={{
+                            "--score-pct": `${(reportingScore(item) / 20) * 100}%`,
+                          }}
+                        >
+                          <span className="rr-rank-fill" />
+                          <span className="rr-rank-marker">
+                            <span className="rr-rank-score">
+                              {reportingScore(item).toFixed(1)}
+                            </span>
+                          </span>
                         </span>
                         <span className="rr-evidence">
                           <i className={`rr-legend-${item.basis}`} />
