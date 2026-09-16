@@ -1,6 +1,9 @@
+import { portfolioRangeOptions, portfolioRanges, formatPortfolioDate, formatPortfolioAxis, formatPortfolioMoney } from "./portfolioGrowth.js";
+import ReportPreviewProvider, { useReportPreview } from "./ReportPreviewProvider.jsx";
+import { getGeneratedReport, reportTemplateId, reportContext, reportStageDetails, portalReportDocuments } from "./generatedReports.js";
 import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
 import MaintenanceResearch from "./MaintenanceResearch";
-import ReportingResearch, { ReportingRecommendationContext } from "./ReportingResearch.jsx";
+import ReportingResearch from "./ReportingResearch.jsx";
 import { reportingCompetitors } from "./reportingResearch.js";
 import MaintenanceGuide from "./MaintenanceGuide.jsx";
 import { createGuideCase, guideSteps, canVisitGuideStep, GUIDE_CASE_ID } from "./maintenanceGuide.js";
@@ -538,7 +541,7 @@ const clients = [
 // routes the advisor to the exact screen (and sub-tab) where they resolve it.
 const ALERTS = [
   { id:1, type:"drift",  severity:"high",   client:"Sarah & Michael Chen", source:"Portfolio Monitor", time:"8:02 AM",  read:false,
-    body:"US Equity 6.2pts above target. Rebalance recommended before quarter-end.",
+    body:"US Equity 6pts above target. Rebalance recommended before quarter-end.",
     action:{ label:"Build Rebalance Report", layer:"reports", reportTab:"generate" } },
   { id:2, type:"tax",    severity:"high",   client:"Robert Okafor", source:"Portfolio Monitor", time:"8:02 AM",  read:false,
     body:"INTL position down 8.4% — tax-loss harvesting opportunity before Dec 31.",
@@ -880,7 +883,7 @@ function MorningBrief({ bp, profile, dashboard, alerts, onAction, onDismiss, onN
           <div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>Your Book · 134 Clients</div>
           <div style={{ display:"flex", gap:8 }}>
             <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", display:"flex", gap:5, alignItems:"center", minHeight:34 }}><Filter size={12}/> Filter</button>
-            <button style={{ background:T.greenLt, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:600, color:T.green, cursor:"pointer", display:"flex", gap:5, alignItems:"center", minHeight:34 }}><FileText size={12}/> Report</button>
+            <button onClick={()=>onNavigate("reports", reportContext(profile?.id))} style={{ background:T.greenLt, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:600, color:T.green, cursor:"pointer", display:"flex", gap:5, alignItems:"center", minHeight:34 }}><FileText size={12}/> Report</button>
           </div>
         </div>
         {isMobile ? (
@@ -967,19 +970,27 @@ const TEMPLATE_CONFIG = {
     sections:["metrics","performance"], cta:"Generate & Send" },
   proposal:  { label:"Client Proposal", eyebrow:"New Account Proposal", period:"Proposal · Jun 2025", heroLabel:"Proposed Investment", heroValue:"$2,500,000", heroDelta:"Projected +7.8% / yr",
     narrative:"This proposal outlines a recommended allocation for a new $2.5M account, targeting a 7.8% annualized return at a moderate risk profile, with an all-in advisory fee of 0.85%.",
-    sections:["proposed","projection","fees"], cta:"Send Proposal" },
+    sections:["proposed","fees"], cta:"Send Proposal" },
 };
 
 function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClient }) {
   const { isMobile } = bp;
   const [reportTab, setReportTab]     = useState("build");
   const [step, setStep]               = useState(1);
-  const [template, setTemplate]       = useState("quarterly");
-  const [selected, setSelected]       = useState([1,4]);
+  const [template, setTemplate]       = useState(() => reportTemplateId(deepLink?.reportTemplate));
+  const openReportPreview = useReportPreview();
+  const [selected, setSelected]       = useState([1]);
   const [aiNarrative, setAiNarrative] = useState(false);
   const [showConfig, setShowConfig]   = useState(!isMobile);
 
-  useEffect(() => { if (deepLink?.reportTab) setReportTab(deepLink.reportTab); }, [deepLink]);
+  useEffect(() => {
+    if (deepLink?.reportTab) setReportTab(deepLink.reportTab);
+    if (deepLink?.reportTemplate) setTemplate(reportTemplateId(deepLink.reportTemplate));
+  }, [deepLink]);
+  const updateReportContext = (nextTemplate, nextTab) => {
+    setTemplate(reportTemplateId(nextTemplate)); setReportTab(nextTab);
+    window.history.replaceState(null, "", maintenanceHref("reports", { ...deepLink, ...reportContext(profile?.id, nextTemplate, nextTab) }));
+  };
 
   const reportTabs = [
     { id:"build",     label:"Build",     desc:"3-step wizard" },
@@ -992,18 +1003,18 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
-        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+        {reportTabs.map(t=><button key={t.id} onClick={()=>updateReportContext(template, t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
-      <ReportGeneration bp={bp} onScenarioAdvance={onScenarioAdvance} onSendToClient={onSendToClient}/>
+      <ReportGeneration key={`${profile?.id}-${template}`} bp={bp} profile={profile} template={template} onScenarioAdvance={onScenarioAdvance} onSendToClient={onSendToClient}/>
     </div>
   );
   if (reportTab === "customize") return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
-        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+        {reportTabs.map(t=><button key={t.id} onClick={()=>updateReportContext(template, t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
-      <ReportCustomize bp={bp}/>
+      <ReportCustomize bp={bp} template={template} onPreview={()=>openReportPreview(template, "Back to customization")}/>
     </div>
   );
 
@@ -1014,14 +1025,17 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
     { id:"proposal",  label:"Client Proposal",    desc:"New account proposal" },
   ];
 
-  const cfg = TEMPLATE_CONFIG[template] || TEMPLATE_CONFIG.quarterly;
+  const report = getGeneratedReport(template);
+  const cfg = { ...TEMPLATE_CONFIG[template], period: report.period, heroValue: report.value, heroDelta: report.change, narrative: report.narrative[0], cta: "Generate report" };
+  const templatePerf = (report.performance || []).map(([month, portfolio, benchmark]) => ({ month, portfolio, benchmark }));
+  const templateAllocation = report.allocation.map(([name, actual, proposed], i) => ({name, value: template === "proposal" ? proposed : actual, color: allocationData[i].color}));
   const chartCount = cfg.sections.filter(s => ["performance","allocation","proposed","projection"].includes(s)).length;
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
       {contextBanner}
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
-        {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
+        {reportTabs.map(t=><button key={t.id} onClick={()=>updateReportContext(template, t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
       {isMobile && (
         <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"12px 16px", fontSize:13, fontWeight:600, color:T.gray900, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"space-between", minHeight:48 }} onClick={()=>setShowConfig(!showConfig)}>
@@ -1053,7 +1067,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
                 <div data-demo="report-config" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, overflow:"hidden" }}>
                   <div style={{ padding:"12px 18px", borderBottom:`1px solid ${T.gray200}`, fontSize:12, fontWeight:700, color:T.gray900 }}>Select Template</div>
                   {templates.map(t=>(
-                    <div key={t.id} style={{ padding:"12px 18px", borderBottom:`1px solid ${T.gray100}`, cursor:"pointer", background:template===t.id?T.greenLt:T.white, display:"flex", gap:10, alignItems:"flex-start", minHeight:48 }} onClick={()=>{setTemplate(t.id);setStep(2);}}>
+                    <div key={t.id} style={{ padding:"12px 18px", borderBottom:`1px solid ${T.gray100}`, cursor:"pointer", background:template===t.id?T.greenLt:T.white, display:"flex", gap:10, alignItems:"flex-start", minHeight:48 }} onClick={()=>{updateReportContext(t.id, "build");setStep(2);}}>
                       <div style={{ width:16, height:16, borderRadius:"50%", border:`2px solid ${template===t.id?T.green:T.gray300}`, background:template===t.id?T.green:T.white, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, marginTop:1 }}>
                         {template===t.id && <div style={{ width:5, height:5, borderRadius:"50%", background:T.white }}/>}
                       </div>
@@ -1095,7 +1109,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
               )}
 
               {step>=2 && (
-                <button onClick={()=>setReportTab("generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:14, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:48 }}>
+                <button onClick={()=>updateReportContext(template, "generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:14, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:48 }}>
                   <Zap size={15}/> Generate Report <ChevronRight size={16}/>
                 </button>
               )}
@@ -1108,8 +1122,8 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
           <div style={{ background:T.white, borderBottom:`1px solid ${T.gray200}`, padding:"12px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:10 }}>
             <div style={{ display:"flex", gap:8, alignItems:"center" }}><Badge color={T.green} bg={T.greenLt}>PREVIEW</Badge><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{cfg.label} · {selected.length} client{selected.length!==1?"s":""}</span></div>
             <div style={{ display:"flex", gap:8 }}>
-              <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:34 }}>Review</button>
-              <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", gap:5, alignItems:"center", minHeight:34 }}><Download size={12}/> PDF</button>
+              <button onClick={()=>openReportPreview(template, "Back to report builder")} style={{ background:T.gray100, border:"none", borderRadius:7, padding:"7px 12px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:34 }}>Review</button>
+              <button disabled title="PDF file export is unavailable; use Review to inspect the report." style={{ background:T.gray100, color:T.slate, border:"none", borderRadius:7, padding:"7px 12px", fontSize:11, display:"flex", gap:5, alignItems:"center", minHeight:34 }}><Download size={12}/> PDF export unavailable</button>
             </div>
           </div>
 
@@ -1153,7 +1167,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
                   <div>
                     <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>Performance vs Benchmark</div>
                     <ResponsiveContainer width="100%" height={130}>
-                      <BarChart data={perfData} barSize={10}>
+                      <BarChart data={templatePerf} barSize={10}>
                         <CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/>
                         <XAxis dataKey="month" tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
                         <YAxis tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={v=>`${v}%`}/>
@@ -1168,9 +1182,9 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
                   <div>
                     <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>{cfg.sections.includes("proposed")?"Proposed Allocation":"Asset Allocation"}</div>
                     <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                      <PieChart width={100} height={100}><Pie data={cfg.sections.includes("proposed")?PROPOSED_ALLOCATION:allocationData} cx={45} cy={45} innerRadius={28} outerRadius={44} dataKey="value">{(cfg.sections.includes("proposed")?PROPOSED_ALLOCATION:allocationData).map((e,i)=><Cell key={i} fill={e.color}/>)}</Pie></PieChart>
+                      <PieChart width={100} height={100}><Pie data={templateAllocation} cx={45} cy={45} innerRadius={28} outerRadius={44} dataKey="value">{(templateAllocation).map((e,i)=><Cell key={i} fill={e.color}/>)}</Pie></PieChart>
                       <div style={{ display:"flex", flexDirection:"column", gap:5 }}>
-                        {(cfg.sections.includes("proposed")?PROPOSED_ALLOCATION:allocationData).map(a=>(
+                        {(templateAllocation).map(a=>(
                           <div key={a.name} style={{ display:"flex", alignItems:"center", gap:6 }}>
                             <div style={{ width:7, height:7, borderRadius:2, background:a.color, flexShrink:0 }}/>
                             <span style={{ fontSize:11, color:T.gray600 }}>{a.name}</span>
@@ -1224,7 +1238,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
                   {[
                     { label:"Advisory Fee",      value:"0.85%"     },
                     { label:"Est. Annual Fee",   value:"$21,250"   },
-                    { label:"Target Return",     value:"7.8% / yr" },
+                    { label:"Fund expenses",     value:"Additional" },
                     { label:"Risk Profile",      value:"Moderate"  },
                   ].map(f=>(
                     <div key={f.label}>
@@ -1241,14 +1255,14 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
                   <AlertTriangle size={15} color={T.amber} style={{ flexShrink:0, marginTop:1 }}/>
                   <div>
                     <div style={{ fontSize:12, fontWeight:700, color:T.gray900, marginBottom:2 }}>Allocation Drift Detected</div>
-                    <div style={{ fontSize:11, color:T.gray600, lineHeight:1.5 }}>US Equity is 6.2pts above target allocation of 36%. Rebalancing recommended before Q3.</div>
+                    <div style={{ fontSize:11, color:T.gray600, lineHeight:1.5 }}>US Equity is 6pts above target allocation of 36%. Rebalancing recommended before Q3.</div>
                   </div>
                 </div>
               )}
 
               <div style={{ background:T.gray50, borderTop:`1px solid ${T.gray200}`, padding:"14px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
                 <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", minHeight:36 }}>{template==="proposal"?"Schedule Call":"Schedule Review"}</button>
-                <button onClick={()=>setReportTab("generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, minHeight:36 }}>
+                <button onClick={()=>updateReportContext(template, "generate")} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, minHeight:36 }}>
                   <Zap size={12}/> {cfg.cta} <ChevronRight size={13}/>
                 </button>
               </div>
@@ -1260,36 +1274,17 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
   );
 }
 
-function ReportingModernizationWorkspace({ bp, deepLink, profile, onNavigate, onSendToClient, onStartScenario, onStartTour }) {
-  const { isMobile } = bp;
+function ReportingWorkspace({ bp, deepLink, profile, onNavigate, onSendToClient }) {
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
-      <section style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:isMobile?"16px":"18px 20px", display:"grid", gridTemplateColumns:isMobile?"1fr":"1.3fr 1fr", gap:16, alignItems:"start" }}>
-        <div>
-          <div style={{ display:"inline-flex", alignItems:"center", gap:7, color:T.indigo, fontSize:11, fontWeight:800, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:8 }}>
-            <FileText size={14}/> Reporting modernization
-          </div>
-          <h1 style={{ margin:0, fontSize:isMobile?22:28, lineHeight:1.15, color:T.gray900, letterSpacing:0 }}>A standalone report-to-client workflow</h1>
-          <p style={{ margin:"9px 0 0", fontSize:14, lineHeight:1.6, color:T.gray600, maxWidth:680 }}>
-            This path shows the reporting experience without depending on an account-maintenance transaction: detect a book-level signal, configure a client-ready report, run the auditable generation pipeline, customize the output, and deliver it to the portal.
-          </p>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
-          <button onClick={onStartScenario} style={{ background:T.green, color:T.white, border:"none", borderRadius:8, padding:"11px 12px", fontSize:12, fontWeight:800, cursor:"pointer", minHeight:44, display:"flex", alignItems:"center", justifyContent:"center", gap:7 }}>
-            <Target size={15}/> Run reporting flow
-          </button>
-          <button onClick={onStartTour} style={{ background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"11px 12px", fontSize:12, fontWeight:800, cursor:"pointer", minHeight:44, display:"flex", alignItems:"center", justifyContent:"center", gap:7 }}>
-            <PlayCircle size={15}/> Explain surface
-          </button>
-          <button onClick={()=>onNavigate("integrations")} style={{ background:T.gray50, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:42 }}>
-            View data layer
-          </button>
-          <button onClick={()=>onNavigate("portal", { portalTab:"documents" })} style={{ background:T.gray50, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:42 }}>
-            View client delivery
-          </button>
-        </div>
-      </section>
-
+      <div style={{ display:"flex", flexWrap:"wrap", justifyContent:"flex-end", gap:10 }}>
+        <button onClick={()=>onNavigate("integrations")} style={{ background:T.white, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:42 }}>
+          Data connections
+        </button>
+        <button onClick={()=>onNavigate("portal", { portalTab:"documents" })} style={{ background:T.white, color:T.gray900, border:`1px solid ${T.gray200}`, borderRadius:8, padding:"10px 12px", fontSize:12, fontWeight:750, cursor:"pointer", minHeight:42 }}>
+          Client documents
+        </button>
+      </div>
       <ReportBuilder bp={bp} deepLink={deepLink} profile={profile} onSendToClient={onSendToClient}/>
     </div>
   );
@@ -1297,6 +1292,9 @@ function ReportingModernizationWorkspace({ bp, deepLink, profile, onNavigate, on
 
 // ─── LAYER 3: Client Portal ────────────────────────────────────────────────────
 function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
+  const [growthRange, setGrowthRange] = useState("all");
+  const growth = portfolioRanges[growthRange];
+  const openReportPreview = useReportPreview();
   const { isMobile } = bp;
   const [tab, setTab] = useState("overview");
   useEffect(() => { if (deepLink?.portalTab) setTab(deepLink.portalTab); }, [deepLink]);
@@ -1337,17 +1335,25 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
               <MetricCard label="Next Review"        value="Jul 15"     delta="36 days away"   up={true}  accent={T.amber}  />
             </div>
             <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
-              <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:4 }}>Portfolio Growth</div>
-              <div style={{ fontSize:18, fontWeight:700, color:T.gray900, marginBottom:12 }}>+$334,100 since Jan 1</div>
-              <ResponsiveContainer width="100%" height={160}>
-                <AreaChart data={[{month:"Jan",val:3950},{month:"Feb",val:4020},{month:"Mar",val:3980},{month:"Apr",val:4110},{month:"May",val:4200},{month:"Jun",val:4284}]}>
-                  <defs><linearGradient id="clientGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={T.emerald} stopOpacity={0.2}/><stop offset="95%" stopColor={T.emerald} stopOpacity={0}/></linearGradient></defs>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:12, flexWrap:"wrap", marginBottom:10 }}>
+                <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase" }}>Portfolio Growth</div>
+                <div role="group" aria-label="Portfolio growth timeframe" style={{ display:"flex", gap:3, padding:3, borderRadius:8, background:T.gray100 }}>
+                  {portfolioRangeOptions.map(option => <button key={option.id} type="button" aria-label={option.name} aria-pressed={growthRange===option.id} onClick={()=>setGrowthRange(option.id)} style={{ border:0, borderRadius:6, padding:"8px 10px", minHeight:36, fontSize:12, fontWeight:650, cursor:"pointer", background:growthRange===option.id?T.green:"transparent", color:growthRange===option.id?T.white:T.slate }}>{option.label}</button>)}
+                </div>
+              </div>
+              <div aria-live="polite" aria-atomic="true">
+                <div style={{ fontSize:18, fontWeight:700, color:T.gray900, marginBottom:4 }}>{growth.gain>=0?"+":"−"}{formatPortfolioMoney(Math.abs(growth.gain))} {growthRange==="all"?"since Jan 1":`over ${growth.days} days`}</div>
+                <div style={{ fontSize:11, color:T.slate, marginBottom:4 }}>{growth.period} · Synthetic history</div>
+                <div style={{ fontSize:11, color:T.slate, marginBottom:12 }}>Portfolio value · Axis {formatPortfolioAxis(growth.domain[0])}–{formatPortfolioAxis(growth.domain[1])}</div>
+              </div>
+              <ResponsiveContainer width="100%" height={180}>
+                <LineChart data={growth.data} margin={{ top:8, right:20, bottom:0, left:0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/>
-                  <XAxis dataKey="month" tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
-                  <YAxis tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={v=>`$${v}K`}/>
-                  <Tooltip contentStyle={{ borderRadius:8, fontSize:12 }} formatter={v=>[`$${v}K`,"Value"]}/>
-                  <Area type="monotone" dataKey="val" stroke={T.emerald} strokeWidth={2.5} fill="url(#clientGrad)"/>
-                </AreaChart>
+                  <XAxis dataKey="time" type="number" scale="time" domain={[growth.start,growth.end]} ticks={growth.dateTicks} tickFormatter={time=>growthRange==="all"?new Date(time).toLocaleDateString("en-US",{month:"short",timeZone:"UTC"}):formatPortfolioDate(time)} tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
+                  <YAxis domain={growth.domain} ticks={growth.ticks} width={56} tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={formatPortfolioAxis}/>
+                  <Tooltip contentStyle={{ borderRadius:8, fontSize:12 }} labelFormatter={formatPortfolioDate} formatter={v=>[formatPortfolioMoney(v),"Portfolio value"]}/>
+                  <Line type="linear" dataKey="value" stroke={T.emerald} strokeWidth={2.5} dot={{ r:3, fill:T.emerald, stroke:T.white, strokeWidth:1.5 }} activeDot={{ r:5 }} isAnimationActive={false}/>
+                </LineChart>
               </ResponsiveContainer>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 2fr", gap:16 }}>
@@ -1374,7 +1380,7 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
                     </div>
                     <div style={{ fontSize:13, color:T.gray600, lineHeight:1.6, marginBottom:12 }}>Hi Sarah and Michael — your Q2 report is ready. Your portfolio is up 8.4% YTD vs the 6.2% benchmark. I've flagged a small rebalancing opportunity in US equity. Let's discuss July 15th.</div>
                     <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-                      <button style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", gap:5, alignItems:"center", minHeight:36 }}><FileText size={12}/> View Q2 Report</button>
+                      <button onClick={()=>openReportPreview("quarterly", "Back to client portal")} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", gap:5, alignItems:"center", minHeight:36 }}><FileText size={12}/> View Q2 Report</button>
                       <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer", display:"flex", gap:5, alignItems:"center", minHeight:36 }}><Mail size={12}/> Reply</button>
                     </div>
                   </div>
@@ -1408,17 +1414,17 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
             {reportDelivered && (
               <div style={{ background:T.emeraldLt, border:`1px solid ${T.emerald}50`, borderRadius:10, padding:"11px 16px", display:"flex", alignItems:"center", gap:10, animation:"fade-in-up 0.4s ease" }}>
                 <Check size={15} color={T.emerald}/>
-                <span style={{ fontSize:13, fontWeight:700, color:T.emerald }}>Q2 Report just delivered · Portal updated · Email sent to 2 recipients</span>
+                <span style={{ fontSize:13, fontWeight:700, color:T.emerald }}>Delivery simulation complete · No email sent</span>
               </div>
             )}
-            {[{name:"Q2 2025 Performance Report",date:"Jun 9, 2025",isNew:true},{name:"Q1 2025 Performance Report",date:"Mar 12, 2025",isNew:false},{name:"2024 Annual Review",date:"Jan 8, 2025",isNew:false},{name:"Investment Policy Statement",date:"Aug 14, 2024",isNew:false},{name:"Account Opening Documents",date:"May 2, 2023",isNew:false}].map(doc=>(
+            {portalReportDocuments.map(doc=>(
               <div key={doc.name} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:10, padding:"13px 16px", display:"flex", alignItems:"center", gap:12 }}>
                 <div style={{ width:34, height:34, borderRadius:8, background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><FileText size={15} color={T.green}/></div>
                 <div style={{ flex:1, minWidth:0 }}>
-                  <div style={{ display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{doc.name}</span>{doc.isNew&&<Badge color={T.green} bg={T.greenLt}>{reportDelivered?"JUST DELIVERED":"NEW"}</Badge>}</div>
-                  <div style={{ fontSize:11, color:T.slate, marginTop:2 }}>{doc.date}</div>
+                  <div style={{ display:"flex", alignItems:"center", gap:7, flexWrap:"wrap" }}><span style={{ fontSize:13, fontWeight:600, color:T.gray900 }}>{doc.name}</span>{doc.isNew&&<Badge color={T.green} bg={T.greenLt}>NEW</Badge>}</div>
+                  <div style={{ fontSize:11, color:T.slate, marginTop:2 }}>{doc.date}{doc.reason && <span style={{display:"block", marginTop:4}}>{doc.reason}</span>}</div>
                 </div>
-                <button style={{ background:T.gray100, border:"none", borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, color:T.gray600, cursor:"pointer", display:"flex", gap:5, alignItems:"center", flexShrink:0, minHeight:34 }}><Download size={11}/> {isMobile?"":"Download"}</button>
+                <button disabled={!doc.template} aria-label={`${doc.template ? "View report" : "Unavailable"}: ${doc.name}`} onClick={()=>openReportPreview(doc.template, "Back to documents")} style={{ background:T.gray100, border:"none", borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, color:T.gray600, cursor:doc.template?"pointer":"default", display:"flex", gap:5, alignItems:"center", flexShrink:0, minHeight:34 }}><Eye size={11}/> {doc.template?"View":"Unavailable"}</button>
               </div>
             ))}
           </div>
@@ -1430,11 +1436,13 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
               <button style={{ background:T.greenLt, border:"none", borderRadius:7, padding:"6px 12px", fontSize:12, fontWeight:700, color:T.green, cursor:"pointer", minHeight:34 }}>+ New</button>
             </div>
             {[{from:"Jordan Williams, CFP®",body:"Your Q2 report is ready for review. Great quarter overall...",date:"Jun 6",unread:true},{from:"Jordan Williams, CFP®",body:"Following up on our April call — confirming the rebalance...",date:"Apr 18",unread:false},{from:"Fidelity Institutional",body:"Your Q1 2025 report is now available in your document vault.",date:"Mar 12",unread:false}].map((msg,i)=>(
-              <div key={i} style={{ padding:"13px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", gap:10, alignItems:"flex-start", background:msg.unread?`${T.greenLt}60`:T.white, cursor:"pointer" }}>
+              <div key={i} style={{ padding:"13px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", gap:10, alignItems:"flex-start", background:msg.unread?`${T.greenLt}60`:T.white }}>
                 <div style={{ width:32, height:32, borderRadius:"50%", background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:T.green, flexShrink:0 }}>JW</div>
                 <div style={{ flex:1, minWidth:0 }}>
                   <div style={{ display:"flex", justifyContent:"space-between", marginBottom:3, gap:8 }}><span style={{ fontSize:12, fontWeight:msg.unread?700:600, color:T.gray900, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{msg.from}</span><span style={{ fontSize:11, color:T.slate, flexShrink:0 }}>{msg.date}</span></div>
                   <div style={{ fontSize:12, color:T.gray600, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{msg.body}</div>
+                  {i===0 && <button onClick={()=>openReportPreview("quarterly", "Back to messages")} style={{marginTop:8,background:T.greenLt,color:T.green,border:"none",borderRadius:6,padding:"8px 12px",cursor:"pointer",fontWeight:600}}>View Q2 Report</button>}
+                  {i===2 && <button onClick={()=>setTab("documents")} style={{marginTop:8,background:T.gray100,border:"none",borderRadius:6,padding:"8px 12px",cursor:"pointer"}}>Open documents</button>}
                 </div>
                 {msg.unread&&<div style={{ width:8, height:8, borderRadius:"50%", background:T.green, flexShrink:0, marginTop:4 }}/>}
               </div>
@@ -2490,10 +2498,10 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   const selectResearchTrack = track => { setResearchTrack(track); onNavigate("strategy", { strategyTrack: track }); };
   const strategy = profile.strategy;
   const trackTitle = researchTrack === "lifecycle" ? "Account maintenance strategy" : "Reporting modernization strategy";
-  const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : "Connect the client relationship to report assembly, review, and delivery. Use the evidence and prototype to choose a bounded pilot for this profile.";
+  const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : "Governed client report production: connect household context, preparation, approval and delivery. Use public evidence and illustrative pilots on synthetic data to define the next measured validation gate.";
   const trackStats = researchTrack === "lifecycle"
     ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"8",label:"Maintenance functions"},{value:"3",label:"Stakeholder groups"},{value:"4",label:"Investment priorities"}]
-    : [{value:reportingCompetitors.length,label:"Public reference views"},{value:strategy.outcomes.length,label:"Directional outcomes"},{value:strategy.recommendations.length,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
+    : [{value:new Set(reportingCompetitors.map(item => item.name)).size,label:"Vendors reviewed"},{value:5,label:"Proposed outcomes"},{value:4,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>
@@ -3112,14 +3120,18 @@ function SettingsLayer() {
 const PIPELINE_STAGES = [
   { id:"sync",       icon:Activity,  label:"Data Sync",         desc:"Pulling positions, transactions & pricing from custodian",  duration:1300, result:"47 positions · 312 txns · $4.28M AUM reconciled" },
   { id:"validate",   icon:Eye,       label:"Data Validation",   desc:"Checking completeness, stale prices & corporate actions",   duration:900,  result:"0 errors · 1 warning: INTL ETF price 4h stale" },
-  { id:"assemble",   icon:Layers,    label:"Report Assembly",   desc:"Building sections from validated data & applying template", duration:1400, result:"8 sections · 6 charts rendered · 2 tables built" },
-  { id:"narrative",  icon:Sparkles,  label:"AI Narrative",      desc:"Generating plain-language commentary from performance data", duration:1900, result:"348 words · Formal tone · 1 compliance flag added" },
-  { id:"compliance", icon:Check,     label:"Compliance Review", desc:"Running disclosure rules and appending audit trail",        duration:800,  result:"12 rules passed · 1 auto-disclosure appended" },
-  { id:"delivery",   icon:Mail,      label:"Delivery",          desc:"Publishing to client portal and sending email notification",duration:600,  result:"Portal updated · Email queued to 2 recipients" },
+  { id:"assemble",   icon:Layers,    label:"Report Assembly",   desc:"Building sections from validated data & applying template", duration:1400, result:"8 sections · 1 performance chart · 2 tables built" },
+  { id:"narrative",  icon:Sparkles,  label:"AI Narrative",      desc:"Generating plain-language commentary from performance data", duration:1900, result:"Commentary drafted · Stale-price disclosure included" },
+  { id:"compliance", icon:Check,     label:"Compliance Review", desc:"Running disclosure rules and appending audit trail",        duration:800,  result:"12 automated checks passed · Release review pending" },
+  { id:"delivery",   icon:Mail,      label:"Delivery readiness", desc:"Preparing the client copy and notification for release review",duration:600,  result:"Package prepared · 2 recipients · Not sent" },
 ];
 
-function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
+function ReportGeneration({ bp, profile, template, onScenarioAdvance, onSendToClient }) {
+  const report = getGeneratedReport(template);
+  const stageDetails = reportStageDetails(template);
+  const stages = PIPELINE_STAGES.map(stage => ({ ...stage, ...stageDetails[stage.id] }));
   const { isMobile } = bp;
+  const openReportPreview = useReportPreview();
   const [running, setRunning]           = useState(false);
   const [done, setDone]                 = useState(false);
   const [currentStage, setCurrentStage] = useState(null);
@@ -3129,12 +3141,12 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
     if (!running) return;
     const timers = [];
     let delay = 0;
-    PIPELINE_STAGES.forEach((stage, i) => {
+    stages.forEach((stage, i) => {
       timers.push(setTimeout(() => setCurrentStage(stage.id), delay));
       delay += stage.duration;
       timers.push(setTimeout(() => {
         setCompletedIds(prev => [...prev, stage.id]);
-        if (i === PIPELINE_STAGES.length - 1) { setCurrentStage(null); setRunning(false); setDone(true); onScenarioAdvance?.(); }
+        if (i === stages.length - 1) { setCurrentStage(null); setRunning(false); setDone(true); onScenarioAdvance?.(); }
       }, delay - 80));
     });
     return () => timers.forEach(clearTimeout);
@@ -3145,14 +3157,14 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
     setDone(false); setCompletedIds([]); setCurrentStage(null); setRunning(true);
   };
 
-  const totalMs = PIPELINE_STAGES.reduce((s, st) => s + st.duration, 0);
+  const totalMs = stages.reduce((s, st) => s + st.duration, 0);
 
   return (
     <div data-demo="report-pipeline" style={{ display:"flex", flexDirection:"column", gap:16 }}>
       <div data-demo="generate-action" style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:12 }}>
         <div>
           <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:3 }}>Report Generation Pipeline</div>
-          <div style={{ fontSize:12, color:T.slate }}>Sarah & Michael Chen · Quarterly Review · Q2 2025</div>
+          <div style={{ fontSize:12, color:T.slate }}>{report.household} · {report.title} · {report.period}</div>
         </div>
         <button onClick={start} disabled={running} style={{ background:running?T.gray100:T.green, color:running?T.gray400:T.white, border:"none", borderRadius:8, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:running?"default":"pointer", display:"flex", alignItems:"center", gap:8, minHeight:40, transition:"all 0.2s" }}>
           <PlayCircle size={15}/> {running?"Generating…":done?"Re-Generate":"Generate Report"}
@@ -3160,11 +3172,11 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
       </div>
 
       <div style={{ display:"flex", flexDirection:"column", gap:0 }}>
-        {PIPELINE_STAGES.map((stage, i) => {
+        {stages.map((stage, i) => {
           const Icon = stage.icon;
           const isActive = currentStage === stage.id;
           const isDone   = completedIds.includes(stage.id);
-          const isLast   = i === PIPELINE_STAGES.length - 1;
+          const isLast   = i === stages.length - 1;
           return (
             <div key={stage.id} style={{ display:"flex", gap:0, alignItems:"stretch" }}>
               <div style={{ display:"flex", flexDirection:"column", alignItems:"center", width:52, flexShrink:0 }}>
@@ -3200,12 +3212,12 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
           <div style={{ width:40, height:40, borderRadius:"50%", background:T.emerald, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Check size={20} color={T.white}/></div>
           <div style={{ flex:1, minWidth:160 }}>
             <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:2 }}>Report Ready</div>
-            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · AI narrative + compliance cleared</div>
+            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · Review copy prepared · 1 validation warning</div>
           </div>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-            <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
-            <button onClick={onSendToClient} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, boxShadow:onSendToClient?"0 0 0 3px rgba(11,93,46,0.25)":"none" }}>
-              <Mail size={13}/> Send to Client
+            <button onClick={()=>openReportPreview(template, "Back to generation")} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
+            <button onClick={()=>onSendToClient?.(template)} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, boxShadow:onSendToClient?"0 0 0 3px rgba(11,93,46,0.25)":"none" }}>
+              <Mail size={13}/> Review delivery
             </button>
           </div>
         </div>
@@ -3232,7 +3244,7 @@ const COLOR_THEMES = [
   { id:"teal",  primary:"#134E4A", accent:"#0EA5E9", label:"Teal"     },
 ];
 
-function ReportCustomize({ bp }) {
+function ReportCustomize({ bp, template, onPreview }) {
   const { isMobile } = bp;
   const [sections,   setSections]   = useState({ header:true, summary:true, narrative:true, performance:true, allocation:true, holdings:false, drift:true, notes:false });
   const [chartType,  setChartType]  = useState({ performance:"Bar", allocation:"Donut" });
@@ -3248,6 +3260,13 @@ function ReportCustomize({ bp }) {
     setSections(p => ({ ...p, [id]: !p[id] }));
   };
 
+  if (template !== "quarterly") return (
+    <div className="am-card">
+      <h2>{getGeneratedReport(template).title}</h2>
+      <p>Section editing is available for Quarterly Review. This report uses its standard layout.</p>
+      <button className="am-primary" onClick={onPreview}>Preview report</button>
+    </div>
+  );
   return (
     <div data-demo="report-customize" style={{ display:"flex", flexDirection:isMobile?"column":"row", gap:16 }}>
 
@@ -3325,8 +3344,8 @@ function ReportCustomize({ bp }) {
           </div>
         </div>
 
-        <button style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:13, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:44 }}>
-          <Check size={14}/> Save as Template
+        <button onClick={onPreview} style={{ background:T.green, color:T.white, border:"none", borderRadius:10, padding:"13px", fontSize:13, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, minHeight:44 }}>
+          <Check size={14}/> Preview standard report
         </button>
       </div>
 
@@ -3393,7 +3412,7 @@ function ReportCustomize({ bp }) {
             {sections.drift && (
               <div style={{ background:T.amberLt, border:`1px solid ${T.amber}40`, borderRadius:8, padding:"9px 12px", display:"flex", gap:8 }}>
                 <AlertTriangle size={12} color={T.amber} style={{flexShrink:0,marginTop:1}}/>
-                <div style={{ fontSize:11, color:T.gray600 }}>US Equity 6.2pts above target. Rebalancing recommended before Q3.</div>
+                <div style={{ fontSize:11, color:T.gray600 }}>US Equity 6pts above target. Rebalancing recommended before Q3.</div>
               </div>
             )}
             {sections.notes && (
@@ -3724,12 +3743,14 @@ function ScenarioGuide({ step, onNext, onSkip, isMobile }) {
   );
 }
 
-function EmailModal({ onSend, onClose, isMobile }) {
+function EmailModal({ onSend, onClose, isMobile, template }) {
+  const report = getGeneratedReport(template);
+  const openReportPreview = useReportPreview();
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [deliverPortal, setDeliverPortal] = useState(true);
   const [deliverEmail, setDeliverEmail]   = useState(true);
-  const [body, setBody] = useState("Hi Sarah and Michael,\n\nYour Q2 2025 Quarterly Review is ready in your client portal. Your portfolio delivered +8.4% year-to-date — outpacing the 60/40 benchmark by 2.2 points.\n\nI've flagged a small US equity rebalancing opportunity that I'd like to discuss at our July 15th meeting. The full report covers performance drivers, your current allocation, and next steps.\n\nPlease review at your convenience and don't hesitate to reach out with any questions.\n\nWarm regards,\nJordan Williams, CFP®\nWilliams Wealth Management");
+  const [body, setBody] = useState(`Hi Sarah and Michael,\n\nYour ${report.title} is prepared for review. The report covers ${report.narrativeTitle.toLowerCase()} and the next actions for your household.\n\nWarm regards,\nJordan Williams, CFP®`);
 
   const handleSend = () => {
     setSending(true);
@@ -3744,8 +3765,8 @@ function EmailModal({ onSend, onClose, isMobile }) {
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             <div style={{ width:32, height:32, borderRadius:8, background:T.green, display:"flex", alignItems:"center", justifyContent:"center" }}><Mail size={15} color={T.white}/></div>
             <div>
-              <div style={{ fontSize:14, fontWeight:700, color:T.white }}>Deliver Report to Client</div>
-              <div style={{ fontSize:11, color:"#94A3B8" }}>Q2 2025 Quarterly Review · Sarah & Michael Chen</div>
+              <div style={{ fontSize:14, fontWeight:700, color:T.white }}>Delivery package · Simulation</div>
+              <div style={{ fontSize:11, color:"#94A3B8" }}>{report.title} · {report.household}</div>
             </div>
           </div>
           <button aria-label="Close send modal" title="Close send modal" onClick={onClose} style={{ background:"rgba(255,255,255,0.1)", border:"none", borderRadius:6, padding:6, cursor:"pointer", color:T.gray400, display:"flex" }}><X size={16}/></button>
@@ -3754,8 +3775,8 @@ function EmailModal({ onSend, onClose, isMobile }) {
         {sent ? (
           <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:40, gap:12 }}>
             <div style={{ width:56, height:56, borderRadius:"50%", background:T.emeraldLt, display:"flex", alignItems:"center", justifyContent:"center" }}><Check size={24} color={T.emerald}/></div>
-            <div style={{ fontSize:16, fontWeight:700, color:T.gray900 }}>Delivered!</div>
-            <div style={{ fontSize:13, color:T.slate, textAlign:"center", lineHeight:1.6 }}>Report published to client portal · Email sent to 2 recipients<br/><span style={{ color:T.green, fontWeight:600 }}>Navigating to portal…</span></div>
+            <div style={{ fontSize:16, fontWeight:700, color:T.gray900 }}>Simulation complete</div>
+            <div style={{ fontSize:13, color:T.slate, textAlign:"center", lineHeight:1.6 }}>Delivery simulation complete · No email sent<br/><span style={{ color:T.green, fontWeight:600 }}>Navigating to portal…</span></div>
           </div>
         ) : (
           <div style={{ flex:1, overflowY:"auto", padding:"16px 20px", display:"flex", flexDirection:"column", gap:14 }}>
@@ -3772,17 +3793,17 @@ function EmailModal({ onSend, onClose, isMobile }) {
             </div>
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>Subject</div>
-              <div style={{ fontSize:13, fontWeight:600, color:T.gray900, background:T.gray50, borderRadius:8, padding:"10px 12px", border:`1px solid ${T.gray200}` }}>Q2 2025 Quarterly Review – Sarah & Michael Chen</div>
+              <div style={{ fontSize:13, fontWeight:600, color:T.gray900, background:T.gray50, borderRadius:8, padding:"10px 12px", border:`1px solid ${T.gray200}` }}>{report.title} – {report.household}</div>
             </div>
             <div>
               <div style={{ fontSize:11, fontWeight:700, color:T.slate, marginBottom:6, letterSpacing:"0.04em", textTransform:"uppercase" }}>Attachment</div>
-              <div style={{ display:"flex", alignItems:"center", gap:10, background:T.greenLt, border:`1px solid ${T.green}30`, borderRadius:8, padding:"10px 14px" }}>
+              <div style={{ display:"flex", flexWrap:"wrap", alignItems:"center", gap:10, background:T.greenLt, border:`1px solid ${T.green}30`, borderRadius:8, padding:"10px 14px" }}>
                 <div style={{ width:32, height:32, borderRadius:7, background:T.green, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><FileText size={14} color={T.white}/></div>
                 <div style={{ flex:1 }}>
-                  <div style={{ fontSize:12, fontWeight:700, color:T.gray900 }}>Chen_Q2_2025_Quarterly_Review.pdf</div>
-                  <div style={{ fontSize:11, color:T.slate }}>8 sections · 6 charts · AI narrative · Compliance cleared</div>
+                  <div style={{ fontSize:12, fontWeight:700, color:T.gray900 }}>{report.title} · {report.household}</div>
+                  <div style={{ fontSize:11, color:T.slate }}>8 sections · Review copy · Synthetic data</div>
                 </div>
-                <Badge color={T.green} bg={T.greenLt}>Ready</Badge>
+                <button onClick={()=>openReportPreview(template, "Back to delivery package")} style={{background:T.white,border:`1px solid ${T.gray200}`,borderRadius:7,padding:"8px",cursor:"pointer"}}>Preview attachment</button>
               </div>
             </div>
             <div>
@@ -3810,7 +3831,7 @@ function EmailModal({ onSend, onClose, isMobile }) {
           <div style={{ padding:"13px 20px", borderTop:`1px solid ${T.gray100}`, display:"flex", gap:9, justifyContent:"flex-end", flexShrink:0 }}>
             <button onClick={onClose} style={{ background:T.gray100, border:"none", borderRadius:8, padding:"10px 18px", fontSize:13, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Cancel</button>
             <button onClick={handleSend} disabled={sending} style={{ background:sending?T.gray300:T.green, color:T.white, border:"none", borderRadius:8, padding:"10px 20px", fontSize:13, fontWeight:700, cursor:sending?"default":"pointer", display:"flex", alignItems:"center", gap:8, minHeight:42, transition:"background 0.2s" }}>
-              {sending?<><Activity size={14}/> Sending…</>:<><Mail size={14}/> Send & Deliver</>}
+              {sending?<><Activity size={14}/> Simulating…</>:<><Mail size={14}/> Simulate delivery</>}
             </button>
           </div>
         )}
@@ -3843,6 +3864,8 @@ export default function WealthscapePrototype() {
   const [scenarioStep,   setScenarioStep]   = useState(0);
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [reportDelivered,setReportDelivered]= useState(false);
+  const [deliveryTemplate, setDeliveryTemplate] = useState("quarterly");
+  const openDelivery = (template = "quarterly") => { setDeliveryTemplate(reportTemplateId(template)); setEmailModalOpen(true); };
   const [activeProfileId,setActiveProfileId]= useState(() => normalizeProfileId(readMaintenanceRoute().sub.profileId));
   const contentRef = useRef(null);
   const activeProfile = getProfileById(activeProfileId);
@@ -3904,7 +3927,7 @@ export default function WealthscapePrototype() {
   const handleAlertAction = (alert) => {
     setMaintenanceGuide(null); setGuideCases([]); setGuideReports([]);
     const { layer, ...sub } = alert.action;
-    if (maintenanceGuide) window.history.pushState(null, "", maintenanceHref(layer, { profileId: activeProfileId, ...sub }));
+    if (maintenanceGuide || ["reports", "portal"].includes(layer)) window.history.pushState(null, "", maintenanceHref(layer, { ...sub, ...(layer === "reports" ? reportContext(sub.profileId || activeProfileId, sub.reportTemplate, sub.reportTab) : { profileId: sub.profileId || activeProfileId }) }));
     if (sub.profileId) setActiveProfileId(normalizeProfileId(sub.profileId));
     setAlerts(prev => prev.map(a => a.id === alert.id ? { ...a, read:true } : a));
     setActiveLayer(layer);
@@ -3948,6 +3971,7 @@ export default function WealthscapePrototype() {
   // Email sent → advance to portal view
   const handleEmailSent = () => {
     setEmailModalOpen(false);
+    window.history.pushState(null, "", maintenanceHref("portal", { profileId: activeProfileId, portalTab: "documents" }));
     if (scenarioActive) {
       setScenarioStep(prev => Math.min(prev + 1, SCENARIO_STEPS.length - 1));
       setActiveLayer("portal");
@@ -4045,6 +4069,7 @@ export default function WealthscapePrototype() {
   );
 
   return (
+    <ReportPreviewProvider profile={activeProfile} scopeKey={`${activeProfileId}:${activeLayer}`}>
     <div style={{ display:"flex", height:"100vh", background:T.gray50, fontFamily:"Inter, system-ui, -apple-system, sans-serif", fontSize:14, color:T.gray900, overflow:"hidden", position:"relative" }}>
 
       {isDesktop && (
@@ -4080,13 +4105,15 @@ export default function WealthscapePrototype() {
                 <input placeholder="Search..." style={{ border:"none", background:"transparent", fontSize:13, outline:"none", width:140, color:T.gray900 }}/>
               </div>
             )}
-            {isMobile && <button aria-label="Search prototype" title="Search" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
+            {isMobile && <button aria-label="Search" title="Search" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600 }}><Search size={18}/></button>}
+            {!["reports", "portal", "integrations", "insights"].includes(activeLayer) && <>
             <button aria-label={scenarioActive?"Restart scenario":"Run scenario"} title={scenarioActive?"Restart scenario":"Run scenario"} onClick={startScenario} data-demo="scenario-button" style={{ display:"flex", alignItems:"center", gap:6, background:scenarioActive?T.green:T.emerald, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34, boxShadow:scenarioActive?"0 0 0 3px rgba(11,93,46,0.3)":"none" }}>
               <Target size={14}/>{isDesktop&&(scenarioActive?" Restart":" Scenario")}
             </button>
             <button aria-label="Take tour" title="Take tour" onClick={startDemo} style={{ display:"flex", alignItems:"center", gap:6, background:T.indigo, color:T.white, border:"none", borderRadius:8, padding:"6px 12px", fontSize:12, fontWeight:700, cursor:"pointer", whiteSpace:"nowrap", minHeight:34 }}>
               <PlayCircle size={14}/>{isDesktop&&" Tour"}
             </button>
+            </>}
             <button aria-label="Open alert center" title="Open alert center" onClick={()=>setAlertsOpen(o=>!o)} data-demo="alert-bell" style={{ position:"relative", background:alertsOpen?T.gray100:"transparent", border:"none", cursor:"pointer", padding:6, borderRadius:8 }}>
               <Bell size={18} color={alertsOpen?T.gray900:T.slate}/>
               {unreadAlerts > 0 && (
@@ -4114,19 +4141,18 @@ export default function WealthscapePrototype() {
 
         <div className="mg-layout">
         <div className="mg-surface" ref={contentRef} style={{ flex:1, overflow:"auto", padding:isMobile?"12px":"20px" }}>
-          <ReportingRecommendationContext deepLink={deepLink}/>
           {activeLayer==="morning" && !demoActive && !scenarioActive && <LifecycleDashboard profile={activeProfile} cases={displayedCases} onNavigate={navigateToLayer}/>}
           {activeLayer==="maintenance" && <AccountMaintenance key={maintenanceGuide ? `guide-${maintenanceGuide.step}` : "session"} guided={!!maintenanceGuide} readOnly={maintenanceGuide?.mode === "tour"} profile={activeProfile} cases={displayedCases} setCases={updateDisplayedCases} deepLink={deepLink} onNavigate={navigateToLayer}/>}
           {activeLayer==="morning" && (demoActive || scenarioActive) && <MorningBrief    bp={bp} profile={activeProfile} dashboard={activeDashboard} alerts={alerts} onAction={handleAlertAction} onDismiss={dismissAlert} onNavigate={navigateToLayer} deepLink={deepLink} scenarioStep={scenarioActive?scenarioStep:null}/>}
           {activeLayer==="reports" && (
             <>
-              {demoActive || scenarioActive ? <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={()=>setEmailModalOpen(true)}/> : (
+              {demoActive || scenarioActive ? <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onScenarioAdvance={scenarioActive?advanceScenario:undefined} onSendToClient={openDelivery}/> : (
                 deepLink?.caseId ? (
                   <ConnectedReportBuilder key={activeProfileId + (deepLink?.caseId || "")} profile={activeProfile} cases={displayedCases.filter(c=>visibleCases(displayedCases,activeProfile).some(v=>v.id===c.id)||c.id===deepLink?.caseId)} setCases={updateDisplayedCases} deepLink={deepLink} onNavigate={navigateToLayer} reports={maintenanceGuide ? guideReports : lifecycleReports} setReports={maintenanceGuide ? setGuideReports : setLifecycleReports}>
-                    <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onSendToClient={()=>setEmailModalOpen(true)}/>
+                    <ReportBuilder bp={bp} deepLink={deepLink} profile={activeProfile} onSendToClient={openDelivery}/>
                   </ConnectedReportBuilder>
                 ) : (
-                  <ReportingModernizationWorkspace bp={bp} deepLink={deepLink} profile={activeProfile} onNavigate={navigateToLayer} onSendToClient={()=>setEmailModalOpen(true)} onStartScenario={startScenario} onStartTour={startDemo}/>
+                  <ReportingWorkspace bp={bp} deepLink={deepLink} profile={activeProfile} onNavigate={navigateToLayer} onSendToClient={openDelivery}/>
                 )
               )}
             </>
@@ -4177,8 +4203,9 @@ export default function WealthscapePrototype() {
       )}
 
       {emailModalOpen && (
-        <EmailModal onSend={handleEmailSent} onClose={()=>setEmailModalOpen(false)} isMobile={isMobile}/>
+        <EmailModal template={deliveryTemplate} onSend={handleEmailSent} onClose={()=>setEmailModalOpen(false)} isMobile={isMobile}/>
       )}
     </div>
+    </ReportPreviewProvider>
   );
 }

@@ -1,3 +1,4 @@
+import StrategyExecutiveSummary, { StrategySectionFinding } from "./StrategyExecutiveSummary.jsx";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -376,6 +377,7 @@ export default function MaintenanceResearch({
           </button>
         </div>
       </nav>
+      <StrategyExecutiveSummary track="maintenance" sections={sections} onJump={advance} />
       {sections.map((item, order) => {
         const section = item.id;
         const Icon = item.icon;
@@ -405,6 +407,7 @@ export default function MaintenanceResearch({
                 <h2 id={`maintenance-heading-${item.id}`}>{item.label}</h2>
               </div>
             </header>
+            <StrategySectionFinding track="maintenance" sectionId={section} />
             {section === 0 && (
               <>
                 <p className="mr-lead">

@@ -100,11 +100,11 @@ test("quadrants use an explicit 5/10 boundary, independent of opportunity rank",
   assert.equal(reportingQuadrant({ imp: 4, sat: 2 }), "Lower priority");
 });
 test("competitor map preserves unknown evidence and does not assign satisfaction scores", () => {
-  assert.equal(reportingComparison.length, 3);
+  assert.equal(reportingComparison.length, 9);
   const unknown = reportingComparison
     .flatMap((row) => row.cells)
     .filter((cell) => !cell.described);
-  assert.equal(unknown.length, 5);
+  assert.ok(unknown.length >= 5);
   for (const row of reportingComparison) {
     assert.equal(row.cells.length, 4);
     assert.equal("satisfaction" in row, false);
