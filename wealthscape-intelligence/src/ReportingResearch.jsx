@@ -74,9 +74,13 @@ function EvidenceCards({ items }) {
       {items.map((item) => (
         <article className="rr-detail" key={item.title}>
           {item.value && (
-            <strong className="rr-evidence-value">{item.value}</strong>
+            <div className="rr-evidence-metric">
+              <strong className="rr-evidence-value">{item.value}</strong>
+              {item.metricLabel && <span>{item.metricLabel}</span>}
+            </div>
           )}
           <h3>{item.title}</h3>
+          {item.context && <p className="rr-customer-context">{item.context}</p>}
           <p>{item.finding}</p>
           {item.implication && (
             <Detail title="Strategy implication">{item.implication}</Detail>

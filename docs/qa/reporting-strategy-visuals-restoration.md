@@ -8,6 +8,8 @@ The map reuses the earlier `ReportingOpportunityMap` and collision-aware plot fr
 
 The section remains separate from account maintenance. Account-maintenance values were not reused. The five executive themes remain as recommendation groupings, linked to representative detailed outcomes. The headline count now reads 15.
 
+Section 4 customer-context evidence now separates the metric being shown from the customer/workflow context and the downstream strategy implication. The large value is labelled as the source metric, the card headline describes the customer context, and the implication states what the strategy should test. The 41.4-hour Kitces figure is explicitly framed as an illustrative senior-advisor workweek, not a measured reporting-preparation baseline.
+
 ## Score provenance
 
 Every rating is a management estimate, not a customer survey result. Nine pairs retain earlier local strategy ratings from `wealthscape-intelligence/src/WealthscapePrototype.jsx` at `6bbae9f`; the description is narrowed to reporting where needed:
@@ -43,7 +45,9 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - `npm --prefix wealthscape-intelligence ci` — installed locked dependencies. npm reported two existing high-severity dependency advisories; dependency changes are outside this UI revision.
 - `npm --prefix wealthscape-intelligence run build` — pass.
 - `node --test wealthscape-intelligence/src/*.test.js` — 41 pass, 0 fail.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 42 pass, 0 fail after the customer-context card clarification.
 - `git diff --check` — pass.
+- 16 September follow-up: `git diff --check` — pass.
 - Integrated Browser: `http://127.0.0.1:5182/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.
 - Visual inspection at 1440×1000, 768×1024 and 390×844. Tablet/mobile document widths equal viewport widths. The map deliberately scrolls horizontally on small screens, with the region labelled accordingly.
 - Clicked all 15 map points: correct ID, scores and detail for each.

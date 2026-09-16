@@ -10,6 +10,7 @@ import {
   reportingCompetitors,
   reportingSources,
 } from "./reportingResearch.js";
+import { reportingClientEvidence } from "./reportingEvidence.js";
 
 test("reporting recommendations reach report review instead of returning to Strategy", () => {
   const outcome = {
@@ -129,6 +130,18 @@ test("Fidelity remains a public incumbent baseline with bounded reporting eviden
   }
   assert.equal(reference.layer, "reports");
   assert.equal(reference.sub.reportTab, "build");
+});
+test("customer evidence separates metric labels from strategy implications", () => {
+  assert.equal(reportingClientEvidence.length, 6);
+  for (const item of reportingClientEvidence) {
+    assert.ok(item.value, `${item.title}: metric value`);
+    assert.ok(item.metricLabel?.length > 20, `${item.title}: metric label`);
+    assert.ok(item.context?.length > 40, `${item.title}: context`);
+    assert.ok(item.implication?.length > 40, `${item.title}: implication`);
+  }
+  assert.match(reportingClientEvidence[0].title, /Advisor time/);
+  assert.match(reportingClientEvidence[0].metricLabel, /workweek/);
+  assert.match(reportingClientEvidence[0].context, /not a measured reporting workload/);
 });
 test("all reporting phases carry a complete handoff and stay independent of maintenance routes", () => {
   assert.equal(reportingJourney.length, 8);

@@ -173,57 +173,75 @@ export const reportingMarketEvidence = [
 ];
 export const reportingClientEvidence = [
   {
-    title: "Measure reporting effort directly",
+    title: "Advisor time is split across client work, preparation, and operations.",
     value: "41.4 hours",
+    metricLabel: "illustrative senior-advisor workweek",
+    context:
+      "The source describes a weekly time-allocation mix, not a measured reporting workload.",
     finding:
-      "Kitces 2022 uses a senior-advisor week split roughly 30% front office, 40% middle office and 30% back office. High-productivity advisors spend more time in the front office (39% versus 29%).",
+      "Kitces 2022 models a senior-advisor week at roughly 30% front office, 40% middle office and 30% back office. High-productivity advisors spend more time in the front office (39% versus 29%).",
     implication:
-      "This historical allocation does not isolate report-preparation hours or establish a causal productivity benefit.",
+      "Use this only to frame the customer context. The pilot still needs a direct baseline for report preparation time, review loops and rework.",
     sources: ["planning"],
   },
   {
-    title: "Standard workflows are an operating signal",
+    title: "Service work consumes measurable capacity before advice reaches the client.",
     value: "15 vs 11 hours",
+    metricLabel: "annual operations hours per client",
+    context:
+      "Operations burden shapes the advisor experience, even when the study does not isolate report preparation.",
     finding:
       "Schwab 2024: median annual operations hours per client are 15; top-performing firms report 11. Standardized workflows for most tasks grew from 26% to 51% overall (2020–2024), reaching 63% among top performers.",
     implication:
-      "Test blocker handling and ownership; no public source here isolates time spent preparing reports.",
+      "Measure whether reporting blockers, ownership gaps and rework are part of that operations burden before claiming savings.",
     sources: ["schwabStudy"],
   },
   {
-    title: "Delivery format deserves measurement",
+    title: "Clients increasingly expect digital delivery that is easy to act on.",
     value: "71% / 92%",
+    metricLabel: "electronic receipt / automatic delivery preference",
+    context:
+      "The customer context is delivery convenience and follow-through, not report-generation efficiency.",
     finding:
       "Broadridge/Forrester reports 71% receive statements electronically and 92% want automatic delivery. Modern-format click-through was 17% versus 4% for legacy across 17.9 million statements.",
     implication:
-      "Vendor-commissioned evidence supports testing usable delivery. Statement click-through is not a performance-report open-rate target.",
+      "Test whether report delivery, notification and follow-up are understandable and usable for the selected client segment.",
     sources: ["broadridge"],
   },
   {
-    title: "Preserve channel choice",
+    title: "Clients still want control over how sensitive financial documents arrive.",
     value: "87.7% / 36.2%",
+    metricLabel: "format choice / paper preference for sensitive documents",
+    context:
+      "The source points to channel preference and trust, not a single digital-only answer.",
     finding:
       "SEC Investor Advocate research: 87.7% want format choice; 36.2% prefer paper for documents containing personal financial information.",
     implication:
-      "Design consistent reports across permitted channels and retain the client’s delivery preference.",
+      "Carry the same approved report, disclosures and delivery status across permitted channels, with client preference retained.",
     sources: ["secDelivery"],
   },
   {
-    title: "Clients expect a complete relationship view",
+    title: "Clients want reports to reflect the full relationship, not one account sleeve.",
     value: "86% vs 40%",
+    metricLabel: "expect total-wealth view / say advisor provides it",
+    context:
+      "The customer gap is incomplete relationship context when the report or portal only shows part of the household.",
     finding:
       "Advisor360°/Coleman Parkes: 86% expect a total-wealth view, 40% say their advisor provides it, and 74% check the portal weekly.",
     implication:
-      "Test one permissioned household view. Vendor-commissioned, 2023 sample; no Wealthscape-specific gap was measured.",
+      "Validate one permissioned household reporting view and document which products, accounts and external assets are excluded.",
     sources: ["advisor360"],
   },
   {
-    title: "Communication matters to stated loyalty",
+    title: "Clients say communication quality influences loyalty and referrals.",
     value: "88% / 89%",
+    metricLabel: "stated retention / referral impact",
+    context:
+      "The source captures stated preference for communication, not observed retention lift from reporting changes.",
     finding:
       "YCharts 2024: clients with $500K+ say more frequent or personalized communication would affect staying (88%) and referring (89%).",
     implication:
-      "Interested-party stated preferences support testing relevance and follow-up; they do not prove retention lift.",
+      "Use reporting modernization to test clearer explanations and follow-up moments; do not present retention lift until measured.",
     sources: ["ycharts"],
   },
 ];
