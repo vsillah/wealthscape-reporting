@@ -98,3 +98,25 @@ The delivery composer is labeled as a simulation and does not send messages.
 - Build, all 37 tests and diff whitespace checks passed. No domain helper exists
   for this fixed synthetic series; visual QA covers the display change without
   adding a test that duplicates inline configuration. No live data or MP4.
+
+## Portfolio growth timeframe follow-up
+
+- Added native 30D / 60D / 90D / All time buttons with accessible names,
+  `aria-pressed` selection and a polite live summary. All time remains default.
+- A shared, dated synthetic history ends June 30, 2025. Windows start exactly
+  30/60/90 elapsed days earlier; shared dates always retain the same values.
+  Gain, visible dates, observations, time-axis ticks and padded financial axis
+  derive from the selected range. No zero baseline or return forecast.
+- All-time endpoints and gain remain $3,950,400 → $4,284,500 (+$334,100).
+  30/60/90-day gains are $54,500 / $84,500 / $174,500. Additional observations
+  supply coherent short-window movement. Numeric date spacing reflects elapsed
+  time; straight segments avoid invented spline movement between observations.
+- Two focused model tests cover exact window boundaries, shared history, gain
+  arithmetic, enclosing nonzero axes, unique financial labels and date ticks.
+- Build, all 39 tests and `git diff --check` passed. Integrated-browser checks
+  at 1280 and 390px exercised all four ranges, confirmed changed gains/ticks,
+  exactly one pressed button and no page overflow. Mobile Enter activated 60D.
+  Visually inspected desktop All time and mobile 30D/All time.
+- Overview only: Performance, AUA, generated reports and Customize charts are
+  intentionally unchanged. Profile URLs and report-template/document behavior
+  are untouched; the full report workflow was not replayed. No live data or MP4.

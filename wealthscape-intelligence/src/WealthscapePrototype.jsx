@@ -1,3 +1,4 @@
+import { portfolioRangeOptions, portfolioRanges, formatPortfolioDate, formatPortfolioAxis, formatPortfolioMoney } from "./portfolioGrowth.js";
 import ReportPreviewProvider, { useReportPreview } from "./ReportPreviewProvider.jsx";
 import { getGeneratedReport, reportTemplateId, reportContext, reportStageDetails, portalReportDocuments } from "./generatedReports.js";
 import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
@@ -1291,6 +1292,8 @@ function ReportingWorkspace({ bp, deepLink, profile, onNavigate, onSendToClient 
 
 // ─── LAYER 3: Client Portal ────────────────────────────────────────────────────
 function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
+  const [growthRange, setGrowthRange] = useState("all");
+  const growth = portfolioRanges[growthRange];
   const openReportPreview = useReportPreview();
   const { isMobile } = bp;
   const [tab, setTab] = useState("overview");
@@ -1332,16 +1335,24 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
               <MetricCard label="Next Review"        value="Jul 15"     delta="36 days away"   up={true}  accent={T.amber}  />
             </div>
             <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
-              <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:4 }}>Portfolio Growth</div>
-              <div style={{ fontSize:18, fontWeight:700, color:T.gray900, marginBottom:4 }}>+$334,100 since Jan 1</div>
-              <div style={{ fontSize:11, color:T.slate, marginBottom:12 }}>Portfolio value · Axis $3.8M–$4.4M</div>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", gap:12, flexWrap:"wrap", marginBottom:10 }}>
+                <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase" }}>Portfolio Growth</div>
+                <div role="group" aria-label="Portfolio growth timeframe" style={{ display:"flex", gap:3, padding:3, borderRadius:8, background:T.gray100 }}>
+                  {portfolioRangeOptions.map(option => <button key={option.id} type="button" aria-label={option.name} aria-pressed={growthRange===option.id} onClick={()=>setGrowthRange(option.id)} style={{ border:0, borderRadius:6, padding:"8px 10px", minHeight:36, fontSize:12, fontWeight:650, cursor:"pointer", background:growthRange===option.id?T.green:"transparent", color:growthRange===option.id?T.white:T.slate }}>{option.label}</button>)}
+                </div>
+              </div>
+              <div aria-live="polite" aria-atomic="true">
+                <div style={{ fontSize:18, fontWeight:700, color:T.gray900, marginBottom:4 }}>{growth.gain>=0?"+":"−"}{formatPortfolioMoney(Math.abs(growth.gain))} {growthRange==="all"?"since Jan 1":`over ${growth.days} days`}</div>
+                <div style={{ fontSize:11, color:T.slate, marginBottom:4 }}>{growth.period} · Synthetic history</div>
+                <div style={{ fontSize:11, color:T.slate, marginBottom:12 }}>Portfolio value · Axis {formatPortfolioAxis(growth.domain[0])}–{formatPortfolioAxis(growth.domain[1])}</div>
+              </div>
               <ResponsiveContainer width="100%" height={180}>
-                <LineChart data={[{month:"Jan",val:3950.4},{month:"Feb",val:4020},{month:"Mar",val:3980},{month:"Apr",val:4110},{month:"May",val:4200},{month:"Jun",val:4284.5}]} margin={{ top:8, right:12, bottom:0, left:0 }}>
+                <LineChart data={growth.data} margin={{ top:8, right:20, bottom:0, left:0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/>
-                  <XAxis dataKey="month" tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
-                  <YAxis domain={[3800,4400]} ticks={[3800,4000,4200,4400]} width={52} tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={v=>`$${(v/1000).toFixed(1)}M`}/>
-                  <Tooltip contentStyle={{ borderRadius:8, fontSize:12 }} formatter={v=>[(v*1000).toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}),"Portfolio value"]}/>
-                  <Line type="monotone" dataKey="val" stroke={T.emerald} strokeWidth={2.5} dot={{ r:3, fill:T.emerald, stroke:T.white, strokeWidth:1.5 }} activeDot={{ r:5 }}/>
+                  <XAxis dataKey="time" type="number" scale="time" domain={[growth.start,growth.end]} ticks={growth.dateTicks} tickFormatter={time=>growthRange==="all"?new Date(time).toLocaleDateString("en-US",{month:"short",timeZone:"UTC"}):formatPortfolioDate(time)} tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
+                  <YAxis domain={growth.domain} ticks={growth.ticks} width={56} tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={formatPortfolioAxis}/>
+                  <Tooltip contentStyle={{ borderRadius:8, fontSize:12 }} labelFormatter={formatPortfolioDate} formatter={v=>[formatPortfolioMoney(v),"Portfolio value"]}/>
+                  <Line type="linear" dataKey="value" stroke={T.emerald} strokeWidth={2.5} dot={{ r:3, fill:T.emerald, stroke:T.white, strokeWidth:1.5 }} activeDot={{ r:5 }} isAnimationActive={false}/>
                 </LineChart>
               </ResponsiveContainer>
             </div>
