@@ -10,6 +10,7 @@ import {
   reportingComparison,
   reportingComparisonColumns,
   reportingPlot,
+  reportingScore,
   reportingJourney,
 } from "./reportingResearch.js";
 
@@ -87,61 +88,6 @@ export function ReportingEvidenceGrid({ selected, onSelect }) {
   );
 }
 
-export function ReportingPriorityMap({ outcomes, selectedId, onSelect }) {
-  return (
-    <div className="rr-priority-map">
-      <p className="rr-evidence">
-        Qualitative hypothesis · not measured customer survey data. All five
-        outcomes share the same proposed position; spacing separates labels, not
-        scores.
-      </p>
-      <div className="rr-priority-axis">Importance · higher ↑</div>
-      <div className="rr-priority-quadrants">
-        <section
-          className="rr-priority-cluster"
-          aria-label="Underserved opportunity hypothesis"
-        >
-          <h3>Underserved opportunity</h3>
-          <p>Higher importance / lower satisfaction — to validate</p>
-          <div className="rr-priority-points">
-            {outcomes.map((item, index) => (
-              <button
-                key={item.id}
-                aria-pressed={selectedId === item.id}
-                aria-controls="reporting-outcome-detail"
-                data-muted={!!selectedId && selectedId !== item.id}
-                onClick={() => onSelect(item.id)}
-                title={item.text}
-              >
-                <span aria-hidden="true">{index + 1}</span>
-                {item.id}
-              </button>
-            ))}
-          </div>
-        </section>
-        <section>
-          <h3>Table stakes</h3>
-          <p>Higher importance / higher satisfaction</p>
-          <small>No outcome assigned</small>
-        </section>
-        <section>
-          <h3>Lower priority</h3>
-          <p>Lower importance / lower satisfaction</p>
-          <small>No outcome assigned</small>
-        </section>
-        <section>
-          <h3>Potential overinvestment</h3>
-          <p>Lower importance / higher satisfaction</p>
-          <small>No outcome assigned</small>
-        </section>
-      </div>
-      <div className="rr-priority-axis rr-priority-x">
-        Current satisfaction · lower → higher
-      </div>
-    </div>
-  );
-}
-
 export function ReportingCapabilityExplorer({ selected, onSelect }) {
   const [column, setColumn] = useState(0);
   return (
@@ -201,7 +147,7 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
   return (
     <div className="rr-opportunity-map">
       <div className="rr-map-toolbar">
-        <span className="rr-badge">Directional strategy scores</span>
+        <span className="rr-badge">Management-estimate scores</span>
         <label className="am-field">
           Map scale
           <select
@@ -247,7 +193,20 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
               </>
             ) : (
               <>
-                <rect x="70" y="65" width="480" height="300" fill="#e8f5ee" />
+                <rect x="70" y="65" width="480" height="300" fill="#eef0ff" />
+                <rect
+                  x="70"
+                  y="65"
+                  width={Math.max(
+                    0,
+                    Math.min(
+                      480,
+                      ((5 - bounds.xMin) / (bounds.xMax - bounds.xMin)) * 480,
+                    ),
+                  )}
+                  height="300"
+                  fill="#e8f5ee"
+                />
                 <text x="70" y="48">
                   Expanded view of directional outcome cluster
                 </text>
@@ -265,10 +224,10 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
               </g>
             ))}
             <text x="310" y="412" textAnchor="middle">
-              Current satisfaction →
+              Satisfaction proxy →
             </text>
             <text transform="translate(18 215) rotate(-90)" textAnchor="middle">
-              Importance →
+              Importance proxy →
             </text>
             {points.map((point) => (
               <g
@@ -291,7 +250,7 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
             return (
               <button
                 key={point.id}
-                className="rr-scatter-point"
+                className={`rr-scatter-point rr-basis-${outcome.basis}`}
                 style={{
                   left: `${point.label.x / 6}%`,
                   top: `${point.label.y / 4.2}%`,
@@ -299,22 +258,35 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
                 aria-pressed={selectedId === point.id}
                 data-muted={!!selectedId && selectedId !== point.id}
                 aria-controls="reporting-outcome-detail"
-                aria-label={`Select ${point.id}: ${outcome.text}. Importance ${outcome.imp}, satisfaction ${outcome.sat}`}
+                aria-label={`Select ${point.id}: ${outcome.text}. Importance ${outcome.imp}, satisfaction ${outcome.sat}, opportunity ${reportingScore(outcome).toFixed(1)}. ${outcome.basis} input; management estimate.`}
                 title={`${point.id} · ${point.quadrant}`}
                 onClick={() => onSelect(point.id)}
               >
-                {index + 1}
+                {point.id.slice(1)}
               </button>
             );
           })}
         </div>
       </div>
       <p className="rr-evidence">
-        Both axes use the existing 0–10 synthesis ratings. The 5/10 quadrant
-        split is a design convention, not a validated threshold. Numbered labels
-        are separated for readability; small dots and leader lines retain the
-        exact values.
+        Both axes use 0–10 management estimates; opportunity scores use 0–20.
+        The 5/10 quadrant split is a design convention, not a validated
+        threshold. Numbered labels are separated for readability; small dots and
+        leader lines retain the exact values.
       </p>
+      <div
+        className="rr-outcome-legend"
+        aria-label="Reporting score provenance legend"
+      >
+        <span>
+          <i className="rr-legend-derived" /> Derived · earlier strategy ratings
+          (9)
+        </span>
+        <span>
+          <i className="rr-legend-inferred" /> Inferred · new assumptions (6)
+        </span>
+        <span>Sourced customer measurements · none</span>
+      </div>
       <div className="rr-map-key" aria-label="Reporting map outcome key">
         {outcomes.map((outcome, index) => (
           <button
@@ -322,7 +294,7 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
             aria-pressed={selectedId === outcome.id}
             onClick={() => onSelect(outcome.id)}
           >
-            {index + 1} · {outcome.id}
+            {outcome.id} · {outcome.text}
           </button>
         ))}
       </div>

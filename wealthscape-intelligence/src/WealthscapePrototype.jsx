@@ -1,3 +1,4 @@
+import { reportingOutcomes } from "./reportingOutcomes.js";
 import { portfolioRangeOptions, portfolioRanges, formatPortfolioDate, formatPortfolioAxis, formatPortfolioMoney } from "./portfolioGrowth.js";
 import ReportPreviewProvider, { useReportPreview } from "./ReportPreviewProvider.jsx";
 import { getGeneratedReport, reportTemplateId, reportContext, reportStageDetails, portalReportDocuments } from "./generatedReports.js";
@@ -2501,7 +2502,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : "Governed client report production: connect household context, preparation, approval and delivery. Use public evidence and illustrative pilots on synthetic data to define the next measured validation gate.";
   const trackStats = researchTrack === "lifecycle"
     ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"8",label:"Maintenance functions"},{value:"3",label:"Stakeholder groups"},{value:"4",label:"Investment priorities"}]
-    : [{value:new Set(reportingCompetitors.map(item => item.name)).size,label:"Vendors reviewed"},{value:5,label:"Proposed outcomes"},{value:4,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
+    : [{value:new Set(reportingCompetitors.map(item => item.name)).size,label:"Vendors reviewed"},{value:reportingOutcomes.length,label:"Proposed outcomes"},{value:4,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>
