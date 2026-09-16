@@ -1333,16 +1333,16 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
             </div>
             <div style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:12, padding:"16px 18px" }}>
               <div style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.08em", textTransform:"uppercase", marginBottom:4 }}>Portfolio Growth</div>
-              <div style={{ fontSize:18, fontWeight:700, color:T.gray900, marginBottom:12 }}>+$334,100 since Jan 1</div>
-              <ResponsiveContainer width="100%" height={160}>
-                <AreaChart data={[{month:"Jan",val:3950},{month:"Feb",val:4020},{month:"Mar",val:3980},{month:"Apr",val:4110},{month:"May",val:4200},{month:"Jun",val:4284}]}>
-                  <defs><linearGradient id="clientGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={T.emerald} stopOpacity={0.2}/><stop offset="95%" stopColor={T.emerald} stopOpacity={0}/></linearGradient></defs>
+              <div style={{ fontSize:18, fontWeight:700, color:T.gray900, marginBottom:4 }}>+$334,100 since Jan 1</div>
+              <div style={{ fontSize:11, color:T.slate, marginBottom:12 }}>Portfolio value · Axis $3.8M–$4.4M</div>
+              <ResponsiveContainer width="100%" height={180}>
+                <LineChart data={[{month:"Jan",val:3950.4},{month:"Feb",val:4020},{month:"Mar",val:3980},{month:"Apr",val:4110},{month:"May",val:4200},{month:"Jun",val:4284.5}]} margin={{ top:8, right:12, bottom:0, left:0 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={T.gray100}/>
                   <XAxis dataKey="month" tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false}/>
-                  <YAxis tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={v=>`$${v}K`}/>
-                  <Tooltip contentStyle={{ borderRadius:8, fontSize:12 }} formatter={v=>[`$${v}K`,"Value"]}/>
-                  <Area type="monotone" dataKey="val" stroke={T.emerald} strokeWidth={2.5} fill="url(#clientGrad)"/>
-                </AreaChart>
+                  <YAxis domain={[3800,4400]} ticks={[3800,4000,4200,4400]} width={52} tick={{ fontSize:10, fill:T.slate }} axisLine={false} tickLine={false} tickFormatter={v=>`$${(v/1000).toFixed(1)}M`}/>
+                  <Tooltip contentStyle={{ borderRadius:8, fontSize:12 }} formatter={v=>[(v*1000).toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}),"Portfolio value"]}/>
+                  <Line type="monotone" dataKey="val" stroke={T.emerald} strokeWidth={2.5} dot={{ r:3, fill:T.emerald, stroke:T.white, strokeWidth:1.5 }} activeDot={{ r:5 }}/>
+                </LineChart>
               </ResponsiveContainer>
             </div>
             <div style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"1fr 2fr", gap:16 }}>

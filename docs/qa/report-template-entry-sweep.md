@@ -78,3 +78,23 @@ The delivery composer is labeled as a simulation and does not send messages.
 - Source inspection covered RIA Morning Brief Report and case-specific account
   maintenance links. Their unrelated full scenario/prerequisite workflows were
   not rerun in this bounded template follow-up.
+
+## Client Portal growth-axis follow-up
+
+- Replace the zero-based area chart with a line chart spanning $3.8M–$4.4M,
+  with $0.2M ticks and an explicit axis-range label. The range leaves padding
+  around the $3.95M–$4.28M observations; the line avoids a filled-area implication
+  when zero is outside the displayed range. Tooltips show whole-dollar values.
+- Align the synthetic January and June endpoints to $3,950,400 and $4,284,500
+  so the chart agrees with the displayed +$334,100 change and portfolio total.
+- Integrated-browser visual review passed at 1280, 768 and 390px. All six months
+  and four million-dollar ticks are visible; the March dip and subsequent rise
+  are clear. Mobile document width equals viewport width (390px).
+- Opened Client Portal Performance: percentage bars retain their appropriate
+  zero baseline. Source inspection also covered book-level AUA and report/customize
+  performance charts; these distinct metrics and the inactive proposal projection
+  branch remain unchanged. Report templates, profile routing and preview flows
+  are unchanged and were not exhaustively replayed for this axis-only follow-up.
+- Build, all 37 tests and diff whitespace checks passed. No domain helper exists
+  for this fixed synthetic series; visual QA covers the display change without
+  adding a test that duplicates inline configuration. No live data or MP4.
