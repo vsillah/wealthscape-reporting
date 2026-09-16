@@ -747,9 +747,10 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   </button>
                   {selected ? (
                     <>
-                      <h3>
+                      <p className="rr-outcome-theme-label">
                         {selected.id} · {selected.theme}
-                      </h3>
+                      </p>
+                      <h3>{selected.text}</h3>
                       <p>{selected.problem}</p>
                       <dl className="rr-outcome-values">
                         <div>
