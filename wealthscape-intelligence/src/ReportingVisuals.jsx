@@ -87,6 +87,114 @@ export function ReportingEvidenceGrid({ selected, onSelect }) {
   );
 }
 
+export function ReportingPriorityMap({ outcomes, selectedId, onSelect }) {
+  return (
+    <div className="rr-priority-map">
+      <p className="rr-evidence">
+        Qualitative hypothesis · not measured customer survey data. All five
+        outcomes share the same proposed position; spacing separates labels, not
+        scores.
+      </p>
+      <div className="rr-priority-axis">Importance · higher ↑</div>
+      <div className="rr-priority-quadrants">
+        <section
+          className="rr-priority-cluster"
+          aria-label="Underserved opportunity hypothesis"
+        >
+          <h3>Underserved opportunity</h3>
+          <p>Higher importance / lower satisfaction — to validate</p>
+          <div className="rr-priority-points">
+            {outcomes.map((item, index) => (
+              <button
+                key={item.id}
+                aria-pressed={selectedId === item.id}
+                aria-controls="reporting-outcome-detail"
+                data-muted={!!selectedId && selectedId !== item.id}
+                onClick={() => onSelect(item.id)}
+                title={item.text}
+              >
+                <span aria-hidden="true">{index + 1}</span>
+                {item.id}
+              </button>
+            ))}
+          </div>
+        </section>
+        <section>
+          <h3>Table stakes</h3>
+          <p>Higher importance / higher satisfaction</p>
+          <small>No outcome assigned</small>
+        </section>
+        <section>
+          <h3>Lower priority</h3>
+          <p>Lower importance / lower satisfaction</p>
+          <small>No outcome assigned</small>
+        </section>
+        <section>
+          <h3>Potential overinvestment</h3>
+          <p>Lower importance / higher satisfaction</p>
+          <small>No outcome assigned</small>
+        </section>
+      </div>
+      <div className="rr-priority-axis rr-priority-x">
+        Current satisfaction · lower → higher
+      </div>
+    </div>
+  );
+}
+
+export function ReportingCapabilityExplorer({ selected, onSelect }) {
+  const [column, setColumn] = useState(0);
+  return (
+    <div className="rr-capability-explorer">
+      <label className="am-field rr-select">
+        Explore a capability
+        <select
+          value={column}
+          onChange={(event) => setColumn(Number(event.target.value))}
+        >
+          {reportingComparisonColumns.map((label, i) => (
+            <option key={label} value={i}>
+              {label}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="rr-evidence">
+        Public-source evidence, not a product audit or quality ranking. “Not
+        assessed” is an evidence boundary, not a missing capability.
+      </p>
+      <div className="rr-grid rr-three">
+        {reportingComparison.map((vendor, row) => {
+          const cell = vendor.cells[column];
+          const Icon = cell.described ? CheckCircle2 : CircleHelp;
+          return (
+            <button
+              key={vendor.name}
+              className="rr-choice"
+              aria-pressed={
+                selected?.row === row && selected?.column === column
+              }
+              aria-controls="reporting-vendor-detail"
+              onClick={() => onSelect(row, column)}
+            >
+              <span className="rr-icon">
+                <Icon size={22} aria-hidden="true" />
+              </span>
+              <strong>{vendor.name}</strong>
+              <span>
+                {cell.described ? "Described in source" : "Not assessed"}
+              </span>
+              <span className="rr-link">
+                Inspect evidence <ArrowRight size={14} />
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
   const [zoom, setZoom] = useState(false);
   const { bounds, points } = reportingPlot(outcomes, zoom);

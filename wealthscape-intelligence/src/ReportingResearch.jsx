@@ -1,4 +1,6 @@
-import StrategyExecutiveSummary, { StrategySectionFinding } from "./StrategyExecutiveSummary.jsx";
+import StrategyExecutiveSummary, {
+  StrategySectionFinding,
+} from "./StrategyExecutiveSummary.jsx";
 import {
   reportingMarketEvidence,
   reportingClientEvidence,
@@ -34,8 +36,44 @@ import {
 import "./ReportingResearch.css";
 import {
   ReportingEvidenceGrid,
+  ReportingPriorityMap,
+  ReportingCapabilityExplorer,
   ReportingJourney,
 } from "./ReportingVisuals.jsx";
+
+// These reporting surfaces illustrate only the coverage stated here.
+const outcomeDemos = {
+  Unify: {
+    tab: "build",
+    label: "assembly",
+    coverage:
+      "Build report offers synthetic client and template selection; it does not reconcile the complete cross-product relationship.",
+  },
+  Explain: {
+    tab: "customize",
+    label: "customization",
+    coverage:
+      "Customize report exposes synthetic presentation and narrative context; approved language and enforced review remain proposed.",
+  },
+  Unblock: {
+    tab: "generate",
+    label: "pipeline",
+    coverage:
+      "The synthetic generation pipeline illustrates stage progress; live reporting holds and source-data recovery remain proposed.",
+  },
+  Route: {
+    tab: "generate",
+    label: "pipeline",
+    coverage:
+      "The synthetic generation pipeline illustrates reporting stages; live task ownership, handoffs and escalation remain proposed.",
+  },
+  Prove: {
+    tab: "generate",
+    label: "pipeline",
+    coverage:
+      "The synthetic generation pipeline illustrates stages; retained approved versions and proof of delivery are not implemented.",
+  },
+};
 
 const sections = [
   ["thesis", "Leadership decision", Lightbulb],
@@ -102,10 +140,11 @@ export default function ReportingResearch({ profile, onNavigate }) {
   const strategy = profile.strategy;
   const [active, setActive] = useState(0);
   const [selectedId, setSelectedId] = useState(null);
+  const [outcomeView, setOutcomeView] = useState("map");
   const [competitor, setCompetitor] = useState(0);
   const [capability, setCapability] = useState(0);
   const [step, setStep] = useState(null);
-  const [competitorView, setCompetitorView] = useState("grid");
+  const [competitorView, setCompetitorView] = useState("explorer");
   const [comparisonCell, setComparisonCell] = useState(null);
   const journeyPanel = useRef(null);
   const vendorPanel = useRef(null);
@@ -137,6 +176,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
   const selected = reportingPriorityOutcomes.find(
     (item) => item.id === selectedId,
   );
+  const selectedDemo = selected ? outcomeDemos[selected.id] : null;
   const vendor = reportingCompetitors[competitor];
   const selectedCapability = strategy.capabilities[capability];
   const jump = (index) => {
@@ -218,7 +258,13 @@ export default function ReportingResearch({ profile, onNavigate }) {
           </button>
         </div>
       </nav>
-      <StrategyExecutiveSummary track="reporting" sections={sections.map(([id, label]) => ({ id, label }))} onJump={id => jump(sections.findIndex(([sectionId]) => sectionId === id))} />
+      <StrategyExecutiveSummary
+        track="reporting"
+        sections={sections.map(([id, label]) => ({ id, label }))}
+        onJump={(id) =>
+          jump(sections.findIndex(([sectionId]) => sectionId === id))
+        }
+      />
       {sections.map(([id, label, Icon], index) => (
         <section
           className="mr-panel rr-panel"
@@ -299,6 +345,12 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 aria-label="Competitor presentation"
               >
                 <button
+                  aria-pressed={competitorView === "explorer"}
+                  onClick={() => setCompetitorView("explorer")}
+                >
+                  Explore capabilities
+                </button>
+                <button
                   aria-pressed={competitorView === "grid"}
                   onClick={() => setCompetitorView("grid")}
                 >
@@ -311,7 +363,12 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   Reference cards
                 </button>
               </div>
-              {competitorView === "grid" ? (
+              {competitorView === "explorer" ? (
+                <ReportingCapabilityExplorer
+                  selected={comparisonCell}
+                  onSelect={selectComparison}
+                />
+              ) : competitorView === "grid" ? (
                 <ReportingEvidenceGrid
                   selected={comparisonCell}
                   onSelect={selectComparison}
@@ -538,37 +595,80 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 estimates and strategic hypotheses, not survey scores. No
                 numeric opportunity score is computed.
               </p>
-              <div className="rr-thesis">
-                <h3>Proposed underserved opportunity</h3>
-                <p>
-                  High importance and low satisfaction are hypotheses at outcome
-                  level. Category-level Kitces ratings do not measure these five
-                  jobs. Validate each with the selected profile.
-                </p>
-              </div>
+              <label className="am-field rr-select">
+                Explore an outcome
+                <select
+                  value={selectedId || "all"}
+                  onChange={(event) =>
+                    selectOutcome(
+                      event.target.value === "all" ? null : event.target.value,
+                    )
+                  }
+                >
+                  <option value="all">All outcomes</option>
+                  {reportingPriorityOutcomes.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.id} · {item.text}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <div
-                className="rr-grid"
+                className="am-tabs rr-view-switch"
                 role="group"
-                aria-label="Reporting outcome priorities"
+                aria-label="Reporting outcome presentation"
               >
-                {reportingPriorityOutcomes.map((item, i) => (
-                  <button
-                    key={item.id}
-                    className="rr-choice"
-                    aria-pressed={selectedId === item.id}
-                    aria-controls="reporting-outcome-detail"
-                    onClick={() => selectOutcome(item.id)}
-                  >
-                    <strong>
-                      {i + 1}. {item.id}
-                    </strong>
-                    <span>{item.text}</span>
-                    <span className="rr-link">
-                      Explore proposal <ArrowRight size={14} />
-                    </span>
-                  </button>
-                ))}
+                <button
+                  aria-pressed={outcomeView === "map"}
+                  onClick={() => setOutcomeView("map")}
+                >
+                  Opportunity map
+                </button>
+                <button
+                  aria-pressed={outcomeView === "ranked"}
+                  onClick={() => setOutcomeView("ranked")}
+                >
+                  Ranked outcomes
+                </button>
+                <button
+                  aria-pressed={!selectedId}
+                  onClick={() => selectOutcome(null)}
+                >
+                  All outcomes
+                </button>
               </div>
+              {outcomeView === "map" ? (
+                <ReportingPriorityMap
+                  outcomes={reportingPriorityOutcomes}
+                  selectedId={selectedId}
+                  onSelect={selectOutcome}
+                />
+              ) : (
+                <div
+                  className="rr-grid"
+                  role="group"
+                  aria-label="Reporting outcome priorities"
+                >
+                  {reportingPriorityOutcomes.map((item, i) => (
+                    <button
+                      key={item.id}
+                      className="rr-choice"
+                      aria-pressed={selectedId === item.id}
+                      aria-controls="reporting-outcome-detail"
+                      onClick={() => selectOutcome(item.id)}
+                    >
+                      <strong>
+                        {i + 1}. {item.id}
+                      </strong>
+                      <span>{item.text}</span>
+                      <span className="rr-link">
+                        Management priority · explore proposal{" "}
+                        <ArrowRight size={14} />
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
               <article
                 className="rr-detail"
                 id="reporting-outcome-detail"
@@ -580,9 +680,35 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   <>
                     <h3>{selected.id}</h3>
                     <p>{selected.text}</p>
-                    <p>
-                      Proposed move: {reportingMoves[selected.move - 1].title}
-                    </p>
+                    <div className="rr-grid">
+                      <Detail title="Importance / satisfaction">
+                        Higher importance and lower satisfaction are management
+                        hypotheses, not measured ratings. Validate with the
+                        selected profile.
+                      </Detail>
+                      <Detail title="Opportunity context">
+                        Proposed underserved outcome. Priority{" "}
+                        {reportingPriorityOutcomes.indexOf(selected) + 1} of 5
+                        reflects management ordering; no numeric opportunity
+                        score is computed.
+                      </Detail>
+                      <Detail title="Proposed UX response">
+                        {reportingMoves[selected.move - 1].body}
+                      </Detail>
+                      <Detail title="Implemented demo coverage">
+                        {selectedDemo.coverage}
+                      </Detail>
+                    </div>
+                    <Action
+                      onNavigate={onNavigate}
+                      layer="reports"
+                      sub={{
+                        reportTab: selectedDemo.tab,
+                        profileId: profile.id,
+                      }}
+                    >
+                      Inspect reporting {selectedDemo.label}
+                    </Action>
                     <button
                       className="rr-action"
                       onClick={() =>
@@ -601,8 +727,9 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   <>
                     <h3>Explore the five outcomes</h3>
                     <p>
-                      Select an outcome to follow its recommendation,
-                      illustrative pilot and production gate.
+                      All five outcomes have equal emphasis. Select a map point,
+                      ranked outcome or dropdown option to follow its
+                      recommendation, illustrative pilot and production gate.
                     </p>
                   </>
                 )}

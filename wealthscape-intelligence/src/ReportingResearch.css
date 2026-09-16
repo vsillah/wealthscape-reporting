@@ -785,3 +785,92 @@
 .rr-sourcing a {
   overflow-wrap: anywhere;
 }
+
+.rr-priority-map {
+  margin: 20px 0;
+}
+.rr-priority-axis {
+  color: #455e6c;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 12px 0;
+}
+.rr-priority-x {
+  text-align: right;
+}
+.rr-priority-quadrants {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: #ccd9d2;
+  border: 1px solid #ccd9d2;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.rr-priority-quadrants section {
+  padding: 22px;
+  background: #f5f7f9;
+  min-width: 0;
+}
+.rr-priority-quadrants section.rr-priority-cluster {
+  background: #e8f5ee;
+}
+.rr-priority-quadrants h3 {
+  font-size: 15px;
+  margin: 0 0 8px;
+}
+.rr-priority-quadrants p,
+.rr-priority-quadrants small {
+  font-size: 12px;
+  color: #455e6c;
+}
+.rr-priority-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.rr-priority-points button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 7px 12px;
+  border-radius: 24px;
+  background: white;
+  border: 1px solid #769a86;
+  color: #173f2a;
+}
+.rr-priority-points button span {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #246244;
+  color: white;
+}
+.rr-priority-points button[aria-pressed="true"] {
+  outline: 3px solid #8974cd;
+  background: #f1ecff;
+}
+.rr-priority-points button[data-muted="true"] {
+  border-style: dashed;
+  background: #f4f8f5;
+}
+.rr-view-switch {
+  flex-wrap: wrap;
+}
+@media (max-width: 560px) {
+  .rr-priority-quadrants section {
+    padding: 12px;
+  }
+  .rr-priority-quadrants h3 {
+    font-size: 13px;
+  }
+  .rr-priority-points button {
+    width: 100%;
+    padding: 6px;
+    font-size: 12px;
+  }
+}
