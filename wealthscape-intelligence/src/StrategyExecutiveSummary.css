@@ -15,14 +15,20 @@
 .strategy-executive-conclusion p { max-width: 950px; color: #475569; }
 .strategy-executive .strategy-executive-label { font-size: 16px; margin: 28px 0 8px; }
 .strategy-executive-findings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; }
-.strategy-executive .strategy-executive-finding { display: grid; grid-template-columns: 26px minmax(0, 1fr) 17px; align-items: start; gap: 10px; padding: 17px 0; border: 0; border-bottom: 1px solid #e5eaf0; background: transparent; color: inherit; font: inherit; font-weight: 400; border-radius: 0; box-shadow: none; text-align: left; cursor: pointer; min-width: 0; }
-.strategy-executive-finding:hover { background: #f5f9f7; }
-.strategy-executive-finding:focus-visible { outline: 2px solid #0b5d2e; outline-offset: 3px; border-radius: 4px; }
+.strategy-executive .strategy-executive-finding { display: grid; grid-template-columns: 26px minmax(0, 1fr); align-items: start; gap: 10px; padding: 17px 0; border: 0; border-bottom: 1px solid #e5eaf0; background: transparent; color: inherit; font: inherit; font-weight: 400; border-radius: 0; box-shadow: none; text-align: left; min-width: 0; }
+.strategy-executive-finding button:focus-visible { outline: 2px solid #0b5d2e; outline-offset: 3px; border-radius: 4px; }
 .strategy-executive-number { font-size: 12px; color: #1a7a40; font-weight: 750; line-height: 21px; }
 .strategy-executive-section-label { display: block; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #64748b; }
 .strategy-executive-finding strong { font-size: 14px; line-height: 1.5; }
-.strategy-executive-finding-text { display: block; margin-top: 5px; font-size: 13px; line-height: 1.6; color: #475569; }
-.strategy-executive-finding > svg { color: #1a7a40; margin-top: 3px; }
+.strategy-executive-finding-body { min-width: 0; }
+.strategy-executive-finding-actions { display: flex; align-items: center; gap: 6px 16px; flex-wrap: wrap; margin-top: 10px; }
+.strategy-executive .strategy-executive-finding-actions button { display: inline-flex; align-items: center; justify-content: flex-start; gap: 5px; min-height: 36px; padding: 4px 0; border: 0; border-radius: 4px; background: transparent; box-shadow: none; font-size: 12px; font-weight: 600; cursor: pointer; }
+.strategy-executive .strategy-executive-disclosure { color: #475569; }
+.strategy-executive .strategy-executive-jump { color: #0b5d2e; }
+.strategy-executive-finding-actions button:hover { text-decoration: underline; text-underline-offset: 3px; }
+.strategy-executive-disclosure[aria-expanded="true"] svg { transform: rotate(180deg); }
+.strategy-executive-finding-detail { margin-top: 8px; padding: 12px 14px; border-left: 2px solid #bad8c6; border-radius: 0 6px 6px 0; background: #f5f9f7; font-size: 13px; line-height: 1.65; color: #475569; }
+.strategy-executive-finding-detail[hidden] { display: none; }
 .strategy-executive-decisions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-top: 28px; padding-top: 26px; border-top: 1px solid #dbe4e9; }
 .strategy-executive-decisions h3 { display: flex; align-items: center; gap: 9px; font-size: 17px; margin: 0 0 14px; }
 .strategy-executive-decisions h3 svg { flex-shrink: 0; color: #1a7a40; }

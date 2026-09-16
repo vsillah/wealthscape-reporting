@@ -159,3 +159,22 @@ The delivery composer is labeled as a simulation and does not send messages.
   both tracks at 1280/390px; no horizontal overflow or clipped finding text.
 - No detailed strategy sections, source links, report templates or Client Portal
   features changed. No new helper/test module, live-data smoke or MP4.
+
+## Plain-language findings and explanation drawers
+
+- Replaced abstract finding headlines on both tracks with explicit account-change
+  and client-reporting conclusions. Headlines now name the affected work, such as
+  incomplete requests, report data, reviewer approval and delivery controls.
+- Findings show number, section label and headline by default. Separate native
+  buttons provide Why it matters (local disclosure) and Read section (existing
+  jump handler). Each hidden explanation has a stable ID connected through
+  aria-controls; aria-expanded reflects its state. No nested interactive controls.
+- Browser checks at 1280px exercised all 19 drawers open/closed, verified visible
+  explanations and unchanged section selection during disclosure, and then tested
+  all 19 section jumps. Enter/Space toggled a drawer, with focus retained on the
+  button. Both tracks' expanded mobile layouts were visually reviewed at 390px
+  without page overflow; text remains within the card.
+- Build, all 39 tests and diff checks passed. The new local disclosure component
+  introduces no business/data helper; focused browser checks cover its behavior.
+  No report/portal functionality or detailed strategy content changed. No live
+  workflow/customer-data smoke or MP4 was recorded.

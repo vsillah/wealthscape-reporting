@@ -1,4 +1,5 @@
-import { ArrowUpRight, ClipboardCheck, Compass, Flag } from "lucide-react";
+import { useState } from "react";
+import { ArrowUpRight, ChevronDown, ClipboardCheck, Compass, Flag } from "lucide-react";
 import "./StrategyExecutiveSummary.css";
 
 const summaries = {
@@ -6,14 +7,14 @@ const summaries = {
     conclusion: "Prioritize shared validation and exception resolution, then extend to household authority.",
     rationale: "A maintenance request crosses account scope, authority, evidence and review. A common servicing path is the strongest starting investment hypothesis: reduce incomplete submissions, make ownership visible and confirm the change through to completion. Fund discovery and a bounded pilot before committing to a broader rollout.",
     findings: {
-      1: ["Platform ratings cannot establish the maintenance business case.", "The research measures broader platform experience; size this investment with internal servicing volumes, failure rates and handling costs."],
-      2: ["Public feature lists cannot establish end-to-end maintenance parity.", "Authority types, account states and recovery paths determine whether a change can finish; test those boundaries before declaring a competitive gap."],
-      3: ["The people doing the work remain the largest research blind spot.", "Advisor surveys and forum themes provide indirect evidence. Observe service associates and home-office reviewers before committing to requirements."],
-      4: ["Submission quality is the first investment hypothesis.", "Re-entry, incomplete information and exception resolution lead the directional priorities; validate their frequency and burden before funding automation."],
-      5: ["Completion depends on accountable handoffs from request to confirmation.", "Authority, review and exception recovery cross teams. Give each transition a named owner and evidence that the requested change took effect."],
-      0: ["Validation must precede household authority, even when authority scores higher.", "Multi-account actions inherit submission and exception risks; sequence the roadmap by this dependency rather than score alone."],
-      7: ["One shared validation pilot can test the case for broader investment.", "Start with a bounded maintenance function and compare first-pass completion and rework with the baseline before expanding authority or servicing scope."],
-      8: ["A sourcing decision is premature until internal reuse and integration costs are known.", "Inventory existing validation, identity and audit services; build or partner only for confirmed gaps with an accountable support owner."],
+      1: ["Request volumes and handling costs must justify maintenance funding.", "The research measures broader platform experience; size this investment with internal servicing volumes, failure rates and handling costs."],
+      2: ["Public feature lists leave complex account changes unverified.", "Authority types, account states and recovery paths determine whether a change can finish; test those boundaries before declaring a competitive gap."],
+      3: ["Interviews with service associates and reviewers are still missing.", "Advisor surveys and forum themes provide indirect evidence. Observe service associates and home-office reviewers before committing to requirements."],
+      4: ["Preventing incomplete requests is the first improvement to test.", "Re-entry, incomplete information and exception resolution lead the directional priorities; validate their frequency and burden before funding automation."],
+      5: ["Every account-change handoff needs an owner and proof of completion.", "Authority, review and exception recovery cross teams. Give each transition a named owner and evidence that the requested change took effect."],
+      0: ["Check request completeness before expanding changes across household accounts.", "Household authority ranks higher on the scorecard, but a change across several accounts can repeat the same missing-information error. Establish shared request checks and recovery steps first."],
+      7: ["A pilot for one request type should prove fewer errors before expansion.", "Start with a bounded maintenance function and compare first-pass completion and rework with the baseline before expanding authority or servicing scope."],
+      8: ["Assess existing services and connection costs before choosing what to build or buy.", "Inventory existing validation, identity and audit services; build or partner only for confirmed gaps with an accountable support owner."],
     },
     assumptions: [
       ["Demand and servicing model", "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. Fidelity’s organizational complexity and handoffs may change the priority order."],
@@ -31,17 +32,17 @@ const summaries = {
     conclusion: "Prioritize governed client report production, with traceable data and accountable review from assembly to delivery.",
     rationale: "Reporting value depends on the work around the document: reconciling source data, resolving blockers, explaining results and obtaining approval. Start with a bounded reporting workflow and prove that it reduces preparation and review effort while preserving the evidence behind every client report.",
     findings: {
-      thesis: ["The investment case rests on reducing reporting work while preserving control.", "Test assembly through delivery in one bounded workflow; broader funding should depend on measured effort reduction and retained review evidence."],
-      market: ["Generation alone is an insufficient basis for differentiation.", "The reviewed vendors already describe assembly, narrative and delivery capabilities; focus the competitive thesis on reliable coordination and verify vendor claims."],
-      capabilities: ["The strategic gap to test lies between data, permissions and approval.", "Feature coverage cannot prove a report is reconciled and ready to release. Assess those handoffs against Fidelity’s actual systems before choosing a solution."],
-      customer: ["One reporting workflow will not fit every stakeholder’s job.", "Advisors need preparation efficiency, clients need understandable results and home office needs review evidence; validate the tradeoffs within a defined segment."],
-      outcomes: ["Reliable execution is the common thread across the five proposed outcomes.", "Unify context, Explain results, Unblock work, Route ownership and Prove completion; validate which failure creates the greatest burden before ranking investment."],
-      job: ["Document creation is only one step in the reporting job.", "Source preparation, review, delivery and follow-up determine completion; carry evidence and ownership through the whole path to address avoidable rework."],
-      recommendations: ["Trusted data and visible blockers must come before scaled report release.", "Sequence the profile-specific recommendations around those prerequisites, then test accountable routing and controlled delivery in the pilot."],
-      sourcing: ["Integration economics should determine the sourcing choice.", "Reuse suitable data and control services; compare specialist partners on reconciliation, permissions, support burden and total cost-to-integrate."],
-      governance: ["Release readiness requires verified evidence and an accountable approval path.", "Make applicable disclosures, review and retention part of the workflow design; compliance and security must confirm the controls before operational use."],
-      measurement: ["The strategy has no defensible scale case until the pilot beats a measured baseline.", "Track preparation time, rework and audit retrieval alongside support cost; agree success and stop thresholds before the pilot starts."],
-      sources: ["External evidence supports a direction, not a Fidelity implementation mandate.", "Public research and synthetic examples frame hypotheses; internal discovery must resolve applicability, feasibility and economics before final guidance."],
+      thesis: ["Reporting investment should reduce preparation work without weakening review.", "Test assembly through delivery in one bounded workflow; broader funding should depend on measured effort reduction and retained review evidence."],
+      market: ["AI-drafted reports need trusted data, review and delivery controls.", "Vendors already advertise report drafting and delivery. Test whether their reports use reconciled data, receive the right review and reach the intended client; verify each claim before selecting a tool."],
+      capabilities: ["Test whether report data, access checks and approvals work together.", "A product feature list cannot prove that report values reconcile to their sources or that only authorized staff can approve them. Test those connections against Fidelity’s systems."],
+      customer: ["Advisors, clients and reviewers need different things from the same report.", "Advisors need preparation efficiency, clients need understandable results and home office needs review evidence; validate the tradeoffs within a defined segment."],
+      outcomes: ["Reports must explain the household and make unfinished work visible.", "Unify context, Explain results, Unblock work, Route ownership and Prove completion; validate which failure creates the greatest burden before ranking investment."],
+      job: ["A finished report file still needs approval, delivery and follow-up.", "Source preparation, review, delivery and follow-up determine completion; carry evidence and ownership through the whole path to address avoidable rework."],
+      recommendations: ["Resolve missing data and review holds before expanding report delivery.", "Sequence the profile-specific recommendations around those prerequisites, then test accountable routing and controlled delivery in the pilot."],
+      sourcing: ["Choose reporting tools by their connection costs and ongoing support needs.", "Reuse suitable data and control services; compare specialist partners on reconciliation, permissions, support burden and total cost-to-integrate."],
+      governance: ["Client reports need checked sources and the required reviewer’s approval.", "Make applicable disclosures, review and retention part of the workflow design; compliance and security must confirm the controls before operational use."],
+      measurement: ["Expand the reporting pilot only after measured gains and control checks pass.", "Track preparation time, rework and audit retrieval alongside support cost; agree success and stop thresholds before the pilot starts."],
+      sources: ["Fidelity’s systems, costs and staffing still need internal assessment.", "Public research and synthetic examples frame hypotheses; internal discovery must resolve applicability, feasibility and economics before final guidance."],
     },
     assumptions: [
       ["Demand and operating model", "Validate reporting frequency, segment needs and the split of work among advisors, service teams and home office. Fidelity’s organizational complexity and servicing model may change the proposed workflow."],
@@ -56,6 +57,30 @@ const summaries = {
     ],
   },
 };
+
+function ExecutiveFinding({ track, section, index, finding, onJump }) {
+  const [expanded, setExpanded] = useState(false);
+  const detailId = `${track}-finding-detail-${section.id}`;
+  const headlineId = `${track}-finding-headline-${section.id}`;
+  return (
+    <article className="strategy-executive-finding" aria-labelledby={headlineId}>
+      <span className="strategy-executive-number">{String(index + 1).padStart(2, "0")}</span>
+      <div className="strategy-executive-finding-body">
+        <span className="strategy-executive-section-label">{section.label}</span>
+        <strong id={headlineId}>{finding[0]}</strong>
+        <div className="strategy-executive-finding-actions">
+          <button type="button" className="strategy-executive-disclosure" aria-expanded={expanded} aria-controls={detailId} aria-label={`Why it matters: ${section.label}`} onClick={() => setExpanded(value => !value)}>
+            Why it matters <ChevronDown size={14} aria-hidden="true" />
+          </button>
+          <button type="button" className="strategy-executive-jump" aria-label={`Read section ${index + 1}: ${section.label}`} onClick={() => onJump(section.id)}>
+            Read section <ArrowUpRight size={14} aria-hidden="true" />
+          </button>
+        </div>
+        <div id={detailId} className="strategy-executive-finding-detail" hidden={!expanded}>{finding[1]}</div>
+      </div>
+    </article>
+  );
+}
 
 export default function StrategyExecutiveSummary({ track, sections, onJump }) {
   const summary = summaries[track];
@@ -73,11 +98,7 @@ export default function StrategyExecutiveSummary({ track, sections, onJump }) {
       <h3 className="strategy-executive-label">Findings by section</h3>
       <div className="strategy-executive-findings">
         {sections.map((section, index) => (
-          <button type="button" key={section.id} className="strategy-executive-finding" onClick={() => onJump(section.id)} aria-label={`Read section ${index + 1}: ${section.label}`}>
-            <span className="strategy-executive-number">{String(index + 1).padStart(2, "0")}</span>
-            <span><span className="strategy-executive-section-label">{section.label}</span><strong>{summary.findings[section.id][0]}</strong><span className="strategy-executive-finding-text">{summary.findings[section.id][1]}</span></span>
-            <ArrowUpRight size={17} aria-hidden="true" />
-          </button>
+          <ExecutiveFinding key={`${track}-${section.id}`} track={track} section={section} index={index} finding={summary.findings[section.id]} onJump={onJump} />
         ))}
       </div>
       <div className="strategy-executive-decisions">
