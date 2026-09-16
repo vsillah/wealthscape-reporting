@@ -8,6 +8,8 @@ The map reuses the earlier `ReportingOpportunityMap` and collision-aware plot fr
 
 The ranked-outcomes view now anchors each opportunity score at the end of its bar with a visible marker and score chip, so adjacent scores can be compared without relying only on the text line below the chart.
 
+The score chip now sits in a dedicated bar row instead of floating above the bar, which keeps the outcome statement readable in the ranked list.
+
 The section remains separate from account maintenance. Account-maintenance values were not reused. The five executive themes remain as recommendation groupings, linked to representative detailed outcomes. The headline count now reads 15.
 
 Section 4 customer-context evidence now separates the metric being shown from the customer/workflow context and the downstream strategy implication. The large value is labelled as the source metric, the card headline describes the customer context, and the implication states what the strategy should test. The 41.4-hour Kitces figure is explicitly framed as an illustrative senior-advisor workweek, not a measured reporting-preparation baseline.
@@ -56,10 +58,14 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 43 pass, 0 fail after adding competitor and customer sentiment/icon signals.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 14 pass, 0 fail after reporting outcome UX parity updates.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 44 pass, 0 fail after reporting outcome UX parity updates.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=ranked-bars-no-overlap#view=strategy&profileId=ria&strategyTrack=reporting` — ranked outcomes R9, R4 and R5 inspected; score chips remain on the bar row and do not cover outcome statements.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 14 pass, 0 fail after ranked bar score no-overlap update.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 44 pass, 0 fail after ranked bar score no-overlap update.
 - `git diff --check` — pass.
 - 16 September follow-up: `git diff --check` — pass.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after reporting outcome UX parity updates.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after ranked bar score no-overlap update.
 - Integrated Browser: `http://127.0.0.1:5182/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.
 - Integrated Browser: `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting`.
 - Visual inspection at 1440×1000, 768×1024 and 390×844. Tablet/mobile document widths equal viewport widths. The map deliberately scrolls horizontally on small screens, with the region labelled accordingly.
@@ -92,3 +98,8 @@ Additional 16 September parity evidence is in `/private/tmp/wealthscape-pr37-hum
 To reproduce: open `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting`, select section 5, choose R2 from the map or dropdown, confirm non-selected outcomes are muted, confirm the derived/inferred provenance legend remains outside the problem description, review the job-map context and UX response in the selected detail panel, reset All outcomes, then switch to Ranked outcomes.
 
 Ranked-bar score marker evidence is in `/private/tmp/wealthscape-pr37-humanqa-ranked-bars/wealthscape-pr37-ranked-bar-score-markers.mp4`.
+
+Ranked-bar no-overlap follow-up evidence is in `/private/tmp/wealthscape-pr37-humanqa-ranked-bars-no-overlap/`:
+
+- `wealthscape-pr37-ranked-bar-score-no-overlap.mp4`
+- `reporting-ranked-bars-clean-target-no-overlap.png`

@@ -969,20 +969,34 @@
   border-radius: 50%;
 }
 .rr-rank-bar {
+  background: transparent;
   display: block;
-  height: 6px;
-  background: #e7eeea;
-  border-radius: 3px;
-  margin: 10px 0 18px;
+  height: 20px;
+  margin: 12px 0 10px;
   overflow: visible;
   position: relative;
 }
+.rr-rank-bar::before {
+  background: #e7eeea;
+  border-radius: 999px;
+  content: "";
+  height: 6px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
 .rr-rank-fill {
-  border-radius: inherit;
-  display: block;
-  height: 100%;
-  width: var(--score-pct);
   background: #246244;
+  border-radius: 999px;
+  display: block;
+  height: 6px;
+  left: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--score-pct);
 }
 .rr-rank-marker {
   align-items: center;
@@ -1008,13 +1022,15 @@
   background: #ffffff;
   border: 1px solid #c9d7cf;
   border-radius: 999px;
-  bottom: 15px;
   color: #0b5d34;
   font-size: 11px;
   font-weight: 800;
+  left: 13px;
   line-height: 1;
   padding: 3px 6px;
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   white-space: nowrap;
 }
 .rr-ranked-outcomes .rr-choice[aria-pressed="true"] .rr-rank-score {
