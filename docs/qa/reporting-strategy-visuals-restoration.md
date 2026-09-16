@@ -22,6 +22,24 @@ Section 2 competitor-research evidence now uses the same structure. The large va
 
 Section 2 competitor-research cards and section 4 customer-context cards now also include compact iconography and an explicit sentiment signal. Up-right signals identify potential advantage or demand tailwind, down-right signals identify competitive pressure or friction, and side-to-side signals identify neutral, mixed or validation-needed evidence. The signal summary sits above the source context so reviewers can see the takeaway before reading the source detail.
 
+Section 2 now starts the competitor presentation with a real-logo capability comparison map. The map plots a directional advisor-satisfaction proxy against the count of public-source SaaS reporting capabilities described in the retained evidence, and it keeps that proxy layer separate from the tabular evidence model. Selecting a logo, dot or dropdown option updates the in-context inspector with scores, position rationale, capability coverage and assumptions. The existing tabular evidence, capability cards and reference cards remain available through the same view switch.
+
+Reporting competitor logos use local copies of public/official assets rather than generated wordmark treatments. The added assets are Addepar, Advyzon, Envestnet, Orion and SS&C Black Diamond; existing local Wealthscape, Altruist, Schwab and BNY Pershing assets are reused. Source URLs, SHA-256 hashes and passive-SVG handling notes are recorded in `wealthscape-intelligence/public/competitor-brands/README.md`.
+
+The default competitor capability map no longer renders static vendor-specific reference cards or the control-layer thesis below the map. Those items now appear only inside the explicit Reference cards view, so the All platforms state stays neutral and competitor-specific content appears only after a selected platform or selected presentation mode creates context.
+
+The competitor capability map now keeps confidence out of the axes. The X-axis remains advisor satisfaction proxy, the Y-axis remains reporting workflow breadth, quadrant labels use "workflow coverage" language, and map markers use solid, dashed or dotted outlines plus a legend to show public-evidence confidence.
+
+Section 4 customer context now uses a synthetic Jordan Williams advisor photo for the RIA persona instead of a generic icon. The right-side entries now read as quote-style synthesized pain points, with phase and metric pills plus a "Where it shows up" line tying each pain point to the reporting job map. Non-Jordan profiles retain the neutral persona icon so the image is not reused for the wrong identity.
+
+The Jordan Williams card now treats the persona details as designed UI instead of plain text: the profile facts render as compact cards, the persona is labelled as a JTBD persona, and three advisor needs are surfaced with functional, social and emotional framing. Each need ties back to a reporting job phase so the left side of the customer-context layout carries the same research structure as the pain cards on the right.
+
+Section 6 job map now uses the same visual philosophy as the Account Maintenance journey: an illustrative curve with positive, neutral and friction symbols, selectable milestones, and a compact proposed-sequence swimlane for client events, operations work and handoffs. Selecting a milestone highlights the corresponding stage group and keeps the surrounding stages visible for context.
+
+The reporting job-map milestone icons now anchor directly to the curve coordinates. Labels remain below the markers, but the positive, neutral and friction symbols sit on the line instead of floating above or below it.
+
+The Account Maintenance executive findings now read as research-backed takeaways instead of section labels. The leadership recommendation names a shared validation-and-exception pilot, and the section findings explain what the market, competitor, customer, outcome, job-map, recommendation and sourcing evidence implies before the reader opens each detailed section.
+
 ## Score provenance
 
 Every rating is a management estimate, not a customer survey result. Nine pairs retain earlier local strategy ratings from `wealthscape-intelligence/src/WealthscapePrototype.jsx` at `6bbae9f`; the description is narrowed to reporting where needed:
@@ -71,13 +89,45 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 44 pass, 0 fail after ranked-outcomes internal scroll update.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 14 pass, 0 fail after equal-height ranked-outcomes overflow fix.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 44 pass, 0 fail after equal-height ranked-outcomes overflow fix.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting` — section 4 customer context renders the Jordan Williams synthetic portrait as an image asset, shows 5 pain-point cards, exposes phase/metric pills and job-map "Where it shows up" labels, and has no horizontal overflow at 1109px (`documentWidth` = `viewportWidth` = 1109).
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 14 pass, 0 fail after customer persona photo and pain-point update.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 44 pass, 0 fail after customer persona photo and pain-point update.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting` — section 4 customer context now shows structured persona facts and 3 JTBD advisor need cards: functional, social and emotional. Verified no horizontal overflow at 1109px (`documentWidth` = `viewportWidth` = 1109).
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 14 pass, 0 fail after persona needs and profile-card styling update.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 44 pass, 0 fail after persona needs and profile-card styling update.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=reporting-capability-map-local#view=strategy&profileId=ria&strategyTrack=reporting` — section 2 competitor research renders the real-logo capability map; verified no new browser errors while selecting Advyzon, switching the inspector to Evidence, and toggling back to the tabular evidence view.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=reporting-jobmap-parity-local#view=strategy&profileId=ria&strategyTrack=reporting` — section 6 job map renders the Account Maintenance-style curve, compact milestone symbols, proposed-sequence swimlane and selected Prepare-state highlight without oversized icon overflow.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=reporting-jobmap-parity-local#view=strategy&profileId=ria&strategyTrack=reporting` — section 2 default All platforms capability-map state no longer shows static Orion, Envestnet, BlackRock or control-layer cards below the selector.
+- 16 September follow-up: actual human-QA walkthrough recorded at `http://127.0.0.1:5198/?qa=actual-humanqa-walkthrough#view=strategy&profileId=ria&strategyTrack=reporting` — the MP4 shows the exact route loading, executive finding expansion, jump into competitor research, competitor-map selection, evidence-tab interaction and job-map scroll. This supersedes still-frame MP4 captures for the human-QA handoff.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=jobmap-icons-on-line#view=strategy&profileId=ria&strategyTrack=reporting` — reporting job-map marker centers align with the curve coordinates with max measured delta 0.01px, no browser console errors, and phase clicks still update the selected state.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=maintenance-findings-brief#view=strategy&profileId=ria&strategyTrack=lifecycle` — account-maintenance executive findings include the revised market, customer, outcomes and recommendation takeaways; four drawers expanded; the detailed Outcomes section reuses the revised finding; no browser console errors or horizontal overflow at 1280px.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 15 pass, 0 fail after adding the real-logo reporting capability map.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 15 pass, 0 fail after the reporting job-map visual parity update.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 15 pass, 0 fail after removing static competitor-specific details from the default map state.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 18 pass, 0 fail after anchoring reporting job-map icons to the curve.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 48 pass, 0 fail after anchoring reporting job-map icons to the curve.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingResearch.test.js` — 15 pass, 0 fail after revising account-maintenance executive findings.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 49 pass, 0 fail after revising account-maintenance executive findings.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 45 pass, 0 fail after adding the real-logo reporting capability map.
 - `git diff --check` — pass.
 - 16 September follow-up: `git diff --check` — pass.
+- 16 September follow-up: `git diff --check` — pass after customer persona photo and pain-point update.
+- 16 September follow-up: `git diff --check` — pass after persona needs and profile-card styling update.
+- 16 September follow-up: `git diff --check` — pass after adding the real-logo reporting capability map.
+- 16 September follow-up: `git diff --check` — pass after the reporting job-map visual parity update.
+- 16 September follow-up: `git diff --check` — pass after removing static competitor-specific details from the default map state.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after reporting outcome UX parity updates.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after ranked bar score no-overlap update.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after ranked-outcomes internal scroll update.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after equal-height ranked-outcomes overflow fix.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after customer persona photo and pain-point update.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after persona needs and profile-card styling update.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after the real-logo reporting capability map.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after the reporting job-map visual parity update.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after removing static competitor-specific details from the default map state.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after anchoring reporting job-map icons to the curve.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after revising account-maintenance executive findings.
 - Integrated Browser: `http://127.0.0.1:5182/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.
 - Integrated Browser: `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting`.
 - Visual inspection at 1440×1000, 768×1024 and 390×844. Tablet/mobile document widths equal viewport widths. The map deliberately scrolls horizontally on small screens, with the region labelled accordingly.
@@ -126,3 +176,62 @@ Ranked-outcomes equal-height and overflow fix evidence is in `/private/tmp/wealt
 
 - `wealthscape-pr37-ranked-outcomes-equal-height-fixed.mp4`
 - `ranked-equal-height-fixed.png`
+
+Customer-context persona photo and pain-point evidence is in `/private/tmp/wealthscape-pr37-humanqa-customer-persona/`:
+
+- `wealthscape-pr37-customer-persona-approved-photo.mp4`
+- `customer-persona-approved-photo.jpg`
+
+Customer-context persona needs evidence is in `/private/tmp/wealthscape-pr37-humanqa-persona-needs/`:
+
+- `wealthscape-pr37-persona-needs.mp4`
+- `persona-needs-top.jpg`
+- `persona-needs-local.jpg`
+
+Reporting competitor real-logo capability-map evidence is in `/private/tmp/wealthscape-pr37-humanqa-reporting-capability-map/`:
+
+- `wealthscape-pr37-reporting-capability-map-real-logos.mp4`
+- `01-capability-map-real-logos.jpg`
+- `02-advyzon-selected.jpg`
+- `03-advyzon-evidence-tab.jpg`
+- `04-tabular-evidence-toggle.jpg`
+
+Reporting job-map parity evidence is in `/private/tmp/wealthscape-pr37-reporting-jobmap-parity-qa/`:
+
+- `reporting-jobmap-parity-evidence.mp4`
+- `01-reporting-jobmap-all-stages.png`
+- `02-reporting-jobmap-prepare-selected.png`
+
+Reporting job-map icon alignment evidence is in `/private/tmp/wealthscape-pr37-jobmap-icons-on-line/`:
+
+- `wealthscape-pr37-jobmap-icons-on-line.mp4`
+- `reporting-jobmap-icons-on-line.png`
+- `marker-alignment.json`
+
+Account-maintenance executive-findings evidence is in `/private/tmp/wealthscape-pr37-maintenance-findings-brief/`:
+
+- `wealthscape-pr37-maintenance-findings-brief.mp4`
+- `maintenance-findings-summary.png`
+- `maintenance-outcomes-section-finding.png`
+- `browser-check.json`
+
+Actual human-QA walkthrough evidence is in `/private/tmp/wealthscape-pr37-humanqa-walkthrough/`:
+
+- `wealthscape-pr37-actual-humanqa-walkthrough.mp4`
+
+Competitor static-content cleanup evidence is in `/private/tmp/wealthscape-pr37-competitor-static-cleanup/`:
+
+- `competitor-static-cleanup-evidence.mp4`
+- `01-competitor-map-all-platforms-clean.png`
+
+Competitor confidence-axis cleanup evidence is in `/private/tmp/wealthscape-pr37-competitor-confidence-axis/`:
+
+- `competitor-confidence-axis-evidence.mp4`
+- `01-competitor-confidence-axis.png`
+
+Executive findings alignment evidence:
+
+- `/private/tmp/wealthscape-pr37-findings-alignment.mp4`
+- `/private/tmp/wealthscape-pr37-findings-alignment.png`
+
+The competitor static-content cleanup, competitor confidence-axis cleanup and executive-findings alignment MP4s above are supporting still-frame captures only. They are not the human-QA walkthrough artifact.

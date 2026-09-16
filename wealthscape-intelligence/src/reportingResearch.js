@@ -13,6 +13,16 @@ export const reportingSources = {
     label: "Addepar · reporting workflows, June 2026",
     href: "https://addepar.com/blog/enhanced-reporting-transforms-operations",
   },
+  addeparGeneration: {
+    label: "Addepar API · report generation",
+    href: "https://developers.addepar.com/docs/report-generation",
+    note: "Developer documentation: report jobs can generate PDFs for portfolios, publish to Client Portal, notify clients, apply labels and brand palettes, and enforce reporting / Portal permissions.",
+  },
+  addeparSchedules: {
+    label: "Addepar API · report schedules",
+    href: "https://developers.addepar.com/docs/report-schedules",
+    note: "Developer documentation: recurring report schedules include report, portfolio, frequency, Portal publishing, email notification, label and permission requirements.",
+  },
   advyzon: {
     label: "Advyzon · portfolio management and reporting",
     href: "https://www.advyzon.com/advyzon-portfolio-management/",
@@ -20,6 +30,11 @@ export const reportingSources = {
   portal: {
     label: "Advyzon · client portal",
     href: "https://www.advyzon.com/client-portal/",
+  },
+  advyzonSecure: {
+    label: "Advyzon · Secure document management",
+    href: "https://www.advyzon.com/secure/",
+    note: "Vendor page: secure document handling includes WORM, audit trails, retention policies, role-based permissions and reviewable workflows. Treat as adjacent control evidence unless report entitlements are confirmed.",
   },
   fidelity: {
     label: "Fidelity · Wealthscape Intelligence launch, September 2025",
@@ -29,15 +44,112 @@ export const reportingSources = {
     label: "Fidelity · Wealthscape operations experience",
     href: "https://clearingcustody.fidelity.com/solutions/technology/brokerage/operations",
   },
+  fidelityInvestorExperience: {
+    label: "Fidelity · Wealthscape investor experience",
+    href: "https://clearingcustody.fidelity.com/solutions/technology/brokerage/investors",
+    note: "Fidelity describes investor access to documents, balances, activity, market data and account management; this supports client experience context more than custom report workflow proof.",
+  },
+  fidelityPortfolioQuickCheck: {
+    label: "Fidelity · Portfolio Quick Check",
+    href: "https://clearingcustody.fidelity.com/platforms/portfolio-quick-check",
+    note: "Fidelity describes customizable portfolio reports and saved custom report views. Public material does not establish batch generation or report-specific entitlement controls.",
+  },
+  tamaracReports: {
+    label: "Tamarac help · reporting overview",
+    href: "https://support.tamaracinc.com/help/content/advisor_view/reports/introduction_to_reports.htm",
+    note: "Help documentation describes configurable dynamic reports, PDF templates, client portal reports, document-vault delivery, bulk reports and permission-limited report visibility.",
+  },
+  tamaracPortalPosting: {
+    label: "Tamarac help · post reports to client portals",
+    href: "https://help.tamaracinc.com/help/content/tamarac_reporting/clients_and_client_portals/common_customer_service_requests/post_documents_reports_and_other_files_to_client_portals.htm",
+    note: "Help documentation describes selecting one or more accounts, groups or households, choosing a PDF template, posting reports to client portals, sending notifications and monitoring posting status.",
+  },
+  tamaracTemplatePermissions: {
+    label: "Tamarac help · PDF template permissions",
+    href: "https://help.tamaracinc.com/help/content/tamarac_reporting/user_security_and_system_settings/user_management/manage_permissions_for_pdf_templates.htm",
+    note: "Help documentation describes public/private PDF templates, read-only versus edit access, user and group permissions, template-set permissions and audit fields.",
+  },
+  orionReportBatches: {
+    label: "Orion support · report batches",
+    href: "https://orionadvisorservices.my.site.com/OrionSupportApp/s/article/Report-Batches",
+    note: "Support article describes report batches for multiple clients, PDF generation, print-vendor delivery, client-portal posting and privileges for advisor and representative users.",
+  },
+  orionReportAccess: {
+    label: "Orion support · report access in Report Builder",
+    href: "https://orionadvisorservices.my.site.com/OrionSupportApp/s/article/User-Access-Rights-in-Report-Builder",
+    note: "Support article describes report access by login level, role, user, representative, client and broker-dealer; clients can be allowed to run reports from the client portal.",
+  },
+  orionPortalVisibility: {
+    label: "Orion support · report batch portal visibility",
+    href: "https://orionadvisorservices.my.site.com/OrionSupportApp/s/article/Report-Builder-Client-Portal-Visibility",
+    note: "Support article describes Viewable By settings for generated batch reports and states that generated reports require visibility changes before appearing in client portals.",
+  },
+  orionGettingStarted: {
+    label: "Orion support · reporting getting started",
+    href: "https://orionadvisorservices.my.site.com/OrionSupportApp/s/article/Reporting-Getting-Started-Guide",
+    note: "Support guide describes custom Report Builder, branded themes, report batches, statement delivery to portals, report access privileges and compliance-relevant delivery records.",
+  },
+  altruistCobranding: {
+    label: "Altruist · co-branding and holdings reporting",
+    href: "https://altruist.com/news/february-2023/",
+    note: "Vendor release states Owner/Admin users can turn on co-branding across client dashboards, mobile splash screen, billing invoices, performance reports and email invitations.",
+  },
+  blackdiamondReportingBlog: {
+    label: "SS&C Advent · reporting drives meaningful conversations",
+    href: "https://www.advent.com/news-and-insights/blog/reporting-drives-meaningful-conversations/",
+    note: "Vendor blog describes digital report delivery through a secure document vault, report builder, data validation help and large volumes of ad hoc and assisted reports.",
+  },
+  blackdiamondClientView: {
+    label: "SS&C Black Diamond · Client View",
+    href: "https://blackdiamond.advent.com/insights/blogs/black-diamond-expressions/client-view-takes-the-stage/",
+    note: "Vendor blog describes Client View, Timeline, Vault, Reports and Statements, report generation and sharing via Vault or Timeline.",
+  },
+  blackdiamondCapacity: {
+    label: "SS&C Black Diamond · batch and scheduled reporting",
+    href: "https://blackdiamond.advent.com/insights/blogs/black-diamond-expressions/shifting-capacity-towards-high-value-activities/",
+    note: "Vendor blog describes Batch Reporting, Client Experience portal efficiencies and scheduled Data Mining reports for repetitive oversight workflows.",
+  },
+  schwabPortfolioConnectVideo: {
+    label: "Schwab PT · Portfolio Connect walkthrough",
+    href: "https://www.schwabpt.com/schwab-advisor-portfolio-connect-video",
+    note: "Transcript describes dynamic and firm reporting, quarterly automatic client reports, logo/disclaimer/page controls, meeting books, and generating/downloading PDFs for distribution.",
+  },
+  schwabPortfolioConnectIntake: {
+    label: "Schwab PT · Portfolio Connect intake",
+    href: "https://www.schwabpt.com/schwab-advisor-portfolio-connect-interest-survey",
+    note: "Intake page states Portfolio Connect is enabled at firm level and users inherit Schwab Advisor Center account-data access.",
+  },
+  schwabPortfolioConnectRelease: {
+    label: "Schwab · Portfolio Connect adoption release",
+    href: "https://pressroom.aboutschwab.com/press-releases/press-release/2020/As-Demand-and-Adoption-Grows-Schwab-Advisor-Portfolio-Connect-Surpasses-1000-Platform-Users/default.aspx",
+    note: "Press release describes batch onboarding for payment and reporting schedules across multiple client groups or households; later user-permission rollout was forward-looking at publication.",
+  },
+  pershingWoveAdvisory: {
+    label: "BNY Pershing · Wove Advisory",
+    href: "https://www.bny.com/pershing/us/en/platforms/wove/advisory.html",
+    note: "BNY page describes white-labeled Wove Advisory, customized client reporting, performance reporting for home office/advisors/clients and automated reporting delivery.",
+  },
+  pershingWoveInvestor: {
+    label: "BNY Pershing · Wove Investor",
+    href: "https://www.bny.com/pershing/us/en/platforms/wove/investor.html",
+    note: "BNY page describes client dashboard documents, multi-custodial account performance data, centralized documents, consolidated notifications and customizable branding/configurations; forward-looking disclaimers remain.",
+  },
+  pershingNetXInvestor: {
+    label: "BNY Pershing · NetXInvestor",
+    href: "https://www.bny.com/pershing/us/en/platforms/netx/netx-investor.html",
+    note: "BNY page describes configurable branding, content/features clients can access, eDelivery documents and account views; public material does not prove full batch report generation.",
+  },
 };
 export const reportingCompetitors = [
   {
     name: "Addepar",
     focus: "Reporting at firm scale",
     icon: "layers",
-    source: "addepar",
+    source: "addeparGeneration",
+    additionalSource: "addeparSchedules",
+    additionalSources: ["addepar"],
     evidence:
-      "Addepar describes coordinated templates, permissions, and report distribution workflows.",
+      "Addepar documents report-generation and scheduling APIs that generate portfolio PDFs, publish to the Client Portal, notify clients, apply labels and brand palettes, and enforce reporting permissions.",
     implication:
       "Test whether shared templates and clear ownership reduce repeat assembly for each reporting cycle.",
     gap: "The prototype shows report configuration and generation. Firm-wide permissions and distribution controls still require validation.",
@@ -50,8 +162,9 @@ export const reportingCompetitors = [
     focus: "Portfolio reporting",
     icon: "chart",
     source: "advyzon",
+    additionalSources: ["portal", "advyzonSecure"],
     evidence:
-      "Advyzon describes branded report components, scheduled batch generation, and portal sharing.",
+      "Advyzon describes branded report components, scheduled batch reports, portal sharing, and adjacent document-security controls.",
     implication:
       "Make reusable report composition the baseline; measure the remaining manual preparation work.",
     gap: "The prototype demonstrates one report pipeline. Scheduled batch processing is not implemented.",
@@ -64,6 +177,7 @@ export const reportingCompetitors = [
     focus: "Client delivery",
     icon: "users",
     source: "portal",
+    additionalSource: "advyzonSecure",
     evidence:
       "Advyzon describes a branded portal with interactive reports and client action items.",
     implication:
@@ -80,8 +194,12 @@ export const reportingCompetitors = [
     incumbent: true,
     source: "fidelity",
     additionalSource: "fidelityOperations",
+    additionalSources: [
+      "fidelityInvestorExperience",
+      "fidelityPortfolioQuickCheck",
+    ],
     evidence:
-      "Fidelity describes centralized operational reports in Wealthscape Intelligence and configurable reporting in its operations experience.",
+      "Fidelity describes centralized operational reports, configurable reporting, investor document access, and saved custom portfolio reports. Public material is thinner on batch generation and report-specific entitlements.",
     implication:
       "Start discovery with the incumbent reporting capability. Validate reuse before proposing another report workflow.",
     gap: "This is a public Wealthscape baseline. The synthetic prototype does not establish production coverage, report delivery, batch scheduling, or report-specific permissions.",
@@ -93,50 +211,61 @@ export const reportingCompetitors = [
     [
       "Envestnet Tamarac",
       "Dynamic reporting and AI beta",
-      "tamaracWorkflow",
-      "tamarac",
-      "Report Studio describes configurable grouping and dynamic views; the September AI narrative announcement is preview/beta with expected production availability.",
+      "tamaracReports",
+      "tamaracPortalPosting",
+      "Tamarac help and release material describe configurable dynamic/PDF reports, client portal posting, bulk reports, report permissions and AI Report Studio as preview/beta.",
+      ["tamaracWorkflow", "tamaracTemplatePermissions", "tamarac"],
     ],
     [
       "Orion",
       "Template-based report drafts",
-      "orion",
-      null,
-      "Denali AI Report Assistant describes drafts using firm templates and approved components, with professional review language.",
+      "orionGettingStarted",
+      "orionReportBatches",
+      "Orion support material describes custom Report Builder, branded themes, report batches, client portal delivery, report access controls and report-batch privileges.",
+      ["orionReportAccess", "orionPortalVisibility", "orion"],
     ],
     [
       "Altruist",
       "Custodial performance reporting",
       "altruist",
-      null,
-      "Altruist describes scheduled, advisor-branded performance-summary emails and investment/activity PDFs delivered through mobile and desktop portals. Confirm report-specific approval and retention controls in discovery.",
+      "altruistCobranding",
+      "Altruist describes scheduled, white-labeled performance-summary emails, investment/activity PDFs, client portal delivery and Owner/Admin co-branding. Report entitlement controls remain adjacent rather than direct.",
+      [],
     ],
     [
       "SS&C Black Diamond",
       "Batch reports and portal posting",
       "blackdiamond",
       "blackdiamondPortal",
-      "Black Diamond describes template building, batch quarterly statements and portal posting. Its client-experience documentation adds branding, secure documents and outside-account aggregation.",
+      "Black Diamond describes template building, batch quarterly statements, portal posting, Client View report generation, Timeline/Vault sharing and secure document delivery.",
+      [
+        "blackdiamondReportingBlog",
+        "blackdiamondClientView",
+        "blackdiamondCapacity",
+      ],
     ],
     [
       "Schwab Advisor Services",
       "Portfolio Connect report review",
-      "schwab",
-      null,
-      "The Portfolio Connect guide includes report creation and review. A report-review screen alone does not establish supervisory approval or retention.",
+      "schwabPortfolioConnectVideo",
+      "schwabPortfolioConnectIntake",
+      "Portfolio Connect public material describes standardized report customization, automatic quarterly reports, PDF generation/download, and account-access inheritance from Schwab Advisor Center.",
+      ["schwabPortfolioConnectRelease", "schwab"],
     ],
     [
       "BNY Pershing",
       "Investor and wealth-reporting unification",
-      "pershing",
-      null,
-      "The June 2025 INSITE announcement describes planned Wove Investor / NetX / Wealth Reporting unification. Availability is not established by that forward-looking announcement.",
+      "pershingWoveAdvisory",
+      "pershingWoveInvestor",
+      "BNY pages describe white-labeled Wove Advisory, customized client reporting, performance reporting for advisors/home office/clients, automated reporting delivery and investor document/performance access. Forward-looking disclaimers still apply.",
+      ["pershingNetXInvestor", "pershing"],
     ],
-  ].map(([name, focus, source, additionalSource, evidence]) => ({
+  ].map(([name, focus, source, additionalSource, evidence, additionalSources]) => ({
     name,
     focus,
     source,
     additionalSource,
+    additionalSources,
     evidence,
     icon: "report",
     implication:
@@ -254,124 +383,378 @@ export const reportingComparisonColumns = [
   "Client delivery",
   "Access controls",
 ];
+export const reportingCapabilityLevels = {
+  direct: {
+    label: "Direct",
+    description: "Directly documented public capability",
+    score: 1,
+  },
+  strong: {
+    label: "Strong",
+    description: "Strong adjacent public support",
+    score: 0.75,
+  },
+  partial: {
+    label: "Partial",
+    description: "Partial or adjacent public support",
+    score: 0.5,
+  },
+  open: {
+    label: "Open",
+    description: "Not publicly substantiated in retained sources",
+    score: 0,
+  },
+};
+const capabilityCell = (level, reference, note) => ({
+  level,
+  described: reportingCapabilityLevels[level].score >= 0.75,
+  score: reportingCapabilityLevels[level].score,
+  label: reportingCapabilityLevels[level].label,
+  description: reportingCapabilityLevels[level].description,
+  reference,
+  note,
+});
 export const reportingComparison = [
   {
     name: "Addepar",
     cells: [
-      {
-        described: true,
-        reference: 0,
-        note: "The reporting update describes shared templates and report creation workflows.",
-      },
-      {
-        described: false,
-        reference: 0,
-        note: "Scheduled batch generation was not assessed in the retained Addepar reference. This is not evidence of a missing capability.",
-      },
-      {
-        described: true,
-        reference: 0,
-        note: "The reporting update describes coordinated report distribution workflows.",
-      },
-      {
-        described: true,
-        reference: 0,
-        note: "The reporting update describes permissions as part of firm-wide reporting workflows.",
-      },
+      capabilityCell(
+        "strong",
+        0,
+        "Addepar public material supports reusable report jobs, brand palettes and coordinated reporting workflows. Public detail is stronger on generation than visual template authoring.",
+      ),
+      capabilityCell(
+        "direct",
+        0,
+        "The Report Schedules API directly documents recurring report schedules with portfolio, frequency, portal-publishing, email-notification and label settings.",
+      ),
+      capabilityCell(
+        "direct",
+        0,
+        "The Report Generation API directly documents portal publishing and client notification for generated reports.",
+      ),
+      capabilityCell(
+        "direct",
+        0,
+        "The API documentation directly documents reporting scopes, application permissions, portfolio access and permission failure states.",
+      ),
     ],
   },
   {
     name: "Advyzon",
     cells: [
-      {
-        described: true,
-        reference: 1,
-        note: "The portfolio-management page describes branded report components and configurable investment data.",
-      },
-      {
-        described: true,
-        reference: 1,
-        note: "The portfolio-management page describes scheduled batch report generation.",
-      },
-      {
-        described: true,
-        reference: 2,
-        note: "The portal page describes branded access, interactive reports, and client action items.",
-      },
-      {
-        described: false,
-        reference: 2,
-        note: "Detailed permission controls were not assessed in the retained Advyzon references. Validate them in a product teardown.",
-      },
+      capabilityCell(
+        "direct",
+        1,
+        "The portfolio-management page directly describes branded report components and configurable performance, allocation and trading content.",
+      ),
+      capabilityCell(
+        "direct",
+        1,
+        "The portfolio-management page directly describes scheduled batch reports.",
+      ),
+      capabilityCell(
+        "direct",
+        2,
+        "The client portal page directly describes branded client access, shareable reports and client-facing report content.",
+      ),
+      capabilityCell(
+        "partial",
+        1,
+        "Advyzon Secure describes role-based permissions, WORM, audit trails and retention policies, but retained public material is adjacent to report-specific entitlements.",
+      ),
     ],
   },
   {
     name: "Fidelity (Wealthscape)",
     cells: [
-      {
-        described: true,
-        reference: 3,
-        note: "The operations page describes configurable reports; the Intelligence launch describes centralized operational reporting. Template authoring depth remains unassessed.",
-      },
-      {
-        described: false,
-        reference: 3,
-        note: "Scheduled batch report generation was not assessed in these Fidelity references. Bulk account opening is an onboarding capability, not reporting evidence.",
-      },
-      {
-        described: false,
-        reference: 3,
-        note: "Client report delivery was not assessed in these Fidelity references. The advisor dashboard does not establish client-facing distribution.",
-      },
-      {
-        described: false,
-        reference: 3,
-        note: "Report-specific permissions were not assessed in these Fidelity references. General operations and supervision controls do not establish reporting access controls.",
-      },
+      capabilityCell(
+        "strong",
+        3,
+        "Fidelity public pages describe configurable reports and saved custom portfolio views, but public detail is thinner on a report-design studio.",
+      ),
+      capabilityCell(
+        "open",
+        3,
+        "Scheduled or batch report generation was not publicly substantiated in the retained Fidelity references.",
+      ),
+      capabilityCell(
+        "partial",
+        3,
+        "Fidelity describes investor document access and eDelivery, but that is adjacent to custom report delivery rather than proof of generated report distribution.",
+      ),
+      capabilityCell(
+        "partial",
+        3,
+        "Fidelity describes compliance and operations controls, but the retained public material does not establish report-specific access controls.",
+      ),
     ],
   },
-  ...[
-    [
-      "Envestnet Tamarac",
-      4,
-      [true, false, false, false],
-      "Dynamic report grouping is documented; AI Report Studio remains a beta/expected release. Other capabilities are not assessed by these retained pages.",
+  {
+    name: "Envestnet Tamarac",
+    cells: [
+      capabilityCell(
+        "direct",
+        4,
+        "Tamarac help directly describes configurable dynamic reports and configurable PDF report templates.",
+      ),
+      capabilityCell(
+        "direct",
+        4,
+        "Tamarac help directly describes selecting one or more accounts, groups or households for PDF generation, plus bulk reporting paths.",
+      ),
+      capabilityCell(
+        "direct",
+        4,
+        "Tamarac help directly describes posting reports to client portals, sending notifications and monitoring delivery status.",
+      ),
+      capabilityCell(
+        "direct",
+        4,
+        "Tamarac help directly describes report and PDF-template permissions across users, groups, roles and access levels.",
+      ),
     ],
-    [
-      "Orion",
-      5,
-      [true, false, false, false],
-      "Firm templates and approved components support report drafts. The linked Denali release does not establish all distribution or entitlement capabilities.",
+  },
+  {
+    name: "Orion",
+    cells: [
+      capabilityCell(
+        "direct",
+        5,
+        "Orion support directly describes custom Report Builder, branded themes and firm report templates.",
+      ),
+      capabilityCell(
+        "direct",
+        5,
+        "Orion support directly describes report batches for multiple clients and privileges to generate report batches.",
+      ),
+      capabilityCell(
+        "direct",
+        5,
+        "Orion support directly describes generated report portal visibility, statement delivery to portals and PDF distribution.",
+      ),
+      capabilityCell(
+        "direct",
+        5,
+        "Orion support directly describes report access by login level, role, user, representative, client and broker-dealer.",
+      ),
     ],
-    [
-      "Altruist",
-      6,
-      [true, false, true, false],
-      "Branded performance emails, scheduled communications and portal PDFs are documented. Batch processing and reporting entitlements are not established by this reference.",
+  },
+  {
+    name: "Altruist",
+    cells: [
+      capabilityCell(
+        "direct",
+        6,
+        "Altruist directly describes white-labeled performance summaries, custom reports and advisor-branded performance reporting.",
+      ),
+      capabilityCell(
+        "partial",
+        6,
+        "Altruist directly describes scheduled white-labeled emails, but retained public material does not prove broad batch PDF generation.",
+      ),
+      capabilityCell(
+        "direct",
+        6,
+        "Altruist directly describes mobile and desktop portal delivery for performance summaries and investment/activity PDFs.",
+      ),
+      capabilityCell(
+        "partial",
+        6,
+        "Altruist describes Owner/Admin co-branding authority, but not granular report-specific access controls.",
+      ),
     ],
-    [
-      "SS&C Black Diamond",
-      7,
-      [true, true, true, false],
-      "The product page describes template building, batch quarterly statements and portal posting; report-specific entitlements are not assessed.",
+  },
+  {
+    name: "SS&C Black Diamond",
+    cells: [
+      capabilityCell(
+        "direct",
+        7,
+        "Black Diamond directly describes report template building and configurable reporting experiences.",
+      ),
+      capabilityCell(
+        "direct",
+        7,
+        "Black Diamond public material directly describes batch reporting and batch quarterly statements.",
+      ),
+      capabilityCell(
+        "direct",
+        7,
+        "Black Diamond directly describes portal posting, Vault sharing and client-facing report access.",
+      ),
+      capabilityCell(
+        "partial",
+        7,
+        "Black Diamond directly describes secure document delivery, but retained public material is adjacent to report-specific entitlements.",
+      ),
     ],
-    [
-      "Schwab Advisor Services",
-      8,
-      [true, false, false, false],
-      "The Portfolio Connect guide describes reports and report review; review is not equivalent to a named supervisory approval workflow.",
+  },
+  {
+    name: "Schwab Advisor Services",
+    cells: [
+      capabilityCell(
+        "direct",
+        8,
+        "Schwab Portfolio Connect material directly describes standardized report customization, logos, disclaimers and page selection.",
+      ),
+      capabilityCell(
+        "strong",
+        8,
+        "Schwab Portfolio Connect material describes automatically generated quarterly client reports and batch onboarding for reporting schedules.",
+      ),
+      capabilityCell(
+        "partial",
+        8,
+        "Schwab public material describes report PDFs generated for distribution and Schwab Alliance document access, but retained sources do not prove portal posting for custom Portfolio Connect reports.",
+      ),
+      capabilityCell(
+        "partial",
+        8,
+        "Portfolio Connect appears to inherit Schwab Advisor Center account-data access, but retained material does not establish granular report-specific controls.",
+      ),
     ],
-    [
-      "BNY Pershing",
-      9,
-      [false, false, false, false],
-      "Wove Investor unification is forward-looking in the retained June 2025 announcement; delivered capabilities require confirmation.",
+  },
+  {
+    name: "BNY Pershing",
+    cells: [
+      capabilityCell(
+        "direct",
+        9,
+        "BNY pages directly describe customized client reporting, performance reporting and white-labeled advisory experiences.",
+      ),
+      capabilityCell(
+        "partial",
+        9,
+        "BNY describes automated reporting delivery, but retained public material does not prove scheduled batch generation controls.",
+      ),
+      capabilityCell(
+        "direct",
+        9,
+        "BNY Wove Investor and NetXInvestor directly describe investor document, performance-data and notification experiences.",
+      ),
+      capabilityCell(
+        "partial",
+        9,
+        "BNY describes configurable content and features clients can access, but retained public material does not prove granular report-specific entitlements.",
+      ),
     ],
-  ].map(([name, reference, coverage, note]) => ({
-    name,
-    cells: coverage.map((described) => ({ described, reference, note })),
-  })),
+  },
 ];
+
+const reportingCapabilityMapMeta = {
+  Addepar: {
+    satisfactionProxy: 8.4,
+    label: "Addepar",
+    labelOffset: [-88, 42],
+    position:
+      "Addepar’s public reporting APIs support scheduled generation, portal publishing, notifications and permissions, with somewhat less public detail on end-user design tooling.",
+    assumption:
+      "Advisor satisfaction is directional. Workflow breadth scores public functionality coverage; validate implementation depth with product teardown.",
+  },
+  Advyzon: {
+    satisfactionProxy: 8.2,
+    label: "Advyzon",
+    labelOffset: [112, -20],
+    position:
+      "Advyzon’s public reporting, portal and secure-document pages support a broad reporting workflow across design, scheduling and delivery.",
+    assumption:
+      "Access-control support is adjacent rather than report-specific in the retained public material. Validate entitlements in a product teardown.",
+  },
+  "Fidelity (Wealthscape)": {
+    satisfactionProxy: 7.2,
+    label: "Wealthscape",
+    brandKey: "Wealthscape",
+    labelOffset: [-80, -32],
+    position:
+      "Wealthscape has a credible configurable-reporting baseline, but the retained public material is thinner on scheduled generation, report delivery and report-specific access controls.",
+    assumption:
+      "The 7.2 proxy retains the Kitces reporting rating cited in the evidence cards; internal product documentation may change the workflow-breadth score.",
+  },
+  "Envestnet Tamarac": {
+    satisfactionProxy: 8.1,
+    label: "Tamarac",
+    labelOffset: [88, 34],
+    position:
+      "Tamarac public help material supports one of the broadest reporting workflows: dynamic/PDF reports, multi-client generation, portal posting and template permissions.",
+    assumption:
+      "AI Report Studio remains forward-looking or preview evidence, but the core reporting workflow breadth is supported by help documentation.",
+  },
+  Orion: {
+    satisfactionProxy: 8.0,
+    label: "Orion",
+    labelOffset: [4, 42],
+    position:
+      "Orion support material supports a broad workflow across report design, batch generation, portal visibility and report access controls.",
+    assumption:
+      "The satisfaction proxy is directional because retained Orion material is support and vendor content, not a scored satisfaction study.",
+  },
+  Altruist: {
+    satisfactionProxy: 8.05,
+    label: "Altruist",
+    brandKey: "Altruist",
+    labelOffset: [96, 0],
+    position:
+      "Altruist publicly supports branded reporting and client delivery; scheduling evidence is narrower and access-control evidence is adjacent to co-branding authority.",
+    assumption:
+      "Confirm feature depth and approval workflow boundaries in a product teardown before reading the point as a complete capability score.",
+  },
+  "SS&C Black Diamond": {
+    satisfactionProxy: 7.85,
+    label: "Black Diamond",
+    labelOffset: [-96, -40],
+    position:
+      "Black Diamond publicly supports templates, batch reporting and portal delivery; retained public material is weaker on report-specific entitlements.",
+    assumption:
+      "Workflow breadth is functional coverage from public references. It does not prove implementation quality, support burden or advisor preference.",
+  },
+  "Schwab Advisor Services": {
+    satisfactionProxy: 7.7,
+    label: "Schwab",
+    brandKey: "Schwab",
+    labelOffset: [-86, 48],
+    position:
+      "Schwab Portfolio Connect public material supports report customization and recurring quarterly report generation; delivery and controls are more limited in public references.",
+    assumption:
+      "The point is a custody-platform proxy. Retained sources do not isolate reporting-specific advisor satisfaction or granular report entitlements.",
+  },
+  "BNY Pershing": {
+    satisfactionProxy: 6.85,
+    label: "BNY Pershing",
+    brandKey: "Pershing",
+    labelOffset: [-28, -54],
+    position:
+      "BNY Pershing public pages support white-labeled client reporting and investor delivery; batch generation and report-specific access controls are less directly documented.",
+    assumption:
+      "Forward-looking Wove / NetX material should be confirmed with the provider before treating the functional breadth as production coverage.",
+  },
+};
+
+export const reportingCapabilityMap = reportingComparison.map((row, rowIndex) => {
+  const directCount = row.cells.filter((cell) => cell.level === "direct").length;
+  const supportedCount = row.cells.filter((cell) => cell.score > 0).length;
+  const workflowBreadth = row.cells.reduce((sum, cell) => sum + cell.score, 0);
+  const defaultColumn = Math.max(
+    0,
+    row.cells.findIndex((cell) => cell.score > 0),
+  );
+  const meta = reportingCapabilityMapMeta[row.name];
+  return {
+    row: rowIndex,
+    name: row.name,
+    label: meta.label,
+    brandKey: meta.brandKey,
+    satisfactionProxy: meta.satisfactionProxy,
+    capabilityScore: workflowBreadth,
+    directCount,
+    supportedCount,
+    totalCapabilities: reportingComparisonColumns.length,
+    defaultColumn,
+    labelOffset: meta.labelOffset,
+    position: meta.position,
+    assumption: meta.assumption,
+  };
+});
 
 export function reportingQuadrant(outcome) {
   if (outcome.imp >= 5)

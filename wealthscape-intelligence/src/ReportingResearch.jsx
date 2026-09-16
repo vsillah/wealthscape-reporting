@@ -36,6 +36,7 @@ import {
   reportingSources,
   reportingComparison,
   reportingComparisonColumns,
+  reportingCapabilityLevels,
 } from "./reportingResearch.js";
 import "./ReportingResearch.css";
 import {
@@ -47,6 +48,7 @@ import {
   ReportingEvidenceGrid,
   ReportingOpportunityMap,
   ReportingCapabilityExplorer,
+  ReportingCapabilityMap,
   ReportingJourney,
 } from "./ReportingVisuals.jsx";
 
@@ -171,6 +173,27 @@ function Detail({ title, children }) {
     </div>
   );
 }
+function PersonaPortrait({ persona }) {
+  if (persona.name !== "Jordan Williams") {
+    return (
+      <span
+        className="rr-persona-fallback"
+        role="img"
+        aria-label={`${persona.name}, illustrative persona`}
+      >
+        <Users size={32} aria-hidden="true" />
+      </span>
+    );
+  }
+
+  return (
+    <img
+      className="rr-persona-photo"
+      src="/personas/jordan-williams.png"
+      alt={`${persona.name}, synthetic advisor persona portrait`}
+    />
+  );
+}
 export default function ReportingResearch({ profile, onNavigate }) {
   const strategy = profile.strategy;
   const [active, setActive] = useState(0);
@@ -179,7 +202,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
   const [competitor, setCompetitor] = useState(0);
   const [capability, setCapability] = useState(0);
   const [step, setStep] = useState(null);
-  const [competitorView, setCompetitorView] = useState("explorer");
+  const [competitorView, setCompetitorView] = useState("map");
   const [comparisonCell, setComparisonCell] = useState(null);
   const journeyPanel = useRef(null);
   const vendorPanel = useRef(null);
@@ -393,16 +416,22 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 aria-label="Competitor presentation"
               >
                 <button
-                  aria-pressed={competitorView === "explorer"}
-                  onClick={() => setCompetitorView("explorer")}
+                  aria-pressed={competitorView === "map"}
+                  onClick={() => setCompetitorView("map")}
                 >
-                  Explore capabilities
+                  Capability map
                 </button>
                 <button
                   aria-pressed={competitorView === "grid"}
                   onClick={() => setCompetitorView("grid")}
                 >
-                  Capability evidence map
+                  Tabular evidence
+                </button>
+                <button
+                  aria-pressed={competitorView === "explorer"}
+                  onClick={() => setCompetitorView("explorer")}
+                >
+                  Capability cards
                 </button>
                 <button
                   aria-pressed={competitorView === "cards"}
@@ -411,7 +440,13 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   Reference cards
                 </button>
               </div>
-              {competitorView === "explorer" ? (
+              {competitorView === "map" ? (
+                <ReportingCapabilityMap
+                  selected={comparisonCell}
+                  onSelect={selectComparison}
+                  onClear={() => setComparisonCell(null)}
+                />
+              ) : competitorView === "explorer" ? (
                 <ReportingCapabilityExplorer
                   selected={comparisonCell}
                   onSelect={selectComparison}
@@ -454,70 +489,87 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   })}
                 </div>
               )}
-              <article
-                className="rr-detail"
-                id="reporting-vendor-detail"
-                ref={vendorPanel}
-                tabIndex={-1}
-                aria-live="polite"
-              >
-                <span className="am-eyebrow">
-                  {vendor.incumbent
-                    ? "Incumbent Wealthscape baseline"
-                    : "Vendor-described capability"}
-                </span>
-                <h3>
-                  {vendor.name} · {vendor.focus}
-                </h3>
-                {comparisonCell && (
-                  <div className="rr-comparison-note">
-                    <h4>
-                      {reportingComparisonColumns[comparisonCell.column]} ·{" "}
-                      {reportingComparison[comparisonCell.row].cells[
-                        comparisonCell.column
-                      ].described
-                        ? "Described in source"
-                        : "Not assessed"}
-                    </h4>
-                    <p>
-                      {
-                        reportingComparison[comparisonCell.row].cells[
-                          comparisonCell.column
-                        ].note
-                      }
-                    </p>
+              {competitorView !== "map" && (
+                <article
+                  className="rr-detail"
+                  id="reporting-vendor-detail"
+                  ref={vendorPanel}
+                  tabIndex={-1}
+                  aria-live="polite"
+                >
+                  <span className="am-eyebrow">
+                    {vendor.incumbent
+                      ? "Incumbent Wealthscape baseline"
+                      : "Vendor-described capability"}
+                  </span>
+                  <h3>
+                    {vendor.name} · {vendor.focus}
+                  </h3>
+                  {comparisonCell && (
+                    <div className="rr-comparison-note">
+                      <h4>
+                        {reportingComparisonColumns[comparisonCell.column]} ·{" "}
+                        {
+                          reportingCapabilityLevels[
+                            reportingComparison[comparisonCell.row].cells[
+                              comparisonCell.column
+                            ].level
+                          ].description
+                        }
+                      </h4>
+                      <p>
+                        {
+                          reportingComparison[comparisonCell.row].cells[
+                            comparisonCell.column
+                          ].note
+                        }
+                      </p>
+                    </div>
+                  )}
+                  <div className="rr-grid">
+                    <Detail title="Public evidence">{vendor.evidence}</Detail>
+                    <Detail title="Proposed response">
+                      {vendor.implication}
+                    </Detail>
                   </div>
-                )}
-                <div className="rr-grid">
-                  <Detail title="Public evidence">{vendor.evidence}</Detail>
-                  <Detail title="Proposed response">
-                    {vendor.implication}
+                  <Detail title="Illustrative pilot & production gap">
+                    {vendor.gap}
                   </Detail>
-                </div>
-                <Detail title="Illustrative pilot & production gap">
-                  {vendor.gap}
-                </Detail>
-                <div className="rr-footer">
-                  <div className="rr-source-links">
-                    <Source source={vendor.source} />
-                    {vendor.additionalSource && (
-                      <Source source={vendor.additionalSource} />
-                    )}
+                  <div className="rr-footer">
+                    <div className="rr-source-links">
+                      {[
+                        vendor.source,
+                        vendor.additionalSource,
+                        ...(vendor.additionalSources || []),
+                      ]
+                        .filter(Boolean)
+                        .filter(
+                          (source, index, sources) =>
+                            sources.indexOf(source) === index,
+                        )
+                        .map((source) => (
+                          <Source source={source} key={source} />
+                        ))}
+                    </div>
+                    <Action
+                      onNavigate={onNavigate}
+                      layer={vendor.layer}
+                      sub={vendor.sub}
+                    >
+                      {vendor.action}
+                    </Action>
                   </div>
-                  <Action
-                    onNavigate={onNavigate}
-                    layer={vendor.layer}
-                    sub={vendor.sub}
-                  >
-                    {vendor.action}
-                  </Action>
-                </div>
-              </article>
-              <EvidenceCards items={reportingNarrativeEvidence} />
-              <div className="rr-thesis">
-                <h3>The control-layer opportunity</h3>
-                <p>{reportingControlGap}</p>
-              </div>
+                </article>
+              )}
+              {competitorView === "cards" && (
+                <>
+                  <EvidenceCards items={reportingNarrativeEvidence} />
+                  <div className="rr-thesis">
+                    <h3>The control-layer opportunity</h3>
+                    <p>{reportingControlGap}</p>
+                  </div>
+                </>
+              )}
               <p className="rr-evidence">
                 Vendor pages reviewed 15 September 2026. Public positioning
                 establishes a comparison point; it does not prove integration
@@ -602,16 +654,20 @@ export default function ReportingResearch({ profile, onNavigate }) {
               <EvidenceCards items={reportingClientEvidence} />
               <p className="rr-intro">
                 Illustrative persona · {strategy.persona.role}. These pain
-                statements frame discovery; they are not verbatim interview
-                findings.
+                statements frame discovery; quote-style language is synthesized
+                from the research packet, not a transcript.
               </p>
-              <div className="rr-grid">
+              <div className="rr-grid rr-persona-grid">
                 <article className="rr-persona">
-                  <span className="rr-icon">
-                    <Users size={22} />
-                  </span>
-                  <h3>{strategy.persona.name}</h3>
-                  <dl>
+                  <PersonaPortrait persona={strategy.persona} />
+                  <div className="rr-persona-header">
+                    <div>
+                      <h3>{strategy.persona.name}</h3>
+                      <p className="rr-persona-role">{strategy.persona.role}</p>
+                    </div>
+                    <span className="rr-persona-badge">JTBD persona</span>
+                  </div>
+                  <dl className="rr-persona-facts">
                     {strategy.persona.details.map(([key, value]) => (
                       <div key={key}>
                         <dt>{key}</dt>
@@ -619,11 +675,37 @@ export default function ReportingResearch({ profile, onNavigate }) {
                       </div>
                     ))}
                   </dl>
+                  {strategy.customerNeeds?.length > 0 && (
+                    <div className="rr-need-stack">
+                      <p className="rr-need-title">Advisor needs in this job</p>
+                      {strategy.customerNeeds.map((item) => (
+                        <article className="rr-need" key={`${item.type}-${item.job}`}>
+                          <span>{item.type}</span>
+                          <strong>{item.need}</strong>
+                          <small>{item.job}</small>
+                        </article>
+                      ))}
+                    </div>
+                  )}
                 </article>
                 <div className="rr-stack">
                   {strategy.customerPains.map((item) => (
                     <article className="rr-pain" key={item.pain}>
+                      <div className="rr-pain-header">
+                        {item.phase && (
+                          <span className="rr-pain-phase">{item.phase}</span>
+                        )}
+                        {item.metric && (
+                          <span className="rr-pain-metric">{item.metric}</span>
+                        )}
+                      </div>
+                      {item.quote && (
+                        <blockquote>{item.quote}</blockquote>
+                      )}
                       <p>{item.pain}</p>
+                      {item.job && (
+                        <small>Where it shows up: {item.job}</small>
+                      )}
                     </article>
                   ))}
                 </div>

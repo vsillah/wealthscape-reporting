@@ -1,5 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   reportingOutcomeDetail,
   reportingScore,
@@ -7,11 +10,15 @@ import {
   reportingPlot,
   reportingQuadrant,
   reportingComparison,
+  reportingCapabilityMap,
   reportingCompetitors,
   reportingSources,
 } from "./reportingResearch.js";
+import { reportingBrandAssets } from "./reportingBrandAssets.js";
 import { reportingClientEvidence } from "./reportingEvidence.js";
 import { reportingOutcomes } from "./reportingOutcomes.js";
+
+const srcDir = dirname(fileURLToPath(import.meta.url));
 
 test("reporting recommendations reach report review instead of returning to Strategy", () => {
   const outcome = {
@@ -103,28 +110,136 @@ test("quadrants use an explicit 5/10 boundary, independent of opportunity rank",
 });
 test("competitor map preserves unknown evidence and does not assign satisfaction scores", () => {
   assert.equal(reportingComparison.length, 9);
-  const unknown = reportingComparison
+  const notDirect = reportingComparison
     .flatMap((row) => row.cells)
-    .filter((cell) => !cell.described);
-  assert.ok(unknown.length >= 5);
+    .filter((cell) => cell.level !== "direct");
+  assert.ok(notDirect.length >= 5);
   for (const row of reportingComparison) {
     assert.equal(row.cells.length, 4);
     assert.equal("satisfaction" in row, false);
-    for (const cell of row.cells)
+    for (const cell of row.cells) {
+      assert.ok(["direct", "strong", "partial", "open"].includes(cell.level));
+      assert.ok(cell.score >= 0 && cell.score <= 1);
       assert.ok(reportingCompetitors[cell.reference] && cell.note.length > 20);
+    }
   }
+});
+test("reporting capability map scores workflow breadth and uses real logos", () => {
+  assert.equal(reportingCapabilityMap.length, reportingComparison.length);
+  for (const point of reportingCapabilityMap) {
+    const row = reportingComparison[point.row];
+    assert.equal(point.name, row.name);
+    assert.equal(
+      point.capabilityScore,
+      row.cells.reduce((sum, cell) => sum + cell.score, 0),
+    );
+    assert.equal(
+      point.supportedCount,
+      row.cells.filter((cell) => cell.score > 0).length,
+    );
+    assert.equal("satisfaction" in row, false);
+    assert.equal(typeof point.satisfactionProxy, "number");
+    assert.ok(point.satisfactionProxy >= 6);
+    assert.match(
+      point.assumption,
+      /proxy|directional|evidence|documentation|validate|confirm|not prove/i,
+    );
+    assert.ok(reportingBrandAssets[point.name], `${point.name}: logo asset`);
+    assert.ok(
+      existsSync(
+        join(
+          srcDir,
+          "../public/competitor-brands",
+          reportingBrandAssets[point.name].file,
+        ),
+      ),
+      `${point.name}: local logo file exists`,
+    );
+  }
+});
+test("competitor capability map keeps confidence separate from chart axes", () => {
+  const visualsSource = readFileSync(
+    join(srcDir, "ReportingVisuals.jsx"),
+    "utf8",
+  );
+  assert.doesNotMatch(visualsSource, /Less public support/);
+  assert.match(visualsSource, /Narrower workflow coverage/);
+  assert.match(visualsSource, /marker outline shows\s+public-evidence confidence/);
+});
+test("reporting journey icons are anchored to the curve coordinates", () => {
+  const visualsSource = readFileSync(
+    join(srcDir, "ReportingVisuals.jsx"),
+    "utf8",
+  );
+  assert.ok(visualsSource.includes('top: `${(point.y / 260) * 100}%`'));
+  assert.equal(visualsSource.includes("top: point.y + 36"), false);
+});
+test("executive findings stay aligned with reporting section order", () => {
+  const reportingSource = readFileSync(
+    join(srcDir, "ReportingResearch.jsx"),
+    "utf8",
+  );
+  const summarySource = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.jsx"),
+    "utf8",
+  );
+  const sectionsBlock = reportingSource.match(/const sections = \[([\s\S]*?)\];/);
+  assert.ok(sectionsBlock, "reporting sections block exists");
+  const sectionIds = [...sectionsBlock[1].matchAll(/^\s+\["([^"]+)"/gm)].map(
+    (match) => match[1],
+  );
+  const findingsBlock = summarySource.match(
+    /reporting:\s*\{[\s\S]*?findings:\s*\{([\s\S]*?)\n    \},\n    assumptions:/,
+  );
+  assert.ok(findingsBlock, "reporting executive findings block exists");
+  const findingIds = [...findingsBlock[1].matchAll(/^\s+([a-z]+): \[/gm)].map(
+    (match) => match[1],
+  );
+  assert.deepEqual(findingIds, sectionIds);
+  assert.match(summarySource, /getStrategySectionFinding\(track, section\.id\)/);
+  assert.match(summarySource, /getStrategySectionFinding\(track, sectionId\)/);
+});
+test("maintenance executive findings connect research evidence to recommendations", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const summarySource = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.jsx"),
+    "utf8",
+  );
+  const sectionsBlock = maintenanceSource.match(/const sections = \[([\s\S]*?)\];/);
+  assert.ok(sectionsBlock, "maintenance sections block exists");
+  const sectionIds = [
+    ...sectionsBlock[1].matchAll(/id:\s*(\d+),\s+label:\s*"([^"]+)"/g),
+  ].map((match) => match[1]);
+  const findingsBlock = summarySource.match(
+    /maintenance:\s*\{[\s\S]*?findings:\s*\{([\s\S]*?)\n    \},\n    assumptions:/,
+  );
+  assert.ok(findingsBlock, "maintenance executive findings block exists");
+  const findingIds = [...findingsBlock[1].matchAll(/^\s+(\d+): \[/gm)].map(
+    (match) => match[1],
+  );
+  assert.deepEqual(findingIds, sectionIds);
+  assert.match(findingsBlock[1], /servicing quality matters/);
+  assert.match(findingsBlock[1], /outcome map concentrates opportunity/);
+  assert.match(findingsBlock[1], /measured pilot/);
 });
 test("Fidelity remains a public incumbent baseline with bounded reporting evidence", () => {
   const row = reportingComparison.find(
     (item) => item.name === "Fidelity (Wealthscape)",
   );
   assert.deepEqual(
-    row.cells.map((cell) => cell.described),
-    [true, false, false, false],
+    row.cells.map((cell) => cell.level),
+    ["strong", "open", "partial", "partial"],
   );
   const reference = reportingCompetitors[row.cells[0].reference];
   assert.equal(reference.incumbent, true);
-  for (const source of [reference.source, reference.additionalSource]) {
+  for (const source of [
+    reference.source,
+    reference.additionalSource,
+    ...reference.additionalSources,
+  ]) {
     assert.ok(
       new URL(reportingSources[source].href).hostname.endsWith(".fidelity.com"),
     );

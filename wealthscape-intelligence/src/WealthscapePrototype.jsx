@@ -1476,11 +1476,59 @@ const MARKET_SIGNALS = [
 ];
 
 const CUSTOMER_PAINS = [
-  { metric:"~2 hrs",   pain:"Per client report — scheduling, running, reconciling, then rebuilding in Excel/PowerPoint just to add firm branding." },
-  { metric:"12+",      pain:"Separate logins every morning to reconstruct a book-level view of what needs attention before market open." },
-  { metric:"Manual",   pain:"Spreadsheet watchlists to track allocation drift, tax-loss windows, and at-risk clients — with no automated detection." },
-  { metric:"Black box", pain:"Report exports with no validation trail; stale prices and missing corporate actions surfaced only after the client noticed." },
-  { metric:"Fidelity", pain:"The client app carried the custodian's brand, not the advisor's — undercutting the independent RIA relationship." },
+  {
+    metric:"~2 hrs",
+    phase:"Prepare",
+    job:"Prepare · Assemble a consistent draft",
+    quote:"I can get the numbers, but turning them into a client-ready report still means rebuilding the story in Excel or PowerPoint.",
+    pain:"Per-client report work is split across scheduling, running, reconciling, and branded output assembly.",
+  },
+  {
+    metric:"12+",
+    phase:"Locate",
+    job:"Locate · Find the right inputs",
+    quote:"My morning starts by opening separate systems just to rebuild the book-level view I need before clients start calling.",
+    pain:"Separate logins force the advisor to reconstruct what needs attention before market open.",
+  },
+  {
+    metric:"Manual",
+    phase:"Monitor",
+    job:"Monitor · Check delivery readiness",
+    quote:"I am still using spreadsheet watchlists to spot allocation drift, tax windows, and at-risk clients.",
+    pain:"Manual watchlists carry the detection burden for drift, tax-loss windows, and client risk signals.",
+  },
+  {
+    metric:"Black box",
+    phase:"Confirm",
+    job:"Confirm · Resolve review friction",
+    quote:"I do not know a stale price or missing action is in the report until the client or reviewer catches it.",
+    pain:"Report exports lack a visible validation trail for stale prices, missing corporate actions, and review evidence.",
+  },
+  {
+    metric:"Fidelity",
+    phase:"Conclude",
+    job:"Conclude · Deliver and follow through",
+    quote:"The client experience should feel like my advisory relationship, not just the custodian's portal.",
+    pain:"Custodian-branded delivery can weaken the independent RIA relationship after the report leaves the advisor.",
+  },
+];
+
+const CUSTOMER_NEEDS = [
+  {
+    type:"Functional",
+    job:"Prepare · Assemble a consistent draft",
+    need:"Reduce the time and tool-switching required to produce a client-ready report.",
+  },
+  {
+    type:"Social",
+    job:"Conclude · Deliver and follow through",
+    need:"Show up as the trusted advisor relationship, not as a generic custodian handoff.",
+  },
+  {
+    type:"Emotional",
+    job:"Confirm · Resolve review friction",
+    need:"Feel confident that stale data, missing evidence, and unsupported narrative will be caught before the client sees it.",
+  },
 ];
 
 // imp = importance, sat = current satisfaction (both /10). Opportunity score per
@@ -1870,6 +1918,7 @@ const makeProfile = ({
   stats = STRAT_STATS,
   marketSignals = MARKET_SIGNALS,
   customerPains = CUSTOMER_PAINS,
+  customerNeeds = CUSTOMER_NEEDS,
   outcomes = OUTCOMES,
   jobMap = JOB_MAP,
   recommendations = RECOMMENDATIONS,
@@ -1892,6 +1941,7 @@ const makeProfile = ({
     stats,
     marketSignals,
     customerPains,
+    customerNeeds,
     outcomes,
     jobMap,
     recommendations,
