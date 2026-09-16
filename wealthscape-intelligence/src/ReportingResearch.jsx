@@ -80,10 +80,12 @@ function EvidenceCards({ items }) {
             </div>
           )}
           <h3>{item.title}</h3>
-          {item.context && <p className="rr-customer-context">{item.context}</p>}
+          {item.context && <p className="rr-evidence-context">{item.context}</p>}
           <p>{item.finding}</p>
           {item.implication && (
-            <Detail title="Strategy implication">{item.implication}</Detail>
+            <Detail title={item.implicationTitle || "Strategy implication"}>
+              {item.implication}
+            </Detail>
           )}
           <div className="rr-source-links">
             {item.sources.map((source) => (

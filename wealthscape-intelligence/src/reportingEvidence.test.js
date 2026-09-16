@@ -33,6 +33,20 @@ test("every evidence and recommendation citation resolves to a public source", (
   }
 });
 
+test("competitor evidence separates metrics from competitive reads", () => {
+  assert.equal(reportingMarketEvidence.length, 4);
+  for (const item of reportingMarketEvidence) {
+    assert.ok(item.value, `${item.title}: metric value`);
+    assert.ok(item.metricLabel?.length > 25, `${item.title}: metric label`);
+    assert.ok(item.context?.length > 50, `${item.title}: context`);
+    assert.equal(item.implicationTitle, "Competitive read");
+    assert.ok(item.implication?.length > 70, `${item.title}: competitive read`);
+    assert.doesNotMatch(item.implication, /^Improve|^Test|^Validate/);
+  }
+  assert.match(reportingMarketEvidence[0].title, /mainstream competitive context/);
+  assert.match(reportingMarketEvidence[3].title, /credible.*under-penetrated/);
+});
+
 test("four moves cover all five ordinal outcomes and retain their distinct pilot destinations", () => {
   assert.deepEqual(
     reportingPriorityOutcomes.map((item) => item.id),

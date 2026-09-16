@@ -10,6 +10,8 @@ The section remains separate from account maintenance. Account-maintenance value
 
 Section 4 customer-context evidence now separates the metric being shown from the customer/workflow context and the downstream strategy implication. The large value is labelled as the source metric, the card headline describes the customer context, and the implication states what the strategy should test. The 41.4-hour Kitces figure is explicitly framed as an illustrative senior-advisor workweek, not a measured reporting-preparation baseline.
 
+Section 2 competitor-research evidence now uses the same structure. The large value is labelled as the source metric, the card headline states the competitive context, and the interpretation is labelled "Competitive read" to avoid presenting a recommendation where the section should only explain advantage, disadvantage, parity, or uncertainty.
+
 ## Score provenance
 
 Every rating is a management estimate, not a customer survey result. Nine pairs retain earlier local strategy ratings from `wealthscape-intelligence/src/WealthscapePrototype.jsx` at `6bbae9f`; the description is narrowed to reporting where needed:
@@ -46,6 +48,7 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - `npm --prefix wealthscape-intelligence run build` — pass.
 - `node --test wealthscape-intelligence/src/*.test.js` — 41 pass, 0 fail.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 42 pass, 0 fail after the customer-context card clarification.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 43 pass, 0 fail after the competitor-research card clarification.
 - `git diff --check` — pass.
 - 16 September follow-up: `git diff --check` — pass.
 - Integrated Browser: `http://127.0.0.1:5182/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.

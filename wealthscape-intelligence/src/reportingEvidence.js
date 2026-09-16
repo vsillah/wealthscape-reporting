@@ -135,39 +135,56 @@ export const reportingEvidenceSources = {
 
 export const reportingMarketEvidence = [
   {
-    title: "Dual registration is the majority case",
+    title:
+      "Mixed brokerage and advisory relationships are the mainstream competitive context.",
     value: "51.9%",
+    metricLabel: "FINRA-registered representatives with both registrations",
+    context:
+      "This is not a feature claim; it describes the account context a reporting experience must explain clearly.",
     finding:
       "331,802 of 639,723 FINRA-registered representatives held both registrations at year-end 2025. In 2025, 11,294 added adviser registration and 1,800 dropped it.",
+    implicationTitle: "Competitive read",
     implication:
-      "Carry brokerage and advisory context with the household throughout preparation and review.",
+      "Advantage sits with platforms that make mixed brokerage/advisory context understandable in one client-ready report; disadvantage shows up when reports split the relationship into separate fragments.",
     sources: ["finraSnapshot"],
   },
   {
-    title: "Reporting remains essential",
+    title: "Reporting is a high-adoption workflow, so parity is not enough.",
     value: "8.6 / 87.5%",
+    metricLabel: "importance score / advisor adoption",
+    context:
+      "A common, recurring workflow creates competitive exposure because small usability gaps repeat across many client cycles.",
     finding:
       "Kitces 2025 reports performance-reporting importance of 8.6 and adoption of 87.5%.",
+    implicationTitle: "Competitive read",
     implication:
-      "Improve a recurring client workflow with a high adoption baseline.",
+      "Wealthscape can be disadvantaged if reporting remains merely available while peers make preparation, review, and delivery easier to complete.",
     sources: ["kitces"],
   },
   {
-    title: "Platforms absorb the work as satisfaction weakens",
+    title: "Platform reporting responsibility is rising while satisfaction is slipping.",
     value: "7.8 → 7.1",
+    metricLabel: "platform reporting satisfaction, 2023 to 2025",
+    context:
+      "The shift points to a competitive opening in the work surrounding the report, not just the report output itself.",
     finding:
       "Platform performance-reporting satisfaction fell from 7.8 in 2023 to 7.1 in 2025; third-party usage fell from 67.3% to 60.4%.",
+    implicationTitle: "Competitive read",
     implication:
-      "Strategic inference: platform responsibility is growing faster than the reported experience improves. Measure the remaining work.",
+      "The potential advantage is an integrated reporting workflow that removes the preparation and review burden users may still be solving outside the platform.",
     sources: ["kitces"],
   },
   {
-    title: "Wealthscape starts near or above its peer baseline",
+    title: "Wealthscape appears credible on ratings but under-penetrated in primary use.",
     value: "7.2 / 7.0 / 7.73",
+    metricLabel: "Kitces reporting / portal ratings and T3 custodial rating",
+    context:
+      "The ratings suggest a plausible starting base; the low primary-use shares make the competitive read less certain.",
     finding:
       "Fidelity Institutional: reporting 7.2 versus platform group 7.1; portal 7.0 versus 7.0. T3 rates Wealthscape 7.73 versus custodial category 7.11. Primary reporting and portal shares are 1.2% and 0.6%.",
+    implicationTitle: "Competitive read",
     implication:
-      "Validate existing capabilities before proposing replacement. Low-share ratings have limited reliability; the surveys measure different categories.",
+      "This looks less like a broken-product signal and more like a discoverability, workflow-fit, or adoption uncertainty; the public data does not prove advantage or disadvantage on its own.",
     sources: ["kitces", "t3"],
   },
 ];
