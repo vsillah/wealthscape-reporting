@@ -1,3 +1,4 @@
+import StrategyExecutiveSummary from "./StrategyExecutiveSummary.jsx";
 import {
   reportingMarketEvidence,
   reportingClientEvidence,
@@ -217,6 +218,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
           </button>
         </div>
       </nav>
+      <StrategyExecutiveSummary track="reporting" sections={sections.map(([id, label]) => ({ id, label }))} onJump={id => jump(sections.findIndex(([sectionId]) => sectionId === id))} />
       {sections.map(([id, label, Icon], index) => (
         <section
           className="mr-panel rr-panel"

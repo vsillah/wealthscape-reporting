@@ -1,3 +1,4 @@
+import StrategyExecutiveSummary from "./StrategyExecutiveSummary.jsx";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -376,6 +377,7 @@ export default function MaintenanceResearch({
           </button>
         </div>
       </nav>
+      <StrategyExecutiveSummary track="maintenance" sections={sections} onJump={advance} />
       {sections.map((item, order) => {
         const section = item.id;
         const Icon = item.icon;

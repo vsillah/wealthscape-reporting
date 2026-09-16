@@ -120,3 +120,29 @@ The delivery composer is labeled as a simulation and does not send messages.
 - Overview only: Performance, AUA, generated reports and Customize charts are
   intentionally unchanged. Profile URLs and report-template/document behavior
   are untouched; the full report workflow was not replayed. No live data or MP4.
+
+## Strategy executive-summary follow-up
+
+- Added a shared presentation component with tailored Account Maintenance and
+  Reporting Modernization content before section 1. Each track has a top-line
+  recommendation, section-level findings, assumptions to validate and next steps.
+- Eight maintenance and eleven reporting finding rows use the existing section
+  IDs, labels and jump handlers. The original selector, Previous/Next controls,
+  detailed sections and public source links are preserved.
+- Assumptions explicitly cover external research/synthetic evidence boundaries,
+  Fidelity organizational complexity, servicing model, tech debt, data constraints,
+  compliance, security architecture, cost-to-integrate and operating ownership.
+  The next steps are track-specific discovery, architecture, pilot and decision
+  gates. Content was checked against the existing research and humanizer guidance.
+- Desktop (1280px): clicked all 19 summary jumps; matching selector text and
+  section headings appeared below the sticky navigation. Exercised both existing
+  dropdowns and Next controls. Visually reviewed conclusions, findings and the
+  assumptions/next-step columns on both tracks.
+- Mobile (390px): both summaries precede section 1 and have no page-level
+  horizontal overflow. Inspected wrapping, single-column findings and assumptions;
+  reporting control jump and keyboard Enter on maintenance Recommendations work.
+- Build, all 39 tests and diff whitespace checks pass. No new business/data helper
+  was introduced; this content/presentation change is covered by the browser QA
+  above. No MP4 or live workflow/customer-data smoke was recorded.
+- Report templates, Client Portal ranges, detailed strategy evidence and operational
+  flows were intentionally unchanged; their full behavioral suites were not replayed.
