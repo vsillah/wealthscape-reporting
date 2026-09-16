@@ -1,4 +1,4 @@
-import StrategyExecutiveSummary from "./StrategyExecutiveSummary.jsx";
+import StrategyExecutiveSummary, { StrategySectionFinding } from "./StrategyExecutiveSummary.jsx";
 import { useEffect, useRef, useState } from "react";
 import {
   BookOpen,
@@ -407,6 +407,7 @@ export default function MaintenanceResearch({
                 <h2 id={`maintenance-heading-${item.id}`}>{item.label}</h2>
               </div>
             </header>
+            <StrategySectionFinding track="maintenance" sectionId={section} />
             {section === 0 && (
               <>
                 <p className="mr-lead">

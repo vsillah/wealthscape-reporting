@@ -1,4 +1,4 @@
-import StrategyExecutiveSummary from "./StrategyExecutiveSummary.jsx";
+import StrategyExecutiveSummary, { StrategySectionFinding } from "./StrategyExecutiveSummary.jsx";
 import {
   reportingMarketEvidence,
   reportingClientEvidence,
@@ -240,6 +240,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
               <h2 id={`reporting-heading-${id}`}>{label}</h2>
             </div>
           </header>
+          <StrategySectionFinding track="reporting" sectionId={id} />
           {id === "thesis" && (
             <>
               <p className="mr-lead">

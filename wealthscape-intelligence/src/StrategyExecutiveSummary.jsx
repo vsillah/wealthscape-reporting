@@ -58,6 +58,16 @@ const summaries = {
   },
 };
 
+export function StrategySectionFinding({ track, sectionId }) {
+  const [headline, implication] = summaries[track].findings[sectionId];
+  return (
+    <div className="strategy-section-finding">
+      <h3>{headline}</h3>
+      <p>{implication}</p>
+    </div>
+  );
+}
+
 function ExecutiveFinding({ track, section, index, finding, onJump }) {
   const [expanded, setExpanded] = useState(false);
   const detailId = `${track}-finding-detail-${section.id}`;

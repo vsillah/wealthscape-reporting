@@ -178,3 +178,19 @@ The delivery composer is labeled as a simulation and does not send messages.
   introduces no business/data helper; focused browser checks cover its behavior.
   No report/portal functionality or detailed strategy content changed. No live
   workflow/customer-data smoke or MP4 was recorded.
+
+## Matching findings at detailed section starts
+
+- All eight Account Maintenance and eleven Reporting Modernization sections now
+  begin with the exact executive-card finding and implication, immediately after
+  the existing numbered heading. A shared StrategySectionFinding component reads
+  the same copy source as the cards; no duplicated findings can drift independently.
+- Framing uses a compact heading/paragraph and subtle divider, without card
+  chrome or a second drawer. Detailed content, source links and interactions remain.
+- Focused browser checks verified exact headline/implication equality for all 19
+  sections, correct placement after each heading, and all drawers initially closed.
+  Reclicked all 19 section jumps: navigator matched and headings landed below
+  sticky navigation. Opened/closed one existing summary drawer per track.
+- Visually inspected both tracks at 1280/390px; section framing wraps cleanly and
+  neither track has page-level horizontal overflow. Build, all 39 tests and diff
+  checks passed. No live-data smoke, operational-flow replay or MP4.

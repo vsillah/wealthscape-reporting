@@ -46,3 +46,7 @@
   .strategy-executive-conclusion { padding: 17px; }
   .strategy-executive h2 { font-size: 22px; }
 }
+
+.strategy-section-finding { margin: 0 0 24px; padding: 0 0 20px; border-bottom: 1px solid #e5eaf0; }
+.mr-panel .strategy-section-finding h3 { margin: 0 0 8px; max-width: 960px; font-size: 18px; line-height: 1.45; font-weight: 700; color: #1c2b3a; }
+.mr-panel .strategy-section-finding p { margin: 0; max-width: 960px; font-size: 14px; line-height: 1.65; color: #475569; }
