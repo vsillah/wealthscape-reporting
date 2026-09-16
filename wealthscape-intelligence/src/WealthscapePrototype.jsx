@@ -1,3 +1,4 @@
+import GeneratedReportPreview from "./GeneratedReportPreview.jsx";
 import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
 import MaintenanceResearch from "./MaintenanceResearch";
 import ReportingResearch from "./ReportingResearch.jsx";
@@ -994,7 +995,7 @@ function ReportBuilder({ bp, deepLink, profile, onScenarioAdvance, onSendToClien
       <div style={{ display:"flex", gap:2, background:T.gray100, borderRadius:10, padding:3, alignSelf:"flex-start" }}>
         {reportTabs.map(t=><button key={t.id} onClick={()=>setReportTab(t.id)} style={{ background:reportTab===t.id?T.white:"transparent", border:"none", borderRadius:8, padding:"7px 16px", fontSize:12, fontWeight:reportTab===t.id?700:500, color:reportTab===t.id?T.gray900:T.slate, cursor:"pointer", transition:"all 0.15s", whiteSpace:"nowrap" }}>{t.label}</button>)}
       </div>
-      <ReportGeneration bp={bp} onScenarioAdvance={onScenarioAdvance} onSendToClient={onSendToClient}/>
+      <ReportGeneration key={profile?.id} bp={bp} profile={profile} onScenarioAdvance={onScenarioAdvance} onSendToClient={onSendToClient}/>
     </div>
   );
   if (reportTab === "customize") return (
@@ -3093,14 +3094,15 @@ function SettingsLayer() {
 const PIPELINE_STAGES = [
   { id:"sync",       icon:Activity,  label:"Data Sync",         desc:"Pulling positions, transactions & pricing from custodian",  duration:1300, result:"47 positions · 312 txns · $4.28M AUM reconciled" },
   { id:"validate",   icon:Eye,       label:"Data Validation",   desc:"Checking completeness, stale prices & corporate actions",   duration:900,  result:"0 errors · 1 warning: INTL ETF price 4h stale" },
-  { id:"assemble",   icon:Layers,    label:"Report Assembly",   desc:"Building sections from validated data & applying template", duration:1400, result:"8 sections · 6 charts rendered · 2 tables built" },
-  { id:"narrative",  icon:Sparkles,  label:"AI Narrative",      desc:"Generating plain-language commentary from performance data", duration:1900, result:"348 words · Formal tone · 1 compliance flag added" },
-  { id:"compliance", icon:Check,     label:"Compliance Review", desc:"Running disclosure rules and appending audit trail",        duration:800,  result:"12 rules passed · 1 auto-disclosure appended" },
-  { id:"delivery",   icon:Mail,      label:"Delivery",          desc:"Publishing to client portal and sending email notification",duration:600,  result:"Portal updated · Email queued to 2 recipients" },
+  { id:"assemble",   icon:Layers,    label:"Report Assembly",   desc:"Building sections from validated data & applying template", duration:1400, result:"8 sections · 1 performance chart · 2 tables built" },
+  { id:"narrative",  icon:Sparkles,  label:"AI Narrative",      desc:"Generating plain-language commentary from performance data", duration:1900, result:"Commentary drafted · Stale-price disclosure included" },
+  { id:"compliance", icon:Check,     label:"Compliance Review", desc:"Running disclosure rules and appending audit trail",        duration:800,  result:"12 automated checks passed · Release review pending" },
+  { id:"delivery",   icon:Mail,      label:"Delivery readiness", desc:"Preparing the client copy and notification for release review",duration:600,  result:"Package prepared · 2 recipients · Not sent" },
 ];
 
-function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
+function ReportGeneration({ bp, profile, onScenarioAdvance, onSendToClient }) {
   const { isMobile } = bp;
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [running, setRunning]           = useState(false);
   const [done, setDone]                 = useState(false);
   const [currentStage, setCurrentStage] = useState(null);
@@ -3181,16 +3183,17 @@ function ReportGeneration({ bp, onScenarioAdvance, onSendToClient }) {
           <div style={{ width:40, height:40, borderRadius:"50%", background:T.emerald, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}><Check size={20} color={T.white}/></div>
           <div style={{ flex:1, minWidth:160 }}>
             <div style={{ fontSize:14, fontWeight:700, color:T.gray900, marginBottom:2 }}>Report Ready</div>
-            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · AI narrative + compliance cleared</div>
+            <div style={{ fontSize:12, color:T.slate }}>Generated in {(totalMs/1000).toFixed(1)}s · Review copy prepared · 1 validation warning</div>
           </div>
           <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
-            <button style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
+            <button onClick={()=>setPreviewOpen(true)} style={{ background:T.white, border:`1px solid ${T.gray200}`, borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:600, color:T.gray600, cursor:"pointer" }}>Preview</button>
             <button onClick={onSendToClient} style={{ background:T.green, color:T.white, border:"none", borderRadius:7, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", display:"flex", alignItems:"center", gap:6, boxShadow:onSendToClient?"0 0 0 3px rgba(11,93,46,0.25)":"none" }}>
               <Mail size={13}/> Send to Client
             </button>
           </div>
         </div>
       )}
+      {previewOpen && <GeneratedReportPreview profile={profile} onClose={()=>setPreviewOpen(false)}/>}
     </div>
   );
 }
