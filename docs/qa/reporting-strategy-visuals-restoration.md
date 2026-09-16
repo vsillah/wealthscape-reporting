@@ -12,6 +12,8 @@ Section 4 customer-context evidence now separates the metric being shown from th
 
 Section 2 competitor-research evidence now uses the same structure. The large value is labelled as the source metric, the card headline states the competitive context, and the interpretation is labelled "Competitive read" to avoid presenting a recommendation where the section should only explain advantage, disadvantage, parity, or uncertainty.
 
+Section 2 competitor-research cards and section 4 customer-context cards now also include compact iconography and an explicit sentiment signal. Up-right signals identify potential advantage or demand tailwind, down-right signals identify competitive pressure or friction, and side-to-side signals identify neutral, mixed or validation-needed evidence. The signal summary sits above the source context so reviewers can see the takeaway before reading the source detail.
+
 ## Score provenance
 
 Every rating is a management estimate, not a customer survey result. Nine pairs retain earlier local strategy ratings from `wealthscape-intelligence/src/WealthscapePrototype.jsx` at `6bbae9f`; the description is narrowed to reporting where needed:
@@ -49,8 +51,10 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - `node --test wealthscape-intelligence/src/*.test.js` — 41 pass, 0 fail.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 42 pass, 0 fail after the customer-context card clarification.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 43 pass, 0 fail after the competitor-research card clarification.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 43 pass, 0 fail after adding competitor and customer sentiment/icon signals.
 - `git diff --check` — pass.
 - 16 September follow-up: `git diff --check` — pass.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write.
 - Integrated Browser: `http://127.0.0.1:5182/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.
 - Visual inspection at 1440×1000, 768×1024 and 390×844. Tablet/mobile document widths equal viewport widths. The map deliberately scrolls horizontally on small screens, with the region labelled accordingly.
 - Clicked all 15 map points: correct ID, scores and detail for each.

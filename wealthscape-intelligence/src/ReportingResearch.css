@@ -761,6 +761,59 @@
   min-width: 0;
 }
 
+.rr-evidence-topline {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  min-width: 0;
+}
+.rr-evidence-icon {
+  align-items: center;
+  background: #eef7f2;
+  border: 1px solid #d7e8de;
+  border-radius: 12px;
+  color: #0b5d2e;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+.rr-evidence-signal {
+  align-items: center;
+  border: 1px solid;
+  border-radius: 999px;
+  display: inline-flex;
+  flex: 0 1 auto;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+  max-width: 100%;
+  padding: 6px 9px;
+  text-transform: uppercase;
+}
+.rr-evidence-signal svg {
+  flex: 0 0 auto;
+}
+.rr-signal-positive {
+  background: #e7f6ed;
+  border-color: #b9dfc8;
+  color: #0b5d2e;
+}
+.rr-signal-negative {
+  background: #fff0f0;
+  border-color: #f2c2c2;
+  color: #9f1d1d;
+}
+.rr-signal-neutral {
+  background: #eef4f8;
+  border-color: #cad9e3;
+  color: #314b60;
+}
 .rr-evidence-value {
   display: block;
   font-size: 25px;
@@ -787,6 +840,12 @@
   font-weight: 650;
   margin: 12px 0;
   padding-left: 12px;
+}
+.rr-evidence-signal-summary {
+  color: #203548;
+  font-weight: 750;
+  line-height: 1.55;
+  margin: 10px 0;
 }
 .rr-roadmap {
   padding-left: 22px;

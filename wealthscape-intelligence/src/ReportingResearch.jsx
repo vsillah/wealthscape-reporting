@@ -13,10 +13,14 @@ import {
 } from "./reportingEvidence.js";
 import { useEffect, useRef, useState } from "react";
 import {
+  ArrowDownRight,
+  ArrowLeftRight,
   ArrowRight,
+  ArrowUpRight,
   BookOpen,
   ChartScatter,
   ClipboardCheck,
+  Clock,
   Columns3,
   FileText,
   Layers,
@@ -59,6 +63,33 @@ const sections = [
   ["measurement", "Roadmap & decision gates", Route],
   ["sources", "Source register", BookOpen],
 ];
+
+const evidenceIconMap = {
+  chart: ChartScatter,
+  clock: Clock,
+  columns: Columns3,
+  file: FileText,
+  layers: Layers,
+  lightbulb: Lightbulb,
+  route: Route,
+  trend: ChartScatter,
+  users: Users,
+};
+const evidenceSignalMap = {
+  positive: {
+    Icon: ArrowUpRight,
+    label: "Positive signal",
+  },
+  negative: {
+    Icon: ArrowDownRight,
+    label: "Pressure signal",
+  },
+  neutral: {
+    Icon: ArrowLeftRight,
+    label: "Neutral signal",
+  },
+};
+
 function Source({ source = "packet" }) {
   const item = reportingSources[source];
   if (!item.href) return <span>{item.label} · Primary link pending</span>;
@@ -71,29 +102,51 @@ function Source({ source = "packet" }) {
 function EvidenceCards({ items }) {
   return (
     <div className="rr-grid">
-      {items.map((item) => (
-        <article className="rr-detail" key={item.title}>
-          {item.value && (
-            <div className="rr-evidence-metric">
-              <strong className="rr-evidence-value">{item.value}</strong>
-              {item.metricLabel && <span>{item.metricLabel}</span>}
+      {items.map((item) => {
+        const CardIcon = evidenceIconMap[item.icon] || FileText;
+        const signal =
+          evidenceSignalMap[item.signal] || evidenceSignalMap.neutral;
+        const SignalIcon = signal.Icon;
+        return (
+          <article className="rr-detail" key={item.title}>
+            <div className="rr-evidence-topline">
+              <span className="rr-evidence-icon" aria-hidden="true">
+                <CardIcon size={18} />
+              </span>
+              {item.signal && (
+                <span className={`rr-evidence-signal rr-signal-${item.signal}`}>
+                  <SignalIcon size={14} aria-hidden="true" />
+                  {item.signalLabel || signal.label}
+                </span>
+              )}
             </div>
-          )}
-          <h3>{item.title}</h3>
-          {item.context && <p className="rr-evidence-context">{item.context}</p>}
-          <p>{item.finding}</p>
-          {item.implication && (
-            <Detail title={item.implicationTitle || "Strategy implication"}>
-              {item.implication}
-            </Detail>
-          )}
-          <div className="rr-source-links">
-            {item.sources.map((source) => (
-              <Source key={source} source={source} />
-            ))}
-          </div>
-        </article>
-      ))}
+            {item.value && (
+              <div className="rr-evidence-metric">
+                <strong className="rr-evidence-value">{item.value}</strong>
+                {item.metricLabel && <span>{item.metricLabel}</span>}
+              </div>
+            )}
+            <h3>{item.title}</h3>
+            {item.signalSummary && (
+              <p className="rr-evidence-signal-summary">
+                {item.signalSummary}
+              </p>
+            )}
+            {item.context && <p className="rr-evidence-context">{item.context}</p>}
+            <p>{item.finding}</p>
+            {item.implication && (
+              <Detail title={item.implicationTitle || "Strategy implication"}>
+                {item.implication}
+              </Detail>
+            )}
+            <div className="rr-source-links">
+              {item.sources.map((source) => (
+                <Source key={source} source={source} />
+              ))}
+            </div>
+          </article>
+        );
+      })}
     </div>
   );
 }

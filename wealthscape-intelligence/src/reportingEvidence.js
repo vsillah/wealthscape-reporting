@@ -139,6 +139,10 @@ export const reportingMarketEvidence = [
       "Mixed brokerage and advisory relationships are the mainstream competitive context.",
     value: "51.9%",
     metricLabel: "FINRA-registered representatives with both registrations",
+    icon: "users",
+    signal: "positive",
+    signalLabel: "Potential advantage",
+    signalSummary: "Clear mixed-account reporting can differentiate the experience.",
     context:
       "This is not a feature claim; it describes the account context a reporting experience must explain clearly.",
     finding:
@@ -152,6 +156,10 @@ export const reportingMarketEvidence = [
     title: "Reporting is a high-adoption workflow, so parity is not enough.",
     value: "8.6 / 87.5%",
     metricLabel: "importance score / advisor adoption",
+    icon: "chart",
+    signal: "negative",
+    signalLabel: "Competitive pressure",
+    signalSummary: "A common workflow becomes a liability if it only meets baseline expectations.",
     context:
       "A common, recurring workflow creates competitive exposure because small usability gaps repeat across many client cycles.",
     finding:
@@ -165,6 +173,10 @@ export const reportingMarketEvidence = [
     title: "Platform reporting responsibility is rising while satisfaction is slipping.",
     value: "7.8 → 7.1",
     metricLabel: "platform reporting satisfaction, 2023 to 2025",
+    icon: "trend",
+    signal: "positive",
+    signalLabel: "Opening to win",
+    signalSummary: "Lower satisfaction creates room for an integrated workflow to stand out.",
     context:
       "The shift points to a competitive opening in the work surrounding the report, not just the report output itself.",
     finding:
@@ -178,6 +190,10 @@ export const reportingMarketEvidence = [
     title: "Wealthscape appears credible on ratings but under-penetrated in primary use.",
     value: "7.2 / 7.0 / 7.73",
     metricLabel: "Kitces reporting / portal ratings and T3 custodial rating",
+    icon: "layers",
+    signal: "neutral",
+    signalLabel: "Evidence mixed",
+    signalSummary: "Ratings look credible, but public usage data does not prove the cause.",
     context:
       "The ratings suggest a plausible starting base; the low primary-use shares make the competitive read less certain.",
     finding:
@@ -193,6 +209,10 @@ export const reportingClientEvidence = [
     title: "Advisor time is split across client work, preparation, and operations.",
     value: "41.4 hours",
     metricLabel: "illustrative senior-advisor workweek",
+    icon: "clock",
+    signal: "neutral",
+    signalLabel: "Context only",
+    signalSummary: "Useful workload frame, but not a direct reporting-time measure.",
     context:
       "The source describes a weekly time-allocation mix, not a measured reporting workload.",
     finding:
@@ -205,6 +225,10 @@ export const reportingClientEvidence = [
     title: "Service work consumes measurable capacity before advice reaches the client.",
     value: "15 vs 11 hours",
     metricLabel: "annual operations hours per client",
+    icon: "route",
+    signal: "negative",
+    signalLabel: "Friction signal",
+    signalSummary: "Operations burden is a likely pain point, but reporting's share must be measured.",
     context:
       "Operations burden shapes the advisor experience, even when the study does not isolate report preparation.",
     finding:
@@ -217,6 +241,10 @@ export const reportingClientEvidence = [
     title: "Clients increasingly expect digital delivery that is easy to act on.",
     value: "71% / 92%",
     metricLabel: "electronic receipt / automatic delivery preference",
+    icon: "file",
+    signal: "positive",
+    signalLabel: "Demand tailwind",
+    signalSummary: "Digital delivery expectations support a clearer client-reporting path.",
     context:
       "The customer context is delivery convenience and follow-through, not report-generation efficiency.",
     finding:
@@ -229,6 +257,10 @@ export const reportingClientEvidence = [
     title: "Clients still want control over how sensitive financial documents arrive.",
     value: "87.7% / 36.2%",
     metricLabel: "format choice / paper preference for sensitive documents",
+    icon: "columns",
+    signal: "neutral",
+    signalLabel: "Channel nuance",
+    signalSummary: "Digital is not enough; client preference and sensitivity still matter.",
     context:
       "The source points to channel preference and trust, not a single digital-only answer.",
     finding:
@@ -241,6 +273,10 @@ export const reportingClientEvidence = [
     title: "Clients want reports to reflect the full relationship, not one account sleeve.",
     value: "86% vs 40%",
     metricLabel: "expect total-wealth view / say advisor provides it",
+    icon: "layers",
+    signal: "positive",
+    signalLabel: "Clear opportunity",
+    signalSummary: "The gap points to value in relationship-level reporting context.",
     context:
       "The customer gap is incomplete relationship context when the report or portal only shows part of the household.",
     finding:
@@ -253,6 +289,10 @@ export const reportingClientEvidence = [
     title: "Clients say communication quality influences loyalty and referrals.",
     value: "88% / 89%",
     metricLabel: "stated retention / referral impact",
+    icon: "lightbulb",
+    signal: "neutral",
+    signalLabel: "Promising, unproven",
+    signalSummary: "The sentiment is strong, but retention lift still needs direct measurement.",
     context:
       "The source captures stated preference for communication, not observed retention lift from reporting changes.",
     finding:

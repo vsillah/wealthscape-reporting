@@ -136,9 +136,20 @@ test("customer evidence separates metric labels from strategy implications", () 
   for (const item of reportingClientEvidence) {
     assert.ok(item.value, `${item.title}: metric value`);
     assert.ok(item.metricLabel?.length > 20, `${item.title}: metric label`);
+    assert.ok(item.icon, `${item.title}: icon`);
+    assert.ok(
+      ["positive", "negative", "neutral"].includes(item.signal),
+      `${item.title}: sentiment signal`,
+    );
+    assert.ok(item.signalLabel?.length > 8, `${item.title}: signal label`);
+    assert.ok(item.signalSummary?.length > 35, `${item.title}: signal summary`);
     assert.ok(item.context?.length > 40, `${item.title}: context`);
     assert.ok(item.implication?.length > 40, `${item.title}: implication`);
   }
+  assert.deepEqual(
+    reportingClientEvidence.map((item) => item.signal),
+    ["neutral", "negative", "positive", "neutral", "positive", "neutral"],
+  );
   assert.match(reportingClientEvidence[0].title, /Advisor time/);
   assert.match(reportingClientEvidence[0].metricLabel, /workweek/);
   assert.match(reportingClientEvidence[0].context, /not a measured reporting workload/);
