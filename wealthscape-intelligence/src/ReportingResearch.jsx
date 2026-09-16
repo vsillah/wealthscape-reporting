@@ -89,6 +89,11 @@ const evidenceSignalMap = {
     label: "Neutral signal",
   },
 };
+const outcomeBasisLabels = {
+  sourced: "Sourced",
+  derived: "Derived",
+  inferred: "Inferred",
+};
 
 function Source({ source = "packet" }) {
   const item = reportingSources[source];
@@ -634,31 +639,11 @@ export default function ReportingResearch({ profile, onNavigate }) {
             <>
               <p className="rr-intro">
                 15 reporting outcomes, from assembly through delivery and
-                evidence retrieval. Importance and satisfaction are directional
-                management estimates on a 0–10 scale, not survey results. Nine
-                pairs retain earlier strategy ratings; six are new assumptions.
-                Opportunity = importance + max(importance − satisfaction, 0), on
-                a 0–20 scale. Validate the ratings with customers before using
-                them to prioritize investment.
+                evidence retrieval. Importance and satisfaction use directional
+                0–10 estimates; opportunity uses a 0–20 computed score. The
+                legend separates retained strategy ratings from inferred
+                discovery assumptions.
               </p>
-              <label className="am-field rr-select">
-                Explore an outcome
-                <select
-                  value={selectedId || "all"}
-                  onChange={(event) =>
-                    selectOutcome(
-                      event.target.value === "all" ? null : event.target.value,
-                    )
-                  }
-                >
-                  <option value="all">All outcomes</option>
-                  {reportingOutcomes.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.id} · {item.text}
-                    </option>
-                  ))}
-                </select>
-              </label>
               <div
                 className="am-tabs rr-view-switch"
                 role="group"
@@ -675,12 +660,6 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   onClick={() => setOutcomeView("ranked")}
                 >
                   Ranked outcomes
-                </button>
-                <button
-                  aria-pressed={!selectedId}
-                  onClick={() => selectOutcome(null)}
-                >
-                  All outcomes
                 </button>
               </div>
               <div
@@ -719,10 +698,8 @@ export default function ReportingResearch({ profile, onNavigate }) {
                           />
                         </span>
                         <span className="rr-evidence">
-                          {item.basis === "derived"
-                            ? "Derived from legacy strategy"
-                            : "Inferred for discovery"}{" "}
-                          · management estimate
+                          <i className={`rr-legend-${item.basis}`} />
+                          {outcomeBasisLabels[item.basis]} input
                         </span>
                         <span className="rr-link">
                           Importance {item.imp.toFixed(1)} · Satisfaction{" "}
@@ -741,37 +718,63 @@ export default function ReportingResearch({ profile, onNavigate }) {
                   tabIndex={-1}
                   aria-live="polite"
                 >
+                  <label className="am-field rr-select">
+                    Explore an outcome
+                    <select
+                      value={selectedId || "all"}
+                      onChange={(event) =>
+                        selectOutcome(
+                          event.target.value === "all"
+                            ? null
+                            : event.target.value,
+                        )
+                      }
+                    >
+                      <option value="all">All outcomes</option>
+                      {reportingOutcomes.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.id} · {item.text}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button
+                    className="rr-outcome-reset"
+                    aria-pressed={!selectedId}
+                    onClick={() => selectOutcome(null)}
+                  >
+                    All outcomes
+                  </button>
                   {selected ? (
                     <>
                       <h3>
                         {selected.id} · {selected.theme}
                       </h3>
-                      <p>{selected.text}</p>
-                      <div className="rr-grid">
-                        <Detail title="Importance proxy">
-                          {selected.imp.toFixed(1)} / 10 · management estimate
-                        </Detail>
-                        <Detail title="Satisfaction proxy">
-                          {selected.sat.toFixed(1)} / 10 · management estimate
-                        </Detail>
-                        <Detail title="Opportunity score">
-                          {reportingScore(selected).toFixed(1)} / 20 · computed
-                          from these estimates
-                        </Detail>
-                        <Detail title="Evidence / source type">
-                          {selected.basis === "derived"
-                            ? "Derived from earlier strategy"
-                            : "Inferred for discovery"}
-                          . {selected.origin} Public references support the
-                          workflow context, not these ratings.
-                        </Detail>
-                        <Detail title="Proposed UX response">
-                          {selected.ux}
-                        </Detail>
-                        <Detail title="Implemented demo coverage">
-                          {selected.coverage}
-                        </Detail>
-                      </div>
+                      <p>{selected.problem}</p>
+                      <dl className="rr-outcome-values">
+                        <div>
+                          <dt>Importance proxy</dt>
+                          <dd>{selected.imp.toFixed(1)} / 10</dd>
+                        </div>
+                        <div>
+                          <dt>Satisfaction proxy</dt>
+                          <dd>{selected.sat.toFixed(1)} / 10</dd>
+                        </div>
+                        <div>
+                          <dt>Opportunity score</dt>
+                          <dd>{reportingScore(selected).toFixed(1)} / 20</dd>
+                        </div>
+                      </dl>
+                      <p className={`rr-outcome-tag rr-basis-${selected.basis}`}>
+                        {outcomeBasisLabels[selected.basis]} input · directional
+                        estimate
+                      </p>
+                      <h4>Where this shows up in the job map</h4>
+                      <p className="rr-route-note">{selected.jobMap}</p>
+                      <h4>Proposed UX response</h4>
+                      <p>{selected.ux}</p>
+                      <h4>Implemented demo coverage</h4>
+                      <p>{selected.coverage}</p>
                       <div className="rr-source-links">
                         {selected.sources.map((source) => (
                           <Source key={source} source={source} />

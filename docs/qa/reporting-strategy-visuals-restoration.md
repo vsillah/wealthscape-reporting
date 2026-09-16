@@ -2,7 +2,7 @@
 
 ## Final behavior
 
-Section 5 now shows 15 reporting-specific outcomes with importance and satisfaction proxies (0–10) and computed opportunity scores (0–20). The four-quadrant map, score-ranked view, dropdown and All outcomes reset share selection. Non-selected points are muted; reset restores equal emphasis. Selected detail includes scores, provenance, contextual source links, proposed UX response, bounded synthetic demo coverage and a profile-preserving Reporting outputs link.
+Section 5 now shows 15 reporting-specific outcomes with importance and satisfaction proxies (0–10) and computed opportunity scores (0–20). The four-quadrant map, score-ranked view, dropdown and All outcomes reset share selection. Non-selected points are muted; reset restores equal emphasis. Selected detail includes a short problem blurb, scores, provenance, where the issue appears in the job map, proposed UX response, bounded synthetic demo coverage, contextual source links and a profile-preserving Reporting outputs link.
 
 The map reuses the earlier `ReportingOpportunityMap` and collision-aware plot from `d5ca161`, with derived/inferred marker shapes. Its full scale uses a disclosed 5/10 quadrant boundary. Expanded scale preserves the satisfaction boundary between underserved opportunity and table stakes. Two new assumptions fall in table stakes; no values were fabricated to populate the other two quadrants.
 
@@ -32,7 +32,7 @@ Every rating is a management estimate, not a customer survey result. Nine pairs 
 
 R4, R6, R9, R11, R12 and R15 are new discovery assumptions dated 16 September 2026. Each records its rationale in `reportingOutcomes.js` and selected detail. Public references support the workflow context, not the numeric ratings. The legend explicitly reports no sourced customer measurements. These common reporting estimates are not profile-specific research.
 
-Opportunity = importance + max(importance − satisfaction, 0). The ranked bars use the common 0–20 range. Customer validation is required before investment prioritization; the prototype does not establish measured dissatisfaction or production capabilities.
+Opportunity = importance + max(importance − satisfaction, 0). The ranked bars use the common 0–20 range. Customer validation is required before investment prioritization; the prototype does not establish measured dissatisfaction or production capabilities. The outcome detail panel uses compact derived/inferred labels so the selected outcome can stay focused on user context, job-map location and proposed workflow.
 
 ## Historical comparison and competitor preservation
 
@@ -52,10 +52,14 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 42 pass, 0 fail after the customer-context card clarification.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 43 pass, 0 fail after the competitor-research card clarification.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 43 pass, 0 fail after adding competitor and customer sentiment/icon signals.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 14 pass, 0 fail after reporting outcome UX parity updates.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 44 pass, 0 fail after reporting outcome UX parity updates.
 - `git diff --check` — pass.
 - 16 September follow-up: `git diff --check` — pass.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after reporting outcome UX parity updates.
 - Integrated Browser: `http://127.0.0.1:5182/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.
+- Integrated Browser: `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting`.
 - Visual inspection at 1440×1000, 768×1024 and 390×844. Tablet/mobile document widths equal viewport widths. The map deliberately scrolls horizontally on small screens, with the region labelled accordingly.
 - Clicked all 15 map points: correct ID, scores and detail for each.
 - Checked selected-point muting, All outcomes reset, dropdown synchronization, full/expanded map, score ranking and ranked selection. Selecting the last ranked item revealed its previously offscreen detail; this recovery was fixed and retested.
@@ -74,3 +78,13 @@ Screenshots from the actual local route are in `/private/tmp/wealthscape-pr37-sc
 - `competitor-tablet.png`
 
 To reproduce: open the route above, select section 5, inspect R6 and R12, switch to Ranked outcomes, choose R15, then reset All outcomes. Open section 2 to compare capability filters, Fidelity evidence and the preserved alternative views.
+
+Additional 16 September parity evidence is in `/private/tmp/wealthscape-pr37-humanqa-ux-parity/`:
+
+- `wealthscape-pr37-reporting-outcomes-parity.mp4`
+- `01-selected-outcome.png`
+- `02-selected-detail-jobmap.png`
+- `03-all-outcomes-reset.png`
+- `04-ranked-outcomes.png`
+
+To reproduce: open `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting`, select section 5, choose R2 from the map or dropdown, confirm non-selected outcomes are muted, confirm the derived/inferred provenance legend remains outside the problem description, review the job-map context and UX response in the selected detail panel, reset All outcomes, then switch to Ranked outcomes.

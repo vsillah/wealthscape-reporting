@@ -11,6 +11,7 @@ import {
   reportingSources,
 } from "./reportingResearch.js";
 import { reportingClientEvidence } from "./reportingEvidence.js";
+import { reportingOutcomes } from "./reportingOutcomes.js";
 
 test("reporting recommendations reach report review instead of returning to Strategy", () => {
   const outcome = {
@@ -153,6 +154,22 @@ test("customer evidence separates metric labels from strategy implications", () 
   assert.match(reportingClientEvidence[0].title, /Advisor time/);
   assert.match(reportingClientEvidence[0].metricLabel, /workweek/);
   assert.match(reportingClientEvidence[0].context, /not a measured reporting workload/);
+});
+test("reporting outcomes carry parity fields for map detail inspection", () => {
+  assert.equal(reportingOutcomes.length, 15);
+  const bases = new Set(reportingOutcomes.map((item) => item.basis));
+  assert.deepEqual([...bases].sort(), ["derived", "inferred"]);
+  for (const outcome of reportingOutcomes) {
+    assert.match(outcome.id, /^R\d+$/);
+    assert.ok(outcome.problem.length > 60, `${outcome.id}: problem blurb`);
+    assert.ok(outcome.jobMap.length > 60, `${outcome.id}: job-map context`);
+    assert.ok(outcome.ux.length > 40, `${outcome.id}: ux response`);
+    assert.ok(outcome.coverage.length > 60, `${outcome.id}: demo coverage`);
+    assert.ok(
+      ["build", "customize", "generate"].includes(outcome.tab),
+      `${outcome.id}: demo tab`,
+    );
+  }
 });
 test("all reporting phases carry a complete handoff and stay independent of maintenance routes", () => {
   assert.equal(reportingJourney.length, 8);

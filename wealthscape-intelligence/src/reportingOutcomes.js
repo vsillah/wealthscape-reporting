@@ -12,6 +12,10 @@ export const reportingOutcomes = [
     basis: "derived",
     origin: "Legacy ODI #5.1; original 9.5 / 2.0 ratings retained.",
     sources: ["addepar"],
+    problem:
+      "The report looks finished only after the team rebuilds client, template, content, and branding in multiple places.",
+    jobMap:
+      "Prepare / Execute: the advisor has to rebuild the branded package after choosing the client, period, and report purpose.",
     ux: "Keep client, template, content and generation in one reporting workspace.",
     tab: "build",
   },
@@ -25,6 +29,10 @@ export const reportingOutcomes = [
     origin:
       "Legacy ODI #5.3, narrowed to report assembly; original 9.4 / 2.0 ratings retained.",
     sources: ["addepar"],
+    problem:
+      "Assembly work is spread across output, narrative, and presentation tools before the report can be shared.",
+    jobMap:
+      "Prepare: report assembly sprawls across exports, narrative drafting, formatting, and presentation cleanup.",
     ux: "Carry report configuration forward without rebuilding the package in another tool.",
     tab: "build",
   },
@@ -38,6 +46,10 @@ export const reportingOutcomes = [
     origin:
       "BD-HA #1, applied to reporting scope; original 9.4 / 2.5 ratings retained.",
     sources: ["advisor360", "finraSnapshot"],
+    problem:
+      "The report can explain one sleeve of the relationship while omitting the broader household context.",
+    jobMap:
+      "Define / Locate: a household report starts without a clear view of included and excluded accounts.",
     ux: "Make included and missing accounts visible before report assembly.",
     tab: "build",
   },
@@ -51,6 +63,10 @@ export const reportingOutcomes = [
     origin:
       "New management estimate from the Locate/Prepare job-map hypothesis; no measured reporting baseline.",
     sources: ["schwabStudy"],
+    problem:
+      "Stale prices, missing positions, and incomplete source data become visible after generation has already started.",
+    jobMap:
+      "Locate: missing or stale source data is discovered after draft generation begins, creating avoidable rework.",
     ux: "Show data freshness, missing inputs and the owner of each correction before generation.",
     tab: "generate",
   },
@@ -64,6 +80,10 @@ export const reportingOutcomes = [
     origin:
       "BD-HA #2; original 9.1 / 2.7 ratings retained as a reporting estimate.",
     sources: ["finraAI", "finra2210"],
+    problem:
+      "Narrative language can blur brokerage, advisory, product, and disclosure context if it is not tied to the account type.",
+    jobMap:
+      "Confirm: reviewers need to know which account rules and disclosure context apply before the narrative clears.",
     ux: "Bind narrative and disclosures to the selected account context.",
     tab: "customize",
   },
@@ -77,6 +97,10 @@ export const reportingOutcomes = [
     origin:
       "New management estimate from the proposed reporting control layer; vendor evidence does not establish a complete implementation.",
     sources: ["orion", "tamarac"],
+    problem:
+      "A reviewer cannot clear generated commentary confidently when claims are detached from the source data.",
+    jobMap:
+      "Confirm: generated claims cannot be approved if the supporting data is hard to inspect or retrieve.",
     ux: "Let the reviewer inspect the data behind each generated statement and reject unsupported claims.",
     tab: "customize",
   },
@@ -89,6 +113,10 @@ export const reportingOutcomes = [
     basis: "derived",
     origin: "BD-HA #5; original 8.6 / 3.2 ratings retained.",
     sources: ["finra2210", "marketing"],
+    problem:
+      "Approved language and disclosure rules sit outside the authoring flow, creating review friction late in the cycle.",
+    jobMap:
+      "Prepare / Confirm: approved language and disclosure rules are separated from the authoring step.",
     ux: "Apply approved language rules while authors customize the report.",
     tab: "customize",
   },
@@ -102,6 +130,10 @@ export const reportingOutcomes = [
     origin:
       "BD-HA #4, narrowed to reporting handoffs; original 8.8 / 3.1 ratings retained.",
     sources: ["schwabStudy"],
+    problem:
+      "Reporting blockers move between advisors, operations, and reviewers without the evidence needed to finish the work.",
+    jobMap:
+      "Modify / Confirm: blockers move between teams without the evidence, owner, or next action needed to resolve them.",
     ux: "Attach the blocker, due date, correction history and next action to the handoff.",
     tab: "generate",
   },
@@ -115,6 +147,10 @@ export const reportingOutcomes = [
     origin:
       "New management estimate from the named-approval proposal; no observed approval-cycle baseline.",
     sources: ["finra2210"],
+    problem:
+      "The release-ready report can lack a visible record of who approved the exact version being sent.",
+    jobMap:
+      "Execute: the release-ready version needs a named approval decision before it can move to delivery.",
     ux: "Show a named review decision against an immutable report version before release.",
     tab: "generate",
   },
@@ -128,6 +164,10 @@ export const reportingOutcomes = [
     origin:
       "Legacy ODI #15, made specific to reporting evidence; original 8.5 / 2.8 ratings retained.",
     sources: ["finra2231"],
+    problem:
+      "The sent report, its source snapshot, and the approval record are difficult to retrieve together after delivery.",
+    jobMap:
+      "Conclude: the sent report must stay connected to its approval and source history for review and retrieval.",
     ux: "Keep the delivered version linked to its source snapshot, review and delivery record.",
     tab: "generate",
   },
@@ -141,6 +181,10 @@ export const reportingOutcomes = [
     origin:
       "New management estimate from the generation and delivery journey; deadlines and failure rates are unmeasured.",
     sources: ["addepar", "finra2231"],
+    problem:
+      "Teams cannot tell whether a report is waiting on data, review, generation, delivery, or follow-up.",
+    jobMap:
+      "Monitor: teams need one status for progress, failure reason, and the next recovery step.",
     ux: "Expose stage status, failure reasons and retry ownership for each package.",
     tab: "generate",
   },
@@ -154,6 +198,10 @@ export const reportingOutcomes = [
     origin:
       "New management estimate. Public references describe template capabilities; assumed higher satisfaction still needs customer validation.",
     sources: ["addepar", "advyzon"],
+    problem:
+      "Reusable branding exists as an expectation, but teams still spend time reapplying section choices and design rules.",
+    jobMap:
+      "Prepare: teams spend time reapplying the same firm design, benchmark, and section set.",
     ux: "Start from a shared template with controlled branding and reusable sections.",
     tab: "build",
   },
@@ -166,6 +214,10 @@ export const reportingOutcomes = [
     basis: "derived",
     origin: "Legacy ODI #8.2; original 8.8 / 2.6 ratings retained.",
     sources: ["portal"],
+    problem:
+      "Clients receive a static output without enough context to understand the numbers or take the next action.",
+    jobMap:
+      "Conclude: clients need report context and a direct path to ask the follow-up question.",
     ux: "Connect report content to an interactive client view with understandable context.",
     tab: "customize",
   },
@@ -178,6 +230,10 @@ export const reportingOutcomes = [
     basis: "derived",
     origin: "Legacy ODI #8.4; original 8.1 / 3.2 ratings retained.",
     sources: ["portal"],
+    problem:
+      "Delivery success is often treated as completion even when no one knows whether the client opened the report.",
+    jobMap:
+      "Monitor / Conclude: delivery success and actual client open behavior need separate status signals.",
     ux: "Separate delivery success from actual opening and offer a follow-up action.",
     tab: "generate",
   },
@@ -191,6 +247,10 @@ export const reportingOutcomes = [
     origin:
       "New management estimate from the report configuration workflow. Assumed higher satisfaction is not measured.",
     sources: ["advyzon"],
+    problem:
+      "Users generate before confirming the exact sections, date range, benchmark, and accounts included in the package.",
+    jobMap:
+      "Define / Prepare: users need to see exactly what will be included before generation begins.",
     ux: "Make the report scope and included sections inspectable before generation.",
     tab: "customize",
   },

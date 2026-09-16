@@ -144,6 +144,7 @@ export function ReportingCapabilityExplorer({ selected, onSelect }) {
 export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
   const [zoom, setZoom] = useState(false);
   const { bounds, points } = reportingPlot(outcomes, zoom);
+  const selected = outcomes.find((outcome) => outcome.id === selectedId);
   return (
     <div className="rr-opportunity-map">
       <div className="rr-map-toolbar">
@@ -232,7 +233,7 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
             {points.map((point) => (
               <g
                 key={point.id}
-                opacity={!selectedId || point.id === selectedId ? 1 : 0.5}
+                opacity={!selectedId || point.id === selectedId ? 1 : 0.22}
               >
                 <line
                   x1={point.x}
@@ -260,7 +261,7 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
                 aria-controls="reporting-outcome-detail"
                 aria-label={`Select ${point.id}: ${outcome.text}. Importance ${outcome.imp}, satisfaction ${outcome.sat}, opportunity ${reportingScore(outcome).toFixed(1)}. ${outcome.basis} input; management estimate.`}
                 title={`${point.id} · ${point.quadrant}`}
-                onClick={() => onSelect(point.id)}
+                onClick={() => onSelect(selectedId === point.id ? null : point.id)}
               >
                 {point.id.slice(1)}
               </button>
@@ -269,34 +270,25 @@ export function ReportingOpportunityMap({ outcomes, selectedId, onSelect }) {
         </div>
       </div>
       <p className="rr-evidence">
-        Both axes use 0–10 management estimates; opportunity scores use 0–20.
-        The 5/10 quadrant split is a design convention, not a validated
-        threshold. Numbered labels are separated for readability; small dots and
-        leader lines retain the exact values.
+        {selected
+          ? `Highlighted ${selected.id}: ${selected.text}`
+          : "Showing all 15 outcomes with equal emphasis. Select an outcome to inspect its job-map context."}
       </p>
       <div
         className="rr-outcome-legend"
         aria-label="Reporting score provenance legend"
       >
         <span>
-          <i className="rr-legend-derived" /> Derived · earlier strategy ratings
-          (9)
+          <i className="rr-legend-sourced" /> Sourced · measured customer data
+          (0)
+        </span>
+        <span>
+          <i className="rr-legend-derived" /> Derived · retained strategy
+          ratings (9)
         </span>
         <span>
           <i className="rr-legend-inferred" /> Inferred · new assumptions (6)
         </span>
-        <span>Sourced customer measurements · none</span>
-      </div>
-      <div className="rr-map-key" aria-label="Reporting map outcome key">
-        {outcomes.map((outcome, index) => (
-          <button
-            key={outcome.id}
-            aria-pressed={selectedId === outcome.id}
-            onClick={() => onSelect(outcome.id)}
-          >
-            {outcome.id} · {outcome.text}
-          </button>
-        ))}
       </div>
     </div>
   );
