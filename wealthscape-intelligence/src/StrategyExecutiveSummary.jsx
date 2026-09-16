@@ -6,18 +6,18 @@ const summaries = {
     conclusion: "Prioritize shared validation and exception resolution, then extend to household authority.",
     rationale: "A maintenance request crosses account scope, authority, evidence and review. A common servicing path is the strongest starting investment hypothesis: reduce incomplete submissions, make ownership visible and confirm the change through to completion. Fund discovery and a bounded pilot before committing to a broader rollout.",
     findings: {
-      1: "Market benchmarks support better servicing and integration; they do not establish maintenance-specific savings.",
-      2: "Validate the complete maintenance job: documented features alone cannot prove authority coverage or exception handling.",
-      3: "Direct research with service associates and home-office teams is the critical evidence gap.",
-      4: "Data re-entry, incomplete submissions and exception resolution are the leading priorities to validate.",
-      5: "Every authority handoff needs an owner, a recovery path and confirmation that the change is complete.",
-      0: "Shared validation is the prerequisite for broader authority handling; sequence investment around that dependency.",
-      7: "Pilot the common validation path and measure rework before expanding across maintenance functions.",
-      8: "Assess reusable internal services first; cost the remaining build and partner options before a sourcing decision.",
+      1: ["Platform ratings cannot establish the maintenance business case.", "The research measures broader platform experience; size this investment with internal servicing volumes, failure rates and handling costs."],
+      2: ["Public feature lists cannot establish end-to-end maintenance parity.", "Authority types, account states and recovery paths determine whether a change can finish; test those boundaries before declaring a competitive gap."],
+      3: ["The people doing the work remain the largest research blind spot.", "Advisor surveys and forum themes provide indirect evidence. Observe service associates and home-office reviewers before committing to requirements."],
+      4: ["Submission quality is the first investment hypothesis.", "Re-entry, incomplete information and exception resolution lead the directional priorities; validate their frequency and burden before funding automation."],
+      5: ["Completion depends on accountable handoffs from request to confirmation.", "Authority, review and exception recovery cross teams. Give each transition a named owner and evidence that the requested change took effect."],
+      0: ["Validation must precede household authority, even when authority scores higher.", "Multi-account actions inherit submission and exception risks; sequence the roadmap by this dependency rather than score alone."],
+      7: ["One shared validation pilot can test the case for broader investment.", "Start with a bounded maintenance function and compare first-pass completion and rework with the baseline before expanding authority or servicing scope."],
+      8: ["A sourcing decision is premature until internal reuse and integration costs are known.", "Inventory existing validation, identity and audit services; build or partner only for confirmed gaps with an accountable support owner."],
     },
     assumptions: [
       ["Demand and servicing model", "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. Fidelity’s organizational complexity and handoffs may change the priority order."],
-      ["Systems, data and economics", "Confirm tech debt, account and party data constraints, authority records, reusable services and cost-to-integrate. Current evidence does not establish delivery effort or return on investment."],
+      ["Systems, data and economics", "Confirm technology debt, account and party data constraints, authority records, reusable services, support burden and cost-to-integrate. Current evidence does not establish delivery effort or return on investment."],
       ["Controls and accountability", "Validate the compliance process and security architecture for permissions, authority, review and evidence retention. Name operating ownership for exceptions, support and policy changes."],
     ],
     steps: [
@@ -31,21 +31,21 @@ const summaries = {
     conclusion: "Prioritize governed client report production, with traceable data and accountable review from assembly to delivery.",
     rationale: "Reporting value depends on the work around the document: reconciling source data, resolving blockers, explaining results and obtaining approval. Start with a bounded reporting workflow and prove that it reduces preparation and review effort while preserving the evidence behind every client report.",
     findings: {
-      thesis: "Back a measured reporting pilot with clear data ownership and review responsibilities before funding production integration.",
-      market: "The reviewed market spans assembly, narrative and delivery; vendor announcements require capability-level verification.",
-      capabilities: "Evaluate the gaps between connected capabilities, including reconciliation, permissions and approval, rather than feature counts.",
-      customer: "Advisor, client and home-office needs point to different reporting jobs; validate them by segment and servicing model.",
-      outcomes: "Unify, Explain, Unblock, Route and Prove frame the opportunity; their priority remains a strategic hypothesis.",
-      job: "Carry source context and ownership through preparation, review, delivery and follow-up to reduce avoidable handoffs.",
-      recommendations: "Sequence the selected profile’s recommendations around trusted data, visible blockers and governed report release.",
-      sourcing: "Reuse established data and control services where they fit; compare specialist partners against integration and ownership costs.",
-      governance: "Confirm applicable approval, disclosure and recordkeeping controls before report release becomes operational.",
-      measurement: "Set preparation, rework and audit-retrieval baselines; use measured pilot results to decide whether to scale or stop.",
-      sources: "Public research establishes market context; source caveats and unverified claims remain visible in the evidence register.",
+      thesis: ["The investment case rests on reducing reporting work while preserving control.", "Test assembly through delivery in one bounded workflow; broader funding should depend on measured effort reduction and retained review evidence."],
+      market: ["Generation alone is an insufficient basis for differentiation.", "The reviewed vendors already describe assembly, narrative and delivery capabilities; focus the competitive thesis on reliable coordination and verify vendor claims."],
+      capabilities: ["The strategic gap to test lies between data, permissions and approval.", "Feature coverage cannot prove a report is reconciled and ready to release. Assess those handoffs against Fidelity’s actual systems before choosing a solution."],
+      customer: ["One reporting workflow will not fit every stakeholder’s job.", "Advisors need preparation efficiency, clients need understandable results and home office needs review evidence; validate the tradeoffs within a defined segment."],
+      outcomes: ["Reliable execution is the common thread across the five proposed outcomes.", "Unify context, Explain results, Unblock work, Route ownership and Prove completion; validate which failure creates the greatest burden before ranking investment."],
+      job: ["Document creation is only one step in the reporting job.", "Source preparation, review, delivery and follow-up determine completion; carry evidence and ownership through the whole path to address avoidable rework."],
+      recommendations: ["Trusted data and visible blockers must come before scaled report release.", "Sequence the profile-specific recommendations around those prerequisites, then test accountable routing and controlled delivery in the pilot."],
+      sourcing: ["Integration economics should determine the sourcing choice.", "Reuse suitable data and control services; compare specialist partners on reconciliation, permissions, support burden and total cost-to-integrate."],
+      governance: ["Release readiness requires verified evidence and an accountable approval path.", "Make applicable disclosures, review and retention part of the workflow design; compliance and security must confirm the controls before operational use."],
+      measurement: ["The strategy has no defensible scale case until the pilot beats a measured baseline.", "Track preparation time, rework and audit retrieval alongside support cost; agree success and stop thresholds before the pilot starts."],
+      sources: ["External evidence supports a direction, not a Fidelity implementation mandate.", "Public research and synthetic examples frame hypotheses; internal discovery must resolve applicability, feasibility and economics before final guidance."],
     },
     assumptions: [
       ["Demand and operating model", "Validate reporting frequency, segment needs and the split of work among advisors, service teams and home office. Fidelity’s organizational complexity and servicing model may change the proposed workflow."],
-      ["Data, architecture and cost", "Assess tech debt, data constraints, lineage, reconciliation and entitlement services. Validate cost-to-integrate and support costs before choosing an assembly or narrative solution."],
+      ["Data, architecture and cost", "Assess technology debt, data constraints, lineage, reconciliation and entitlement services. Validate cost-to-integrate and support burden before choosing an assembly or narrative solution."],
       ["Approval and release ownership", "Confirm the compliance process, security architecture and operating ownership for content review, delivery, retention and incidents. The proposed controls have not received internal approval."],
     ],
     steps: [
@@ -75,7 +75,7 @@ export default function StrategyExecutiveSummary({ track, sections, onJump }) {
         {sections.map((section, index) => (
           <button type="button" key={section.id} className="strategy-executive-finding" onClick={() => onJump(section.id)} aria-label={`Read section ${index + 1}: ${section.label}`}>
             <span className="strategy-executive-number">{String(index + 1).padStart(2, "0")}</span>
-            <span><strong>{section.label}</strong><span className="strategy-executive-finding-text">{summary.findings[section.id]}</span></span>
+            <span><span className="strategy-executive-section-label">{section.label}</span><strong>{summary.findings[section.id][0]}</strong><span className="strategy-executive-finding-text">{summary.findings[section.id][1]}</span></span>
             <ArrowUpRight size={17} aria-hidden="true" />
           </button>
         ))}
@@ -83,7 +83,7 @@ export default function StrategyExecutiveSummary({ track, sections, onJump }) {
       <div className="strategy-executive-decisions">
         <section aria-labelledby={`${track}-assumptions-heading`}>
           <h3 id={`${track}-assumptions-heading`}><ClipboardCheck size={19} aria-hidden="true" />Assumptions to validate</h3>
-          <p className="strategy-executive-boundary">This strategy draws on external market research and synthetic prototype evidence. Fidelity-specific discovery must validate the assumptions below before final implementation guidance or a funding commitment.</p>
+          <p className="strategy-executive-boundary">External market research and synthetic prototype evidence are sufficient to frame investment hypotheses. Fidelity-specific discovery must establish operational fit, feasibility and economics before final implementation guidance or a commitment to scale.</p>
           <dl>{summary.assumptions.map(([title, text]) => <div key={title}><dt>{title}</dt><dd>{text}</dd></div>)}</dl>
         </section>
         <section aria-labelledby={`${track}-next-steps-heading`}>

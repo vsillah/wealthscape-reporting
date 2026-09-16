@@ -19,6 +19,7 @@
 .strategy-executive-finding:hover { background: #f5f9f7; }
 .strategy-executive-finding:focus-visible { outline: 2px solid #0b5d2e; outline-offset: 3px; border-radius: 4px; }
 .strategy-executive-number { font-size: 12px; color: #1a7a40; font-weight: 750; line-height: 21px; }
+.strategy-executive-section-label { display: block; margin-bottom: 6px; font-size: 11px; font-weight: 600; color: #64748b; }
 .strategy-executive-finding strong { font-size: 14px; line-height: 1.5; }
 .strategy-executive-finding-text { display: block; margin-top: 5px; font-size: 13px; line-height: 1.6; color: #475569; }
 .strategy-executive-finding > svg { color: #1a7a40; margin-top: 3px; }
