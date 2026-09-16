@@ -1,4 +1,9 @@
 .grp-dialog {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    sans-serif;
   margin: auto;
   position: fixed;
   inset: 0;
@@ -128,6 +133,7 @@
   color: #c7d2dc;
 }
 .grp-value {
+  max-width: 260px;
   display: flex;
   flex-direction: column;
   gap: 6px;
