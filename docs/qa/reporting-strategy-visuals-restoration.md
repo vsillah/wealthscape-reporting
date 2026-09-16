@@ -1,32 +1,65 @@
 # Reporting Strategy visual restoration — 16 September 2026
 
-## Historical comparison
+## Final behavior
 
-- `c3632a3`: interactive outcomes ranked by legacy synthesis scores, with proposal/demo detail and vendor reference cards.
-- `d5ca161`: importance/satisfaction opportunity map, reset, scale control, evidence grid and reporting journey.
-- `5050cd8`: navigation and drilldown polish.
-- `b31a229`: executive summary, explanation drawers and section findings retained; evidence updates use five ordinal outcome hypotheses and explicitly remove numeric opportunity scores. The older scatterplot component remains in source but is no longer mounted.
+Section 5 now shows 15 reporting-specific outcomes with importance and satisfaction proxies (0–10) and computed opportunity scores (0–20). The four-quadrant map, score-ranked view, dropdown and All outcomes reset share selection. Non-selected points are muted; reset restores equal emphasis. Selected detail includes scores, provenance, contextual source links, proposed UX response, bounded synthetic demo coverage and a profile-preserving Reporting outputs link.
 
-The restored map uses the current five qualitative hypotheses. No old scores are assigned to the new outcomes. All five share an explicitly proposed higher-importance/lower-satisfaction quadrant; label spacing is not a measurement. The ranked view preserves the existing management ordering. Selection, dropdown and reset share state. Outcome detail includes proposed UX response, synthetic coverage limitations and Reporting outputs links.
+The map reuses the earlier `ReportingOpportunityMap` and collision-aware plot from `d5ca161`, with derived/inferred marker shapes. Its full scale uses a disclosed 5/10 quadrant boundary. Expanded scale preserves the satisfaction boundary between underserved opportunity and table stakes. Two new assumptions fall in table stakes; no values were fabricated to populate the other two quadrants.
 
-The new capability explorer reuses the existing nine-vendor/four-capability evidence matrix with described/unknown icons and selectable vendor cards. The evidence grid and original reference cards remain available. Fidelity's incumbent baseline, source links and no-product-audit caveats remain intact. Account Maintenance's selection/detail/icon treatment informed the interaction, but no maintenance scores or data were reused.
+The section remains separate from account maintenance. Account-maintenance values were not reused. The five executive themes remain as recommendation groupings, linked to representative detailed outcomes. The headline count now reads 15.
+
+## Score provenance
+
+Every rating is a management estimate, not a customer survey result. Nine pairs retain earlier local strategy ratings from `wealthscape-intelligence/src/WealthscapePrototype.jsx` at `6bbae9f`; the description is narrowed to reporting where needed:
+
+| Reporting outcome | Earlier input | Importance | Satisfaction |
+| --- | --- | ---: | ---: |
+| R1 | ODI #5.1 | 9.5 | 2.0 |
+| R2 | ODI #5.3 | 9.4 | 2.0 |
+| R3 | BD-HA #1 | 9.4 | 2.5 |
+| R5 | BD-HA #2 | 9.1 | 2.7 |
+| R7 | BD-HA #5 | 8.6 | 3.2 |
+| R8 | BD-HA #4 | 8.8 | 3.1 |
+| R10 | ODI #15 | 8.5 | 2.8 |
+| R13 | ODI #8.2 | 8.8 | 2.6 |
+| R14 | ODI #8.4 | 8.1 | 3.2 |
+
+R4, R6, R9, R11, R12 and R15 are new discovery assumptions dated 16 September 2026. Each records its rationale in `reportingOutcomes.js` and selected detail. Public references support the workflow context, not the numeric ratings. The legend explicitly reports no sourced customer measurements. These common reporting estimates are not profile-specific research.
+
+Opportunity = importance + max(importance − satisfaction, 0). The ranked bars use the common 0–20 range. Customer validation is required before investment prioritization; the prototype does not establish measured dissatisfaction or production capabilities.
+
+## Historical comparison and competitor preservation
+
+- `c3632a3`: interactive outcomes ranked by legacy synthesis scores.
+- `d5ca161`: importance/satisfaction map, reset, scale control, evidence grid and reporting journey.
+- `b31a229`: five ordinal executive themes replaced the broader score sets.
+- `6bbae9f`: initial PR #37 restored qualitative exploration and the competitor capability explorer.
+- This revision restores scored exploration with explicit provenance and a reporting-specific set of 15 outcomes.
+
+The nine-vendor/four-capability explorer, evidence grid, reference cards, Fidelity incumbent baseline, source links and no-product-audit caveats remain intact.
 
 ## Validation
 
-- `npm --prefix wealthscape-intelligence ci`
+- `npm --prefix wealthscape-intelligence ci` — installed locked dependencies. npm reported two existing high-severity dependency advisories; dependency changes are outside this UI revision.
 - `npm --prefix wealthscape-intelligence run build` — pass.
-- `node --test wealthscape-intelligence/src/*.test.js` — 39 pass, 0 fail.
+- `node --test wealthscape-intelligence/src/*.test.js` — 41 pass, 0 fail.
 - `git diff --check` — pass.
-- In-app Browser route: `http://127.0.0.1:5179/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.
-- Visual review at 1440×1000, 768×1024 and 390×844. Tablet and mobile document widths matched viewport widths.
-- Clicked all five map outcomes; inspected distinct detail, proposed responses and limitations.
-- Tested ranked selection, dropdown selection, Opportunity map / Ranked outcomes, and All outcomes reset.
-- Clicked reporting assembly, customization and pipeline destinations; URL retained `profileId=bd-home-office` and used `reportTab=build`, `customize`, `generate` respectively.
-- Clicked recommendation drilldown; jump navigation selected section 7.
-- Tested all four capability filters and Fidelity evidence, including described report design and unassessed delivery/batch/access evidence.
-- Tested existing evidence-grid cell and reference-card selection, plus described Advyzon batch evidence.
-- Desktop map/vendor and mobile/tablet screenshots saved in `/Users/vambahsillah/Documents/Fidelity/reporting-visuals-qa-20260916/`.
+- Integrated Browser: `http://127.0.0.1:5182/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.
+- Visual inspection at 1440×1000, 768×1024 and 390×844. Tablet/mobile document widths equal viewport widths. The map deliberately scrolls horizontally on small screens, with the region labelled accordingly.
+- Clicked all 15 map points: correct ID, scores and detail for each.
+- Checked selected-point muting, All outcomes reset, dropdown synchronization, full/expanded map, score ranking and ranked selection. Selecting the last ranked item revealed its previously offscreen detail; this recovery was fixed and retested.
+- Clicked build/customize/generate outcome links and verified the destination URL preserves `profileId=bd-home-office` and the correct `reportTab`.
+- Competitor regression: all four capability filters retain nine cards, evidence-grid view retains 36 interactive cells, reference-card view renders, and Fidelity access-controls detail preserves the explicit Not assessed boundary.
+- No live workflow/customer-data smoke, production deployment or merge performed. Captain preview verification and human acceptance remain next.
 
-## Review boundary
+## Local visual evidence
 
-Synthetic local UI checks only. No live workflow, customer data, provider calls, research refresh, production deployment or merge performed. Hosted preview and human acceptance remain captain gates. The qualitative map intentionally does not restore the old numeric scatterplot. No migrations or environment changes. Portfolio Vercel contexts are not applicable to this Wealthscape repo.
+Screenshots from the actual local route are in `/private/tmp/wealthscape-pr37-scored-qa/`:
+
+- `outcomes-all-desktop.png`
+- `outcome-selected-desktop.png`
+- `ranked-selected-desktop.png`
+- `outcome-selected-mobile.png`
+- `competitor-tablet.png`
+
+To reproduce: open the route above, select section 5, inspect R6 and R12, switch to Ranked outcomes, choose R15, then reset All outcomes. Open section 2 to compare capability filters, Fidelity evidence and the preserved alternative views.

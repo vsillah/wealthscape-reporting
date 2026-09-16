@@ -204,3 +204,12 @@ export const reportingOutcomes = [
         ? "Synthetic section, date and presentation controls are implemented. Claim attribution, policy enforcement and interactive client delivery remain proposed."
         : "A synthetic generation pipeline shows stage progress. Live recovery, ownership, approval, retention and delivery tracking remain proposed.",
 }));
+
+// Representative outcomes preserve the five recommendation-theme entry points.
+export const reportingThemeOutcomeIds = {
+  Unify: "R3",
+  Explain: "R5",
+  Unblock: "R4",
+  Route: "R8",
+  Prove: "R10",
+};

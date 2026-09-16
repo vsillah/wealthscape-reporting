@@ -34,7 +34,10 @@ import {
   reportingComparisonColumns,
 } from "./reportingResearch.js";
 import "./ReportingResearch.css";
-import { reportingOutcomes } from "./reportingOutcomes.js";
+import {
+  reportingOutcomes,
+  reportingThemeOutcomeIds,
+} from "./reportingOutcomes.js";
 import { reportingScore } from "./reportingResearch.js";
 import {
   ReportingEvidenceGrid,
@@ -138,18 +141,21 @@ export default function ReportingResearch({ profile, onNavigate }) {
   const lockTracking = useRef(false);
   const outcomePanel = useRef(null);
   const selectOutcome = (id) => {
-    setSelectedId(
-      reportingOutcomes.find((outcome) => outcome.theme === id)?.id || id,
-    );
-    if (id) requestAnimationFrame(() => {
-      const panel = outcomePanel.current;
-      if (!panel) return;
-      const { top } = panel.getBoundingClientRect();
-      if (window.matchMedia("(max-width: 1100px)").matches || top < 0 || top > window.innerHeight - 160) {
-        panel.focus({ preventScroll: true });
-        panel.scrollIntoView({ block: "start", behavior: "instant" });
-      }
-    });
+    setSelectedId(id);
+    if (id)
+      requestAnimationFrame(() => {
+        const panel = outcomePanel.current;
+        if (!panel) return;
+        const { top } = panel.getBoundingClientRect();
+        if (
+          window.matchMedia("(max-width: 1100px)").matches ||
+          top < 0 ||
+          top > window.innerHeight - 160
+        ) {
+          panel.focus({ preventScroll: true });
+          panel.scrollIntoView({ block: "start", behavior: "instant" });
+        }
+      });
   };
   const selected = reportingOutcomes.find((item) => item.id === selectedId);
   const rankedOutcomes = [...reportingOutcomes].sort(
@@ -822,11 +828,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
                               title={outcome.text}
                               aria-label={`Inspect ${id}: ${outcome.text}`}
                               onClick={() => {
-                                setSelectedId(
-                                  reportingOutcomes.find(
-                                    (outcome) => outcome.theme === id,
-                                  )?.id || id,
-                                );
+                                setSelectedId(reportingThemeOutcomeIds[id]);
                                 jump(
                                   sections.findIndex(
                                     ([key]) => key === "outcomes",
