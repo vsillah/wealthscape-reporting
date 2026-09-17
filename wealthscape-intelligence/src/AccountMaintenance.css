@@ -444,10 +444,6 @@
   box-shadow: none;
   background: transparent;
 }
-.mo-source-note {
-  font-size: 12px;
-  line-height: 1.65;
-}
 .mo-detail {
   border-top: 3px solid #5b4fbe;
   padding-top: 14px;

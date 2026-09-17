@@ -435,11 +435,11 @@ export default function MaintenanceResearch({
                   rows={[
                     [
                       "Start with the shared failure points",
-                      "Data re-entry, incomplete submissions, and exception resolution lead the revised deck’s outcome ranking. A common validation layer can support all eight maintenance functions. Exception resolution remains an inferred input.",
+                      "Data re-entry, incomplete submissions, and exception resolution lead the revised deck’s outcome ranking. A common validation layer can support all eight maintenance functions.",
                     ],
                     [
                       "Build a case for parity and position",
-                      "The deck does not establish maintenance-driven churn or productivity ROI. Frame the investment around service capability, competitive position, and a measurable operating hypothesis.",
+                      "Frame the investment around service capability, competitive position, and a measurable operating hypothesis.",
                     ],
                     [
                       "Sequence authority after validation",
@@ -453,7 +453,9 @@ export default function MaintenanceResearch({
                 />
                 <Evidence slide="2, 16, 20, 23–25" links={["kitces", "t3"]}>
                   Leadership synthesis of the August 18, 2026 deck. Rankings and
-                  phase estimates are directional; they are not a funded roadmap
+                  phase estimates are directional; exception resolution remains
+                  an inferred input. The deck does not establish
+                  maintenance-driven churn, productivity ROI, a funded roadmap,
                   or measured benefit.
                 </Evidence>
                 <button className="am-primary" onClick={() => advance(7)}>
@@ -465,23 +467,23 @@ export default function MaintenanceResearch({
               <>
                 <p className="mr-lead">
                   Consultant takeaway: prioritize the quality of the servicing
-                  path. Broad platform satisfaction alone does not reveal where
-                  maintenance work stalls.
+                  path. Use broad market signals to focus discovery on repeated
+                  handling, unclear ownership, and request quality.
                 </p>
                 <Cards
                   icons={[ChartScatter, GitBranch, Database, ShieldCheck]}
                   rows={[
                     [
-                      "A platform benchmark, not a maintenance rating",
-                      "The deck reports a 7.11 custodial category average in T3 2026, compared with 7.75 in 2023. This is market context; neither survey isolates account maintenance as a category.",
+                      "Platform satisfaction sets the service-quality context",
+                      "The deck reports a 7.11 custodial category average in T3 2026, compared with 7.75 in 2023. Use that context to ask where servicing quality is breaking down.",
                     ],
                     [
                       "Integration is part of the service experience",
-                      "Kitces integration findings inform the hypothesis that capturing data once will reduce repeated handling. The research does not establish a maintenance-specific time saving.",
+                      "Kitces integration findings connect repeated handling to the customer experience. Capturing data once should be tested as a way to reduce rework.",
                     ],
                     [
                       "Consolidation changes the workload",
-                      "The study identifies conversion and multi-entity servicing as an enterprise opportunity. Validate the acquired-account workload and segment demand before sizing an investment.",
+                      "Conversion and multi-entity servicing increase the burden on account scope, authority, and exception ownership.",
                     ],
                     [
                       "Supervision creates an evidence requirement",
@@ -493,10 +495,11 @@ export default function MaintenanceResearch({
                   slide="12–14, 24, 28–29"
                   links={["kitces", "t3", "supervision"]}
                 >
-                  Market figures are retained as deck-reported snapshots. No
-                  current vendor ranking, legal applicability determination, or
-                  forecast is implied. Proposed regulatory changes are not
-                  funding assumptions.
+                  Market figures are retained as deck-reported snapshots. The
+                  cited surveys do not isolate account maintenance as a
+                  category or establish a maintenance-specific time saving. No
+                  current vendor ranking, legal applicability determination,
+                  forecast, or funding assumption is implied.
                 </Evidence>
               </>
             )}
@@ -515,8 +518,7 @@ export default function MaintenanceResearch({
               <>
                 <p className="mr-lead">
                   The current evidence describes the advisor-facing servicing
-                  problem. The client service and reviewer roles are still the
-                  research gap.
+                  problem: authority, waiting, and confirmation.
                 </p>
                 <div className="mr-customer-context">
                   <article className="mr-customer-persona">
@@ -600,9 +602,11 @@ export default function MaintenanceResearch({
                 />
                 <Evidence slide="18, 25, 28" links={["kitces", "t3"]}>
                   The map uses stable job language and ODI opportunity logic as
-                  a planning frame. Current values are directional synthesis
-                  inputs: chart coordinates retain the Frames snapshot, selected
-                  scores retain slide 18, and values are not recomputed. Survey
+                  a planning frame. Chart coordinates retain the Frames
+                  snapshot and its midpoint of 3 on both axes; selected detail
+                  scores retain the August 18 executive study, slide 18. Values
+                  are directional synthesis inputs and are not recomputed; source
+                  tags separate sourced, derived, and inferred inputs. Survey
                   importance and satisfaction, then use factor and cluster
                   analysis to confirm needs-based segments and quadrant
                   placement before treating the scores as ODI prioritization
@@ -703,17 +707,6 @@ export default function MaintenanceResearch({
                   Use an engineering and operations workshop to choose how each
                   gap closes.
                 </p>
-                <div className="am-callout">
-                  <strong>
-                    Proposed sourcing decisions · not a completed assessment
-                  </strong>
-                  <p>
-                    Slide 27 explicitly leaves the internal capability and
-                    Build/Partner/Acquire assessment open. The options below are
-                    a workshop starting point; they are not findings about
-                    existing platform maturity or approved vendor decisions.
-                  </p>
-                </div>
                 <div className="mr-resolution-options">
                   {[
                     [
@@ -817,9 +810,12 @@ export default function MaintenanceResearch({
                   ))}
                 </div>
                 <Evidence slide="23, 27, 30">
-                  Resolution options are new proposed synthesis. Raw decks,
-                  private exports, and forum identities are not part of this
-                  application.
+                  Resolution options are new proposed synthesis. Slide 27 leaves
+                  the internal capability and Build/Partner/Acquire assessment
+                  open; the options above are a workshop starting point, not
+                  findings about existing platform maturity or approved vendor
+                  decisions. Raw decks, private exports, and forum identities
+                  are not part of this application.
                 </Evidence>
                 <div className="mr-demo-links">
                   <span className="am-note">

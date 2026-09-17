@@ -106,19 +106,6 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
       <p className="mr-lead">
         Select an outcome to connect the research to a proposed workflow.
       </p>
-      <aside className="mr-evidence mo-source-note" aria-label="Research note">
-        <div className="mr-evidence-line">
-          <span className="mr-evidence-label">Research note</span>
-          <span>Frames coordinates + 18 Aug study scores</span>
-        </div>
-        <p>
-          The chart retains <strong>Account Maintenance Frames</strong>{" "}
-          coordinates and its midpoint of <strong>3 on both axes</strong>.
-          Selected detail scores retain the <strong>18 Aug executive study,
-          slide 18</strong>. Values are not combined or recomputed; source tags
-          separate sourced, derived, and inferred inputs.
-        </p>
-      </aside>
       <div
         className="am-tabs mo-view-switch"
         role="group"
@@ -138,9 +125,9 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         <div className="mo-ranked-layout">
           <section aria-label="Ranked executive study outcomes">
             <p className="am-note">
-              Directional revised-study opportunity scores · common 0–10 scale.
-              Bar lengths show scores, not percentages. Frames coordinates
-              remain separate in the opportunity map.
+              Revised-study opportunity scores · common 0–10 scale. Bar
+              lengths show scores, not percentages. Frames coordinates remain
+              separate in the opportunity map.
             </p>
             <button
               className="mo-reset"

@@ -221,9 +221,15 @@ test("maintenance executive findings connect research evidence to recommendation
     (match) => match[1],
   );
   assert.deepEqual(findingIds, sectionIds);
-  assert.match(findingsBlock[1], /servicing quality matters/);
+  assert.match(findingsBlock[1], /servicing quality the investment question/);
   assert.match(findingsBlock[1], /Candidate outcomes concentrate opportunity/);
   assert.match(findingsBlock[1], /measured pilot/);
+  assert.doesNotMatch(findingsBlock[1], /does not isolate account maintenance/);
+  assert.doesNotMatch(findingsBlock[1], /but not that complex changes/);
+  assert.doesNotMatch(findingsBlock[1], /formal ODI survey/);
+  assert.doesNotMatch(findingsBlock[1], /service-associate and reviewer interviews/);
+  assert.doesNotMatch(findingsBlock[1], /not a maintenance-specific ROI claim/);
+  assert.doesNotMatch(findingsBlock[1], /They do not prove/);
 });
 test("maintenance strategy labels ODI outputs as directional until survey validation", () => {
   const maintenanceSource = readFileSync(
@@ -254,10 +260,16 @@ test("maintenance strategy labels ODI outputs as directional until survey valida
   assert.match(summarySource, /factor and cluster analysis/);
   assert.match(maintenanceSource, /factor and cluster\s+analysis/);
   assert.match(maintenanceSource, /ODI prioritization\s+evidence/);
-  assert.match(outcomesSource, /mr-evidence mo-source-note/);
-  assert.match(outcomesSource, /sourced, derived, and inferred inputs/);
+  assert.equal(outcomesSource.includes("mr-evidence"), false);
+  assert.match(maintenanceSource, /sourced, derived, and inferred inputs/);
+  assert.ok(
+    maintenanceSource.indexOf("<MaintenanceOutcomes") <
+      maintenanceSource.indexOf("Chart coordinates retain the Frames"),
+    "outcome source/method caveat appears after the interactive outcome content",
+  );
   assert.match(outcomesSource, /Opportunity quadrant/);
   assert.equal(outcomesSource.includes("mo-method-boundary"), false);
+  assert.equal(accountMaintenanceCss.includes(".mo-source-note"), false);
   assert.equal(maintenanceSource.includes("mr-method-note"), false);
   assert.equal(maintenanceSource.includes("mr-validation-gap"), false);
   assert.match(accountMaintenanceCss, /\.mr-evidence-label/);
@@ -318,7 +330,7 @@ test("maintenance customer research highlights only the evidenced persona", () =
   assert.match(maintenanceSource, /mr-customer-context/);
   assert.match(maintenanceSource, /\/personas\/jordan-williams\.png/);
   assert.match(maintenanceSource, /RIA advisor/);
-  assert.match(maintenanceSource, /client service and reviewer roles are still the/);
+  assert.match(maintenanceSource, /does\s+not directly study client service/);
   assert.match(maintenanceSource, /Functional, social, and emotional needs are discovery context/);
   assert.equal(maintenanceSource.includes("Investor / account owner"), false);
   assert.equal(
