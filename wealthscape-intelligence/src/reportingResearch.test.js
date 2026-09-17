@@ -237,14 +237,22 @@ test("maintenance capability comparison leads with the integrated map and select
   const mapIndex = maintenanceSource.indexOf(
     '<LifecycleResearch embedded view="positioning" />',
   );
-  const takeawayIndex = maintenanceSource.indexOf(
-    "Separate a documented feature from proof that the whole",
+  const evidenceIndex = maintenanceSource.indexOf(
+    '<Evidence slide="15, 17, 25, 27" links={["schwab", "t3"]}>',
   );
   assert.ok(mapIndex > -1, "capability section renders the integrated map");
-  assert.ok(takeawayIndex > -1, "capability section keeps the research takeaway");
+  assert.ok(evidenceIndex > -1, "capability section keeps source evidence");
   assert.ok(
-    mapIndex < takeawayIndex,
-    "the integrated map appears before narrative takeaway cards",
+    mapIndex < evidenceIndex,
+    "the integrated map appears before the source evidence",
+  );
+  assert.equal(
+    maintenanceSource.includes("Onboarding is not all maintenance"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes("A gap worth investigating"),
+    false,
   );
   assert.equal(
     maintenanceSource.includes(
@@ -274,6 +282,10 @@ test("maintenance customer research highlights only the evidenced persona", () =
   assert.match(maintenanceSource, /Unvalidated roles to research next/);
   assert.equal(
     maintenanceSource.includes("Jobs to be done in this context"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes("Method and next research step"),
     false,
   );
   assert.equal(

@@ -500,22 +500,6 @@ export default function MaintenanceResearch({
             {section === 2 && (
               <>
                 <LifecycleResearch embedded view="positioning" />
-                <p className="mr-lead">
-                  Separate a documented feature from proof that the whole
-                  maintenance job is solved.
-                </p>
-                <Cards
-                  rows={[
-                    [
-                      "Onboarding is not all maintenance",
-                      "The revised deck narrows several Schwab examples to new-account workflows. Firm authority and third-party power of attorney are also different jobs. Test the exact account state and authority type in a teardown.",
-                    ],
-                    [
-                      "A gap worth investigating",
-                      "The August documentation review raises questions about shared validation, authority handling, and stale-data visibility. Missing public documentation cannot establish that a vendor lacks a capability.",
-                    ],
-                  ]}
-                />
                 <Evidence slide="15, 17, 25, 27" links={["schwab", "t3"]}>
                   The interactive positioning map above retains the earlier
                   Frames snapshot. Its capability axis is an assessment, not a
@@ -604,21 +588,6 @@ export default function MaintenanceResearch({
                     operating hypotheses until interviews and workflow
                     observations confirm their needs, handoffs, policy
                     constraints, and evidence responsibilities.
-                  </p>
-                </div>
-                <div className="am-callout">
-                  <strong>Method and next research step</strong>
-                  <p>
-                    The deck describes adjacent-category survey synthesis, dated
-                    vendor documentation, and approximately 28 in-scope threads
-                    from roughly 35 collected. The firm-moderated forum is
-                    biased toward unresolved problems. Private text and
-                    identities are excluded here.
-                  </p>
-                  <p>
-                    Proposed validation: 10–15 advisor and CSA interviews, a
-                    needs-based segmentation pass, and a workflow observation
-                    study. None is presented as completed.
                   </p>
                 </div>
                 <Evidence slide="3–5, 7–10, 27–30" links={["kitces", "t3"]}>
