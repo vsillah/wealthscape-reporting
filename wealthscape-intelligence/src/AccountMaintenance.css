@@ -1694,6 +1694,17 @@
   display: flex;
   flex-direction: column;
 }
+.mr-customer-photo {
+  aspect-ratio: 16 / 13;
+  background: #edf5ef;
+  border: 1px solid #dce5e8;
+  border-radius: 14px;
+  display: block;
+  margin: 0 0 18px;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+}
 .mr-customer-persona > .mr-widget-icon {
   align-self: flex-start;
 }
@@ -1712,6 +1723,13 @@
   font-size: 14px;
   line-height: 1.65;
 }
+.mr-customer-role {
+  color: #536570;
+  font-size: 13px !important;
+  font-weight: 700;
+  line-height: 1.4 !important;
+  margin: 0 0 6px !important;
+}
 .mr-customer-badge {
   align-self: start;
   justify-self: start;
@@ -1729,6 +1747,7 @@
 .mr-customer-facts {
   display: grid;
   gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 18px 0 0;
 }
 .mr-customer-facts div {
@@ -1736,6 +1755,9 @@
   border: 1px solid #dfe9e4;
   border-radius: 10px;
   background: #f8faf9;
+}
+.mr-customer-facts div:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 .mr-customer-facts dt {
   color: #5c6e7d;
@@ -1751,7 +1773,51 @@
   font-weight: 700;
   line-height: 1.35;
 }
+.mr-customer-jobs {
+  background: linear-gradient(180deg, #f8faf9 0%, #f2f7f4 100%);
+  border: 1px solid #dce5e8;
+  border-radius: 14px;
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 14px;
+}
+.mr-customer-jobs-title {
+  color: #263946;
+  font-size: 13px;
+  font-weight: 850;
+  margin: 0;
+}
+.mr-customer-job {
+  background: #fff;
+  border: 1px solid #dce5e8;
+  border-radius: 12px;
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+}
+.mr-customer-job span {
+  color: #0b5d34;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.mr-customer-job strong {
+  color: #132334;
+  font-size: 13px;
+  line-height: 1.42;
+}
+.mr-customer-job small {
+  border-left: 3px solid #b9dcc8;
+  color: #536570;
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.35;
+  padding-left: 9px;
+}
 .mr-customer-pains {
+  align-content: start;
   display: grid;
   gap: 12px;
 }
@@ -2019,6 +2085,9 @@
     order: -1;
   }
   .mr-customer-context {
+    grid-template-columns: 1fr;
+  }
+  .mr-customer-facts {
     grid-template-columns: 1fr;
   }
 }

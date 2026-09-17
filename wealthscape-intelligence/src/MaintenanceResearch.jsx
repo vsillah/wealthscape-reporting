@@ -92,6 +92,35 @@ function Cards({ rows, icons = [Lightbulb], personas = false }) {
   );
 }
 
+const maintenanceCustomerPersona = {
+  name: "Patricia Morgan",
+  role: "Investor / account owner",
+  image: "/personas/investor-account-owner.png",
+  details: [
+    ["Life stage", "Retirement transition"],
+    ["Relationship", "Multi-account household"],
+    ["Service mode", "Advisor-assisted"],
+    ["Primary concern", "Know what is missing, who owns it, and when the change is complete"],
+  ],
+  jobs: [
+    {
+      type: "Functional job",
+      need: "Complete an account change without resubmitting the same evidence.",
+      job: "Obtain authority and resolve rejected information.",
+    },
+    {
+      type: "Social job",
+      need: "Know the advisor and firm are coordinated on the next step.",
+      job: "Make ownership visible while the request is waiting.",
+    },
+    {
+      type: "Emotional job",
+      need: "Feel confident the account instruction actually took effect.",
+      job: "Confirm completion with clear proof, not just submission status.",
+    },
+  ],
+};
+
 const recommendationMap = [
   {
     title: "Validation and exceptions",
@@ -520,13 +549,18 @@ export default function MaintenanceResearch({
                 </p>
                 <div className="mr-customer-context">
                   <article className="mr-customer-persona">
-                    <span className="mr-widget-icon">
-                      <Users size={20} aria-hidden="true" />
-                    </span>
+                    <img
+                      className="mr-customer-photo"
+                      src={maintenanceCustomerPersona.image}
+                      alt={`${maintenanceCustomerPersona.name}, synthetic account-owner persona portrait`}
+                    />
                     <div className="mr-customer-header">
                       <div>
                         <span className="am-eyebrow">Evidence persona</span>
-                        <h3>Investor / account owner</h3>
+                        <h3>{maintenanceCustomerPersona.name}</h3>
+                        <p className="mr-customer-role">
+                          {maintenanceCustomerPersona.role}
+                        </p>
                         <p>
                           Public forum themes show where the customer feels the
                           maintenance job break: authority, waiting, and
@@ -536,19 +570,25 @@ export default function MaintenanceResearch({
                       <span className="mr-customer-badge">Observed themes</span>
                     </div>
                     <dl className="mr-customer-facts">
-                      <div>
-                        <dt>Known evidence</dt>
-                        <dd>Forum-theme synthesis</dd>
-                      </div>
-                      <div>
-                        <dt>Coverage limit</dt>
-                        <dd>Prevalence not measured</dd>
-                      </div>
-                      <div>
-                        <dt>Research implication</dt>
-                        <dd>Validate severity before translating into requirements</dd>
-                      </div>
+                      {maintenanceCustomerPersona.details.map(([key, value]) => (
+                        <div key={key}>
+                          <dt>{key}</dt>
+                          <dd>{value}</dd>
+                        </div>
+                      ))}
                     </dl>
+                    <div className="mr-customer-jobs">
+                      <p className="mr-customer-jobs-title">
+                        Jobs to be done in this context
+                      </p>
+                      {maintenanceCustomerPersona.jobs.map((item) => (
+                        <article className="mr-customer-job" key={item.type}>
+                          <span>{item.type}</span>
+                          <strong>{item.need}</strong>
+                          <small>{item.job}</small>
+                        </article>
+                      ))}
+                    </div>
                   </article>
                   <div className="mr-customer-pains">
                     {[
