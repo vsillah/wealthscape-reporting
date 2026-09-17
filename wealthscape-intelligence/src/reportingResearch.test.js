@@ -238,17 +238,31 @@ test("maintenance strategy labels ODI outputs as directional until survey valida
     join(srcDir, "StrategyExecutiveSummary.jsx"),
     "utf8",
   );
-  assert.match(summarySource, /ODI \/ JTBD method boundary/);
-  assert.match(summarySource, /Stable job structure/);
-  assert.match(summarySource, /Survey and segmentation next/);
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  const summaryCss = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.css"),
+    "utf8",
+  );
+  assert.equal(summarySource.includes("ODI / JTBD method boundary"), false);
+  assert.equal(summarySource.includes("strategy-methodology"), false);
+  assert.equal(summaryCss.includes("strategy-methodology"), false);
+  assert.match(maintenanceSource, /<aside className="mr-evidence"/);
+  assert.match(maintenanceSource, /stable job language/);
   assert.match(summarySource, /factor and cluster analysis/);
-  assert.match(summarySource, /Quadrant strategy/);
-  assert.match(maintenanceSource, /Directional synthesis now/);
-  assert.match(maintenanceSource, /not yet a\s+statistically valid outcome study/);
-  assert.match(outcomesSource, /candidate outcome inputs/);
-  assert.match(outcomesSource, /not survey-validated ODI results/);
-  assert.match(outcomesSource, /factor\s+and\s+cluster analysis/);
+  assert.match(maintenanceSource, /factor and cluster\s+analysis/);
+  assert.match(maintenanceSource, /ODI prioritization\s+evidence/);
+  assert.match(outcomesSource, /mr-evidence mo-source-note/);
+  assert.match(outcomesSource, /sourced, derived, and inferred inputs/);
   assert.match(outcomesSource, /Opportunity quadrant/);
+  assert.equal(outcomesSource.includes("mo-method-boundary"), false);
+  assert.equal(maintenanceSource.includes("mr-method-note"), false);
+  assert.equal(maintenanceSource.includes("mr-validation-gap"), false);
+  assert.match(accountMaintenanceCss, /\.mr-evidence-label/);
+  assert.equal(accountMaintenanceCss.includes(".mr-method-note"), false);
+  assert.equal(accountMaintenanceCss.includes(".mo-method-boundary"), false);
 });
 test("maintenance capability comparison leads with the integrated map and selected-platform validation", () => {
   const maintenanceSource = readFileSync(
@@ -304,7 +318,8 @@ test("maintenance customer research highlights only the evidenced persona", () =
   assert.match(maintenanceSource, /mr-customer-context/);
   assert.match(maintenanceSource, /\/personas\/jordan-williams\.png/);
   assert.match(maintenanceSource, /RIA advisor/);
-  assert.match(maintenanceSource, /Unvalidated roles to research next/);
+  assert.match(maintenanceSource, /client service and reviewer roles are still the/);
+  assert.match(maintenanceSource, /Functional, social, and emotional needs are discovery context/);
   assert.equal(maintenanceSource.includes("Investor / account owner"), false);
   assert.equal(
     maintenanceSource.includes("/personas/investor-account-owner.png"),
@@ -328,7 +343,8 @@ test("maintenance customer research highlights only the evidenced persona", () =
   );
   assert.match(accountMaintenanceCss, /\.mr-customer-pain/);
   assert.equal(accountMaintenanceCss.includes(".mr-customer-job"), false);
-  assert.match(accountMaintenanceCss, /\.mr-validation-gap/);
+  assert.equal(maintenanceSource.includes("Unvalidated roles to research next"), false);
+  assert.equal(accountMaintenanceCss.includes(".mr-validation-gap"), false);
 });
 test("maintenance resolution milestones render as a sequenced roadmap", () => {
   const maintenanceSource = readFileSync(

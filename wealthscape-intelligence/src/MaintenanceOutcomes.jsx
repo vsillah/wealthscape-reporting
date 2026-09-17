@@ -72,11 +72,6 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         </div>
       </dl>
       <p className="mo-tag">{values[3]} input · directional proxy</p>
-      <p className="mo-method-boundary">
-        This score is a planning input. A formal ODI survey should measure
-        importance and satisfaction for this desired outcome, then use factor
-        and cluster analysis to confirm segment priority.
-      </p>
       <h4>Proposed UX response</h4>
       <p>{solution.ux}</p>
       <h4>
@@ -111,17 +106,19 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
       <p className="mr-lead">
         Select an outcome to connect the research to a proposed workflow.
       </p>
-      <p className="mo-source-note">
-        Two source snapshots: the chart retains{" "}
-        <strong>Account Maintenance Frames</strong> coordinates and its midpoint
-        of <strong>3 on both axes</strong>; selected detail scores retain the{" "}
-        <strong>18 Aug executive study, slide 18</strong>. Values are not
-        combined or recomputed and should be read as candidate outcome inputs,
-        not survey-validated ODI results. All are adjacent-category proxies;
-        outcomes 3 and 14 are inferred. The plotted values place outcomes 12
-        and 15 in Table stakes, despite the Frames prose calling all outcomes
-        underserved.
-      </p>
+      <aside className="mr-evidence mo-source-note" aria-label="Research note">
+        <div className="mr-evidence-line">
+          <span className="mr-evidence-label">Research note</span>
+          <span>Frames coordinates + 18 Aug study scores</span>
+        </div>
+        <p>
+          The chart retains <strong>Account Maintenance Frames</strong>{" "}
+          coordinates and its midpoint of <strong>3 on both axes</strong>.
+          Selected detail scores retain the <strong>18 Aug executive study,
+          slide 18</strong>. Values are not combined or recomputed; source tags
+          separate sourced, derived, and inferred inputs.
+        </p>
+      </aside>
       <div
         className="am-tabs mo-view-switch"
         role="group"
@@ -143,8 +140,7 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
             <p className="am-note">
               Directional revised-study opportunity scores · common 0–10 scale.
               Bar lengths show scores, not percentages. Frames coordinates
-              remain separate in the opportunity map. A survey is still required
-              before using these scores as ODI prioritization evidence.
+              remain separate in the opportunity map.
             </p>
             <button
               className="mo-reset"

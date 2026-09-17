@@ -56,10 +56,13 @@ const sections = [
 ];
 function Evidence({ slide, links = [], children }) {
   return (
-    <div className="mr-evidence">
-      <span>
-        Account maintenance executive study, 18 Aug 2026 · slides {slide}
-      </span>
+    <aside className="mr-evidence" aria-label="Research note">
+      <div className="mr-evidence-line">
+        <span className="mr-evidence-label">Research note</span>
+        <span>
+          Account maintenance executive study, 18 Aug 2026 · slides {slide}
+        </span>
+      </div>
       {children && <p>{children}</p>}
       <div className="mr-source-links">
         {links.map((key) => (
@@ -68,7 +71,7 @@ function Evidence({ slide, links = [], children }) {
           </a>
         ))}
       </div>
-    </div>
+    </aside>
   );
 }
 function Cards({ rows, icons = [Lightbulb], personas = false }) {
@@ -513,9 +516,7 @@ export default function MaintenanceResearch({
                 <p className="mr-lead">
                   The current evidence describes the advisor-facing servicing
                   problem. The client service and reviewer roles are still the
-                  research gap. Treat the functional, social, and emotional
-                  needs here as context for discovery, not as substitutes for
-                  solution-neutral desired outcome statements.
+                  research gap.
                 </p>
                 <div className="mr-customer-context">
                   <article className="mr-customer-persona">
@@ -580,55 +581,32 @@ export default function MaintenanceResearch({
                     ))}
                   </div>
                 </div>
-                <div className="mr-validation-gap">
-                  <div>
-                    <ClipboardCheck size={18} aria-hidden="true" />
-                    <strong>Unvalidated roles to research next</strong>
-                  </div>
-                  <p>
-                    The source packet does not directly study client service
-                    associates or home-office reviewers. Treat those roles as
-                    operating hypotheses until interviews and workflow
-                    observations confirm their needs, handoffs, policy
-                    constraints, and evidence responsibilities.
-                  </p>
-                </div>
                 <Evidence slide="3–5, 7–10, 27–30" links={["kitces", "t3"]}>
-                  Source project: Claude Desktop · Wealthscape Market Research.
-                  Emotional and financial jobs are derived interpretations, not
-                  interview findings. A formal ODI study should convert these
-                  themes into desired-outcome statements that can be surveyed.
+                  Functional, social, and emotional needs are discovery context
+                  for the evidenced RIA advisor persona. The source packet does
+                  not directly study client service associates or home-office
+                  reviewers. A formal ODI study should convert these themes
+                  into stable desired-outcome statements and validate them with
+                  interviews, workflow observation, and a survey.
                 </Evidence>
               </>
             )}
             {section === 4 && (
               <>
-                <div className="mr-method-note">
-                  <div>
-                    <strong>Method alignment</strong>
-                    <span>Directional synthesis now · ODI validation next</span>
-                  </div>
-                  <p>
-                    The map below uses stable job language and the ODI
-                    opportunity logic as a planning frame. It is not yet a
-                    statistically valid outcome study. The next research step is
-                    to survey importance and satisfaction, then use factor and
-                    cluster analysis to identify needs-based segments and
-                    confirm which outcomes are truly underserved, table stakes,
-                    overserved, or lower priority.
-                  </p>
-                </div>
                 <MaintenanceOutcomes
                   profile={profile}
                   cases={cases}
                   onNavigate={onNavigate}
                 />
                 <Evidence slide="18, 25, 28" links={["kitces", "t3"]}>
-                  Directional scoring uses the ODI opportunity calculation:
-                  opportunity = importance + max(importance − satisfaction, 0),
-                  using the revised study inputs. Its published scores are
-                  retained; the Frames coordinates are not recomputed. These
-                  values should seed a formal survey, not replace one.
+                  The map uses stable job language and ODI opportunity logic as
+                  a planning frame. Current values are directional synthesis
+                  inputs: chart coordinates retain the Frames snapshot, selected
+                  scores retain slide 18, and values are not recomputed. Survey
+                  importance and satisfaction, then use factor and cluster
+                  analysis to confirm needs-based segments and quadrant
+                  placement before treating the scores as ODI prioritization
+                  evidence.
                 </Evidence>
               </>
             )}

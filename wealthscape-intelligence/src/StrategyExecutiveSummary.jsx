@@ -5,14 +5,13 @@ import {
   ClipboardCheck,
   Compass,
   Flag,
-  Layers3,
 } from "lucide-react";
 import "./StrategyExecutiveSummary.css";
 
 const summaries = {
   maintenance: {
     conclusion: "Fund a shared validation-and-exception pilot before expanding account-maintenance automation.",
-    rationale: "The research does not point to one missing screen. It points to repeated servicing failures around incomplete requests, authority, ownership, review evidence and completion proof. Market and competitor sources make the case for better servicing quality, while the outcome synthesis frames candidate outcomes that still need formal ODI validation. Start with a bounded pilot that proves fewer rejected requests and clearer ownership before extending automation across household authority.",
+    rationale: "The research does not point to one missing screen. It points to repeated servicing failures around incomplete requests, authority, ownership, review evidence and completion proof. Market and competitor sources make the case for better servicing quality, while the outcome synthesis points to where a bounded pilot should focus. Start with a pilot that proves fewer rejected requests and clearer ownership before extending automation across household authority.",
     findings: {
       1: ["Market research says servicing quality matters, but it does not isolate account maintenance.", "T3 and Kitces point to platform satisfaction, integration and repeated handling as competitive context. They justify a servicing-quality hypothesis, not a maintenance-specific ROI claim; internal volume, failure and cost baselines still need to size the investment."],
       2: ["Competitor evidence shows guided maintenance exists, but not that complex changes finish end to end.", "Schwab and Altruist public references show adjacent digital workflows, beneficiary updates, notifications and records. They do not prove household authority, third-party POA, rejected work, evidence retention or cross-team recovery work across every account state."],
@@ -65,45 +64,6 @@ const summaries = {
       ["Gate production and expansion", "Agree on success and stop thresholds before the pilot. Require reliable data, review evidence, controlled delivery and acceptable operating cost before broader funding."],
     ],
   },
-};
-
-const methodologyBoundaries = {
-  maintenance: [
-    [
-      "Stable job structure",
-      "Use the account-change job as the stable frame over time: define, locate, prepare, confirm, execute, monitor, modify and conclude. Interfaces and vendors can change without changing the core job.",
-    ],
-    [
-      "Directional outcomes only",
-      "Current outcome scores are synthesis estimates from secondary research and executive-study inputs. They should guide discovery, not stand in for a statistically valid ODI opportunity score.",
-    ],
-    [
-      "Survey and segmentation next",
-      "A formal ODI survey should measure importance and satisfaction for each desired outcome, then use factor and cluster analysis to identify needs-based segments and real priority order.",
-    ],
-    [
-      "Quadrant strategy",
-      "Underserved outcomes are candidates for investment, table-stakes outcomes must be maintained, overserved outcomes can be simplified or deprioritized, and low-importance gaps should usually be ignored.",
-    ],
-  ],
-  reporting: [
-    [
-      "Stable job structure",
-      "Use the reporting job as the stable frame over time: define, locate, prepare, confirm, execute, monitor, modify and conclude. Report formats can change without changing the underlying job.",
-    ],
-    [
-      "Directional outcomes only",
-      "Reporting scores are retained synthesis estimates. They frame discovery and prototype coverage, but they are not a statistically validated ODI survey result.",
-    ],
-    [
-      "Survey and segmentation next",
-      "A formal ODI survey should measure importance and satisfaction, then apply factor and cluster analysis before segment-specific funding decisions.",
-    ],
-    [
-      "Quadrant strategy",
-      "Use underserved, table-stakes, overserved and lower-priority zones as strategy prompts, not proof. The next research step decides which zone each outcome truly occupies.",
-    ],
-  ],
 };
 
 export function StrategySectionFinding({ track, sectionId }) {
@@ -163,23 +123,6 @@ export default function StrategyExecutiveSummary({ track, sections, onJump }) {
         <h3>{summary.conclusion}</h3>
         <p>{summary.rationale}</p>
       </div>
-      <section className="strategy-methodology" aria-labelledby={`${track}-method-heading`}>
-        <div className="strategy-methodology-heading">
-          <Layers3 size={18} aria-hidden="true" />
-          <div>
-            <span className="am-eyebrow">ODI / JTBD method boundary</span>
-            <h3 id={`${track}-method-heading`}>Use the method as a research frame; validate the scores before scaling.</h3>
-          </div>
-        </div>
-        <dl>
-          {methodologyBoundaries[track].map(([title, text]) => (
-            <div key={title}>
-              <dt>{title}</dt>
-              <dd>{text}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
       <h3 className="strategy-executive-label">Findings by section</h3>
       <div className="strategy-executive-findings">
         {sections.map((section, index) => (
