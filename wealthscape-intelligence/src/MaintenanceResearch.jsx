@@ -725,34 +725,56 @@ export default function MaintenanceResearch({
                 <h3 className="mr-subheading">
                   Evidence that unlocks the next decision
                 </h3>
-                <div className="mr-milestones">
+                <div
+                  className="mr-milestones mr-roadmap"
+                  aria-label="Resolution strategy roadmap milestones"
+                >
                   {[
-                    [
-                      "Weeks 1–2",
-                      "Establish the baseline",
-                      "Operations + analytics",
-                      "Count maintenance requests by function and direct/assisted channel. Define first-pass completion, repeat rejection, and median/p90 resolution time, with clear denominators. Record cost and staff time separately.",
-                    ],
-                    [
-                      "Weeks 3–6",
-                      "Validate the job and reuse path",
-                      "Research + engineering + compliance",
-                      "Conduct the proposed advisor/CSA interviews and workflow observations. Test account-scope, authority-type, exception, and evidence-retention boundaries against existing services. Cost the sourcing alternatives.",
-                    ],
-                    [
-                      "By day 90",
-                      "Resize or advance the investment",
-                      "Product sponsor + operations + finance",
-                      "Compare the bounded pilot with its baseline and explain volume mix, rework, service burden, and support cost. Agree acceptance thresholds before the pilot; shrink or redirect the program if the assisted workload does not support its scale.",
-                    ],
-                  ].map(([time, title, owner, text]) => (
-                    <article key={time}>
-                      <span className="am-eyebrow">
-                        {time} · proposed milestone
-                      </span>
-                      <h4>{title}</h4>
-                      <p className="mr-owner">{owner}</p>
-                      <p>{text}</p>
+                    {
+                      time: "Weeks 1–2",
+                      title: "Establish the baseline",
+                      owner: "Operations + analytics",
+                      Icon: Database,
+                      text: "Count maintenance requests by function and direct/assisted channel. Define first-pass completion, repeat rejection, and median/p90 resolution time, with clear denominators.",
+                      gate: "Baseline volume, rework, cycle time, cost, and staff effort are recorded separately.",
+                    },
+                    {
+                      time: "Weeks 3–6",
+                      title: "Validate the job and reuse path",
+                      owner: "Research + engineering + compliance",
+                      Icon: FlaskConical,
+                      text: "Conduct advisor/CSA interviews and workflow observations. Test account-scope, authority-type, exception, and evidence-retention boundaries against existing services.",
+                      gate: "Reusable paths and sourcing alternatives are costed before a build, partner, or buy decision.",
+                    },
+                    {
+                      time: "By day 90",
+                      title: "Resize or advance the investment",
+                      owner: "Product sponsor + operations + finance",
+                      Icon: ClipboardCheck,
+                      text: "Compare the bounded pilot with its baseline and explain volume mix, rework, service burden, and support cost against the acceptance thresholds.",
+                      gate: "Program scale is advanced, reduced, or redirected based on measured support burden.",
+                    },
+                  ].map(({ time, title, owner, Icon, text, gate }, index) => (
+                    <article key={time} className="mr-roadmap-step">
+                      <div className="mr-roadmap-marker" aria-hidden="true">
+                        <Icon size={18} />
+                        <span>{index + 1}</span>
+                      </div>
+                      <div className="mr-roadmap-body">
+                        <div className="mr-roadmap-topline">
+                          <span className="mr-roadmap-time">{time}</span>
+                          <span className="mr-roadmap-kind">
+                            Proposed milestone
+                          </span>
+                        </div>
+                        <h4>{title}</h4>
+                        <p className="mr-owner">{owner}</p>
+                        <p>{text}</p>
+                        <div className="mr-roadmap-gate">
+                          <strong>Evidence gate</strong>
+                          <span>{gate}</span>
+                        </div>
+                      </div>
                     </article>
                   ))}
                 </div>

@@ -259,6 +259,25 @@ test("maintenance capability comparison leads with the integrated map and select
   );
   assert.match(competitorMapSource, /competitorValidationCards/);
 });
+test("maintenance resolution milestones render as a sequenced roadmap", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  assert.match(maintenanceSource, /mr-milestones mr-roadmap/);
+  assert.match(maintenanceSource, /Resolution strategy roadmap milestones/);
+  assert.match(maintenanceSource, /Establish the baseline/);
+  assert.match(maintenanceSource, /Validate the job and reuse path/);
+  assert.match(maintenanceSource, /Resize or advance the investment/);
+  assert.match(maintenanceSource, /Evidence gate/);
+  assert.match(accountMaintenanceCss, /\.mr-milestones::before/);
+  assert.match(accountMaintenanceCss, /\.mr-roadmap-marker/);
+  assert.match(accountMaintenanceCss, /grid-template-columns: 54px minmax\(0, 1fr\)/);
+});
 test("strategy profile selector explains role-scoped impact without displacing the executive summary", () => {
   const prototypeSource = readFileSync(
     join(srcDir, "WealthscapePrototype.jsx"),
