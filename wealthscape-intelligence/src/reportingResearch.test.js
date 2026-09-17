@@ -271,10 +271,11 @@ test("maintenance customer research highlights only the evidenced persona", () =
   assert.match(maintenanceSource, /mr-customer-context/);
   assert.match(maintenanceSource, /\/personas\/investor-account-owner\.png/);
   assert.match(maintenanceSource, /Investor \/ account owner/);
-  assert.match(maintenanceSource, /Functional job/);
-  assert.match(maintenanceSource, /Social job/);
-  assert.match(maintenanceSource, /Emotional job/);
   assert.match(maintenanceSource, /Unvalidated roles to research next/);
+  assert.equal(
+    maintenanceSource.includes("Jobs to be done in this context"),
+    false,
+  );
   assert.equal(
     maintenanceSource.includes("Client service associate · executes the job"),
     false,
@@ -284,7 +285,7 @@ test("maintenance customer research highlights only the evidenced persona", () =
     false,
   );
   assert.match(accountMaintenanceCss, /\.mr-customer-pain/);
-  assert.match(accountMaintenanceCss, /\.mr-customer-job/);
+  assert.equal(accountMaintenanceCss.includes(".mr-customer-job"), false);
   assert.match(accountMaintenanceCss, /\.mr-validation-gap/);
 });
 test("maintenance resolution milestones render as a sequenced roadmap", () => {

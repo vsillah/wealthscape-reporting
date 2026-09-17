@@ -102,23 +102,6 @@ const maintenanceCustomerPersona = {
     ["Service mode", "Advisor-assisted"],
     ["Primary concern", "Know what is missing, who owns it, and when the change is complete"],
   ],
-  jobs: [
-    {
-      type: "Functional job",
-      need: "Complete an account change without resubmitting the same evidence.",
-      job: "Obtain authority and resolve rejected information.",
-    },
-    {
-      type: "Social job",
-      need: "Know the advisor and firm are coordinated on the next step.",
-      job: "Make ownership visible while the request is waiting.",
-    },
-    {
-      type: "Emotional job",
-      need: "Feel confident the account instruction actually took effect.",
-      job: "Confirm completion with clear proof, not just submission status.",
-    },
-  ],
 };
 
 const recommendationMap = [
@@ -577,18 +560,6 @@ export default function MaintenanceResearch({
                         </div>
                       ))}
                     </dl>
-                    <div className="mr-customer-jobs">
-                      <p className="mr-customer-jobs-title">
-                        Jobs to be done in this context
-                      </p>
-                      {maintenanceCustomerPersona.jobs.map((item) => (
-                        <article className="mr-customer-job" key={item.type}>
-                          <span>{item.type}</span>
-                          <strong>{item.need}</strong>
-                          <small>{item.job}</small>
-                        </article>
-                      ))}
-                    </div>
                   </article>
                   <div className="mr-customer-pains">
                     {[
