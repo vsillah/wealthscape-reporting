@@ -259,6 +259,29 @@ test("maintenance capability comparison leads with the integrated map and select
   );
   assert.match(competitorMapSource, /competitorValidationCards/);
 });
+test("maintenance customer research highlights only the evidenced persona", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  assert.match(maintenanceSource, /mr-customer-context/);
+  assert.match(maintenanceSource, /Investor \/ account owner/);
+  assert.match(maintenanceSource, /Unvalidated roles to research next/);
+  assert.equal(
+    maintenanceSource.includes("Client service associate · executes the job"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes("Home office · buys and supervises"),
+    false,
+  );
+  assert.match(accountMaintenanceCss, /\.mr-customer-pain/);
+  assert.match(accountMaintenanceCss, /\.mr-validation-gap/);
+});
 test("maintenance resolution milestones render as a sequenced roadmap", () => {
   const maintenanceSource = readFileSync(
     join(srcDir, "MaintenanceResearch.jsx"),

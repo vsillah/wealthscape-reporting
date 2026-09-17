@@ -515,27 +515,86 @@ export default function MaintenanceResearch({
             {section === 3 && (
               <>
                 <p className="mr-lead">
-                  The people processing the work are the most important research
-                  gap.
+                  The current evidence describes the investor-facing problem.
+                  The people processing the work are still the research gap.
                 </p>
-                <Cards
-                  personas
-                  icons={[Users, ClipboardCheck, ShieldCheck]}
-                  rows={[
-                    [
-                      "Investor · sees the outcome",
-                      "The deck groups public forum themes around authority, waiting, and confirmation. These observations show that a problem can occur; they cannot establish its prevalence or severity.",
-                    ],
-                    [
-                      "Client service associate · executes the job",
-                      "The source surveys sample advisors rather than directly studying maintenance staff. The CSA role is the proposed job executor; its needs have not been validated by primary interviews in this project.",
-                    ],
-                    [
-                      "Home office · buys and supervises",
-                      "Policy, entitlements, and retained review evidence shape this role. Clearing and custody allocate responsibilities differently, so one persona cannot stand in for both operating models.",
-                    ],
-                  ]}
-                />
+                <div className="mr-customer-context">
+                  <article className="mr-customer-persona">
+                    <span className="mr-widget-icon">
+                      <Users size={20} aria-hidden="true" />
+                    </span>
+                    <div className="mr-customer-header">
+                      <div>
+                        <span className="am-eyebrow">Evidence persona</span>
+                        <h3>Investor / account owner</h3>
+                        <p>
+                          Public forum themes show where the customer feels the
+                          maintenance job break: authority, waiting, and
+                          confirmation.
+                        </p>
+                      </div>
+                      <span className="mr-customer-badge">Observed themes</span>
+                    </div>
+                    <dl className="mr-customer-facts">
+                      <div>
+                        <dt>Known evidence</dt>
+                        <dd>Forum-theme synthesis</dd>
+                      </div>
+                      <div>
+                        <dt>Coverage limit</dt>
+                        <dd>Prevalence not measured</dd>
+                      </div>
+                      <div>
+                        <dt>Research implication</dt>
+                        <dd>Validate severity before translating into requirements</dd>
+                      </div>
+                    </dl>
+                  </article>
+                  <div className="mr-customer-pains">
+                    {[
+                      [
+                        "Authority / signature",
+                        "Obtain authority",
+                        "I cannot tell which authorization is missing until the request stalls.",
+                        "Missing authority appears when the account owner expects one submitted change to be accepted, but the workflow still needs the right signer, scope, or policy path.",
+                      ],
+                      [
+                        "Waiting / status",
+                        "Resolve exception",
+                        "I do not know who has the request or what is needed next.",
+                        "The waiting problem shows up after submission, when ownership, rejected evidence, and recovery steps are not visible to the customer or advisor.",
+                      ],
+                      [
+                        "Completion proof",
+                        "Confirm completion",
+                        "I need confidence the account change actually took effect.",
+                        "Confirmation friction appears when the customer can see that work was submitted, but not whether the intended account state is complete and retained.",
+                      ],
+                    ].map(([theme, job, quote, pain]) => (
+                      <article className="mr-customer-pain" key={theme}>
+                        <div className="mr-customer-pain-header">
+                          <span>{theme}</span>
+                          <small>{job}</small>
+                        </div>
+                        <blockquote>{quote}</blockquote>
+                        <p>{pain}</p>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+                <div className="mr-validation-gap">
+                  <div>
+                    <ClipboardCheck size={18} aria-hidden="true" />
+                    <strong>Unvalidated roles to research next</strong>
+                  </div>
+                  <p>
+                    The source packet does not directly study client service
+                    associates or home-office reviewers. Treat those roles as
+                    operating hypotheses until interviews and workflow
+                    observations confirm their needs, handoffs, policy
+                    constraints, and evidence responsibilities.
+                  </p>
+                </div>
                 <div className="am-callout">
                   <strong>Method and next research step</strong>
                   <p>
