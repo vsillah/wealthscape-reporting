@@ -16,9 +16,10 @@ import {
   FlaskConical,
   ClipboardCheck,
 } from "lucide-react";
-import { LifecycleResearch } from "./LifecycleExperience";
+import { LifecycleResearch, outcomes } from "./LifecycleExperience";
 import MaintenanceOutcomes from "./MaintenanceOutcomes.jsx";
 import { visibleCases } from "./AccountMaintenance";
+import { normalizeOutcomeSelection } from "./maintenanceOutcomeSolutions.js";
 
 const sources = {
   altruist: ["Altruist · April 2024", "https://altruist.com/news/april-2024/"],
@@ -113,7 +114,7 @@ const recommendationMap = [
     phase: "NOW",
     score: "3.75",
     icon: GitBranch,
-    outcomes: "1, 2, 3, 8, 9",
+    outcomes: [1, 2, 3, 8, 9],
     odiPosture: "Differentiated wedge",
     preferred: ["MC-101", "MC-102", "MC-104", "MC-103"],
     action: "Inspect validation workflow",
@@ -130,7 +131,7 @@ const recommendationMap = [
     phase: "NEXT",
     score: "4.25",
     icon: Users,
-    outcomes: "4, 5, 10, 11, 12, 15",
+    outcomes: [4, 5, 10, 11, 12, 15],
     odiPosture: "Dominant-platform option to test",
     preferred: ["MC-101", "MC-104", "MC-106"],
     action: "Inspect household evidence",
@@ -147,7 +148,7 @@ const recommendationMap = [
     phase: "NEXT",
     score: "3.10",
     icon: ShieldCheck,
-    outcomes: "6, 13, 14",
+    outcomes: [6, 13, 14],
     odiPosture: "Selective differentiation",
     preferred: ["MC-103", "MC-106"],
     action: "Inspect review evidence",
@@ -164,7 +165,7 @@ const recommendationMap = [
     phase: "LATER",
     score: "2.90",
     icon: Database,
-    outcomes: "7, 4, 8, 9",
+    outcomes: [7, 4, 8, 9],
     odiPosture: "Targeted segment play",
     preferred: ["MC-104"],
     action: "Inspect conversion case",
@@ -178,7 +179,46 @@ const recommendationMap = [
   },
 ];
 
-function RecommendationMap({ scoped, profile, onNavigate }) {
+function outcomeName(id) {
+  return outcomes[id - 1]?.[0] || `Outcome ${id}`;
+}
+
+function OutcomeReferenceList({ ids, onOpen }) {
+  return (
+    <div className="mr-outcome-links" aria-label="Related outcomes">
+      {ids.map((id) => (
+        <button
+          className="mr-outcome-link"
+          key={id}
+          type="button"
+          title={outcomeName(id)}
+          onClick={() => onOpen(id)}
+          aria-label={`Open outcome ${id}: ${outcomeName(id)} in Outcomes and opportunities`}
+        >
+          <span className="mr-outcome-code">O{id}</span>
+          <span className="mr-outcome-name">{outcomeName(id)}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function OutcomeInlineReference({ id, onOpen }) {
+  return (
+    <button
+      className="mr-outcome-inline"
+      type="button"
+      title={outcomeName(id)}
+      onClick={() => onOpen(id)}
+      aria-label={`Open outcome ${id}: ${outcomeName(id)} in Outcomes and opportunities`}
+    >
+      <span className="mr-outcome-code">O{id}</span>
+      <span className="mr-outcome-name">{outcomeName(id)}</span>
+    </button>
+  );
+}
+
+function RecommendationMap({ scoped, profile, onNavigate, onOutcomeOpen }) {
   return (
     <div className="mr-recommendations">
       {recommendationMap.map((rec, index) => {
@@ -201,7 +241,7 @@ function RecommendationMap({ scoped, profile, onNavigate }) {
                   {rec.title}
                 </h3>
               </div>
-              <span className="mr-outcome-ref">Outcomes {rec.outcomes}</span>
+              <OutcomeReferenceList ids={rec.outcomes} onOpen={onOutcomeOpen} />
             </header>
             <p className="mr-odi-posture">
               <strong>ODI posture</strong> {rec.odiPosture}
@@ -262,6 +302,7 @@ export default function MaintenanceResearch({
   onStartGuide,
 }) {
   const [active, setActive] = useState(1);
+  const [selectedOutcome, setSelectedOutcome] = useState(-1);
   const [navHeight, setNavHeight] = useState(84);
   const navigation = useRef(null);
   const navigationFocused = useRef(false);
@@ -351,6 +392,12 @@ export default function MaintenanceResearch({
       lifecycleStage,
       maintenanceView: "queue",
     });
+  const openOutcome = (id) => {
+    const next = normalizeOutcomeSelection(Number(id) - 1);
+    if (next < 0) return;
+    setSelectedOutcome(next);
+    advance(4);
+  };
   return (
     <div
       className="am-workspace mr-research"
@@ -613,6 +660,8 @@ export default function MaintenanceResearch({
                   profile={profile}
                   cases={cases}
                   onNavigate={onNavigate}
+                  selectedOutcome={selectedOutcome}
+                  onOutcomeChange={setSelectedOutcome}
                 />
                 <Evidence slide="18, 25, 28" links={["kitces", "t3"]}>
                   The map uses stable job language and ODI opportunity logic as
@@ -637,19 +686,11 @@ export default function MaintenanceResearch({
                   Define the request, establish requirements, obtain authority,
                   submit, resolve and review, then confirm completion.
                 </p>
-                <Cards
-                  rows={[
-                    [
-                      "Authority is a handoff",
-                      "The client supplies authority; operations checks the requirements; the home office defines policy and review. Each handoff needs an explicit owner and an understandable recovery path.",
-                    ],
-                    [
-                      "Confirmation closes the job",
-                      "A submitted form is not a completed change. The proposed path ends when the right account scope is confirmed and the review evidence can be retrieved.",
-                    ],
-                  ]}
+                <LifecycleResearch
+                  embedded
+                  view="journey"
+                  onOutcomeOpen={openOutcome}
                 />
-                <LifecycleResearch embedded view="journey" />
                 <Evidence slide="6–10, 27">
                   This is a derived job sequence and assessed journey, not a
                   completed ODI job map or needs-based segmentation study.
@@ -672,6 +713,7 @@ export default function MaintenanceResearch({
                   scoped={scoped}
                   profile={profile}
                   onNavigate={onNavigate}
+                  onOutcomeOpen={openOutcome}
                 />
                 <div className="mr-workflow-bridge">
                   <Route size={24} aria-hidden="true" />
@@ -680,11 +722,12 @@ export default function MaintenanceResearch({
                       Status and confirmation connect every recommendation
                     </h3>
                     <p>
-                      Outcomes 9 and 14 lead to queue counts, named owners, a
-                      case timeline, and a clear completion state. In the demo,
-                      incomplete maintenance holds report generation; completing
-                      the evidence checks and human review releases the
-                      account-change report.
+                      <OutcomeInlineReference id={9} onOpen={openOutcome} /> and{" "}
+                      <OutcomeInlineReference id={14} onOpen={openOutcome} /> lead
+                      to queue counts, named owners, a case timeline, and a clear
+                      completion state. In the demo, incomplete maintenance holds
+                      report generation; completing the evidence checks and human
+                      review releases the account-change report.
                     </p>
                     <div className="mr-demo-links">
                       <button
@@ -741,7 +784,15 @@ export default function MaintenanceResearch({
                       "Build the missing coordination",
                       GitBranch,
                       "Product + engineering + operations",
-                      "Map outcomes 1/2/3 and 9/14 to missing checks, exception states, owners, and completion evidence. Prototype the smallest missing handoff.",
+                      <>
+                        Map <OutcomeInlineReference id={1} onOpen={openOutcome} />,{" "}
+                        <OutcomeInlineReference id={2} onOpen={openOutcome} />,{" "}
+                        <OutcomeInlineReference id={3} onOpen={openOutcome} />,{" "}
+                        <OutcomeInlineReference id={9} onOpen={openOutcome} />, and{" "}
+                        <OutcomeInlineReference id={14} onOpen={openOutcome} /> to
+                        missing checks, exception states, owners, and completion
+                        evidence. Prototype the smallest missing handoff.
+                      </>,
                       "Build where internal policy or exception coordination is differentiated and existing services cannot meet the contract. Require an accountable support owner.",
                     ],
                     [

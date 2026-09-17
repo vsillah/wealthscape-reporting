@@ -108,11 +108,25 @@ function OdiCompactRead() {
   );
 }
 
-export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
+export default function MaintenanceOutcomes({
+  profile,
+  cases,
+  onNavigate,
+  selectedOutcome,
+  onOutcomeChange,
+}) {
   const inspectorRef = useRef(null);
   const [view, setView] = useState("map");
-  const [selected, setSelected] = useState(-1);
-  const select = (value) => setSelected(normalizeOutcomeSelection(value));
+  const [localSelected, setLocalSelected] = useState(-1);
+  const selected =
+    selectedOutcome === undefined
+      ? localSelected
+      : normalizeOutcomeSelection(selectedOutcome);
+  const select = (value) => {
+    const next = normalizeOutcomeSelection(value);
+    if (selectedOutcome === undefined) setLocalSelected(next);
+    onOutcomeChange?.(next);
+  };
   const selectRanked = (value) => {
     select(value);
     if (!window.matchMedia("(max-width: 1000px)").matches) return;

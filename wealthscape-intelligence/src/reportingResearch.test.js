@@ -378,6 +378,10 @@ test("maintenance chart caveats stay below the related visualizations", () => {
     join(srcDir, "MaintenanceJourney.jsx"),
     "utf8",
   );
+  const journeyDataSource = readFileSync(
+    join(srcDir, "maintenanceJourney.js"),
+    "utf8",
+  );
   const capabilityMapIndex = maintenanceSource.indexOf(
     '<LifecycleResearch embedded view="positioning" />',
   );
@@ -397,7 +401,7 @@ test("maintenance chart caveats stay below the related visualizations", () => {
   assert.equal(competitorMapSource.includes("Source assessment:"), false);
 
   const journeyMapIndex = maintenanceSource.indexOf(
-    '<LifecycleResearch embedded view="journey" />',
+    '<LifecycleResearch\n                  embedded\n                  view="journey"',
   );
   const journeyNoteIndex = maintenanceSource.indexOf(
     "Executive deck slides 6 and 10 provide directional forum",
@@ -410,6 +414,75 @@ test("maintenance chart caveats stay below the related visualizations", () => {
   );
   assert.equal(journeySource.includes("Executive deck, slides 6 and 10"), false);
   assert.equal(journeySource.includes("Curve height and progress symbols"), false);
+  assert.equal(
+    journeySource.includes("Selected journey milestone context"),
+    false,
+  );
+  assert.equal(
+    journeySource.includes("All stages shown with equal emphasis"),
+    false,
+  );
+  assert.equal(
+    journeySource.includes("Design response: show the next owner"),
+    false,
+  );
+  assert.equal(maintenanceSource.includes("Authority is a handoff"), false);
+  assert.equal(maintenanceSource.includes("Confirmation closes the job"), false);
+  assert.match(journeySource, /Outcome signals at this stage/);
+  assert.match(journeySource, /Job focus/);
+  assert.match(journeySource, /Owner handoff/);
+  assert.match(journeyDataSource, /home office defines policy and review/);
+  assert.match(journeyDataSource, /right account scope is confirmed/);
+});
+test("maintenance strategy outcome references open the selected outcome detail", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const outcomesSource = readFileSync(
+    join(srcDir, "MaintenanceOutcomes.jsx"),
+    "utf8",
+  );
+  const lifecycleSource = readFileSync(
+    join(srcDir, "LifecycleExperience.jsx"),
+    "utf8",
+  );
+  const journeySource = readFileSync(
+    join(srcDir, "MaintenanceJourney.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  const journeyCss = readFileSync(
+    join(srcDir, "MaintenanceJourney.css"),
+    "utf8",
+  );
+  assert.match(maintenanceSource, /selectedOutcome, setSelectedOutcome/);
+  assert.match(maintenanceSource, /const openOutcome = \(id\) =>/);
+  assert.match(maintenanceSource, /advance\(4\)/);
+  assert.match(maintenanceSource, /selectedOutcome=\{selectedOutcome\}/);
+  assert.match(maintenanceSource, /onOutcomeChange=\{setSelectedOutcome\}/);
+  assert.match(maintenanceSource, /onOutcomeOpen=\{openOutcome\}/);
+  assert.match(maintenanceSource, /OutcomeReferenceList/);
+  assert.match(maintenanceSource, /OutcomeInlineReference/);
+  assert.match(maintenanceSource, /title=\{outcomeName\(id\)\}/);
+  assert.match(maintenanceSource, /className="mr-outcome-name"/);
+  assert.equal(maintenanceSource.includes("Outcomes {rec.outcomes}"), false);
+  assert.equal(maintenanceSource.includes("Map outcomes 1/2/3 and 9/14"), false);
+  assert.match(outcomesSource, /selectedOutcome === undefined/);
+  assert.match(lifecycleSource, /onOutcomeOpen/);
+  assert.match(journeySource, /function MaintenanceJourney\(\{ onOutcomeOpen \}\)/);
+  assert.match(journeySource, /className="mj-outcome-link"/);
+  assert.match(journeySource, /title=\{outcome\.label\}/);
+  assert.equal(journeySource.includes("<small>{outcome.reason}</small>"), false);
+  assert.match(accountMaintenanceCss, /\.mr-outcome-link/);
+  assert.match(accountMaintenanceCss, /\.mr-outcome-inline/);
+  assert.match(accountMaintenanceCss, /text-overflow: ellipsis/);
+  assert.match(accountMaintenanceCss, /white-space: nowrap/);
+  assert.match(journeyCss, /\.mj-outcome-link/);
+  assert.match(journeyCss, /text-overflow: ellipsis/);
 });
 test("maintenance customer research highlights only the evidenced persona", () => {
   const maintenanceSource = readFileSync(
