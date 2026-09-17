@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useState } from "react";
 import { CircleCheck, CircleMinus, TriangleAlert } from "lucide-react";
 import {
   journeyPhases,
@@ -7,6 +7,7 @@ import {
   nextJourneySelection,
   journeyCellState,
 } from "./maintenanceJourney.js";
+import { outcomeSolutions } from "./maintenanceOutcomeSolutions.js";
 import "./MaintenanceJourney.css";
 
 const experienceKinds = {
@@ -14,32 +15,23 @@ const experienceKinds = {
   neutral: { icon: CircleMinus, label: "Neutral step" },
   friction: { icon: TriangleAlert, label: "Friction" },
 };
-export default function MaintenanceJourney() {
+const outcomeScores = new Map(
+  outcomeSolutions.map((outcome) => [outcome.id, outcome.score]),
+);
+export default function MaintenanceJourney({ onOutcomeOpen }) {
   const [selectedId, setSelectedId] = useState(null);
-  const selected = journeyMilestones.find((item) => item.id === selectedId);
-  const contextRef = useRef(null);
-  const contextId = useId();
   const select = (id) => {
     const next = nextJourneySelection(selectedId, id);
     setSelectedId(next);
-    if (!next || !window.matchMedia("(max-width: 1000px)").matches) return;
-    requestAnimationFrame(() => {
-      contextRef.current?.focus({ preventScroll: true });
-      contextRef.current?.scrollIntoView({
-        block: "start",
-        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ? "instant"
-          : "smooth",
-      });
-    });
   };
+  const selected = journeyMilestones.find((item) => item.id === selectedId);
+  const selectedIndex = selected
+    ? journeyMilestones.findIndex((item) => item.id === selected.id)
+    : -1;
+  const selectedKind = selected ? experienceKinds[selected.kind] : null;
+  const SelectedIcon = selectedKind?.icon;
   return (
     <div className="mj-journey">
-      <p className="am-note">
-        Executive deck, slides 6 and 10 · directional forum evidence. Curve
-        height and progress symbols are illustrative, not measured satisfaction
-        or reported sentiment. Positive moments describe proposed experience.
-      </p>
       <div className="mj-toolbar">
         <div className="mj-legend" aria-label="Illustrative experience legend">
           {Object.entries(experienceKinds).map(([kind, item]) => {
@@ -52,7 +44,7 @@ export default function MaintenanceJourney() {
             );
           })}
         </div>
-        <button aria-pressed={!selected} onClick={() => setSelectedId(null)}>
+        <button aria-pressed={!selectedId} onClick={() => setSelectedId(null)}>
           All stages
         </button>
       </div>
@@ -87,7 +79,6 @@ export default function MaintenanceJourney() {
                 }}
                 aria-label={`${index + 1}. ${item.label}: ${experienceKinds[item.kind].label}. Phase ${item.phase + 1}, ${journeyPhases[item.phase]}`}
                 aria-pressed={selectedId === item.id}
-                aria-controls={contextId}
                 onClick={() => select(item.id)}
               >
                 <span className="mj-marker">
@@ -131,60 +122,66 @@ export default function MaintenanceJourney() {
           </div>
         ))}
       </div>
-      <section
-        id={contextId}
-        ref={contextRef}
-        tabIndex={-1}
-        className={`mj-context ${selected ? `mj-${selected.kind}` : ""}`}
-        aria-label="Selected journey milestone context"
-        aria-live="polite"
-      >
-        {selected ? (
-          <>
-            <span className="am-eyebrow">
+      {selected && (
+        <section
+          className="mj-stage-context"
+          aria-live="polite"
+          aria-label={`${selected.label} job and outcome context`}
+        >
+          <div className="mj-stage-summary">
+            <div>
+              <span className={`mj-stage-kicker mj-${selected.kind}`}>
+                {SelectedIcon && <SelectedIcon size={16} aria-hidden="true" />}
+                {selectedKind.label}
+              </span>
+              <h3>
+                {selectedIndex + 1}. {selected.label}
+              </h3>
+              <p>{selected.job}</p>
+            </div>
+            <span className="mj-stage-phase">
               Phase {selected.phase + 1} · {journeyPhases[selected.phase]}
             </span>
-            <h3>{selected.label}</h3>
-            <p>{selected.moment}</p>
-            <dl>
-              <div>
-                <dt>{experienceKinds[selected.kind].label} · illustrative</dt>
-                <dd>{selected.experience}</dd>
-              </div>
-              <div>
-                <dt>Owner / handoff</dt>
-                <dd>{selected.handoff}</dd>
-              </div>
-              <div>
-                <dt>Design response</dt>
-                <dd>{selected.response}</dd>
-              </div>
-              <div>
-                <dt>Evidence / assumption boundary</dt>
-                <dd>{selected.boundary}</dd>
-              </div>
-            </dl>
-            <p className="mj-connection">
-              Linked phase: {journeyPhases[selected.phase]} ·{" "}
-              {selected.stakeholders
-                .map(
-                  (id) =>
-                    journeyStakeholders.find((role) => role.id === id).label,
-                )
-                .join(", ")}
-            </p>
-          </>
-        ) : (
-          <p>
-            All stages shown with equal emphasis.
-          </p>
-        )}
-      </section>
-      <p>
-        Design response: show the next owner and missing evidence at each wait,
-        retain the rejection history, and carry the completed packet into
-        reporting.
-      </p>
+          </div>
+          <div className="mj-stage-grid">
+            <div>
+              <span>Job focus</span>
+              <p>{selected.moment}</p>
+            </div>
+            <div>
+              <span>Owner handoff</span>
+              <p>{selected.handoff}</p>
+            </div>
+            <div>
+              <span>Outcome response</span>
+              <p>{selected.response}</p>
+            </div>
+          </div>
+          <div className="mj-outcomes" aria-label="Outcome signals at this stage">
+            <strong>Outcome signals at this stage</strong>
+            <div>
+              {selected.outcomes.map((outcome) => (
+                <button
+                  className="mj-outcome-link"
+                  key={outcome.id}
+                  type="button"
+                  title={outcome.label}
+                  onClick={() => onOutcomeOpen?.(outcome.id)}
+                  aria-label={`Open outcome ${outcome.id}: ${outcome.label} in Outcomes and opportunities`}
+                >
+                  <b>O{outcome.id}</b>
+                  <span>{outcome.label}</span>
+                  <em>
+                    {outcomeScores.has(outcome.id)
+                      ? outcomeScores.get(outcome.id).toFixed(1)
+                      : "n/a"}
+                  </em>
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

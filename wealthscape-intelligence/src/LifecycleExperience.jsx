@@ -541,6 +541,7 @@ export function LifecycleResearch({
   embedded = false,
   selectedOutcome,
   onOutcomeChange,
+  onOutcomeOpen,
   outcomeDetail,
   compactSourceNote = false,
 }) {
@@ -814,7 +815,7 @@ export function LifecycleResearch({
         </>
       )}
       {tab === "positioning" && <MaintenanceCompetitorMap />}
-      {tab === "journey" && <MaintenanceJourney />}
+      {tab === "journey" && <MaintenanceJourney onOutcomeOpen={onOutcomeOpen} />}
     </section>
   );
 }

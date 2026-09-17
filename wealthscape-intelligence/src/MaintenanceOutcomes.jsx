@@ -9,12 +9,124 @@ import {
   outcomeDestination,
   normalizeOutcomeSelection,
 } from "./maintenanceOutcomeSolutions.js";
+import { outcomeQuadrant } from "./maintenanceQuadrants.js";
 
-export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
+const odiSegmentHypotheses = [
+  {
+    title: "Exception-control segment",
+    ids: [1, 2, 3, 8, 9, 14],
+    need: "Know what is missing, who owns the next action, and whether the change is complete.",
+    posture: "Differentiated wedge",
+    implication:
+      "Best first wedge for differentiation: reduce rework before expanding authority or scope.",
+  },
+  {
+    title: "Household-authority segment",
+    ids: [4, 5, 10, 11, 12, 15],
+    need: "Apply the right authority and evidence across every affected account without re-collecting the same proof.",
+    posture: "Dominant-platform option to test",
+    implication:
+      "Potential dominant platform move if a survey confirms broad demand across advisor and operations segments.",
+  },
+  {
+    title: "Compliance-currency segment",
+    ids: [6, 13],
+    need: "Find stale or overdue evidence before a review event forces reactive service work.",
+    posture: "Selective differentiation",
+    implication:
+      "Selective differentiation: connect evidence currency to status and review readiness before automating alerts.",
+  },
+  {
+    title: "Conversion-servicing segment",
+    ids: [7],
+    need: "Reconcile acquired-book account scope, ownership, and authority before service volume scales.",
+    posture: "Targeted segment play",
+    implication:
+      "Targeted segment strategy: validate whether this is a high-value niche before funding enterprise tooling.",
+  },
+];
+
+const quadrantOrder = [
+  ["Underserved", "Opportunity / underserved"],
+  ["Table stakes", "Table stakes"],
+  ["Overserved", "Overserved"],
+  ["Ignore", "Ignore"],
+];
+
+const quadrantCounts = outcomes.reduce((counts, values) => {
+  const quadrant = outcomeQuadrant(values[1], values[2]);
+  counts[quadrant] = (counts[quadrant] || 0) + 1;
+  return counts;
+}, {});
+
+function outcomeSummary(ids) {
+  const rows = ids.map((id) => {
+    const values = outcomes[id - 1];
+    const solution = outcomeSolutions[id - 1];
+    return {
+      id,
+      importance: values[2],
+      satisfaction: values[1],
+      score: solution.score,
+      quadrant: outcomeQuadrant(values[1], values[2]),
+    };
+  });
+  const average = (key) =>
+    rows.reduce((total, row) => total + row[key], 0) / rows.length;
+  return {
+    rows,
+    opportunity: average("score"),
+    importance: average("importance"),
+    satisfaction: average("satisfaction"),
+  };
+}
+
+function odiSegmentForOutcome(outcomeId) {
+  if (!outcomeId) return null;
+  return odiSegmentHypotheses.find((segment) => segment.ids.includes(outcomeId));
+}
+
+function OdiCompactRead() {
+  return (
+    <div className="mo-odi-compact" aria-label="ODI strategy read">
+      <div>
+        <span>ODI strategy read</span>
+        <p>
+          Differentiation is the strongest current signal; disruption is not
+          supported by this map yet.
+        </p>
+      </div>
+      <div className="mo-odi-counts" aria-label="Opportunity map counts">
+        {quadrantOrder.map(([label, key]) => (
+          <span key={label}>
+            <strong>{quadrantCounts[key] || 0}</strong>
+            <span>{label}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export default function MaintenanceOutcomes({
+  profile,
+  cases,
+  onNavigate,
+  selectedOutcome,
+  onOutcomeChange,
+}) {
   const inspectorRef = useRef(null);
   const [view, setView] = useState("map");
-  const [selected, setSelected] = useState(-1);
-  const select = (value) => setSelected(normalizeOutcomeSelection(value));
+  const [localSelected, setLocalSelected] = useState(-1);
+  const selected =
+    selectedOutcome === undefined
+      ? localSelected
+      : normalizeOutcomeSelection(selectedOutcome);
+  const select = (value) => {
+    const next = normalizeOutcomeSelection(value);
+    if (selectedOutcome === undefined) setLocalSelected(next);
+    onOutcomeChange?.(next);
+  };
   const selectRanked = (value) => {
     select(value);
     if (!window.matchMedia("(max-width: 1000px)").matches) return;
@@ -32,6 +144,11 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
   };
   const solution = outcomeSolutions[selected];
   const values = outcomes[selected];
+  const quadrant = values ? outcomeQuadrant(values[1], values[2]) : null;
+  const selectedSegment = solution ? odiSegmentForOutcome(solution.id) : null;
+  const selectedSegmentSummary = selectedSegment
+    ? outcomeSummary(selectedSegment.ids)
+    : null;
   const destination = outcomeDestination(
     solution?.id,
     profile.id,
@@ -48,6 +165,18 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         {solution.id}. {values[0]}
       </h3>
       <p>{solution.problem}</p>
+      {selectedSegment && (
+        <div className="mo-odi-context" aria-label="ODI strategy context">
+          <span>ODI posture</span>
+          <strong>{selectedSegment.posture}</strong>
+          <p>{selectedSegment.implication}</p>
+          <small>
+            {selectedSegment.title} ·{" "}
+            {selectedSegmentSummary.opportunity.toFixed(1)} average opportunity ·{" "}
+            {selectedSegment.ids.map((id) => `O${id}`).join(", ")}
+          </small>
+        </div>
+      )}
       <dl className="mo-values">
         <div>
           <dt>Frames importance / satisfaction</dt>
@@ -57,9 +186,15 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
           </dd>
         </div>
         <div>
-          <dt>Revised executive opportunity score</dt>
+          <dt>Directional opportunity score</dt>
           <dd>
             {solution.score.toFixed(2)} <span>· slide 18</span>
+          </dd>
+        </div>
+        <div>
+          <dt>Opportunity quadrant</dt>
+          <dd>
+            {quadrant} <span>· based on Frames coordinates</span>
           </dd>
         </div>
       </dl>
@@ -91,21 +226,13 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         ranked row, or dropdown option to inspect the problem, proposed
         response, and relevant demo.
       </p>
+      <OdiCompactRead />
     </div>
   );
   return (
     <div className="mo-workspace">
       <p className="mr-lead">
         Select an outcome to connect the research to a proposed workflow.
-      </p>
-      <p className="mo-source-note">
-        Two source snapshots: the chart retains{" "}
-        <strong>Account Maintenance Frames</strong> coordinates and its midpoint
-        of <strong>3 on both axes</strong>; selected detail scores retain the{" "}
-        <strong>18 Aug executive study, slide 18</strong>. Values are not
-        combined or recomputed. All are adjacent-category proxies; outcomes 3
-        and 14 are inferred. The plotted values place outcomes 12 and 15 in
-        Table stakes, despite the Frames prose calling all outcomes underserved.
       </p>
       <div
         className="am-tabs mo-view-switch"
@@ -126,9 +253,9 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         <div className="mo-ranked-layout">
           <section aria-label="Ranked executive study outcomes">
             <p className="am-note">
-              Published revised-study opportunity scores · common 0–10 scale.
-              Bar lengths show scores, not percentages. Frames coordinates
-              remain separate in the opportunity map.
+              Revised-study opportunity scores · common 0–10 scale. Bar
+              lengths show scores, not percentages. Frames coordinates remain
+              separate in the opportunity map.
             </p>
             <button
               className="mo-reset"

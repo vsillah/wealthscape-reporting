@@ -221,9 +221,100 @@ test("maintenance executive findings connect research evidence to recommendation
     (match) => match[1],
   );
   assert.deepEqual(findingIds, sectionIds);
-  assert.match(findingsBlock[1], /servicing quality matters/);
-  assert.match(findingsBlock[1], /outcome map concentrates opportunity/);
-  assert.match(findingsBlock[1], /measured pilot/);
+  assert.match(findingsBlock[1], /servicing quality the investment question/);
+  assert.match(findingsBlock[1], /outcome landscape points to differentiation/);
+  assert.match(findingsBlock[1], /dominant-platform option/);
+  assert.doesNotMatch(findingsBlock[1], /does not isolate account maintenance/);
+  assert.doesNotMatch(findingsBlock[1], /but not that complex changes/);
+  assert.doesNotMatch(findingsBlock[1], /formal ODI survey/);
+  assert.doesNotMatch(findingsBlock[1], /service-associate and reviewer interviews/);
+  assert.doesNotMatch(findingsBlock[1], /not a maintenance-specific ROI claim/);
+  assert.doesNotMatch(findingsBlock[1], /They do not prove/);
+});
+test("maintenance strategy labels ODI outputs as directional until survey validation", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const outcomesSource = readFileSync(
+    join(srcDir, "MaintenanceOutcomes.jsx"),
+    "utf8",
+  );
+  const summarySource = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  const summaryCss = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.css"),
+    "utf8",
+  );
+  assert.equal(summarySource.includes("ODI / JTBD method boundary"), false);
+  assert.equal(summarySource.includes("strategy-methodology"), false);
+  assert.equal(summaryCss.includes("strategy-methodology"), false);
+  assert.match(maintenanceSource, /<aside className="mr-evidence"/);
+  assert.match(maintenanceSource, /stable job language/);
+  assert.match(summarySource, /factor and cluster analysis/);
+  assert.match(maintenanceSource, /factor and cluster\s+analysis/);
+  assert.match(maintenanceSource, /ODI opportunity logic/);
+  assert.match(maintenanceSource, /importance\s+plus unmet need/);
+  assert.equal(outcomesSource.includes("mr-evidence"), false);
+  assert.match(maintenanceSource, /sourced, derived, and inferred inputs/);
+  assert.ok(
+    maintenanceSource.indexOf("<MaintenanceOutcomes") <
+      maintenanceSource.indexOf("Chart coordinates retain the Frames"),
+    "outcome source/method caveat appears after the interactive outcome content",
+  );
+  assert.match(outcomesSource, /Opportunity quadrant/);
+  assert.equal(outcomesSource.includes("mo-method-boundary"), false);
+  assert.equal(accountMaintenanceCss.includes(".mo-source-note"), false);
+  assert.equal(maintenanceSource.includes("mr-method-note"), false);
+  assert.equal(maintenanceSource.includes("mr-validation-gap"), false);
+  assert.match(accountMaintenanceCss, /\.mr-evidence-label/);
+  assert.equal(accountMaintenanceCss.includes(".mr-method-note"), false);
+  assert.equal(accountMaintenanceCss.includes(".mo-method-boundary"), false);
+});
+test("maintenance outcomes translate ODI placement into directional strategy posture", () => {
+  const outcomesSource = readFileSync(
+    join(srcDir, "MaintenanceOutcomes.jsx"),
+    "utf8",
+  );
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const summarySource = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.jsx"),
+    "utf8",
+  );
+  const cssSource = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  assert.match(outcomesSource, /ODI strategy read/);
+  assert.match(
+    outcomesSource,
+    /Differentiation is the strongest current signal; disruption is not/,
+  );
+  assert.match(outcomesSource, /Exception-control segment/);
+  assert.match(outcomesSource, /Household-authority segment/);
+  assert.match(outcomesSource, /ODI strategy context/);
+  assert.match(outcomesSource, /OdiCompactRead/);
+  assert.equal(outcomesSource.includes("MaintenanceOdiSynthesis"), false);
+  assert.match(outcomesSource, /quadrantOrder/);
+  assert.match(outcomesSource, /Opportunity \/ underserved/);
+  assert.match(maintenanceSource, /ODI posture/);
+  assert.match(maintenanceSource, /Differentiated wedge/);
+  assert.match(maintenanceSource, /Dominant-platform option to test/);
+  assert.match(maintenanceSource, /differentiated, dominant, disruptive/);
+  assert.match(summarySource, /Thirteen of fifteen candidate outcomes/);
+  assert.match(cssSource, /\.mo-odi-compact/);
+  assert.match(cssSource, /\.mo-odi-context/);
+  assert.equal(cssSource.includes(".mo-odi-synthesis"), false);
+  assert.match(cssSource, /\.mr-odi-posture/);
 });
 test("maintenance capability comparison leads with the integrated map and selected-platform validation", () => {
   const maintenanceSource = readFileSync(
@@ -247,6 +338,13 @@ test("maintenance capability comparison leads with the integrated map and select
     "the integrated map appears before the source evidence",
   );
   assert.equal(
+    competitorMapSource.includes("Account Maintenance Frames snapshot"),
+    false,
+  );
+  assert.equal(competitorMapSource.includes("Source assessment:"), false);
+  assert.match(maintenanceSource, /X uses T3 2026 advisor\s+satisfaction/);
+  assert.match(maintenanceSource, /Public\s+context checked 10 Sep 2026/);
+  assert.equal(
     maintenanceSource.includes("Onboarding is not all maintenance"),
     false,
   );
@@ -267,6 +365,125 @@ test("maintenance capability comparison leads with the integrated map and select
   );
   assert.match(competitorMapSource, /competitorValidationCards/);
 });
+test("maintenance chart caveats stay below the related visualizations", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const competitorMapSource = readFileSync(
+    join(srcDir, "MaintenanceCompetitorMap.jsx"),
+    "utf8",
+  );
+  const journeySource = readFileSync(
+    join(srcDir, "MaintenanceJourney.jsx"),
+    "utf8",
+  );
+  const journeyDataSource = readFileSync(
+    join(srcDir, "maintenanceJourney.js"),
+    "utf8",
+  );
+  const capabilityMapIndex = maintenanceSource.indexOf(
+    '<LifecycleResearch embedded view="positioning" />',
+  );
+  const capabilityNoteIndex = maintenanceSource.indexOf(
+    "X uses T3 2026 advisor",
+  );
+  assert.ok(capabilityMapIndex > -1, "capability visual is rendered");
+  assert.ok(capabilityNoteIndex > -1, "capability caveat is retained");
+  assert.ok(
+    capabilityMapIndex < capabilityNoteIndex,
+    "capability caveat appears after the visualization",
+  );
+  assert.equal(
+    competitorMapSource.includes("Account Maintenance Frames snapshot"),
+    false,
+  );
+  assert.equal(competitorMapSource.includes("Source assessment:"), false);
+
+  const journeyMapIndex = maintenanceSource.indexOf(
+    '<LifecycleResearch\n                  embedded\n                  view="journey"',
+  );
+  const journeyNoteIndex = maintenanceSource.indexOf(
+    "Executive deck slides 6 and 10 provide directional forum",
+  );
+  assert.ok(journeyMapIndex > -1, "job-map journey visual is rendered");
+  assert.ok(journeyNoteIndex > -1, "job-map caveat is retained");
+  assert.ok(
+    journeyMapIndex < journeyNoteIndex,
+    "job-map caveat appears after the visualization",
+  );
+  assert.equal(journeySource.includes("Executive deck, slides 6 and 10"), false);
+  assert.equal(journeySource.includes("Curve height and progress symbols"), false);
+  assert.equal(
+    journeySource.includes("Selected journey milestone context"),
+    false,
+  );
+  assert.equal(
+    journeySource.includes("All stages shown with equal emphasis"),
+    false,
+  );
+  assert.equal(
+    journeySource.includes("Design response: show the next owner"),
+    false,
+  );
+  assert.equal(maintenanceSource.includes("Authority is a handoff"), false);
+  assert.equal(maintenanceSource.includes("Confirmation closes the job"), false);
+  assert.match(journeySource, /Outcome signals at this stage/);
+  assert.match(journeySource, /Job focus/);
+  assert.match(journeySource, /Owner handoff/);
+  assert.match(journeyDataSource, /home office defines policy and review/);
+  assert.match(journeyDataSource, /right account scope is confirmed/);
+});
+test("maintenance strategy outcome references open the selected outcome detail", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const outcomesSource = readFileSync(
+    join(srcDir, "MaintenanceOutcomes.jsx"),
+    "utf8",
+  );
+  const lifecycleSource = readFileSync(
+    join(srcDir, "LifecycleExperience.jsx"),
+    "utf8",
+  );
+  const journeySource = readFileSync(
+    join(srcDir, "MaintenanceJourney.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  const journeyCss = readFileSync(
+    join(srcDir, "MaintenanceJourney.css"),
+    "utf8",
+  );
+  assert.match(maintenanceSource, /selectedOutcome, setSelectedOutcome/);
+  assert.match(maintenanceSource, /const openOutcome = \(id\) =>/);
+  assert.match(maintenanceSource, /advance\(4\)/);
+  assert.match(maintenanceSource, /selectedOutcome=\{selectedOutcome\}/);
+  assert.match(maintenanceSource, /onOutcomeChange=\{setSelectedOutcome\}/);
+  assert.match(maintenanceSource, /onOutcomeOpen=\{openOutcome\}/);
+  assert.match(maintenanceSource, /OutcomeReferenceList/);
+  assert.match(maintenanceSource, /OutcomeInlineReference/);
+  assert.match(maintenanceSource, /title=\{outcomeName\(id\)\}/);
+  assert.match(maintenanceSource, /className="mr-outcome-name"/);
+  assert.equal(maintenanceSource.includes("Outcomes {rec.outcomes}"), false);
+  assert.equal(maintenanceSource.includes("Map outcomes 1/2/3 and 9/14"), false);
+  assert.match(outcomesSource, /selectedOutcome === undefined/);
+  assert.match(lifecycleSource, /onOutcomeOpen/);
+  assert.match(journeySource, /function MaintenanceJourney\(\{ onOutcomeOpen \}\)/);
+  assert.match(journeySource, /className="mj-outcome-link"/);
+  assert.match(journeySource, /title=\{outcome\.label\}/);
+  assert.equal(journeySource.includes("<small>{outcome.reason}</small>"), false);
+  assert.match(accountMaintenanceCss, /\.mr-outcome-link/);
+  assert.match(accountMaintenanceCss, /\.mr-outcome-inline/);
+  assert.match(accountMaintenanceCss, /text-overflow: ellipsis/);
+  assert.match(accountMaintenanceCss, /white-space: nowrap/);
+  assert.match(journeyCss, /\.mj-outcome-link/);
+  assert.match(journeyCss, /text-overflow: ellipsis/);
+});
 test("maintenance customer research highlights only the evidenced persona", () => {
   const maintenanceSource = readFileSync(
     join(srcDir, "MaintenanceResearch.jsx"),
@@ -279,7 +496,8 @@ test("maintenance customer research highlights only the evidenced persona", () =
   assert.match(maintenanceSource, /mr-customer-context/);
   assert.match(maintenanceSource, /\/personas\/jordan-williams\.png/);
   assert.match(maintenanceSource, /RIA advisor/);
-  assert.match(maintenanceSource, /Unvalidated roles to research next/);
+  assert.match(maintenanceSource, /does\s+not directly study client service/);
+  assert.match(maintenanceSource, /Functional, social, and emotional needs are discovery context/);
   assert.equal(maintenanceSource.includes("Investor / account owner"), false);
   assert.equal(
     maintenanceSource.includes("/personas/investor-account-owner.png"),
@@ -303,7 +521,8 @@ test("maintenance customer research highlights only the evidenced persona", () =
   );
   assert.match(accountMaintenanceCss, /\.mr-customer-pain/);
   assert.equal(accountMaintenanceCss.includes(".mr-customer-job"), false);
-  assert.match(accountMaintenanceCss, /\.mr-validation-gap/);
+  assert.equal(maintenanceSource.includes("Unvalidated roles to research next"), false);
+  assert.equal(accountMaintenanceCss.includes(".mr-validation-gap"), false);
 });
 test("maintenance resolution milestones render as a sequenced roadmap", () => {
   const maintenanceSource = readFileSync(

@@ -52,7 +52,11 @@ const CAPABILITY_MATRIX = [
   // ...
 ];
 
-// 8–12 outcome statements. imp/sat ∈ [0,10]; opp derived via oppScore().
+// 8–12 candidate outcome statements. imp/sat ∈ [0,10]; opp derived via oppScore().
+// Unless backed by a formal desired-outcome survey, imp/sat are directional
+// synthesis estimates, not survey-validated ODI scores. Formal validation should
+// survey importance/satisfaction, then use factor and cluster analysis to confirm
+// needs-based segments and final priority order.
 // layer = the prototype surface id that serves it; sub = optional deep-link payload.
 const OUTCOMES = [
   { id:"ODI #1", imp:9.5, sat:2.0,
@@ -118,3 +122,8 @@ const STRAT_STATS = [
 - Importance is typically 8.0–9.5 for a job worth funding; satisfaction 2–4 when
   underserved. To preserve a target opportunity score while spreading points on the
   matrix, adjust `imp`, not `sat`, since `opp = 2·imp − sat` while `sat < imp`.
+- Mark non-survey values as directional estimates. Do not describe them as validated
+  ODI scores until a desired-outcome survey and segmentation analysis exists.
+- Interpret quadrants consistently: underserved outcomes are candidates for
+  investment, table stakes require maintenance, overserved outcomes may be simplified
+  or deprioritized, and low-importance outcomes usually should not drive funding.

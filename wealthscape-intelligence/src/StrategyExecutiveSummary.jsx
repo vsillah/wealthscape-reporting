@@ -1,28 +1,36 @@
 import { useState } from "react";
-import { ArrowUpRight, ChevronDown, ClipboardCheck, Compass, Flag } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChevronDown,
+  ClipboardCheck,
+  Compass,
+  Flag,
+} from "lucide-react";
 import "./StrategyExecutiveSummary.css";
 
 const summaries = {
   maintenance: {
     conclusion: "Fund a shared validation-and-exception pilot before expanding account-maintenance automation.",
-    rationale: "The research does not point to one missing screen. It points to repeated servicing failures around incomplete requests, authority, ownership, review evidence and completion proof. Market and competitor sources make the case for better servicing quality, while the outcome synthesis explains where the work breaks. Start with a bounded pilot that proves fewer rejected requests and clearer ownership before extending automation across household authority.",
+    rationale: "The research does not point to one missing screen. It points to repeated servicing failures around incomplete requests, authority, ownership, review evidence and completion proof. Market and competitor sources make the case for better servicing quality, while the outcome synthesis points to where a bounded pilot should focus. Start with a pilot that proves fewer rejected requests and clearer ownership before extending automation across household authority.",
     findings: {
-      1: ["Market research says servicing quality matters, but it does not isolate account maintenance.", "T3 and Kitces point to platform satisfaction, integration and repeated handling as competitive context. They justify a servicing-quality hypothesis, not a maintenance-specific ROI claim; internal volume, failure and cost baselines still need to size the investment."],
-      2: ["Competitor evidence shows guided maintenance exists, but not that complex changes finish end to end.", "Schwab and Altruist public references show adjacent digital workflows, beneficiary updates, notifications and records. They do not prove household authority, third-party POA, rejected work, evidence retention or cross-team recovery work across every account state."],
-      3: ["Customer research surfaces authority, waiting and confirmation friction, but the operating personas remain unvalidated.", "Forum themes and advisor-survey synthesis reveal where the work can hurt: missing authority, unclear status and uncertain completion. The study still needs service-associate and reviewer interviews before translating those themes into requirements."],
-      4: ["The outcome map concentrates opportunity around incomplete requests and exception recovery.", "The highest-value outcomes cluster around establishing scope, collecting requirements, resolving rejected work and proving completion. That points to a shared validation layer before broad self-service or household-level automation."],
-      5: ["The maintenance job breaks at handoffs between request, authority, review and confirmation.", "The job map shows the requested change is not complete when a form is submitted. Each transition needs a named owner, visible missing evidence and proof that the account scope was changed correctly."],
+      1: ["Market research makes servicing quality the investment question.", "T3 and Kitces point to platform satisfaction, integration and repeated handling as competitive context. The finding is that maintenance strategy should measure request quality, repeated handling and ownership instead of treating satisfaction as the answer by itself."],
+      2: ["Competitor evidence shows guided maintenance workflows are becoming table stakes.", "Schwab and Altruist public references show adjacent digital workflows, beneficiary updates, notifications and records. The competitive gap to inspect is the full path across scope, authority, rejected work, evidence retention and cross-team recovery."],
+      3: ["Customer research surfaces authority, waiting and confirmation friction.", "Forum themes and advisor-survey synthesis reveal where the advisor-facing work hurts: missing authority, unclear status and uncertain completion. Use those themes to focus discovery on who owns the next action and how completion becomes visible."],
+      4: ["The outcome landscape points to differentiation, not disruption.", "Thirteen of fifteen candidate outcomes sit in high-importance, low-satisfaction territory. The strongest proto-segments are exception control and household authority; no overserved cluster currently supports a stripped-down or low-cost disruptive strategy."],
+      5: ["The maintenance job structure should stay stable while solutions change.", "The job map treats the requested change as the stable unit of progress: define the change, locate account scope, prepare requirements, confirm authority, execute, monitor, modify and conclude. Each transition needs a named owner, visible missing evidence and proof that the account scope changed correctly."],
       0: ["The cross-section finding is dependency sequencing: validate the request first, then expand authority.", "Household authority scores high, but multi-account changes amplify the same missing-information and exception problems. Shared request checks, recovery paths and completion evidence are the prerequisite to scaling account-change automation."],
-      7: ["The recommendation is a measured pilot, not a blanket rebuild of account maintenance.", "Start with one bounded maintenance function and compare first-pass completion, rework, exception aging and resolution quality against a baseline before expanding authority, servicing scope or automation depth."],
-      8: ["The sourcing decision depends on reusable services and internal economics, not vendor feature parity alone.", "Inventory identity, authority, validation, audit and retention services before choosing build, partner or acquire. Public research can frame the options; Fidelity’s tech debt, operating ownership, support burden and integration cost determine the decision."],
+      7: ["The recommendation is a differentiated wedge with a dominant-platform option to test.", "Start with exception control because it is the clearest underserved cluster. If formal ODI validation shows the same pattern across segments, expand the shared validation-and-exception layer into a broader servicing platform."],
+      8: ["The sourcing decision depends on reusable services and internal economics, not vendor feature parity alone.", "Identity, authority, validation, audit and retention services determine whether to reuse, build, partner or acquire. The decision turns on integration cost, support ownership and the cost of operating exceptions."],
     },
     assumptions: [
       ["Demand and servicing model", "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. Fidelity’s organizational complexity and handoffs may change the priority order."],
       ["Systems, data and economics", "Confirm technology debt, account and party data constraints, authority records, reusable services, support burden and cost-to-integrate. Current evidence does not establish delivery effort or return on investment."],
       ["Controls and accountability", "Validate the compliance process and security architecture for permissions, authority, review and evidence retention. Name operating ownership for exceptions, support and policy changes."],
+      ["ODI research validity", "Treat current scores as directional synthesis, not validated ODI measurement. Run a formal desired-outcome survey, then apply factor and cluster analysis to reveal needs-based segments before final prioritization."],
     ],
     steps: [
       ["Establish an internal baseline", "Observe service associates, advisors and home-office reviewers. Measure assisted volume, incomplete submissions, rework and time to resolution by request type."],
+      ["Run ODI validation research", "Translate the candidate outcomes into stable, solution-neutral desired-outcome statements. Survey importance and satisfaction, then analyze segments before locking the opportunity map."],
       ["Assess the servicing architecture", "Map account identity, authority, validators and audit services with engineering and data owners. Compare reuse, build and partner costs against actual constraints."],
       ["Scope one accountable pilot", "Choose a bounded maintenance request and servicing population. Agree on operational ownership, escalation, compliance review and security requirements before connecting systems."],
       ["Make the scale decision", "Set success and stop thresholds against the baseline. At the proposed ninety-day gate, review completion quality, support burden and cost before extending to household authority."],

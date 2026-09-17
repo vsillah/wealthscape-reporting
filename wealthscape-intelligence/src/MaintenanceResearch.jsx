@@ -16,9 +16,10 @@ import {
   FlaskConical,
   ClipboardCheck,
 } from "lucide-react";
-import { LifecycleResearch } from "./LifecycleExperience";
+import { LifecycleResearch, outcomes } from "./LifecycleExperience";
 import MaintenanceOutcomes from "./MaintenanceOutcomes.jsx";
 import { visibleCases } from "./AccountMaintenance";
+import { normalizeOutcomeSelection } from "./maintenanceOutcomeSolutions.js";
 
 const sources = {
   altruist: ["Altruist · April 2024", "https://altruist.com/news/april-2024/"],
@@ -56,10 +57,13 @@ const sections = [
 ];
 function Evidence({ slide, links = [], children }) {
   return (
-    <div className="mr-evidence">
-      <span>
-        Account maintenance executive study, 18 Aug 2026 · slides {slide}
-      </span>
+    <aside className="mr-evidence" aria-label="Research note">
+      <div className="mr-evidence-line">
+        <span className="mr-evidence-label">Research note</span>
+        <span>
+          Account maintenance executive study, 18 Aug 2026 · slides {slide}
+        </span>
+      </div>
       {children && <p>{children}</p>}
       <div className="mr-source-links">
         {links.map((key) => (
@@ -68,7 +72,7 @@ function Evidence({ slide, links = [], children }) {
           </a>
         ))}
       </div>
-    </div>
+    </aside>
   );
 }
 function Cards({ rows, icons = [Lightbulb], personas = false }) {
@@ -110,7 +114,8 @@ const recommendationMap = [
     phase: "NOW",
     score: "3.75",
     icon: GitBranch,
-    outcomes: "1, 2, 3, 8, 9",
+    outcomes: [1, 2, 3, 8, 9],
+    odiPosture: "Differentiated wedge",
     preferred: ["MC-101", "MC-102", "MC-104", "MC-103"],
     action: "Inspect validation workflow",
     panel: "evidence",
@@ -126,7 +131,8 @@ const recommendationMap = [
     phase: "NEXT",
     score: "4.25",
     icon: Users,
-    outcomes: "4, 5, 10, 11, 12, 15",
+    outcomes: [4, 5, 10, 11, 12, 15],
+    odiPosture: "Dominant-platform option to test",
     preferred: ["MC-101", "MC-104", "MC-106"],
     action: "Inspect household evidence",
     panel: "evidence",
@@ -142,7 +148,8 @@ const recommendationMap = [
     phase: "NEXT",
     score: "3.10",
     icon: ShieldCheck,
-    outcomes: "6, 13, 14",
+    outcomes: [6, 13, 14],
+    odiPosture: "Selective differentiation",
     preferred: ["MC-103", "MC-106"],
     action: "Inspect review evidence",
     panel: "timeline",
@@ -158,7 +165,8 @@ const recommendationMap = [
     phase: "LATER",
     score: "2.90",
     icon: Database,
-    outcomes: "7, 4, 8, 9",
+    outcomes: [7, 4, 8, 9],
+    odiPosture: "Targeted segment play",
     preferred: ["MC-104"],
     action: "Inspect conversion case",
     panel: "overview",
@@ -171,7 +179,46 @@ const recommendationMap = [
   },
 ];
 
-function RecommendationMap({ scoped, profile, onNavigate }) {
+function outcomeName(id) {
+  return outcomes[id - 1]?.[0] || `Outcome ${id}`;
+}
+
+function OutcomeReferenceList({ ids, onOpen }) {
+  return (
+    <div className="mr-outcome-links" aria-label="Related outcomes">
+      {ids.map((id) => (
+        <button
+          className="mr-outcome-link"
+          key={id}
+          type="button"
+          title={outcomeName(id)}
+          onClick={() => onOpen(id)}
+          aria-label={`Open outcome ${id}: ${outcomeName(id)} in Outcomes and opportunities`}
+        >
+          <span className="mr-outcome-code">O{id}</span>
+          <span className="mr-outcome-name">{outcomeName(id)}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function OutcomeInlineReference({ id, onOpen }) {
+  return (
+    <button
+      className="mr-outcome-inline"
+      type="button"
+      title={outcomeName(id)}
+      onClick={() => onOpen(id)}
+      aria-label={`Open outcome ${id}: ${outcomeName(id)} in Outcomes and opportunities`}
+    >
+      <span className="mr-outcome-code">O{id}</span>
+      <span className="mr-outcome-name">{outcomeName(id)}</span>
+    </button>
+  );
+}
+
+function RecommendationMap({ scoped, profile, onNavigate, onOutcomeOpen }) {
   return (
     <div className="mr-recommendations">
       {recommendationMap.map((rec, index) => {
@@ -194,8 +241,11 @@ function RecommendationMap({ scoped, profile, onNavigate }) {
                   {rec.title}
                 </h3>
               </div>
-              <span className="mr-outcome-ref">Outcomes {rec.outcomes}</span>
+              <OutcomeReferenceList ids={rec.outcomes} onOpen={onOutcomeOpen} />
             </header>
+            <p className="mr-odi-posture">
+              <strong>ODI posture</strong> {rec.odiPosture}
+            </p>
             <p className="mr-ux">
               <strong>UX decision</strong> {rec.ux}
             </p>
@@ -252,6 +302,7 @@ export default function MaintenanceResearch({
   onStartGuide,
 }) {
   const [active, setActive] = useState(1);
+  const [selectedOutcome, setSelectedOutcome] = useState(-1);
   const [navHeight, setNavHeight] = useState(84);
   const navigation = useRef(null);
   const navigationFocused = useRef(false);
@@ -341,6 +392,12 @@ export default function MaintenanceResearch({
       lifecycleStage,
       maintenanceView: "queue",
     });
+  const openOutcome = (id) => {
+    const next = normalizeOutcomeSelection(Number(id) - 1);
+    if (next < 0) return;
+    setSelectedOutcome(next);
+    advance(4);
+  };
   return (
     <div
       className="am-workspace mr-research"
@@ -432,11 +489,11 @@ export default function MaintenanceResearch({
                   rows={[
                     [
                       "Start with the shared failure points",
-                      "Data re-entry, incomplete submissions, and exception resolution lead the revised deck’s outcome ranking. A common validation layer can support all eight maintenance functions. Exception resolution remains an inferred input.",
+                      "Data re-entry, incomplete submissions, and exception resolution lead the revised deck’s outcome ranking. A common validation layer can support all eight maintenance functions.",
                     ],
                     [
                       "Build a case for parity and position",
-                      "The deck does not establish maintenance-driven churn or productivity ROI. Frame the investment around service capability, competitive position, and a measurable operating hypothesis.",
+                      "Frame the investment around service capability, competitive position, and a measurable operating hypothesis.",
                     ],
                     [
                       "Sequence authority after validation",
@@ -450,7 +507,9 @@ export default function MaintenanceResearch({
                 />
                 <Evidence slide="2, 16, 20, 23–25" links={["kitces", "t3"]}>
                   Leadership synthesis of the August 18, 2026 deck. Rankings and
-                  phase estimates are directional; they are not a funded roadmap
+                  phase estimates are directional; exception resolution remains
+                  an inferred input. The deck does not establish
+                  maintenance-driven churn, productivity ROI, a funded roadmap,
                   or measured benefit.
                 </Evidence>
                 <button className="am-primary" onClick={() => advance(7)}>
@@ -462,23 +521,23 @@ export default function MaintenanceResearch({
               <>
                 <p className="mr-lead">
                   Consultant takeaway: prioritize the quality of the servicing
-                  path. Broad platform satisfaction alone does not reveal where
-                  maintenance work stalls.
+                  path. Use broad market signals to focus discovery on repeated
+                  handling, unclear ownership, and request quality.
                 </p>
                 <Cards
                   icons={[ChartScatter, GitBranch, Database, ShieldCheck]}
                   rows={[
                     [
-                      "A platform benchmark, not a maintenance rating",
-                      "The deck reports a 7.11 custodial category average in T3 2026, compared with 7.75 in 2023. This is market context; neither survey isolates account maintenance as a category.",
+                      "Platform satisfaction sets the service-quality context",
+                      "The deck reports a 7.11 custodial category average in T3 2026, compared with 7.75 in 2023. Use that context to ask where servicing quality is breaking down.",
                     ],
                     [
                       "Integration is part of the service experience",
-                      "Kitces integration findings inform the hypothesis that capturing data once will reduce repeated handling. The research does not establish a maintenance-specific time saving.",
+                      "Kitces integration findings connect repeated handling to the customer experience. Capturing data once should be tested as a way to reduce rework.",
                     ],
                     [
                       "Consolidation changes the workload",
-                      "The study identifies conversion and multi-entity servicing as an enterprise opportunity. Validate the acquired-account workload and segment demand before sizing an investment.",
+                      "Conversion and multi-entity servicing increase the burden on account scope, authority, and exception ownership.",
                     ],
                     [
                       "Supervision creates an evidence requirement",
@@ -490,10 +549,11 @@ export default function MaintenanceResearch({
                   slide="12–14, 24, 28–29"
                   links={["kitces", "t3", "supervision"]}
                 >
-                  Market figures are retained as deck-reported snapshots. No
-                  current vendor ranking, legal applicability determination, or
-                  forecast is implied. Proposed regulatory changes are not
-                  funding assumptions.
+                  Market figures are retained as deck-reported snapshots. The
+                  cited surveys do not isolate account maintenance as a
+                  category or establish a maintenance-specific time saving. No
+                  current vendor ranking, legal applicability determination,
+                  forecast, or funding assumption is implied.
                 </Evidence>
               </>
             )}
@@ -501,10 +561,17 @@ export default function MaintenanceResearch({
               <>
                 <LifecycleResearch embedded view="positioning" />
                 <Evidence slide="15, 17, 25, 27" links={["schwab", "t3"]}>
-                  The interactive positioning map above retains the earlier
-                  Frames snapshot. Its capability axis is an assessment, not a
-                  survey measure. Revalidate scope before using it in a
-                  procurement or competitive claim.
+                  The interactive positioning map above retains the Account
+                  Maintenance Frames snapshot. X uses T3 2026 advisor
+                  satisfaction; Y uses assessed public maintenance capability.
+                  Scores are unchanged, documentation coverage is uneven, and
+                  the capability axis is an assessment, not a survey measure.
+                  Source assessment: Account Maintenance Frames D2; revised
+                  executive study, 18 Aug 2026, slides 15, 17 and 27. Public
+                  context checked 10 Sep 2026; no score refresh or primary
+                  interviews. Axos remains a qualitative reference, not an added
+                  chart point. Revalidate scope before using it in a procurement
+                  or competitive claim.
                 </Evidence>
               </>
             )}
@@ -512,8 +579,7 @@ export default function MaintenanceResearch({
               <>
                 <p className="mr-lead">
                   The current evidence describes the advisor-facing servicing
-                  problem. The client service and reviewer roles are still the
-                  research gap.
+                  problem: authority, waiting, and confirmation.
                 </p>
                 <div className="mr-customer-context">
                   <article className="mr-customer-persona">
@@ -578,23 +644,13 @@ export default function MaintenanceResearch({
                     ))}
                   </div>
                 </div>
-                <div className="mr-validation-gap">
-                  <div>
-                    <ClipboardCheck size={18} aria-hidden="true" />
-                    <strong>Unvalidated roles to research next</strong>
-                  </div>
-                  <p>
-                    The source packet does not directly study client service
-                    associates or home-office reviewers. Treat those roles as
-                    operating hypotheses until interviews and workflow
-                    observations confirm their needs, handoffs, policy
-                    constraints, and evidence responsibilities.
-                  </p>
-                </div>
                 <Evidence slide="3–5, 7–10, 27–30" links={["kitces", "t3"]}>
-                  Source project: Claude Desktop · Wealthscape Market Research.
-                  Emotional and financial jobs are derived interpretations, not
-                  interview findings.
+                  Functional, social, and emotional needs are discovery context
+                  for the evidenced RIA advisor persona. The source packet does
+                  not directly study client service associates or home-office
+                  reviewers. A formal ODI study should convert these themes
+                  into stable desired-outcome statements and validate them with
+                  interviews, workflow observation, and a survey.
                 </Evidence>
               </>
             )}
@@ -604,12 +660,23 @@ export default function MaintenanceResearch({
                   profile={profile}
                   cases={cases}
                   onNavigate={onNavigate}
+                  selectedOutcome={selectedOutcome}
+                  onOutcomeChange={setSelectedOutcome}
                 />
                 <Evidence slide="18, 25, 28" links={["kitces", "t3"]}>
-                  Study methodology: opportunity = importance + max(importance −
-                  satisfaction, 0), using the revised study inputs. Its
-                  published scores are retained; the Frames coordinates are not
-                  recomputed.
+                  The map uses stable job language and ODI opportunity logic as
+                  a planning frame. Chart coordinates retain the Frames
+                  snapshot and its midpoint of 3 on both axes; selected detail
+                  scores retain the August 18 executive study, slide 18. Values
+                  are directional synthesis inputs and are not recomputed; source
+                  tags separate sourced, derived, and inferred inputs. The
+                  strategy read applies ODI opportunity logic, using importance
+                  plus unmet need, to these proxy scores and groups outcomes
+                  into proto-segments. A formal ODI
+                  study should survey importance and satisfaction, then use
+                  factor and cluster analysis to confirm needs-based segments,
+                  quadrant placement, and whether the strategy should be
+                  differentiated, dominant, disruptive, or narrowly targeted.
                 </Evidence>
               </>
             )}
@@ -619,23 +686,20 @@ export default function MaintenanceResearch({
                   Define the request, establish requirements, obtain authority,
                   submit, resolve and review, then confirm completion.
                 </p>
-                <Cards
-                  rows={[
-                    [
-                      "Authority is a handoff",
-                      "The client supplies authority; operations checks the requirements; the home office defines policy and review. Each handoff needs an explicit owner and an understandable recovery path.",
-                    ],
-                    [
-                      "Confirmation closes the job",
-                      "A submitted form is not a completed change. The proposed path ends when the right account scope is confirmed and the review evidence can be retrieved.",
-                    ],
-                  ]}
+                <LifecycleResearch
+                  embedded
+                  view="journey"
+                  onOutcomeOpen={openOutcome}
                 />
                 <Evidence slide="6–10, 27">
                   This is a derived job sequence and assessed journey, not a
-                  completed ODI job map or needs-based segmentation study. The
-                  curve below illustrates friction; it does not measure
-                  confidence.
+                  completed ODI job map or needs-based segmentation study.
+                  Executive deck slides 6 and 10 provide directional forum
+                  evidence. Curve height and progress symbols are illustrative,
+                  not measured satisfaction, reported sentiment, or confidence.
+                  Positive moments describe the proposed experience. The
+                  account-change job should remain stable while research tests
+                  which outcomes are most underserved by segment.
                 </Evidence>
               </>
             )}
@@ -649,6 +713,7 @@ export default function MaintenanceResearch({
                   scoped={scoped}
                   profile={profile}
                   onNavigate={onNavigate}
+                  onOutcomeOpen={openOutcome}
                 />
                 <div className="mr-workflow-bridge">
                   <Route size={24} aria-hidden="true" />
@@ -657,11 +722,12 @@ export default function MaintenanceResearch({
                       Status and confirmation connect every recommendation
                     </h3>
                     <p>
-                      Outcomes 9 and 14 lead to queue counts, named owners, a
-                      case timeline, and a clear completion state. In the demo,
-                      incomplete maintenance holds report generation; completing
-                      the evidence checks and human review releases the
-                      account-change report.
+                      <OutcomeInlineReference id={9} onOpen={openOutcome} /> and{" "}
+                      <OutcomeInlineReference id={14} onOpen={openOutcome} /> lead
+                      to queue counts, named owners, a case timeline, and a clear
+                      completion state. In the demo, incomplete maintenance holds
+                      report generation; completing the evidence checks and human
+                      review releases the account-change report.
                     </p>
                     <div className="mr-demo-links">
                       <button
@@ -705,17 +771,6 @@ export default function MaintenanceResearch({
                   Use an engineering and operations workshop to choose how each
                   gap closes.
                 </p>
-                <div className="am-callout">
-                  <strong>
-                    Proposed sourcing decisions · not a completed assessment
-                  </strong>
-                  <p>
-                    Slide 27 explicitly leaves the internal capability and
-                    Build/Partner/Acquire assessment open. The options below are
-                    a workshop starting point; they are not findings about
-                    existing platform maturity or approved vendor decisions.
-                  </p>
-                </div>
                 <div className="mr-resolution-options">
                   {[
                     [
@@ -729,7 +784,15 @@ export default function MaintenanceResearch({
                       "Build the missing coordination",
                       GitBranch,
                       "Product + engineering + operations",
-                      "Map outcomes 1/2/3 and 9/14 to missing checks, exception states, owners, and completion evidence. Prototype the smallest missing handoff.",
+                      <>
+                        Map <OutcomeInlineReference id={1} onOpen={openOutcome} />,{" "}
+                        <OutcomeInlineReference id={2} onOpen={openOutcome} />,{" "}
+                        <OutcomeInlineReference id={3} onOpen={openOutcome} />,{" "}
+                        <OutcomeInlineReference id={9} onOpen={openOutcome} />, and{" "}
+                        <OutcomeInlineReference id={14} onOpen={openOutcome} /> to
+                        missing checks, exception states, owners, and completion
+                        evidence. Prototype the smallest missing handoff.
+                      </>,
                       "Build where internal policy or exception coordination is differentiated and existing services cannot meet the contract. Require an accountable support owner.",
                     ],
                     [
@@ -819,9 +882,12 @@ export default function MaintenanceResearch({
                   ))}
                 </div>
                 <Evidence slide="23, 27, 30">
-                  Resolution options are new proposed synthesis. Raw decks,
-                  private exports, and forum identities are not part of this
-                  application.
+                  Resolution options are new proposed synthesis. Slide 27 leaves
+                  the internal capability and Build/Partner/Acquire assessment
+                  open; the options above are a workshop starting point, not
+                  findings about existing platform maturity or approved vendor
+                  decisions. Raw decks, private exports, and forum identities
+                  are not part of this application.
                 </Evidence>
                 <div className="mr-demo-links">
                   <span className="am-note">
@@ -836,7 +902,6 @@ export default function MaintenanceResearch({
                 </div>
               </>
             )}
-            {section === 5 && <LifecycleResearch embedded view="journey" />}
           </section>
         );
       })}

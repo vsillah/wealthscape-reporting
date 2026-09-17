@@ -61,6 +61,10 @@ Translate pains and jobs into **outcome statements**, the ODI grammar:
 Direction is usually *Minimize* (time, effort, errors) or *Increase / Maximize*
 (likelihood, confidence). Aim for 8–12 statements covering the whole job.
 
+When source data is secondary research, interviews, or executive synthesis rather
+than a formal survey, label the statements **candidate outcomes** and treat the
+scores as **directional estimates**. Do not imply a completed ODI study.
+
 Score each on two 1–10 dimensions:
 - **Importance** — how important the outcome is to the executor.
 - **Satisfaction** — how well it's met today by existing solutions.
@@ -73,6 +77,12 @@ Opportunity = Importance + max(Importance − Satisfaction, 0)
 
 Tiers: **≥16 critical**, **14–16 high**, **<14 moderate**. Outcomes that are
 important *and* underserved (high importance, low satisfaction) are the targets.
+
+Formal ODI validation requires a desired-outcome survey. Survey the target
+population on importance and satisfaction, then use factor analysis and cluster
+analysis to organize needs-based segments before treating the scores as final
+prioritization evidence. Until that happens, use the scores to focus discovery and
+prototype coverage, not to claim statistical proof.
 
 ## 4 · Job map (→ odi-synthesis agent)
 
@@ -94,7 +104,14 @@ surface:
 Plot every outcome on Importance (y) vs Satisfaction (x). The upper-left region —
 high importance, low satisfaction — is the **underserved opportunity zone**. The
 density of outcomes there is the headline: a cluster means a real, fundable gap
-rather than incremental polish.
+rather than incremental polish only after the scores are survey-validated.
+
+Quadrant interpretation:
+- **Underserved**: candidate investment zone; improve the outcome.
+- **Table stakes**: maintain parity and avoid regression before differentiating.
+- **Overserved**: consider simplification, cost reduction, or lower investment.
+- **Low importance / low satisfaction**: usually ignore unless strategy changes
+  the job or segment.
 
 ## 6 · Recommendations → prototype
 
