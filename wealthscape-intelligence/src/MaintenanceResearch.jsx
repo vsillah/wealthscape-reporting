@@ -93,14 +93,14 @@ function Cards({ rows, icons = [Lightbulb], personas = false }) {
 }
 
 const maintenanceCustomerPersona = {
-  name: "Patricia Morgan",
-  role: "Investor / account owner",
-  image: "/personas/investor-account-owner.png",
+  name: "Jordan Williams",
+  role: "RIA advisor",
+  image: "/personas/jordan-williams.png",
   details: [
-    ["Life stage", "Retirement transition"],
-    ["Relationship", "Multi-account household"],
-    ["Service mode", "Advisor-assisted"],
-    ["Primary concern", "Know what is missing, who owns it, and when the change is complete"],
+    ["Firm model", "Independent RIA"],
+    ["Book", "~$1.57B AUA"],
+    ["Households", "134 active"],
+    ["Primary concern", "Keep account changes moving without losing client confidence"],
   ],
 };
 
@@ -511,15 +511,16 @@ export default function MaintenanceResearch({
             {section === 3 && (
               <>
                 <p className="mr-lead">
-                  The current evidence describes the investor-facing problem.
-                  The people processing the work are still the research gap.
+                  The current evidence describes the advisor-facing servicing
+                  problem. The client service and reviewer roles are still the
+                  research gap.
                 </p>
                 <div className="mr-customer-context">
                   <article className="mr-customer-persona">
                     <img
                       className="mr-customer-photo"
                       src={maintenanceCustomerPersona.image}
-                      alt={`${maintenanceCustomerPersona.name}, synthetic account-owner persona portrait`}
+                      alt={`${maintenanceCustomerPersona.name}, synthetic RIA advisor persona portrait`}
                     />
                     <div className="mr-customer-header">
                       <div>
@@ -529,9 +530,9 @@ export default function MaintenanceResearch({
                           {maintenanceCustomerPersona.role}
                         </p>
                         <p>
-                          Public forum themes show where the customer feels the
-                          maintenance job break: authority, waiting, and
-                          confirmation.
+                          Public forum themes show where the advisor feels the
+                          maintenance job break while trying to keep a client
+                          change moving: authority, waiting, and confirmation.
                         </p>
                       </div>
                       <span className="mr-customer-badge">Observed themes</span>
@@ -551,19 +552,19 @@ export default function MaintenanceResearch({
                         "Authority / signature",
                         "Obtain authority",
                         "I cannot tell which authorization is missing until the request stalls.",
-                        "Missing authority appears when the account owner expects one submitted change to be accepted, but the workflow still needs the right signer, scope, or policy path.",
+                        "Missing authority appears when an advisor expects one submitted client change to be accepted, but the workflow still needs the right signer, scope, or policy path.",
                       ],
                       [
                         "Waiting / status",
                         "Resolve exception",
-                        "I do not know who has the request or what is needed next.",
-                        "The waiting problem shows up after submission, when ownership, rejected evidence, and recovery steps are not visible to the customer or advisor.",
+                        "I do not know who owns the request or what my client needs to do next.",
+                        "The waiting problem shows up after submission, when ownership, rejected evidence, and recovery steps are not visible to the advisor.",
                       ],
                       [
                         "Completion proof",
                         "Confirm completion",
-                        "I need confidence the account change actually took effect.",
-                        "Confirmation friction appears when the customer can see that work was submitted, but not whether the intended account state is complete and retained.",
+                        "I need proof the account change took effect before I tell the client it is done.",
+                        "Confirmation friction appears when the advisor can see that work was submitted, but not whether the intended account state is complete and retained.",
                       ],
                     ].map(([theme, job, quote, pain]) => (
                       <article className="mr-customer-pain" key={theme}>

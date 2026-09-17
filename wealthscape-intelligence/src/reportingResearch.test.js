@@ -277,9 +277,14 @@ test("maintenance customer research highlights only the evidenced persona", () =
     "utf8",
   );
   assert.match(maintenanceSource, /mr-customer-context/);
-  assert.match(maintenanceSource, /\/personas\/investor-account-owner\.png/);
-  assert.match(maintenanceSource, /Investor \/ account owner/);
+  assert.match(maintenanceSource, /\/personas\/jordan-williams\.png/);
+  assert.match(maintenanceSource, /RIA advisor/);
   assert.match(maintenanceSource, /Unvalidated roles to research next/);
+  assert.equal(maintenanceSource.includes("Investor / account owner"), false);
+  assert.equal(
+    maintenanceSource.includes("/personas/investor-account-owner.png"),
+    false,
+  );
   assert.equal(
     maintenanceSource.includes("Jobs to be done in this context"),
     false,
