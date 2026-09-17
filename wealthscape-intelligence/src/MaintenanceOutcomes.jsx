@@ -16,6 +16,7 @@ const odiSegmentHypotheses = [
     title: "Exception-control segment",
     ids: [1, 2, 3, 8, 9, 14],
     need: "Know what is missing, who owns the next action, and whether the change is complete.",
+    posture: "Differentiated wedge",
     implication:
       "Best first wedge for differentiation: reduce rework before expanding authority or scope.",
   },
@@ -23,6 +24,7 @@ const odiSegmentHypotheses = [
     title: "Household-authority segment",
     ids: [4, 5, 10, 11, 12, 15],
     need: "Apply the right authority and evidence across every affected account without re-collecting the same proof.",
+    posture: "Dominant-platform option to test",
     implication:
       "Potential dominant platform move if a survey confirms broad demand across advisor and operations segments.",
   },
@@ -30,6 +32,7 @@ const odiSegmentHypotheses = [
     title: "Compliance-currency segment",
     ids: [6, 13],
     need: "Find stale or overdue evidence before a review event forces reactive service work.",
+    posture: "Selective differentiation",
     implication:
       "Selective differentiation: connect evidence currency to status and review readiness before automating alerts.",
   },
@@ -37,29 +40,24 @@ const odiSegmentHypotheses = [
     title: "Conversion-servicing segment",
     ids: [7],
     need: "Reconcile acquired-book account scope, ownership, and authority before service volume scales.",
+    posture: "Targeted segment play",
     implication:
       "Targeted segment strategy: validate whether this is a high-value niche before funding enterprise tooling.",
   },
 ];
 
-const odiStrategyPostures = [
-  {
-    title: "Differentiated strategy is the strongest current signal",
-    body: "Most candidate outcomes sit in high-importance, low-satisfaction territory, led by missing information, exception ownership, and completion proof.",
-  },
-  {
-    title: "Dominant strategy remains a validation option",
-    body: "If survey results show the same underserved pattern across a broad segment, the shared validation-and-exception layer can become the common servicing platform.",
-  },
-  {
-    title: "Disruptive strategy is not supported by this map yet",
-    body: "No current outcomes land in an overserved or ignore quadrant, so the evidence does not point to a stripped-down, lower-cost path.",
-  },
-  {
-    title: "Table-stakes outcomes should be protected",
-    body: "Signature turnaround and standing-instruction evidence are high-importance areas with stronger satisfaction; use them as reliability guardrails, not the first wedge.",
-  },
+const quadrantOrder = [
+  ["Underserved", "Opportunity / underserved"],
+  ["Table stakes", "Table stakes"],
+  ["Overserved", "Overserved"],
+  ["Ignore", "Ignore"],
 ];
+
+const quadrantCounts = outcomes.reduce((counts, values) => {
+  const quadrant = outcomeQuadrant(values[1], values[2]);
+  counts[quadrant] = (counts[quadrant] || 0) + 1;
+  return counts;
+}, {});
 
 function outcomeSummary(ids) {
   const rows = ids.map((id) => {
@@ -83,81 +81,30 @@ function outcomeSummary(ids) {
   };
 }
 
-function MaintenanceOdiSynthesis() {
-  const quadrantCounts = outcomes.reduce((counts, values) => {
-    const quadrant = outcomeQuadrant(values[1], values[2]);
-    counts[quadrant] = (counts[quadrant] || 0) + 1;
-    return counts;
-  }, {});
+function odiSegmentForOutcome(outcomeId) {
+  if (!outcomeId) return null;
+  return odiSegmentHypotheses.find((segment) => segment.ids.includes(outcomeId));
+}
+
+function OdiCompactRead() {
   return (
-    <section
-      className="mo-odi-synthesis"
-      aria-labelledby="maintenance-odi-synthesis-heading"
-    >
-      <header>
-        <span className="am-eyebrow">ODI strategy read</span>
-        <h3 id="maintenance-odi-synthesis-heading">
-          The outcome landscape points to differentiation, not disruption.
-        </h3>
+    <div className="mo-odi-compact" aria-label="ODI strategy read">
+      <div>
+        <span>ODI strategy read</span>
         <p>
-          {quadrantCounts["Opportunity / underserved"] || 0} of 15 candidate
-          outcomes sit in the underserved quadrant. The current pattern argues
-          for a better servicing path before considering cost-reduction or
-          stripped-down alternatives.
+          Differentiation is the strongest current signal; disruption is not
+          supported by this map yet.
         </p>
-      </header>
+      </div>
       <div className="mo-odi-counts" aria-label="Opportunity map counts">
-        {[
-          ["Underserved", quadrantCounts["Opportunity / underserved"] || 0],
-          ["Table stakes", quadrantCounts["Table stakes"] || 0],
-          ["Overserved", quadrantCounts.Overserved || 0],
-          ["Ignore", quadrantCounts.Ignore || 0],
-        ].map(([label, count]) => (
-          <div key={label}>
-            <strong>{count}</strong>
+        {quadrantOrder.map(([label, key]) => (
+          <span key={label}>
+            <strong>{quadrantCounts[key] || 0}</strong>
             <span>{label}</span>
-          </div>
+          </span>
         ))}
       </div>
-      <div className="mo-odi-segments">
-        {odiSegmentHypotheses.map((segment) => {
-          const summary = outcomeSummary(segment.ids);
-          return (
-            <article key={segment.title}>
-              <div className="mo-odi-segment-heading">
-                <h4>{segment.title}</h4>
-                <span>{summary.opportunity.toFixed(1)} avg opportunity</span>
-              </div>
-              <p>{segment.need}</p>
-              <div className="mo-odi-outcome-chips" aria-label="Outcomes in segment">
-                {segment.ids.map((id) => (
-                  <span key={id}>O{id}</span>
-                ))}
-              </div>
-              <dl>
-                <div>
-                  <dt>Importance</dt>
-                  <dd>{summary.importance.toFixed(1)} / 5</dd>
-                </div>
-                <div>
-                  <dt>Satisfaction</dt>
-                  <dd>{summary.satisfaction.toFixed(1)} / 5</dd>
-                </div>
-              </dl>
-              <p className="mo-odi-implication">{segment.implication}</p>
-            </article>
-          );
-        })}
-      </div>
-      <div className="mo-odi-strategies">
-        {odiStrategyPostures.map((strategy) => (
-          <article key={strategy.title}>
-            <h4>{strategy.title}</h4>
-            <p>{strategy.body}</p>
-          </article>
-        ))}
-      </div>
-    </section>
+    </div>
   );
 }
 
@@ -184,6 +131,10 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
   const solution = outcomeSolutions[selected];
   const values = outcomes[selected];
   const quadrant = values ? outcomeQuadrant(values[1], values[2]) : null;
+  const selectedSegment = solution ? odiSegmentForOutcome(solution.id) : null;
+  const selectedSegmentSummary = selectedSegment
+    ? outcomeSummary(selectedSegment.ids)
+    : null;
   const destination = outcomeDestination(
     solution?.id,
     profile.id,
@@ -200,6 +151,18 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         {solution.id}. {values[0]}
       </h3>
       <p>{solution.problem}</p>
+      {selectedSegment && (
+        <div className="mo-odi-context" aria-label="ODI strategy context">
+          <span>ODI posture</span>
+          <strong>{selectedSegment.posture}</strong>
+          <p>{selectedSegment.implication}</p>
+          <small>
+            {selectedSegment.title} ·{" "}
+            {selectedSegmentSummary.opportunity.toFixed(1)} average opportunity ·{" "}
+            {selectedSegment.ids.map((id) => `O${id}`).join(", ")}
+          </small>
+        </div>
+      )}
       <dl className="mo-values">
         <div>
           <dt>Frames importance / satisfaction</dt>
@@ -249,6 +212,7 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
         ranked row, or dropdown option to inspect the problem, proposed
         response, and relevant demo.
       </p>
+      <OdiCompactRead />
     </div>
   );
   return (
@@ -321,7 +285,6 @@ export default function MaintenanceOutcomes({ profile, cases, onNavigate }) {
           compactSourceNote
         />
       )}
-      <MaintenanceOdiSynthesis />
     </div>
   );
 }

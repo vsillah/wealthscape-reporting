@@ -297,18 +297,23 @@ test("maintenance outcomes translate ODI placement into directional strategy pos
   assert.match(outcomesSource, /ODI strategy read/);
   assert.match(
     outcomesSource,
-    /outcome landscape points to differentiation, not disruption/,
+    /Differentiation is the strongest current signal; disruption is not/,
   );
   assert.match(outcomesSource, /Exception-control segment/);
   assert.match(outcomesSource, /Household-authority segment/);
-  assert.match(outcomesSource, /Disruptive strategy is not supported/);
-  assert.match(outcomesSource, /quadrantCounts\["Opportunity \/ underserved"\]/);
+  assert.match(outcomesSource, /ODI strategy context/);
+  assert.match(outcomesSource, /OdiCompactRead/);
+  assert.equal(outcomesSource.includes("MaintenanceOdiSynthesis"), false);
+  assert.match(outcomesSource, /quadrantOrder/);
+  assert.match(outcomesSource, /Opportunity \/ underserved/);
   assert.match(maintenanceSource, /ODI posture/);
   assert.match(maintenanceSource, /Differentiated wedge/);
   assert.match(maintenanceSource, /Dominant-platform option to test/);
   assert.match(maintenanceSource, /differentiated, dominant, disruptive/);
   assert.match(summarySource, /Thirteen of fifteen candidate outcomes/);
-  assert.match(cssSource, /\.mo-odi-synthesis/);
+  assert.match(cssSource, /\.mo-odi-compact/);
+  assert.match(cssSource, /\.mo-odi-context/);
+  assert.equal(cssSource.includes(".mo-odi-synthesis"), false);
   assert.match(cssSource, /\.mr-odi-posture/);
 });
 test("maintenance capability comparison leads with the integrated map and selected-platform validation", () => {
