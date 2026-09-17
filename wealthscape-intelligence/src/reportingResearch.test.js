@@ -259,6 +259,24 @@ test("maintenance capability comparison leads with the integrated map and select
   );
   assert.match(competitorMapSource, /competitorValidationCards/);
 });
+test("strategy profile selector explains role-scoped impact without displacing the executive summary", () => {
+  const prototypeSource = readFileSync(
+    join(srcDir, "WealthscapePrototype.jsx"),
+    "utf8",
+  );
+  const profileImpactCss = readFileSync(
+    join(srcDir, "StrategyProfileImpact.css"),
+    "utf8",
+  );
+  assert.match(prototypeSource, /PROFILE_STRATEGY_IMPACT/);
+  assert.match(prototypeSource, /ProfileImpactHelp/);
+  assert.match(prototypeSource, /What changes for \{profile\.label\}/);
+  assert.match(prototypeSource, /OSJ drill-ins filter to branch-supervision cases/);
+  assert.match(prototypeSource, /market-research evidence is not recomputed per profile/i);
+  assert.equal(prototypeSource.includes("<StrategyProfileImpact"), false);
+  assert.match(profileImpactCss, /profile-impact-popover/);
+  assert.match(profileImpactCss, /position: absolute/);
+});
 test("Fidelity remains a public incumbent baseline with bounded reporting evidence", () => {
   const row = reportingComparison.find(
     (item) => item.name === "Fidelity (Wealthscape)",

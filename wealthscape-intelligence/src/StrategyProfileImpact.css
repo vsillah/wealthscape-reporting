@@ -1,0 +1,134 @@
+.profile-switcher {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-impact-help {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.profile-impact-help summary {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  background: #fff;
+  color: #475569;
+  cursor: pointer;
+  list-style: none;
+}
+
+.profile-impact-help summary::-webkit-details-marker {
+  display: none;
+}
+
+.profile-impact-help summary:hover,
+.profile-impact-help[open] summary {
+  border-color: #0b5d2e;
+  background: #e8f5ee;
+  color: #0b5d2e;
+}
+
+.profile-impact-popover {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 35;
+  width: min(420px, calc(100vw - 32px));
+  padding: 16px;
+  border: 1px solid #dbe4e9;
+  border-radius: 14px;
+  background: #fff;
+  color: #1c2b3a;
+  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.18);
+}
+
+.profile-impact-popover::before {
+  content: "";
+  position: absolute;
+  top: -7px;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  border-left: 1px solid #dbe4e9;
+  border-top: 1px solid #dbe4e9;
+  background: #fff;
+  transform: rotate(45deg);
+}
+
+.profile-impact-popover__kicker {
+  display: inline-flex;
+  margin-bottom: 8px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: #e8f5ee;
+  color: #0b5d2e;
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-impact-popover h3,
+.profile-impact-popover p,
+.profile-impact-popover dl {
+  margin: 0;
+}
+
+.profile-impact-popover h3 {
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.profile-impact-popover p {
+  margin-top: 7px;
+  color: #475569;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.profile-impact-popover dl {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.profile-impact-popover dl > div {
+  padding-top: 10px;
+  border-top: 1px solid #e5eaf0;
+}
+
+.profile-impact-popover dt {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0b5d2e;
+}
+
+.profile-impact-popover dd {
+  margin: 4px 0 0;
+  color: #475569;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.profile-impact-popover__boundary {
+  padding: 10px 11px;
+  border-left: 3px solid #1a7a40;
+  border-radius: 0 8px 8px 0;
+  background: #f0f7f3;
+}
+
+@media (max-width: 700px) {
+  .profile-impact-popover {
+    right: -42px;
+  }
+}

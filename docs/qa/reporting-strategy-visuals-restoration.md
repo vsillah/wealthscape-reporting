@@ -42,6 +42,8 @@ The Account Maintenance executive findings now read as research-backed takeaways
 
 The Account Maintenance capability-comparison section now starts with the integrated competitor positioning map instead of a static validation-card stack. Selecting a platform in the map, logo or dropdown updates a selected-platform validation card underneath the map, so Schwab, Altruist, Wealthscape and adjacent platforms each carry their own documented reference, validation question and strategic implication. The former generic full-width "Maintenance capability references and validation questions" block has been removed from the section.
 
+The Strategy profile selector now has an explicit profile-info popover instead of a page section. It explains what changes when RIA Advisor, BD Home Office, OSJ Principal or Hybrid Advisor is selected: the named persona and shell context, the account-maintenance interpretation, the reporting-modernization interpretation, and the boundary that market-research evidence is not recomputed per profile. The executive summary remains the primary above-fold strategy content.
+
 ## Score provenance
 
 Every rating is a management estimate, not a customer survey result. Nine pairs retain earlier local strategy ratings from `wealthscape-intelligence/src/WealthscapePrototype.jsx` at `6bbae9f`; the description is narrowed to reporting where needed:
@@ -113,6 +115,10 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 49 pass, 0 fail after revising account-maintenance executive findings.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/reportingResearch.test.js` — 16 pass, 0 fail after moving Account Maintenance capability comparison to map-first selected-platform validation.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 50 pass, 0 fail after moving Account Maintenance capability comparison to map-first selected-platform validation.
+- 17 September follow-up: `node --test wealthscape-intelligence/src/reportingResearch.test.js` — 17 pass, 0 fail after moving the Strategy profile-impact explanation into the profile info popover.
+- 17 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 51 pass, 0 fail after moving the Strategy profile-impact explanation into the profile info popover.
+- 17 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after moving the Strategy profile-impact explanation into the profile info popover.
+- 17 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=profile-impact-popover#view=strategy&profileId=bd-osj-principal` — OSJ route keeps the executive summary in the main Strategy flow, opens the profile-impact explanation from the profile info icon, and updates copy after switching to BD Home Office. No full-width profile-impact section or Vite overlay was present.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 45 pass, 0 fail after adding the real-logo reporting capability map.
 - `git diff --check` — pass.
 - 16 September follow-up: `git diff --check` — pass.
@@ -121,6 +127,7 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - 16 September follow-up: `git diff --check` — pass after adding the real-logo reporting capability map.
 - 16 September follow-up: `git diff --check` — pass after the reporting job-map visual parity update.
 - 16 September follow-up: `git diff --check` — pass after removing static competitor-specific details from the default map state.
+- 17 September follow-up: `git diff --check` — pass after moving the Strategy profile-impact explanation into the profile info popover.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after reporting outcome UX parity updates.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after ranked bar score no-overlap update.
@@ -227,6 +234,12 @@ Account-maintenance capability-comparison map-first evidence is in `/private/tmp
 - `01-map-first-default.png`
 - `02-selected-platform-validation.png`
 - `browser-check.json`
+
+Strategy profile-impact popover evidence is in `/private/tmp/wealthscape-pr37-profile-impact-popover/`:
+
+- `wealthscape-pr37-profile-impact-popover.mp4`
+- `wealthscape-pr37-profile-impact-popover.webm`
+- `record-profile-impact-popover.cjs`
 
 Actual human-QA walkthrough evidence is in `/private/tmp/wealthscape-pr37-humanqa-walkthrough/`:
 
