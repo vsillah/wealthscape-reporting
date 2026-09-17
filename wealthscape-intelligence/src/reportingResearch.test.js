@@ -1,5 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import {
   reportingOutcomeDetail,
   reportingScore,
@@ -7,9 +10,15 @@ import {
   reportingPlot,
   reportingQuadrant,
   reportingComparison,
+  reportingCapabilityMap,
   reportingCompetitors,
   reportingSources,
 } from "./reportingResearch.js";
+import { reportingBrandAssets } from "./reportingBrandAssets.js";
+import { reportingClientEvidence } from "./reportingEvidence.js";
+import { reportingOutcomes } from "./reportingOutcomes.js";
+
+const srcDir = dirname(fileURLToPath(import.meta.url));
 
 test("reporting recommendations reach report review instead of returning to Strategy", () => {
   const outcome = {
@@ -101,34 +110,312 @@ test("quadrants use an explicit 5/10 boundary, independent of opportunity rank",
 });
 test("competitor map preserves unknown evidence and does not assign satisfaction scores", () => {
   assert.equal(reportingComparison.length, 9);
-  const unknown = reportingComparison
+  const notDirect = reportingComparison
     .flatMap((row) => row.cells)
-    .filter((cell) => !cell.described);
-  assert.ok(unknown.length >= 5);
+    .filter((cell) => cell.level !== "direct");
+  assert.ok(notDirect.length >= 5);
   for (const row of reportingComparison) {
     assert.equal(row.cells.length, 4);
     assert.equal("satisfaction" in row, false);
-    for (const cell of row.cells)
+    for (const cell of row.cells) {
+      assert.ok(["direct", "strong", "partial", "open"].includes(cell.level));
+      assert.ok(cell.score >= 0 && cell.score <= 1);
       assert.ok(reportingCompetitors[cell.reference] && cell.note.length > 20);
+    }
   }
+});
+test("reporting capability map scores workflow breadth and uses real logos", () => {
+  assert.equal(reportingCapabilityMap.length, reportingComparison.length);
+  for (const point of reportingCapabilityMap) {
+    const row = reportingComparison[point.row];
+    assert.equal(point.name, row.name);
+    assert.equal(
+      point.capabilityScore,
+      row.cells.reduce((sum, cell) => sum + cell.score, 0),
+    );
+    assert.equal(
+      point.supportedCount,
+      row.cells.filter((cell) => cell.score > 0).length,
+    );
+    assert.equal("satisfaction" in row, false);
+    assert.equal(typeof point.satisfactionProxy, "number");
+    assert.ok(point.satisfactionProxy >= 6);
+    assert.match(
+      point.assumption,
+      /proxy|directional|evidence|documentation|validate|confirm|not prove/i,
+    );
+    assert.ok(reportingBrandAssets[point.name], `${point.name}: logo asset`);
+    assert.ok(
+      existsSync(
+        join(
+          srcDir,
+          "../public/competitor-brands",
+          reportingBrandAssets[point.name].file,
+        ),
+      ),
+      `${point.name}: local logo file exists`,
+    );
+  }
+});
+test("competitor capability map keeps confidence separate from chart axes", () => {
+  const visualsSource = readFileSync(
+    join(srcDir, "ReportingVisuals.jsx"),
+    "utf8",
+  );
+  assert.doesNotMatch(visualsSource, /Less public support/);
+  assert.match(visualsSource, /Narrower workflow coverage/);
+  assert.match(visualsSource, /marker outline shows\s+public-evidence confidence/);
+});
+test("reporting journey icons are anchored to the curve coordinates", () => {
+  const visualsSource = readFileSync(
+    join(srcDir, "ReportingVisuals.jsx"),
+    "utf8",
+  );
+  assert.ok(visualsSource.includes('top: `${(point.y / 260) * 100}%`'));
+  assert.equal(visualsSource.includes("top: point.y + 36"), false);
+});
+test("executive findings stay aligned with reporting section order", () => {
+  const reportingSource = readFileSync(
+    join(srcDir, "ReportingResearch.jsx"),
+    "utf8",
+  );
+  const summarySource = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.jsx"),
+    "utf8",
+  );
+  const sectionsBlock = reportingSource.match(/const sections = \[([\s\S]*?)\];/);
+  assert.ok(sectionsBlock, "reporting sections block exists");
+  const sectionIds = [...sectionsBlock[1].matchAll(/^\s+\["([^"]+)"/gm)].map(
+    (match) => match[1],
+  );
+  const findingsBlock = summarySource.match(
+    /reporting:\s*\{[\s\S]*?findings:\s*\{([\s\S]*?)\n    \},\n    assumptions:/,
+  );
+  assert.ok(findingsBlock, "reporting executive findings block exists");
+  const findingIds = [...findingsBlock[1].matchAll(/^\s+([a-z]+): \[/gm)].map(
+    (match) => match[1],
+  );
+  assert.deepEqual(findingIds, sectionIds);
+  assert.match(summarySource, /getStrategySectionFinding\(track, section\.id\)/);
+  assert.match(summarySource, /getStrategySectionFinding\(track, sectionId\)/);
+});
+test("maintenance executive findings connect research evidence to recommendations", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const summarySource = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.jsx"),
+    "utf8",
+  );
+  const sectionsBlock = maintenanceSource.match(/const sections = \[([\s\S]*?)\];/);
+  assert.ok(sectionsBlock, "maintenance sections block exists");
+  const sectionIds = [
+    ...sectionsBlock[1].matchAll(/id:\s*(\d+),\s+label:\s*"([^"]+)"/g),
+  ].map((match) => match[1]);
+  const findingsBlock = summarySource.match(
+    /maintenance:\s*\{[\s\S]*?findings:\s*\{([\s\S]*?)\n    \},\n    assumptions:/,
+  );
+  assert.ok(findingsBlock, "maintenance executive findings block exists");
+  const findingIds = [...findingsBlock[1].matchAll(/^\s+(\d+): \[/gm)].map(
+    (match) => match[1],
+  );
+  assert.deepEqual(findingIds, sectionIds);
+  assert.match(findingsBlock[1], /servicing quality matters/);
+  assert.match(findingsBlock[1], /outcome map concentrates opportunity/);
+  assert.match(findingsBlock[1], /measured pilot/);
+});
+test("maintenance capability comparison leads with the integrated map and selected-platform validation", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const competitorMapSource = readFileSync(
+    join(srcDir, "MaintenanceCompetitorMap.jsx"),
+    "utf8",
+  );
+  const mapIndex = maintenanceSource.indexOf(
+    '<LifecycleResearch embedded view="positioning" />',
+  );
+  const evidenceIndex = maintenanceSource.indexOf(
+    '<Evidence slide="15, 17, 25, 27" links={["schwab", "t3"]}>',
+  );
+  assert.ok(mapIndex > -1, "capability section renders the integrated map");
+  assert.ok(evidenceIndex > -1, "capability section keeps source evidence");
+  assert.ok(
+    mapIndex < evidenceIndex,
+    "the integrated map appears before the source evidence",
+  );
+  assert.equal(
+    maintenanceSource.includes("Onboarding is not all maintenance"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes("A gap worth investigating"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes(
+      "Maintenance capability references and validation questions",
+    ),
+    false,
+  );
+  assert.match(competitorMapSource, /selectedValidationCards\(rival\)/);
+  assert.match(
+    competitorMapSource,
+    /\$\{rival\.name\} maintenance evidence and validation questions/,
+  );
+  assert.match(competitorMapSource, /competitorValidationCards/);
+});
+test("maintenance customer research highlights only the evidenced persona", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  assert.match(maintenanceSource, /mr-customer-context/);
+  assert.match(maintenanceSource, /\/personas\/jordan-williams\.png/);
+  assert.match(maintenanceSource, /RIA advisor/);
+  assert.match(maintenanceSource, /Unvalidated roles to research next/);
+  assert.equal(maintenanceSource.includes("Investor / account owner"), false);
+  assert.equal(
+    maintenanceSource.includes("/personas/investor-account-owner.png"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes("Jobs to be done in this context"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes("Method and next research step"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes("Client service associate · executes the job"),
+    false,
+  );
+  assert.equal(
+    maintenanceSource.includes("Home office · buys and supervises"),
+    false,
+  );
+  assert.match(accountMaintenanceCss, /\.mr-customer-pain/);
+  assert.equal(accountMaintenanceCss.includes(".mr-customer-job"), false);
+  assert.match(accountMaintenanceCss, /\.mr-validation-gap/);
+});
+test("maintenance resolution milestones render as a sequenced roadmap", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  assert.match(maintenanceSource, /mr-milestones mr-roadmap/);
+  assert.match(maintenanceSource, /Resolution strategy roadmap milestones/);
+  assert.match(maintenanceSource, /Establish the baseline/);
+  assert.match(maintenanceSource, /Validate the job and reuse path/);
+  assert.match(maintenanceSource, /Resize or advance the investment/);
+  assert.match(maintenanceSource, /Evidence gate/);
+  assert.match(accountMaintenanceCss, /\.mr-milestones::before/);
+  assert.match(accountMaintenanceCss, /\.mr-roadmap-marker/);
+  assert.match(accountMaintenanceCss, /grid-template-columns: 54px minmax\(0, 1fr\)/);
+});
+test("strategy profile selector explains role-scoped impact without displacing the executive summary", () => {
+  const prototypeSource = readFileSync(
+    join(srcDir, "WealthscapePrototype.jsx"),
+    "utf8",
+  );
+  const profileImpactCss = readFileSync(
+    join(srcDir, "StrategyProfileImpact.css"),
+    "utf8",
+  );
+  assert.match(prototypeSource, /PROFILE_STRATEGY_IMPACT/);
+  assert.match(prototypeSource, /ProfileImpactHelp/);
+  assert.match(prototypeSource, /What changes for \{profile\.label\}/);
+  assert.match(prototypeSource, /OSJ drill-ins filter to branch-supervision cases/);
+  assert.match(prototypeSource, /market-research evidence is not recomputed per profile/i);
+  assert.equal(prototypeSource.includes("<StrategyProfileImpact"), false);
+  assert.match(profileImpactCss, /profile-impact-popover/);
+  assert.match(profileImpactCss, /position: absolute/);
 });
 test("Fidelity remains a public incumbent baseline with bounded reporting evidence", () => {
   const row = reportingComparison.find(
     (item) => item.name === "Fidelity (Wealthscape)",
   );
   assert.deepEqual(
-    row.cells.map((cell) => cell.described),
-    [true, false, false, false],
+    row.cells.map((cell) => cell.level),
+    ["strong", "open", "partial", "partial"],
   );
   const reference = reportingCompetitors[row.cells[0].reference];
   assert.equal(reference.incumbent, true);
-  for (const source of [reference.source, reference.additionalSource]) {
+  for (const source of [
+    reference.source,
+    reference.additionalSource,
+    ...reference.additionalSources,
+  ]) {
     assert.ok(
       new URL(reportingSources[source].href).hostname.endsWith(".fidelity.com"),
     );
   }
   assert.equal(reference.layer, "reports");
   assert.equal(reference.sub.reportTab, "build");
+});
+test("customer evidence separates metric labels from strategy implications", () => {
+  assert.equal(reportingClientEvidence.length, 6);
+  for (const item of reportingClientEvidence) {
+    assert.ok(item.value, `${item.title}: metric value`);
+    assert.ok(item.metricLabel?.length > 20, `${item.title}: metric label`);
+    assert.ok(item.icon, `${item.title}: icon`);
+    assert.ok(
+      ["positive", "negative", "neutral"].includes(item.signal),
+      `${item.title}: sentiment signal`,
+    );
+    assert.ok(item.signalLabel?.length > 8, `${item.title}: signal label`);
+    assert.ok(item.signalSummary?.length > 35, `${item.title}: signal summary`);
+    assert.ok(item.context?.length > 40, `${item.title}: context`);
+    assert.ok(item.implication?.length > 40, `${item.title}: implication`);
+  }
+  assert.deepEqual(
+    reportingClientEvidence.map((item) => item.signal),
+    ["neutral", "negative", "positive", "neutral", "positive", "neutral"],
+  );
+  assert.match(reportingClientEvidence[0].title, /Advisor time/);
+  assert.match(reportingClientEvidence[0].metricLabel, /workweek/);
+  assert.match(reportingClientEvidence[0].context, /not a measured reporting workload/);
+});
+test("reporting outcomes carry parity fields for map detail inspection", () => {
+  assert.equal(reportingOutcomes.length, 15);
+  const bases = new Set(reportingOutcomes.map((item) => item.basis));
+  assert.deepEqual([...bases].sort(), ["derived", "inferred"]);
+  for (const outcome of reportingOutcomes) {
+    assert.match(outcome.id, /^R\d+$/);
+    assert.ok(outcome.problem.length > 60, `${outcome.id}: problem blurb`);
+    assert.ok(outcome.jobMap.length > 60, `${outcome.id}: job-map context`);
+    assert.ok(outcome.ux.length > 40, `${outcome.id}: ux response`);
+    assert.ok(outcome.coverage.length > 60, `${outcome.id}: demo coverage`);
+    assert.ok(
+      ["build", "customize", "generate"].includes(outcome.tab),
+      `${outcome.id}: demo tab`,
+    );
+  }
+});
+test("reporting outcome links carry selected outcome context into the prototype", () => {
+  const researchSource = readFileSync(join(srcDir, "ReportingResearch.jsx"), "utf8");
+  const prototypeSource = readFileSync(
+    join(srcDir, "WealthscapePrototype.jsx"),
+    "utf8",
+  );
+  assert.match(researchSource, /strategyOutcomeId:\s*selected\.id/);
+  assert.match(
+    researchSource,
+    /Open \{outcomePrototypeSurface\[selected\.tab\]\} for[\s\S]*\{selected\.id\}/,
+  );
+  assert.match(prototypeSource, /Strategy outcome link/);
+  assert.match(prototypeSource, /deepLink\?\.strategyOutcomeId/);
 });
 test("all reporting phases carry a complete handoff and stay independent of maintenance routes", () => {
   assert.equal(reportingJourney.length, 8);

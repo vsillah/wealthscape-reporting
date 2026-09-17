@@ -1,9 +1,11 @@
+import { reportingOutcomes } from "./reportingOutcomes.js";
 import { portfolioRangeOptions, portfolioRanges, formatPortfolioDate, formatPortfolioAxis, formatPortfolioMoney } from "./portfolioGrowth.js";
 import ReportPreviewProvider, { useReportPreview } from "./ReportPreviewProvider.jsx";
 import { getGeneratedReport, reportTemplateId, reportContext, reportStageDetails, portalReportDocuments } from "./generatedReports.js";
 import { ConnectedReportBuilder, LifecycleInvestment } from "./LifecycleExperience";
 import MaintenanceResearch from "./MaintenanceResearch";
 import ReportingResearch from "./ReportingResearch.jsx";
+import "./StrategyProfileImpact.css";
 import { reportingCompetitors } from "./reportingResearch.js";
 import MaintenanceGuide from "./MaintenanceGuide.jsx";
 import { createGuideCase, guideSteps, canVisitGuideStep, GUIDE_CASE_ID } from "./maintenanceGuide.js";
@@ -14,7 +16,7 @@ import {
   Download, Filter, ArrowUpRight, ArrowDownRight, Zap,
   Check, Sparkles, Mail, Activity, AlertTriangle, ChevronDown,
   X, Menu, ChevronLeft, ChevronRight, PlayCircle, BookOpen,
-  Target, TrendingUp, Eye, Layers, Cpu, Calculator, Briefcase, Database
+  Target, TrendingUp, Eye, Layers, Cpu, Calculator, Briefcase, Database, Info
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
@@ -647,13 +649,28 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
 }
 
 function WorkflowContextBanner({ deepLink, profile }) {
-  if (profile?.id === DEFAULT_PROFILE_ID || (!deepLink?.dashboardFocus && !deepLink?.workflowContext)) return null;
+  const outcome = reportingOutcomes.find((item) => item.id === deepLink?.strategyOutcomeId);
+  if (
+    !outcome &&
+    (profile?.id === DEFAULT_PROFILE_ID ||
+      (!deepLink?.dashboardFocus && !deepLink?.workflowContext))
+  )
+    return null;
+  const label = outcome
+    ? `Strategy outcome ${outcome.id} · ${outcome.text}`
+    : deepLink.dashboardFocus || deepLink.workflowContext || "Opened from the profile dashboard";
+  const context = outcome
+    ? `${outcome.jobMap} Prototype surface: Report Builder ${outcome.tab}.`
+    : deepLink.dashboardFocus || deepLink.workflowContext || "Opened from the profile dashboard";
   return (
     <div style={{ background:T.indigoLt, border:`1px solid ${T.indigo}35`, borderRadius:12, padding:"12px 15px", display:"flex", gap:11, alignItems:"center", flexWrap:"wrap" }}>
       <Target size={15} color={T.indigo}/>
       <div style={{ flex:1, minWidth:180 }}>
-        <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>Workflow focus</div>
-        <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{deepLink.dashboardFocus || deepLink.workflowContext || "Opened from the profile dashboard"}</div>
+        <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>
+          {outcome ? "Strategy outcome link" : "Workflow focus"}
+        </div>
+        <div style={{ fontSize:12, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{label}</div>
+        <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45, marginTop:2 }}>{context}</div>
       </div>
     </div>
   );
@@ -1475,11 +1492,59 @@ const MARKET_SIGNALS = [
 ];
 
 const CUSTOMER_PAINS = [
-  { metric:"~2 hrs",   pain:"Per client report — scheduling, running, reconciling, then rebuilding in Excel/PowerPoint just to add firm branding." },
-  { metric:"12+",      pain:"Separate logins every morning to reconstruct a book-level view of what needs attention before market open." },
-  { metric:"Manual",   pain:"Spreadsheet watchlists to track allocation drift, tax-loss windows, and at-risk clients — with no automated detection." },
-  { metric:"Black box", pain:"Report exports with no validation trail; stale prices and missing corporate actions surfaced only after the client noticed." },
-  { metric:"Fidelity", pain:"The client app carried the custodian's brand, not the advisor's — undercutting the independent RIA relationship." },
+  {
+    metric:"~2 hrs",
+    phase:"Prepare",
+    job:"Prepare · Assemble a consistent draft",
+    quote:"I can get the numbers, but turning them into a client-ready report still means rebuilding the story in Excel or PowerPoint.",
+    pain:"Per-client report work is split across scheduling, running, reconciling, and branded output assembly.",
+  },
+  {
+    metric:"12+",
+    phase:"Locate",
+    job:"Locate · Find the right inputs",
+    quote:"My morning starts by opening separate systems just to rebuild the book-level view I need before clients start calling.",
+    pain:"Separate logins force the advisor to reconstruct what needs attention before market open.",
+  },
+  {
+    metric:"Manual",
+    phase:"Monitor",
+    job:"Monitor · Check delivery readiness",
+    quote:"I am still using spreadsheet watchlists to spot allocation drift, tax windows, and at-risk clients.",
+    pain:"Manual watchlists carry the detection burden for drift, tax-loss windows, and client risk signals.",
+  },
+  {
+    metric:"Black box",
+    phase:"Confirm",
+    job:"Confirm · Resolve review friction",
+    quote:"I do not know a stale price or missing action is in the report until the client or reviewer catches it.",
+    pain:"Report exports lack a visible validation trail for stale prices, missing corporate actions, and review evidence.",
+  },
+  {
+    metric:"Fidelity",
+    phase:"Conclude",
+    job:"Conclude · Deliver and follow through",
+    quote:"The client experience should feel like my advisory relationship, not just the custodian's portal.",
+    pain:"Custodian-branded delivery can weaken the independent RIA relationship after the report leaves the advisor.",
+  },
+];
+
+const CUSTOMER_NEEDS = [
+  {
+    type:"Functional",
+    job:"Prepare · Assemble a consistent draft",
+    need:"Reduce the time and tool-switching required to produce a client-ready report.",
+  },
+  {
+    type:"Social",
+    job:"Conclude · Deliver and follow through",
+    need:"Show up as the trusted advisor relationship, not as a generic custodian handoff.",
+  },
+  {
+    type:"Emotional",
+    job:"Confirm · Resolve review friction",
+    need:"Feel confident that stale data, missing evidence, and unsupported narrative will be caught before the client sees it.",
+  },
 ];
 
 // imp = importance, sat = current satisfaction (both /10). Opportunity score per
@@ -1869,6 +1934,7 @@ const makeProfile = ({
   stats = STRAT_STATS,
   marketSignals = MARKET_SIGNALS,
   customerPains = CUSTOMER_PAINS,
+  customerNeeds = CUSTOMER_NEEDS,
   outcomes = OUTCOMES,
   jobMap = JOB_MAP,
   recommendations = RECOMMENDATIONS,
@@ -1891,6 +1957,7 @@ const makeProfile = ({
     stats,
     marketSignals,
     customerPains,
+    customerNeeds,
     outcomes,
     jobMap,
     recommendations,
@@ -2000,6 +2067,37 @@ const PROFILE_REGISTRY = createProfileRegistry(STRATEGY_PROFILES, {
   defaultProfileId: DEFAULT_PROFILE_ID,
   profileOrder: PROFILE_ORDER,
 });
+
+const PROFILE_STRATEGY_IMPACT = {
+  ria: {
+    lens:"Independent advisor",
+    summary:"The prototype reads through Jordan's book of business: advisor productivity, household reporting, client-ready explanations, and direct service ownership.",
+    maintenance:"Account-maintenance research stays shared market evidence, but drill-ins and demo links stay scoped to Jordan's advisor-owned maintenance cases.",
+    reporting:"Reporting modernization uses the RIA packet: fewer assembly tools, clearer household context, validated report data, and client-ready delivery.",
+    prototype:"Dashboard alerts, reports, portal documents, analytics, and guided actions show an independent advisor's book-level work.",
+  },
+  "bd-home-office": {
+    lens:"Enterprise home office",
+    summary:"The prototype shifts to Maya's enterprise platform job: supervision risk, AI governance, adoption telemetry, and field productivity across a national network.",
+    maintenance:"Account-maintenance research stays shared market evidence, but drill-ins and demo links highlight centralized review, policy controls, and platform operating risk.",
+    reporting:"Reporting modernization uses the home-office packet: governed AI report production, approval evidence, disclosure controls, and field adoption signals.",
+    prototype:"Dashboard alerts, report review surfaces, analytics, and integration routes show home-office queues instead of one advisor's household work.",
+  },
+  "bd-osj-principal": {
+    lens:"Branch supervision",
+    summary:"The prototype shifts to Kwame's branch-principal job: local exception triage, rep coaching, escalation evidence, and branch-level learning.",
+    maintenance:"Account-maintenance research stays shared market evidence, but OSJ drill-ins filter to branch-supervision cases, local compliance load, and evidence routing.",
+    reporting:"Reporting modernization uses the OSJ packet: exception-ready report packets, trade rationale support, review holds, and rep-friction follow-up.",
+    prototype:"Dashboard alerts, maintenance cases, report actions, portal messages, and analytics routes show OSJ-visible work across reps and local offices.",
+  },
+  "bd-hybrid-advisor": {
+    lens:"Hybrid advisor",
+    summary:"The prototype shifts to Amina's mixed-book reality: brokerage, advisory, annuity, planning, product workflows, and supervision context in one relationship view.",
+    maintenance:"Account-maintenance research stays shared market evidence, but drill-ins and demo links emphasize mixed-account blockers, suitability context, and team ownership.",
+    reporting:"Reporting modernization uses the hybrid-advisor packet: relationship-level context, product disclosures, approved narratives, and principal-review readiness.",
+    prototype:"Dashboard alerts, report builder steps, portal context, and analytics routes show hybrid household work instead of a single-channel advisory book.",
+  },
+};
 
 function normalizeProfileId(profileId) {
   return PROFILE_REGISTRY.profiles[profileId] ? profileId : PROFILE_REGISTRY.defaultProfileId;
@@ -2116,23 +2214,59 @@ function StratSection({ eyebrow, title, intro, children }) {
 
 function ProfileSwitcher({ profiles, profileOrder, activeProfileId, onProfileChange, compact = false }) {
   const selectedProfileId = profiles[activeProfileId] ? activeProfileId : profileOrder[0];
+  const selectedProfile = profiles[selectedProfileId] || profiles[profileOrder[0]];
 
   return (
-    <label style={{ display:"flex", alignItems:"center", gap:8, minWidth:compact?145:180 }}>
-      {!compact && <span style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", whiteSpace:"nowrap" }}>Profile</span>}
-      <select
-        aria-label="Profile"
-        value={selectedProfileId}
-        onChange={e=>onProfileChange(e.target.value)}
-        style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
-      >
-        {profileOrder.map(id=>{
-          const profile = profiles[id];
-          if (!profile) return null;
-          return <option key={id} value={id}>{profile.label}</option>;
-        })}
-      </select>
-    </label>
+    <div className="profile-switcher" style={{ minWidth:compact?170:214 }}>
+      <label style={{ display:"flex", alignItems:"center", gap:8, minWidth:compact?145:180 }}>
+        {!compact && <span style={{ fontSize:10, fontWeight:700, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase", whiteSpace:"nowrap" }}>Profile</span>}
+        <select
+          aria-label="Profile"
+          value={selectedProfileId}
+          onChange={e=>onProfileChange(e.target.value)}
+          style={{ width:"100%", border:`1px solid ${T.gray200}`, background:T.white, color:T.gray900, borderRadius:8, padding:compact?"7px 8px":"8px 10px", fontSize:compact?12:13, fontWeight:700, outline:"none", cursor:"pointer" }}
+        >
+          {profileOrder.map(id=>{
+            const profile = profiles[id];
+            if (!profile) return null;
+            return <option key={id} value={id}>{profile.label}</option>;
+          })}
+        </select>
+      </label>
+      <ProfileImpactHelp profile={selectedProfile} compact={compact} />
+    </div>
+  );
+}
+
+function ProfileImpactHelp({ profile, compact = false }) {
+  const impact = PROFILE_STRATEGY_IMPACT[profile.id] || PROFILE_STRATEGY_IMPACT.ria;
+
+  return (
+    <details className="profile-impact-help">
+      <summary aria-label={`What changes when ${profile.label} is selected`} title="What changes with this profile">
+        <Info size={compact ? 13 : 14} />
+      </summary>
+      <div className="profile-impact-popover" role="tooltip">
+        <span className="profile-impact-popover__kicker">{impact.lens} lens</span>
+        <h3>What changes for {profile.label}</h3>
+        <p>{impact.summary}</p>
+        <dl>
+          <div>
+            <dt>Prototype context</dt>
+            <dd>{profile.shell.name} becomes the named user; the shell, dashboard alerts, synthetic cases, reporting routes, portal context, and analytics links carry that profile.</dd>
+          </div>
+          <div>
+            <dt>Account maintenance</dt>
+            <dd>{impact.maintenance}</dd>
+          </div>
+          <div>
+            <dt>Reporting modernization</dt>
+            <dd>{impact.reporting}</dd>
+          </div>
+        </dl>
+        <p className="profile-impact-popover__boundary">Shared boundary: market-research evidence is not recomputed per profile.</p>
+      </div>
+    </details>
   );
 }
 
@@ -2501,7 +2635,7 @@ function StrategyLayer({ bp, profile, profiles, profileOrder, activeProfileId, o
   const trackBody = researchTrack === "lifecycle" ? "Prioritize the shared maintenance path: capture the request once, establish authority, resolve exceptions, and retain review evidence. The leadership decision is what to validate and fund next within the broader account lifecycle." : "Governed client report production: connect household context, preparation, approval and delivery. Use public evidence and illustrative pilots on synthetic data to define the next measured validation gate.";
   const trackStats = researchTrack === "lifecycle"
     ? [{value:"15",label:"Maintenance outcomes · directional"},{value:"8",label:"Maintenance functions"},{value:"3",label:"Stakeholder groups"},{value:"4",label:"Investment priorities"}]
-    : [{value:new Set(reportingCompetitors.map(item => item.name)).size,label:"Vendors reviewed"},{value:5,label:"Proposed outcomes"},{value:4,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
+    : [{value:new Set(reportingCompetitors.map(item => item.name)).size,label:"Vendors reviewed"},{value:reportingOutcomes.length,label:"Proposed outcomes"},{value:4,label:"Recommended moves"},{value:strategy.buildBuy.length,label:"Sourcing calls"}];
 
   return (
     <div style={{ display:"flex", flexDirection:"column", gap:30, maxWidth:1080, margin:"0 auto", paddingBottom:20 }}>

@@ -92,6 +92,18 @@ function Cards({ rows, icons = [Lightbulb], personas = false }) {
   );
 }
 
+const maintenanceCustomerPersona = {
+  name: "Jordan Williams",
+  role: "RIA advisor",
+  image: "/personas/jordan-williams.png",
+  details: [
+    ["Firm model", "Independent RIA"],
+    ["Book", "~$1.57B AUA"],
+    ["Households", "134 active"],
+    ["Primary concern", "Keep account changes moving without losing client confidence"],
+  ],
+};
+
 const recommendationMap = [
   {
     title: "Validation and exceptions",
@@ -487,141 +499,96 @@ export default function MaintenanceResearch({
             )}
             {section === 2 && (
               <>
-                <p className="mr-lead">
-                  Separate a documented feature from proof that the whole
-                  maintenance job is solved.
-                </p>
-                <Cards
-                  rows={[
-                    [
-                      "Onboarding is not all maintenance",
-                      "The revised deck narrows several Schwab examples to new-account workflows. Firm authority and third-party power of attorney are also different jobs. Test the exact account state and authority type in a teardown.",
-                    ],
-                    [
-                      "A gap worth investigating",
-                      "The August documentation review raises questions about shared validation, authority handling, and stale-data visibility. Missing public documentation cannot establish that a vendor lacks a capability.",
-                    ],
-                  ]}
-                />
+                <LifecycleResearch embedded view="positioning" />
                 <Evidence slide="15, 17, 25, 27" links={["schwab", "t3"]}>
-                  The interactive positioning map below retains the earlier
+                  The interactive positioning map above retains the earlier
                   Frames snapshot. Its capability axis is an assessment, not a
                   survey measure. Revalidate scope before using it in a
                   procurement or competitive claim.
                 </Evidence>
-                <div
-                  className="mr-comparison"
-                  aria-label="Maintenance capability references and validation questions"
-                >
-                  {[
-                    [
-                      "Shared validation",
-                      "Schwab describes prefill and guided digital workflows; this is vendor-published process evidence.",
-                      "Confirm how much existing validation is reusable across maintenance functions; internal coverage is unknown.",
-                      "Start with a common submission contract and measure rejection reasons.",
-                      "schwab",
-                    ],
-                    [
-                      "Firm authority / third-party POA",
-                      "Schwab’s February 2026 update covers firm LPOA-IA across up to 20 accounts. It does not prove third-party POA coverage.",
-                      "Map each authority type, account restriction, and recovery path with operations and compliance.",
-                      "Keep policy differences explicit before extending an action across a household.",
-                      "schwab",
-                    ],
-                    [
-                      "Self-service beneficiary updates",
-                      "Altruist’s April 2024 release documents post-opening beneficiary designation changes in its client portal and app.",
-                      "Test comparable existing-account edits, exceptions, and client approval requirements. No absence claim is established.",
-                      "Compare the complete job, including exceptions, rather than just a digital form.",
-                      "altruist",
-                    ],
-                    [
-                      "Status and retained evidence",
-                      "Altruist describes account-activity notifications and agreement storage; FINRA 3110 supplies supervisory context.",
-                      "Confirm which statuses, owners, and review records are visible across custody and clearing workflows.",
-                      "Make the next owner and completion evidence retrievable at every handoff.",
-                      "altruist",
-                    ],
-                  ].map(
-                    (
-                      [capability, reference, gap, implication, source],
-                      index,
-                    ) => {
-                      const CapabilityIcon = [
-                        ClipboardCheck,
-                        ShieldCheck,
-                        Users,
-                        Database,
-                      ][index];
-                      return (
-                        <article key={capability}>
-                          <h3>
-                            <CapabilityIcon size={18} aria-hidden="true" />
-                            {capability}
-                          </h3>
-                          <div>
-                            <small>Documented reference</small>
-                            <p>{reference}</p>
-                            <a
-                              href={sources[source][1]}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {sources[source][0]} ↗
-                            </a>
-                          </div>
-                          <div>
-                            <small>Wealthscape · validation needed</small>
-                            <p>{gap}</p>
-                          </div>
-                          <div>
-                            <small>Strategic implication</small>
-                            <p>{implication}</p>
-                          </div>
-                        </article>
-                      );
-                    },
-                  )}
-                </div>
               </>
             )}
             {section === 3 && (
               <>
                 <p className="mr-lead">
-                  The people processing the work are the most important research
-                  gap.
+                  The current evidence describes the advisor-facing servicing
+                  problem. The client service and reviewer roles are still the
+                  research gap.
                 </p>
-                <Cards
-                  personas
-                  icons={[Users, ClipboardCheck, ShieldCheck]}
-                  rows={[
-                    [
-                      "Investor · sees the outcome",
-                      "The deck groups public forum themes around authority, waiting, and confirmation. These observations show that a problem can occur; they cannot establish its prevalence or severity.",
-                    ],
-                    [
-                      "Client service associate · executes the job",
-                      "The source surveys sample advisors rather than directly studying maintenance staff. The CSA role is the proposed job executor; its needs have not been validated by primary interviews in this project.",
-                    ],
-                    [
-                      "Home office · buys and supervises",
-                      "Policy, entitlements, and retained review evidence shape this role. Clearing and custody allocate responsibilities differently, so one persona cannot stand in for both operating models.",
-                    ],
-                  ]}
-                />
-                <div className="am-callout">
-                  <strong>Method and next research step</strong>
+                <div className="mr-customer-context">
+                  <article className="mr-customer-persona">
+                    <img
+                      className="mr-customer-photo"
+                      src={maintenanceCustomerPersona.image}
+                      alt={`${maintenanceCustomerPersona.name}, synthetic RIA advisor persona portrait`}
+                    />
+                    <div className="mr-customer-header">
+                      <div>
+                        <span className="am-eyebrow">Evidence persona</span>
+                        <h3>{maintenanceCustomerPersona.name}</h3>
+                        <p className="mr-customer-role">
+                          {maintenanceCustomerPersona.role}
+                        </p>
+                        <p>
+                          Public forum themes show where the advisor feels the
+                          maintenance job break while trying to keep a client
+                          change moving: authority, waiting, and confirmation.
+                        </p>
+                      </div>
+                      <span className="mr-customer-badge">Observed themes</span>
+                    </div>
+                    <dl className="mr-customer-facts">
+                      {maintenanceCustomerPersona.details.map(([key, value]) => (
+                        <div key={key}>
+                          <dt>{key}</dt>
+                          <dd>{value}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </article>
+                  <div className="mr-customer-pains">
+                    {[
+                      [
+                        "Authority / signature",
+                        "Obtain authority",
+                        "I cannot tell which authorization is missing until the request stalls.",
+                        "Missing authority appears when an advisor expects one submitted client change to be accepted, but the workflow still needs the right signer, scope, or policy path.",
+                      ],
+                      [
+                        "Waiting / status",
+                        "Resolve exception",
+                        "I do not know who owns the request or what my client needs to do next.",
+                        "The waiting problem shows up after submission, when ownership, rejected evidence, and recovery steps are not visible to the advisor.",
+                      ],
+                      [
+                        "Completion proof",
+                        "Confirm completion",
+                        "I need proof the account change took effect before I tell the client it is done.",
+                        "Confirmation friction appears when the advisor can see that work was submitted, but not whether the intended account state is complete and retained.",
+                      ],
+                    ].map(([theme, job, quote, pain]) => (
+                      <article className="mr-customer-pain" key={theme}>
+                        <div className="mr-customer-pain-header">
+                          <span>{theme}</span>
+                          <small>{job}</small>
+                        </div>
+                        <blockquote>{quote}</blockquote>
+                        <p>{pain}</p>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+                <div className="mr-validation-gap">
+                  <div>
+                    <ClipboardCheck size={18} aria-hidden="true" />
+                    <strong>Unvalidated roles to research next</strong>
+                  </div>
                   <p>
-                    The deck describes adjacent-category survey synthesis, dated
-                    vendor documentation, and approximately 28 in-scope threads
-                    from roughly 35 collected. The firm-moderated forum is
-                    biased toward unresolved problems. Private text and
-                    identities are excluded here.
-                  </p>
-                  <p>
-                    Proposed validation: 10–15 advisor and CSA interviews, a
-                    needs-based segmentation pass, and a workflow observation
-                    study. None is presented as completed.
+                    The source packet does not directly study client service
+                    associates or home-office reviewers. Treat those roles as
+                    operating hypotheses until interviews and workflow
+                    observations confirm their needs, handoffs, policy
+                    constraints, and evidence responsibilities.
                   </p>
                 </div>
                 <Evidence slide="3–5, 7–10, 27–30" links={["kitces", "t3"]}>
@@ -798,34 +765,56 @@ export default function MaintenanceResearch({
                 <h3 className="mr-subheading">
                   Evidence that unlocks the next decision
                 </h3>
-                <div className="mr-milestones">
+                <div
+                  className="mr-milestones mr-roadmap"
+                  aria-label="Resolution strategy roadmap milestones"
+                >
                   {[
-                    [
-                      "Weeks 1–2",
-                      "Establish the baseline",
-                      "Operations + analytics",
-                      "Count maintenance requests by function and direct/assisted channel. Define first-pass completion, repeat rejection, and median/p90 resolution time, with clear denominators. Record cost and staff time separately.",
-                    ],
-                    [
-                      "Weeks 3–6",
-                      "Validate the job and reuse path",
-                      "Research + engineering + compliance",
-                      "Conduct the proposed advisor/CSA interviews and workflow observations. Test account-scope, authority-type, exception, and evidence-retention boundaries against existing services. Cost the sourcing alternatives.",
-                    ],
-                    [
-                      "By day 90",
-                      "Resize or advance the investment",
-                      "Product sponsor + operations + finance",
-                      "Compare the bounded pilot with its baseline and explain volume mix, rework, service burden, and support cost. Agree acceptance thresholds before the pilot; shrink or redirect the program if the assisted workload does not support its scale.",
-                    ],
-                  ].map(([time, title, owner, text]) => (
-                    <article key={time}>
-                      <span className="am-eyebrow">
-                        {time} · proposed milestone
-                      </span>
-                      <h4>{title}</h4>
-                      <p className="mr-owner">{owner}</p>
-                      <p>{text}</p>
+                    {
+                      time: "Weeks 1–2",
+                      title: "Establish the baseline",
+                      owner: "Operations + analytics",
+                      Icon: Database,
+                      text: "Count maintenance requests by function and direct/assisted channel. Define first-pass completion, repeat rejection, and median/p90 resolution time, with clear denominators.",
+                      gate: "Baseline volume, rework, cycle time, cost, and staff effort are recorded separately.",
+                    },
+                    {
+                      time: "Weeks 3–6",
+                      title: "Validate the job and reuse path",
+                      owner: "Research + engineering + compliance",
+                      Icon: FlaskConical,
+                      text: "Conduct advisor/CSA interviews and workflow observations. Test account-scope, authority-type, exception, and evidence-retention boundaries against existing services.",
+                      gate: "Reusable paths and sourcing alternatives are costed before a build, partner, or buy decision.",
+                    },
+                    {
+                      time: "By day 90",
+                      title: "Resize or advance the investment",
+                      owner: "Product sponsor + operations + finance",
+                      Icon: ClipboardCheck,
+                      text: "Compare the bounded pilot with its baseline and explain volume mix, rework, service burden, and support cost against the acceptance thresholds.",
+                      gate: "Program scale is advanced, reduced, or redirected based on measured support burden.",
+                    },
+                  ].map(({ time, title, owner, Icon, text, gate }, index) => (
+                    <article key={time} className="mr-roadmap-step">
+                      <div className="mr-roadmap-marker" aria-hidden="true">
+                        <Icon size={18} />
+                        <span>{index + 1}</span>
+                      </div>
+                      <div className="mr-roadmap-body">
+                        <div className="mr-roadmap-topline">
+                          <span className="mr-roadmap-time">{time}</span>
+                          <span className="mr-roadmap-kind">
+                            Proposed milestone
+                          </span>
+                        </div>
+                        <h4>{title}</h4>
+                        <p className="mr-owner">{owner}</p>
+                        <p>{text}</p>
+                        <div className="mr-roadmap-gate">
+                          <strong>Evidence gate</strong>
+                          <span>{gate}</span>
+                        </div>
+                      </div>
                     </article>
                   ))}
                 </div>
@@ -847,7 +836,6 @@ export default function MaintenanceResearch({
                 </div>
               </>
             )}
-            {section === 2 && <LifecycleResearch embedded view="positioning" />}
             {section === 5 && <LifecycleResearch embedded view="journey" />}
           </section>
         );

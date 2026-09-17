@@ -4,17 +4,17 @@ import "./StrategyExecutiveSummary.css";
 
 const summaries = {
   maintenance: {
-    conclusion: "Prioritize shared validation and exception resolution, then extend to household authority.",
-    rationale: "A maintenance request crosses account scope, authority, evidence and review. A common servicing path is the strongest starting investment hypothesis: reduce incomplete submissions, make ownership visible and confirm the change through to completion. Fund discovery and a bounded pilot before committing to a broader rollout.",
+    conclusion: "Fund a shared validation-and-exception pilot before expanding account-maintenance automation.",
+    rationale: "The research does not point to one missing screen. It points to repeated servicing failures around incomplete requests, authority, ownership, review evidence and completion proof. Market and competitor sources make the case for better servicing quality, while the outcome synthesis explains where the work breaks. Start with a bounded pilot that proves fewer rejected requests and clearer ownership before extending automation across household authority.",
     findings: {
-      1: ["Request volumes and handling costs must justify maintenance funding.", "The research measures broader platform experience; size this investment with internal servicing volumes, failure rates and handling costs."],
-      2: ["Public feature lists leave complex account changes unverified.", "Authority types, account states and recovery paths determine whether a change can finish; test those boundaries before declaring a competitive gap."],
-      3: ["Interviews with service associates and reviewers are still missing.", "Advisor surveys and forum themes provide indirect evidence. Observe service associates and home-office reviewers before committing to requirements."],
-      4: ["Preventing incomplete requests is the first improvement to test.", "Re-entry, incomplete information and exception resolution lead the directional priorities; validate their frequency and burden before funding automation."],
-      5: ["Every account-change handoff needs an owner and proof of completion.", "Authority, review and exception recovery cross teams. Give each transition a named owner and evidence that the requested change took effect."],
-      0: ["Check request completeness before expanding changes across household accounts.", "Household authority ranks higher on the scorecard, but a change across several accounts can repeat the same missing-information error. Establish shared request checks and recovery steps first."],
-      7: ["A pilot for one request type should prove fewer errors before expansion.", "Start with a bounded maintenance function and compare first-pass completion and rework with the baseline before expanding authority or servicing scope."],
-      8: ["Assess existing services and connection costs before choosing what to build or buy.", "Inventory existing validation, identity and audit services; build or partner only for confirmed gaps with an accountable support owner."],
+      1: ["Market research says servicing quality matters, but it does not isolate account maintenance.", "T3 and Kitces point to platform satisfaction, integration and repeated handling as competitive context. They justify a servicing-quality hypothesis, not a maintenance-specific ROI claim; internal volume, failure and cost baselines still need to size the investment."],
+      2: ["Competitor evidence shows guided maintenance exists, but not that complex changes finish end to end.", "Schwab and Altruist public references show adjacent digital workflows, beneficiary updates, notifications and records. They do not prove household authority, third-party POA, rejected work, evidence retention or cross-team recovery work across every account state."],
+      3: ["Customer research surfaces authority, waiting and confirmation friction, but the operating personas remain unvalidated.", "Forum themes and advisor-survey synthesis reveal where the work can hurt: missing authority, unclear status and uncertain completion. The study still needs service-associate and reviewer interviews before translating those themes into requirements."],
+      4: ["The outcome map concentrates opportunity around incomplete requests and exception recovery.", "The highest-value outcomes cluster around establishing scope, collecting requirements, resolving rejected work and proving completion. That points to a shared validation layer before broad self-service or household-level automation."],
+      5: ["The maintenance job breaks at handoffs between request, authority, review and confirmation.", "The job map shows the requested change is not complete when a form is submitted. Each transition needs a named owner, visible missing evidence and proof that the account scope was changed correctly."],
+      0: ["The cross-section finding is dependency sequencing: validate the request first, then expand authority.", "Household authority scores high, but multi-account changes amplify the same missing-information and exception problems. Shared request checks, recovery paths and completion evidence are the prerequisite to scaling account-change automation."],
+      7: ["The recommendation is a measured pilot, not a blanket rebuild of account maintenance.", "Start with one bounded maintenance function and compare first-pass completion, rework, exception aging and resolution quality against a baseline before expanding authority, servicing scope or automation depth."],
+      8: ["The sourcing decision depends on reusable services and internal economics, not vendor feature parity alone.", "Inventory identity, authority, validation, audit and retention services before choosing build, partner or acquire. Public research can frame the options; Fidelity’s tech debt, operating ownership, support burden and integration cost determine the decision."],
     },
     assumptions: [
       ["Demand and servicing model", "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. Fidelity’s organizational complexity and handoffs may change the priority order."],
@@ -59,7 +59,7 @@ const summaries = {
 };
 
 export function StrategySectionFinding({ track, sectionId }) {
-  const [headline, implication] = summaries[track].findings[sectionId];
+  const [headline, implication] = getStrategySectionFinding(track, sectionId);
   return (
     <div className="strategy-section-finding">
       <h3>{headline}</h3>
@@ -68,10 +68,20 @@ export function StrategySectionFinding({ track, sectionId }) {
   );
 }
 
-function ExecutiveFinding({ track, section, index, finding, onJump }) {
+export function getStrategySectionFinding(track, sectionId) {
+  const finding = summaries[track]?.findings?.[sectionId];
+  if (finding) return finding;
+  return [
+    "Finding not yet mapped.",
+    "This section needs an executive finding before the strategy summary is ready for review.",
+  ];
+}
+
+function ExecutiveFinding({ track, section, index, onJump }) {
   const [expanded, setExpanded] = useState(false);
   const detailId = `${track}-finding-detail-${section.id}`;
   const headlineId = `${track}-finding-headline-${section.id}`;
+  const finding = getStrategySectionFinding(track, section.id);
   return (
     <article className="strategy-executive-finding" aria-labelledby={headlineId}>
       <span className="strategy-executive-number">{String(index + 1).padStart(2, "0")}</span>
@@ -108,7 +118,7 @@ export default function StrategyExecutiveSummary({ track, sections, onJump }) {
       <h3 className="strategy-executive-label">Findings by section</h3>
       <div className="strategy-executive-findings">
         {sections.map((section, index) => (
-          <ExecutiveFinding key={`${track}-${section.id}`} track={track} section={section} index={index} finding={summary.findings[section.id]} onJump={onJump} />
+          <ExecutiveFinding key={`${track}-${section.id}`} track={track} section={section} index={index} onJump={onJump} />
         ))}
       </div>
       <div className="strategy-executive-decisions">

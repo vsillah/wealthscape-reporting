@@ -135,95 +135,170 @@ export const reportingEvidenceSources = {
 
 export const reportingMarketEvidence = [
   {
-    title: "Dual registration is the majority case",
+    title:
+      "Mixed brokerage and advisory relationships are the mainstream competitive context.",
     value: "51.9%",
+    metricLabel: "FINRA-registered representatives with both registrations",
+    icon: "users",
+    signal: "positive",
+    signalLabel: "Potential advantage",
+    signalSummary: "Clear mixed-account reporting can differentiate the experience.",
+    context:
+      "This is not a feature claim; it describes the account context a reporting experience must explain clearly.",
     finding:
       "331,802 of 639,723 FINRA-registered representatives held both registrations at year-end 2025. In 2025, 11,294 added adviser registration and 1,800 dropped it.",
+    implicationTitle: "Competitive read",
     implication:
-      "Carry brokerage and advisory context with the household throughout preparation and review.",
+      "Advantage sits with platforms that make mixed brokerage/advisory context understandable in one client-ready report; disadvantage shows up when reports split the relationship into separate fragments.",
     sources: ["finraSnapshot"],
   },
   {
-    title: "Reporting remains essential",
+    title: "Reporting is a high-adoption workflow, so parity is not enough.",
     value: "8.6 / 87.5%",
+    metricLabel: "importance score / advisor adoption",
+    icon: "chart",
+    signal: "negative",
+    signalLabel: "Competitive pressure",
+    signalSummary: "A common workflow becomes a liability if it only meets baseline expectations.",
+    context:
+      "A common, recurring workflow creates competitive exposure because small usability gaps repeat across many client cycles.",
     finding:
       "Kitces 2025 reports performance-reporting importance of 8.6 and adoption of 87.5%.",
+    implicationTitle: "Competitive read",
     implication:
-      "Improve a recurring client workflow with a high adoption baseline.",
+      "Wealthscape can be disadvantaged if reporting remains merely available while peers make preparation, review, and delivery easier to complete.",
     sources: ["kitces"],
   },
   {
-    title: "Platforms absorb the work as satisfaction weakens",
+    title: "Platform reporting responsibility is rising while satisfaction is slipping.",
     value: "7.8 → 7.1",
+    metricLabel: "platform reporting satisfaction, 2023 to 2025",
+    icon: "trend",
+    signal: "positive",
+    signalLabel: "Opening to win",
+    signalSummary: "Lower satisfaction creates room for an integrated workflow to stand out.",
+    context:
+      "The shift points to a competitive opening in the work surrounding the report, not just the report output itself.",
     finding:
       "Platform performance-reporting satisfaction fell from 7.8 in 2023 to 7.1 in 2025; third-party usage fell from 67.3% to 60.4%.",
+    implicationTitle: "Competitive read",
     implication:
-      "Strategic inference: platform responsibility is growing faster than the reported experience improves. Measure the remaining work.",
+      "The potential advantage is an integrated reporting workflow that removes the preparation and review burden users may still be solving outside the platform.",
     sources: ["kitces"],
   },
   {
-    title: "Wealthscape starts near or above its peer baseline",
+    title: "Wealthscape appears credible on ratings but under-penetrated in primary use.",
     value: "7.2 / 7.0 / 7.73",
+    metricLabel: "Kitces reporting / portal ratings and T3 custodial rating",
+    icon: "layers",
+    signal: "neutral",
+    signalLabel: "Evidence mixed",
+    signalSummary: "Ratings look credible, but public usage data does not prove the cause.",
+    context:
+      "The ratings suggest a plausible starting base; the low primary-use shares make the competitive read less certain.",
     finding:
       "Fidelity Institutional: reporting 7.2 versus platform group 7.1; portal 7.0 versus 7.0. T3 rates Wealthscape 7.73 versus custodial category 7.11. Primary reporting and portal shares are 1.2% and 0.6%.",
+    implicationTitle: "Competitive read",
     implication:
-      "Validate existing capabilities before proposing replacement. Low-share ratings have limited reliability; the surveys measure different categories.",
+      "This looks less like a broken-product signal and more like a discoverability, workflow-fit, or adoption uncertainty; the public data does not prove advantage or disadvantage on its own.",
     sources: ["kitces", "t3"],
   },
 ];
 export const reportingClientEvidence = [
   {
-    title: "Measure reporting effort directly",
+    title: "Advisor time is split across client work, preparation, and operations.",
     value: "41.4 hours",
+    metricLabel: "illustrative senior-advisor workweek",
+    icon: "clock",
+    signal: "neutral",
+    signalLabel: "Context only",
+    signalSummary: "Useful workload frame, but not a direct reporting-time measure.",
+    context:
+      "The source describes a weekly time-allocation mix, not a measured reporting workload.",
     finding:
-      "Kitces 2022 uses a senior-advisor week split roughly 30% front office, 40% middle office and 30% back office. High-productivity advisors spend more time in the front office (39% versus 29%).",
+      "Kitces 2022 models a senior-advisor week at roughly 30% front office, 40% middle office and 30% back office. High-productivity advisors spend more time in the front office (39% versus 29%).",
     implication:
-      "This historical allocation does not isolate report-preparation hours or establish a causal productivity benefit.",
+      "Use this only to frame the customer context. The pilot still needs a direct baseline for report preparation time, review loops and rework.",
     sources: ["planning"],
   },
   {
-    title: "Standard workflows are an operating signal",
+    title: "Service work consumes measurable capacity before advice reaches the client.",
     value: "15 vs 11 hours",
+    metricLabel: "annual operations hours per client",
+    icon: "route",
+    signal: "negative",
+    signalLabel: "Friction signal",
+    signalSummary: "Operations burden is a likely pain point, but reporting's share must be measured.",
+    context:
+      "Operations burden shapes the advisor experience, even when the study does not isolate report preparation.",
     finding:
       "Schwab 2024: median annual operations hours per client are 15; top-performing firms report 11. Standardized workflows for most tasks grew from 26% to 51% overall (2020–2024), reaching 63% among top performers.",
     implication:
-      "Test blocker handling and ownership; no public source here isolates time spent preparing reports.",
+      "Measure whether reporting blockers, ownership gaps and rework are part of that operations burden before claiming savings.",
     sources: ["schwabStudy"],
   },
   {
-    title: "Delivery format deserves measurement",
+    title: "Clients increasingly expect digital delivery that is easy to act on.",
     value: "71% / 92%",
+    metricLabel: "electronic receipt / automatic delivery preference",
+    icon: "file",
+    signal: "positive",
+    signalLabel: "Demand tailwind",
+    signalSummary: "Digital delivery expectations support a clearer client-reporting path.",
+    context:
+      "The customer context is delivery convenience and follow-through, not report-generation efficiency.",
     finding:
       "Broadridge/Forrester reports 71% receive statements electronically and 92% want automatic delivery. Modern-format click-through was 17% versus 4% for legacy across 17.9 million statements.",
     implication:
-      "Vendor-commissioned evidence supports testing usable delivery. Statement click-through is not a performance-report open-rate target.",
+      "Test whether report delivery, notification and follow-up are understandable and usable for the selected client segment.",
     sources: ["broadridge"],
   },
   {
-    title: "Preserve channel choice",
+    title: "Clients still want control over how sensitive financial documents arrive.",
     value: "87.7% / 36.2%",
+    metricLabel: "format choice / paper preference for sensitive documents",
+    icon: "columns",
+    signal: "neutral",
+    signalLabel: "Channel nuance",
+    signalSummary: "Digital is not enough; client preference and sensitivity still matter.",
+    context:
+      "The source points to channel preference and trust, not a single digital-only answer.",
     finding:
       "SEC Investor Advocate research: 87.7% want format choice; 36.2% prefer paper for documents containing personal financial information.",
     implication:
-      "Design consistent reports across permitted channels and retain the client’s delivery preference.",
+      "Carry the same approved report, disclosures and delivery status across permitted channels, with client preference retained.",
     sources: ["secDelivery"],
   },
   {
-    title: "Clients expect a complete relationship view",
+    title: "Clients want reports to reflect the full relationship, not one account sleeve.",
     value: "86% vs 40%",
+    metricLabel: "expect total-wealth view / say advisor provides it",
+    icon: "layers",
+    signal: "positive",
+    signalLabel: "Clear opportunity",
+    signalSummary: "The gap points to value in relationship-level reporting context.",
+    context:
+      "The customer gap is incomplete relationship context when the report or portal only shows part of the household.",
     finding:
       "Advisor360°/Coleman Parkes: 86% expect a total-wealth view, 40% say their advisor provides it, and 74% check the portal weekly.",
     implication:
-      "Test one permissioned household view. Vendor-commissioned, 2023 sample; no Wealthscape-specific gap was measured.",
+      "Validate one permissioned household reporting view and document which products, accounts and external assets are excluded.",
     sources: ["advisor360"],
   },
   {
-    title: "Communication matters to stated loyalty",
+    title: "Clients say communication quality influences loyalty and referrals.",
     value: "88% / 89%",
+    metricLabel: "stated retention / referral impact",
+    icon: "lightbulb",
+    signal: "neutral",
+    signalLabel: "Promising, unproven",
+    signalSummary: "The sentiment is strong, but retention lift still needs direct measurement.",
+    context:
+      "The source captures stated preference for communication, not observed retention lift from reporting changes.",
     finding:
       "YCharts 2024: clients with $500K+ say more frequent or personalized communication would affect staying (88%) and referring (89%).",
     implication:
-      "Interested-party stated preferences support testing relevance and follow-up; they do not prove retention lift.",
+      "Use reporting modernization to test clearer explanations and follow-up moments; do not present retention lift until measured.",
     sources: ["ycharts"],
   },
 ];
