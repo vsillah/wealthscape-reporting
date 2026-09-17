@@ -493,6 +493,16 @@
   font-size: 11px;
   color: #5b4fbe;
 }
+.am-workspace .mo-method-boundary {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border-left: 3px solid #0b5d2e;
+  border-radius: 0 8px 8px 0;
+  background: #f5faf7;
+  color: #435865;
+  font-size: 12px;
+  line-height: 1.6;
+}
 .am-workspace .mo-route-note {
   font-size: 12px;
   border-left: 2px solid #8a9b91;
@@ -1850,6 +1860,42 @@
 .mr-validation-gap p {
   margin: 0;
   color: #4d6070;
+  font-size: 13px;
+  line-height: 1.65;
+}
+.mr-method-note {
+  display: grid;
+  gap: 9px;
+  margin: 0 0 18px;
+  padding: 16px 18px;
+  border: 1px solid #cfe1d8;
+  border-left: 4px solid #0b5d2e;
+  border-radius: 12px;
+  background: #f5faf7;
+}
+.mr-method-note > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mr-method-note strong {
+  color: #0b5d2e;
+  font-size: 12px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+.mr-method-note span {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #e6f2ec;
+  color: #244a36;
+  font-size: 11px;
+  font-weight: 800;
+}
+.mr-method-note p {
+  margin: 0;
+  color: #475b68;
   font-size: 13px;
   line-height: 1.65;
 }

@@ -1,17 +1,24 @@
 import { useState } from "react";
-import { ArrowUpRight, ChevronDown, ClipboardCheck, Compass, Flag } from "lucide-react";
+import {
+  ArrowUpRight,
+  ChevronDown,
+  ClipboardCheck,
+  Compass,
+  Flag,
+  Layers3,
+} from "lucide-react";
 import "./StrategyExecutiveSummary.css";
 
 const summaries = {
   maintenance: {
     conclusion: "Fund a shared validation-and-exception pilot before expanding account-maintenance automation.",
-    rationale: "The research does not point to one missing screen. It points to repeated servicing failures around incomplete requests, authority, ownership, review evidence and completion proof. Market and competitor sources make the case for better servicing quality, while the outcome synthesis explains where the work breaks. Start with a bounded pilot that proves fewer rejected requests and clearer ownership before extending automation across household authority.",
+    rationale: "The research does not point to one missing screen. It points to repeated servicing failures around incomplete requests, authority, ownership, review evidence and completion proof. Market and competitor sources make the case for better servicing quality, while the outcome synthesis frames candidate outcomes that still need formal ODI validation. Start with a bounded pilot that proves fewer rejected requests and clearer ownership before extending automation across household authority.",
     findings: {
       1: ["Market research says servicing quality matters, but it does not isolate account maintenance.", "T3 and Kitces point to platform satisfaction, integration and repeated handling as competitive context. They justify a servicing-quality hypothesis, not a maintenance-specific ROI claim; internal volume, failure and cost baselines still need to size the investment."],
       2: ["Competitor evidence shows guided maintenance exists, but not that complex changes finish end to end.", "Schwab and Altruist public references show adjacent digital workflows, beneficiary updates, notifications and records. They do not prove household authority, third-party POA, rejected work, evidence retention or cross-team recovery work across every account state."],
       3: ["Customer research surfaces authority, waiting and confirmation friction, but the operating personas remain unvalidated.", "Forum themes and advisor-survey synthesis reveal where the work can hurt: missing authority, unclear status and uncertain completion. The study still needs service-associate and reviewer interviews before translating those themes into requirements."],
-      4: ["The outcome map concentrates opportunity around incomplete requests and exception recovery.", "The highest-value outcomes cluster around establishing scope, collecting requirements, resolving rejected work and proving completion. That points to a shared validation layer before broad self-service or household-level automation."],
-      5: ["The maintenance job breaks at handoffs between request, authority, review and confirmation.", "The job map shows the requested change is not complete when a form is submitted. Each transition needs a named owner, visible missing evidence and proof that the account scope was changed correctly."],
+      4: ["Candidate outcomes concentrate opportunity around incomplete requests and exception recovery.", "The highest-value directional outcomes cluster around establishing scope, collecting requirements, resolving rejected work and proving completion. A formal ODI survey should test importance and satisfaction, then use factor and cluster analysis to confirm segments before these scores become investment evidence."],
+      5: ["The maintenance job structure should stay stable while solutions change.", "The job map treats the requested change as the stable unit of progress: define the change, locate account scope, prepare requirements, confirm authority, execute, monitor, modify and conclude. Each transition needs a named owner, visible missing evidence and proof that the account scope changed correctly."],
       0: ["The cross-section finding is dependency sequencing: validate the request first, then expand authority.", "Household authority scores high, but multi-account changes amplify the same missing-information and exception problems. Shared request checks, recovery paths and completion evidence are the prerequisite to scaling account-change automation."],
       7: ["The recommendation is a measured pilot, not a blanket rebuild of account maintenance.", "Start with one bounded maintenance function and compare first-pass completion, rework, exception aging and resolution quality against a baseline before expanding authority, servicing scope or automation depth."],
       8: ["The sourcing decision depends on reusable services and internal economics, not vendor feature parity alone.", "Inventory identity, authority, validation, audit and retention services before choosing build, partner or acquire. Public research can frame the options; Fidelity’s tech debt, operating ownership, support burden and integration cost determine the decision."],
@@ -20,9 +27,11 @@ const summaries = {
       ["Demand and servicing model", "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. Fidelity’s organizational complexity and handoffs may change the priority order."],
       ["Systems, data and economics", "Confirm technology debt, account and party data constraints, authority records, reusable services, support burden and cost-to-integrate. Current evidence does not establish delivery effort or return on investment."],
       ["Controls and accountability", "Validate the compliance process and security architecture for permissions, authority, review and evidence retention. Name operating ownership for exceptions, support and policy changes."],
+      ["ODI research validity", "Treat current scores as directional synthesis, not validated ODI measurement. Run a formal desired-outcome survey, then apply factor and cluster analysis to reveal needs-based segments before final prioritization."],
     ],
     steps: [
       ["Establish an internal baseline", "Observe service associates, advisors and home-office reviewers. Measure assisted volume, incomplete submissions, rework and time to resolution by request type."],
+      ["Run ODI validation research", "Translate the candidate outcomes into stable, solution-neutral desired-outcome statements. Survey importance and satisfaction, then analyze segments before locking the opportunity map."],
       ["Assess the servicing architecture", "Map account identity, authority, validators and audit services with engineering and data owners. Compare reuse, build and partner costs against actual constraints."],
       ["Scope one accountable pilot", "Choose a bounded maintenance request and servicing population. Agree on operational ownership, escalation, compliance review and security requirements before connecting systems."],
       ["Make the scale decision", "Set success and stop thresholds against the baseline. At the proposed ninety-day gate, review completion quality, support burden and cost before extending to household authority."],
@@ -56,6 +65,45 @@ const summaries = {
       ["Gate production and expansion", "Agree on success and stop thresholds before the pilot. Require reliable data, review evidence, controlled delivery and acceptable operating cost before broader funding."],
     ],
   },
+};
+
+const methodologyBoundaries = {
+  maintenance: [
+    [
+      "Stable job structure",
+      "Use the account-change job as the stable frame over time: define, locate, prepare, confirm, execute, monitor, modify and conclude. Interfaces and vendors can change without changing the core job.",
+    ],
+    [
+      "Directional outcomes only",
+      "Current outcome scores are synthesis estimates from secondary research and executive-study inputs. They should guide discovery, not stand in for a statistically valid ODI opportunity score.",
+    ],
+    [
+      "Survey and segmentation next",
+      "A formal ODI survey should measure importance and satisfaction for each desired outcome, then use factor and cluster analysis to identify needs-based segments and real priority order.",
+    ],
+    [
+      "Quadrant strategy",
+      "Underserved outcomes are candidates for investment, table-stakes outcomes must be maintained, overserved outcomes can be simplified or deprioritized, and low-importance gaps should usually be ignored.",
+    ],
+  ],
+  reporting: [
+    [
+      "Stable job structure",
+      "Use the reporting job as the stable frame over time: define, locate, prepare, confirm, execute, monitor, modify and conclude. Report formats can change without changing the underlying job.",
+    ],
+    [
+      "Directional outcomes only",
+      "Reporting scores are retained synthesis estimates. They frame discovery and prototype coverage, but they are not a statistically validated ODI survey result.",
+    ],
+    [
+      "Survey and segmentation next",
+      "A formal ODI survey should measure importance and satisfaction, then apply factor and cluster analysis before segment-specific funding decisions.",
+    ],
+    [
+      "Quadrant strategy",
+      "Use underserved, table-stakes, overserved and lower-priority zones as strategy prompts, not proof. The next research step decides which zone each outcome truly occupies.",
+    ],
+  ],
 };
 
 export function StrategySectionFinding({ track, sectionId }) {
@@ -115,6 +163,23 @@ export default function StrategyExecutiveSummary({ track, sections, onJump }) {
         <h3>{summary.conclusion}</h3>
         <p>{summary.rationale}</p>
       </div>
+      <section className="strategy-methodology" aria-labelledby={`${track}-method-heading`}>
+        <div className="strategy-methodology-heading">
+          <Layers3 size={18} aria-hidden="true" />
+          <div>
+            <span className="am-eyebrow">ODI / JTBD method boundary</span>
+            <h3 id={`${track}-method-heading`}>Use the method as a research frame; validate the scores before scaling.</h3>
+          </div>
+        </div>
+        <dl>
+          {methodologyBoundaries[track].map(([title, text]) => (
+            <div key={title}>
+              <dt>{title}</dt>
+              <dd>{text}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
       <h3 className="strategy-executive-label">Findings by section</h3>
       <div className="strategy-executive-findings">
         {sections.map((section, index) => (

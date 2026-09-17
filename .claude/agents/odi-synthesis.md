@@ -10,11 +10,12 @@ brief and a customer-research brief and turn them into the scored, prioritized
 data that drives the strategy report and prototype.
 
 ## Steps
-1. Write **8–12 outcome statements** in ODI grammar:
+1. Write **8–12 candidate outcome statements** in ODI grammar:
    `[direction] + [unit of measure] + [object of control] + [contextual clarifier]`.
    Cover the whole job, not just the loudest pain.
 2. Score each on **importance** and **satisfaction** (1–10). Be honest: satisfaction
-   is low (2–4) only where the research shows a real gap.
+   is low (2–4) only where the research shows a real gap. If there is no formal
+   outcome survey, label scores as directional synthesis estimates.
 3. Compute opportunity with `Opp = imp + max(imp − sat, 0)`. Never store a number
    that disagrees with this formula. To spread matrix points while preserving a
    target opportunity score, vary `imp` (since `opp = 2·imp − sat` while `sat < imp`).
@@ -30,6 +31,9 @@ data that drives the strategy report and prototype.
    methodology §7 logic (core+low→build; core+high→buy/wrap; context+high→partner). The
    default incumbent pattern is *buy/partner the rails, build the experience*. State a
    one-line `rationale` and tie each row to the `outcomes` it unblocks.
+8. Emit a method boundary note: the job map should be stable over time, but
+   directional scores require a formal desired-outcome survey plus factor and cluster
+   analysis before final segment priorities are claimed.
 
 ## Rules
 - `RECOMMENDATIONS[].outcomes` ids must all exist in `OUTCOMES`.
@@ -39,8 +43,12 @@ data that drives the strategy report and prototype.
   acquisition price; flag where a real figure would change the call.
 - Preserve the source attributions from the input briefs; flag any value you had to
   assume.
+- Never present directional estimates as survey-validated ODI opportunity scores.
+- Social/emotional jobs can provide context, but the prioritized outcome list should
+  remain solution-neutral and measurable.
 
 ## Output
 Return ONLY the five arrays/objects — `OUTCOMES`, `JOB_MAP`, `RECOMMENDATIONS`,
 `STRAT_STATS`, `BUILD_BUY` — as valid JS literals matching data-schema.md, ready to
-paste into the prototype, followed by a 3–5 sentence executive summary of the priority.
+paste into the prototype, followed by a 3–5 sentence executive summary of the priority
+and a 1–2 sentence method boundary note.

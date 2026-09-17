@@ -513,7 +513,9 @@ export default function MaintenanceResearch({
                 <p className="mr-lead">
                   The current evidence describes the advisor-facing servicing
                   problem. The client service and reviewer roles are still the
-                  research gap.
+                  research gap. Treat the functional, social, and emotional
+                  needs here as context for discovery, not as substitutes for
+                  solution-neutral desired outcome statements.
                 </p>
                 <div className="mr-customer-context">
                   <article className="mr-customer-persona">
@@ -594,22 +596,39 @@ export default function MaintenanceResearch({
                 <Evidence slide="3–5, 7–10, 27–30" links={["kitces", "t3"]}>
                   Source project: Claude Desktop · Wealthscape Market Research.
                   Emotional and financial jobs are derived interpretations, not
-                  interview findings.
+                  interview findings. A formal ODI study should convert these
+                  themes into desired-outcome statements that can be surveyed.
                 </Evidence>
               </>
             )}
             {section === 4 && (
               <>
+                <div className="mr-method-note">
+                  <div>
+                    <strong>Method alignment</strong>
+                    <span>Directional synthesis now · ODI validation next</span>
+                  </div>
+                  <p>
+                    The map below uses stable job language and the ODI
+                    opportunity logic as a planning frame. It is not yet a
+                    statistically valid outcome study. The next research step is
+                    to survey importance and satisfaction, then use factor and
+                    cluster analysis to identify needs-based segments and
+                    confirm which outcomes are truly underserved, table stakes,
+                    overserved, or lower priority.
+                  </p>
+                </div>
                 <MaintenanceOutcomes
                   profile={profile}
                   cases={cases}
                   onNavigate={onNavigate}
                 />
                 <Evidence slide="18, 25, 28" links={["kitces", "t3"]}>
-                  Study methodology: opportunity = importance + max(importance −
-                  satisfaction, 0), using the revised study inputs. Its
-                  published scores are retained; the Frames coordinates are not
-                  recomputed.
+                  Directional scoring uses the ODI opportunity calculation:
+                  opportunity = importance + max(importance − satisfaction, 0),
+                  using the revised study inputs. Its published scores are
+                  retained; the Frames coordinates are not recomputed. These
+                  values should seed a formal survey, not replace one.
                 </Evidence>
               </>
             )}
@@ -635,7 +654,8 @@ export default function MaintenanceResearch({
                   This is a derived job sequence and assessed journey, not a
                   completed ODI job map or needs-based segmentation study. The
                   curve below illustrates friction; it does not measure
-                  confidence.
+                  confidence. The account-change job should remain stable while
+                  research tests which outcomes are most underserved by segment.
                 </Evidence>
               </>
             )}

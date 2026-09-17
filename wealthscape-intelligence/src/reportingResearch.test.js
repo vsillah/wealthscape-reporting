@@ -222,8 +222,33 @@ test("maintenance executive findings connect research evidence to recommendation
   );
   assert.deepEqual(findingIds, sectionIds);
   assert.match(findingsBlock[1], /servicing quality matters/);
-  assert.match(findingsBlock[1], /outcome map concentrates opportunity/);
+  assert.match(findingsBlock[1], /Candidate outcomes concentrate opportunity/);
   assert.match(findingsBlock[1], /measured pilot/);
+});
+test("maintenance strategy labels ODI outputs as directional until survey validation", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const outcomesSource = readFileSync(
+    join(srcDir, "MaintenanceOutcomes.jsx"),
+    "utf8",
+  );
+  const summarySource = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.jsx"),
+    "utf8",
+  );
+  assert.match(summarySource, /ODI \/ JTBD method boundary/);
+  assert.match(summarySource, /Stable job structure/);
+  assert.match(summarySource, /Survey and segmentation next/);
+  assert.match(summarySource, /factor and cluster analysis/);
+  assert.match(summarySource, /Quadrant strategy/);
+  assert.match(maintenanceSource, /Directional synthesis now/);
+  assert.match(maintenanceSource, /not yet a\s+statistically valid outcome study/);
+  assert.match(outcomesSource, /candidate outcome inputs/);
+  assert.match(outcomesSource, /not survey-validated ODI results/);
+  assert.match(outcomesSource, /factor\s+and\s+cluster analysis/);
+  assert.match(outcomesSource, /Opportunity quadrant/);
 });
 test("maintenance capability comparison leads with the integrated map and selected-platform validation", () => {
   const maintenanceSource = readFileSync(
