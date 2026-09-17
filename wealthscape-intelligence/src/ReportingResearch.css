@@ -1839,6 +1839,34 @@
   border-left: 3px solid #8a9b91;
   padding-left: 12px;
 }
+.rr-outcome-prototype-link {
+  background: #f4f8f5;
+  border: 1px solid #c9d9cf;
+  border-radius: 12px;
+  margin: 12px 0;
+  padding: 12px 14px;
+}
+.rr-outcome-prototype-link span {
+  color: #246244;
+  display: block;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+.rr-outcome-prototype-link strong {
+  color: #102133;
+  display: block;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.rr-outcome-prototype-link p {
+  color: #526274;
+  font-size: 12px;
+  line-height: 1.45;
+  margin: 5px 0 0;
+}
 
 .rr-research .rr-secondary-action {
   background: transparent;

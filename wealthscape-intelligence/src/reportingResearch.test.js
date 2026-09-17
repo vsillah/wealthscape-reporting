@@ -338,6 +338,20 @@ test("reporting outcomes carry parity fields for map detail inspection", () => {
     );
   }
 });
+test("reporting outcome links carry selected outcome context into the prototype", () => {
+  const researchSource = readFileSync(join(srcDir, "ReportingResearch.jsx"), "utf8");
+  const prototypeSource = readFileSync(
+    join(srcDir, "WealthscapePrototype.jsx"),
+    "utf8",
+  );
+  assert.match(researchSource, /strategyOutcomeId:\s*selected\.id/);
+  assert.match(
+    researchSource,
+    /Open \{outcomePrototypeSurface\[selected\.tab\]\} for[\s\S]*\{selected\.id\}/,
+  );
+  assert.match(prototypeSource, /Strategy outcome link/);
+  assert.match(prototypeSource, /deepLink\?\.strategyOutcomeId/);
+});
 test("all reporting phases carry a complete handoff and stay independent of maintenance routes", () => {
   assert.equal(reportingJourney.length, 8);
   for (const phase of reportingJourney) {

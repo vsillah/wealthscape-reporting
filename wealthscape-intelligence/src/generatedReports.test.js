@@ -79,10 +79,16 @@ test("report template and selected profile survive route serialization", () => {
     for (const template of Object.keys(generatedReports)) {
       for (const tab of ["build", "generate", "customize"]) {
         const context = reportContext(profileId, template, tab);
-        const query = new URLSearchParams(href("reports", context).slice(1));
+        const query = new URLSearchParams(
+          href("reports", {
+            ...context,
+            strategyOutcomeId: "R1",
+          }).slice(1),
+        );
         assert.equal(query.get("profileId"), profileId);
         assert.equal(query.get("reportTemplate"), template);
         assert.equal(query.get("reportTab"), tab);
+        assert.equal(query.get("strategyOutcomeId"), "R1");
       }
     }
   }

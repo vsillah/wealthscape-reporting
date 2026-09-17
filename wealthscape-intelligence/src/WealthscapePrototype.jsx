@@ -649,13 +649,28 @@ function MetricCard({ label, value, delta, up, sub, accent }) {
 }
 
 function WorkflowContextBanner({ deepLink, profile }) {
-  if (profile?.id === DEFAULT_PROFILE_ID || (!deepLink?.dashboardFocus && !deepLink?.workflowContext)) return null;
+  const outcome = reportingOutcomes.find((item) => item.id === deepLink?.strategyOutcomeId);
+  if (
+    !outcome &&
+    (profile?.id === DEFAULT_PROFILE_ID ||
+      (!deepLink?.dashboardFocus && !deepLink?.workflowContext))
+  )
+    return null;
+  const label = outcome
+    ? `Strategy outcome ${outcome.id} · ${outcome.text}`
+    : deepLink.dashboardFocus || deepLink.workflowContext || "Opened from the profile dashboard";
+  const context = outcome
+    ? `${outcome.jobMap} Prototype surface: Report Builder ${outcome.tab}.`
+    : deepLink.dashboardFocus || deepLink.workflowContext || "Opened from the profile dashboard";
   return (
     <div style={{ background:T.indigoLt, border:`1px solid ${T.indigo}35`, borderRadius:12, padding:"12px 15px", display:"flex", gap:11, alignItems:"center", flexWrap:"wrap" }}>
       <Target size={15} color={T.indigo}/>
       <div style={{ flex:1, minWidth:180 }}>
-        <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>Workflow focus</div>
-        <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45 }}>{deepLink.dashboardFocus || deepLink.workflowContext || "Opened from the profile dashboard"}</div>
+        <div style={{ fontSize:12.5, fontWeight:850, color:T.gray900 }}>
+          {outcome ? "Strategy outcome link" : "Workflow focus"}
+        </div>
+        <div style={{ fontSize:12, fontWeight:800, color:T.gray900, lineHeight:1.35 }}>{label}</div>
+        <div style={{ fontSize:12, color:T.gray600, lineHeight:1.45, marginTop:2 }}>{context}</div>
       </div>
     </div>
   );

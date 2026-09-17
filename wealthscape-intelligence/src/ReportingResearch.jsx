@@ -96,6 +96,11 @@ const outcomeBasisLabels = {
   derived: "Derived",
   inferred: "Inferred",
 };
+const outcomePrototypeSurface = {
+  build: "Report Builder · Build",
+  generate: "Report Builder · Generate",
+  customize: "Report Builder · Customize",
+};
 
 function Source({ source = "packet" }) {
   const item = reportingSources[source];
@@ -865,6 +870,17 @@ export default function ReportingResearch({ profile, onNavigate }) {
                       <p>{selected.ux}</p>
                       <h4>Implemented demo coverage</h4>
                       <p>{selected.coverage}</p>
+                      <div className="rr-outcome-prototype-link">
+                        <span>Prototype connection</span>
+                        <strong>
+                          {outcomePrototypeSurface[selected.tab]} traces{" "}
+                          {selected.id}
+                        </strong>
+                        <p>
+                          Open the working surface with this outcome carried
+                          forward as the strategy context.
+                        </p>
+                      </div>
                       <div className="rr-source-links">
                         {selected.sources.map((source) => (
                           <Source key={source} source={source} />
@@ -876,9 +892,11 @@ export default function ReportingResearch({ profile, onNavigate }) {
                         sub={{
                           reportTab: selected.tab,
                           profileId: profile.id,
+                          strategyOutcomeId: selected.id,
                         }}
                       >
-                        Inspect reporting {selected.tab}
+                        Open {outcomePrototypeSurface[selected.tab]} for{" "}
+                        {selected.id}
                       </Action>
                       <button
                         className="rr-action rr-secondary-action"

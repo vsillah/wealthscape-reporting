@@ -381,6 +381,7 @@ export function maintenanceHref(layer, sub = {}) {
     "reportTemplate",
     "portalTab",
     "recommendationFocus",
+    "strategyOutcomeId",
     "strategyTrack",
     "caseId",
     "panel",
