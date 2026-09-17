@@ -1,6 +1,61 @@
 import CompetitorBrandLabel from "./CompetitorBrandLabel";
 import { useId, useRef, useState } from "react";
+import { ClipboardCheck, HelpCircle, ShieldCheck } from "lucide-react";
 import { maintenanceCompetitors, competitorSurvey, competitorX, competitorY, COMPETITOR_CHART } from "./maintenanceCompetitors.js";
+
+const competitorValidationCards = {
+  Schwab: [
+    {
+      icon: ShieldCheck,
+      title: "Shared validation and firm authority",
+      reference:
+        "Schwab documents prefilled digital workflows and firm LPOA-IA updates across up to 20 accounts.",
+      validation:
+        "Confirm whether comparable validation exists for existing-account changes, third-party POA, rejected work, and household exceptions.",
+      implication:
+        "Use Schwab as a teardown target for the complete authority job, not as proof that every authority workflow is solved.",
+    },
+  ],
+  Altruist: [
+    {
+      icon: ClipboardCheck,
+      title: "Beneficiary updates and activity evidence",
+      reference:
+        "Altruist documents post-opening beneficiary edits, native agreement signatures, account-activity notifications, and agreement storage.",
+      validation:
+        "Test the exception path: signing prerequisites, entity beneficiaries, client approval, visibility to staff, and retained evidence.",
+      implication:
+        "Compare the complete maintenance job, including exceptions and completion proof, rather than the presence of a digital form alone.",
+    },
+  ],
+  Wealthscape: [
+    {
+      icon: ClipboardCheck,
+      title: "Service-center status and request history",
+      reference:
+        "Fidelity documents actionable service queues, saved searches, status alerts, request histories, and entitlement-dependent visibility.",
+      validation:
+        "Confirm whether the next owner, missing evidence, NIGO reason, and completion record are visible across custody and clearing workflows.",
+      implication:
+        "The public help material makes Wealthscape a candidate for reuse validation; it does not yet prove the full maintenance job is coherent.",
+    },
+  ],
+};
+
+function selectedValidationCards(rival) {
+  return (
+    competitorValidationCards[rival.name] || [
+      {
+        icon: HelpCircle,
+        title: `${rival.name} adjacent maintenance signal`,
+        reference: rival.strength,
+        validation: rival.question,
+        implication:
+          "Treat this as adjacent public evidence only. Validate the exact maintenance workflow before using it as a parity claim or a gap claim.",
+      },
+    ]
+  );
+}
 
 export default function MaintenanceCompetitorMap() {
   const [selected, setSelected] = useState(3);
@@ -69,6 +124,31 @@ export default function MaintenanceCompetitorMap() {
 
         </article>
       </div>
+    </div>
+    <div className="mr-comparison mc-selected-validation" aria-label={`${rival.name} maintenance evidence and validation questions`}>
+      {selectedValidationCards(rival).map(({ icon: Icon, title, reference, validation, implication }) => (
+        <article key={title}>
+          <h3>
+            <Icon size={18} aria-hidden="true" />
+            {title}
+          </h3>
+          <div>
+            <small>Documented reference</small>
+            <p>{reference}</p>
+            <a href={rival.source.url} target="_blank" rel="noreferrer">
+              {rival.source.title} ↗
+            </a>
+          </div>
+          <div>
+            <small>Wealthscape · validation needed</small>
+            <p>{validation}</p>
+          </div>
+          <div>
+            <small>Strategic implication</small>
+            <p>{implication}</p>
+          </div>
+        </article>
+      ))}
     </div>
     <div className="mc-competitor-source-strip" role="region" aria-label={`${rival.name} and survey sources`}>
       <ul className="mc-competitor-sources">{[rival.source,competitorSurvey].map(source=><li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title} ↗</a><span>{source.type} · {source.date}</span></li>)}</ul>

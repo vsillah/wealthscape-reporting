@@ -487,6 +487,7 @@ export default function MaintenanceResearch({
             )}
             {section === 2 && (
               <>
+                <LifecycleResearch embedded view="positioning" />
                 <p className="mr-lead">
                   Separate a documented feature from proof that the whole
                   maintenance job is solved.
@@ -504,85 +505,11 @@ export default function MaintenanceResearch({
                   ]}
                 />
                 <Evidence slide="15, 17, 25, 27" links={["schwab", "t3"]}>
-                  The interactive positioning map below retains the earlier
+                  The interactive positioning map above retains the earlier
                   Frames snapshot. Its capability axis is an assessment, not a
                   survey measure. Revalidate scope before using it in a
                   procurement or competitive claim.
                 </Evidence>
-                <div
-                  className="mr-comparison"
-                  aria-label="Maintenance capability references and validation questions"
-                >
-                  {[
-                    [
-                      "Shared validation",
-                      "Schwab describes prefill and guided digital workflows; this is vendor-published process evidence.",
-                      "Confirm how much existing validation is reusable across maintenance functions; internal coverage is unknown.",
-                      "Start with a common submission contract and measure rejection reasons.",
-                      "schwab",
-                    ],
-                    [
-                      "Firm authority / third-party POA",
-                      "Schwab’s February 2026 update covers firm LPOA-IA across up to 20 accounts. It does not prove third-party POA coverage.",
-                      "Map each authority type, account restriction, and recovery path with operations and compliance.",
-                      "Keep policy differences explicit before extending an action across a household.",
-                      "schwab",
-                    ],
-                    [
-                      "Self-service beneficiary updates",
-                      "Altruist’s April 2024 release documents post-opening beneficiary designation changes in its client portal and app.",
-                      "Test comparable existing-account edits, exceptions, and client approval requirements. No absence claim is established.",
-                      "Compare the complete job, including exceptions, rather than just a digital form.",
-                      "altruist",
-                    ],
-                    [
-                      "Status and retained evidence",
-                      "Altruist describes account-activity notifications and agreement storage; FINRA 3110 supplies supervisory context.",
-                      "Confirm which statuses, owners, and review records are visible across custody and clearing workflows.",
-                      "Make the next owner and completion evidence retrievable at every handoff.",
-                      "altruist",
-                    ],
-                  ].map(
-                    (
-                      [capability, reference, gap, implication, source],
-                      index,
-                    ) => {
-                      const CapabilityIcon = [
-                        ClipboardCheck,
-                        ShieldCheck,
-                        Users,
-                        Database,
-                      ][index];
-                      return (
-                        <article key={capability}>
-                          <h3>
-                            <CapabilityIcon size={18} aria-hidden="true" />
-                            {capability}
-                          </h3>
-                          <div>
-                            <small>Documented reference</small>
-                            <p>{reference}</p>
-                            <a
-                              href={sources[source][1]}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {sources[source][0]} ↗
-                            </a>
-                          </div>
-                          <div>
-                            <small>Wealthscape · validation needed</small>
-                            <p>{gap}</p>
-                          </div>
-                          <div>
-                            <small>Strategic implication</small>
-                            <p>{implication}</p>
-                          </div>
-                        </article>
-                      );
-                    },
-                  )}
-                </div>
               </>
             )}
             {section === 3 && (
@@ -847,7 +774,6 @@ export default function MaintenanceResearch({
                 </div>
               </>
             )}
-            {section === 2 && <LifecycleResearch embedded view="positioning" />}
             {section === 5 && <LifecycleResearch embedded view="journey" />}
           </section>
         );

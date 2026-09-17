@@ -225,6 +225,40 @@ test("maintenance executive findings connect research evidence to recommendation
   assert.match(findingsBlock[1], /outcome map concentrates opportunity/);
   assert.match(findingsBlock[1], /measured pilot/);
 });
+test("maintenance capability comparison leads with the integrated map and selected-platform validation", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const competitorMapSource = readFileSync(
+    join(srcDir, "MaintenanceCompetitorMap.jsx"),
+    "utf8",
+  );
+  const mapIndex = maintenanceSource.indexOf(
+    '<LifecycleResearch embedded view="positioning" />',
+  );
+  const takeawayIndex = maintenanceSource.indexOf(
+    "Separate a documented feature from proof that the whole",
+  );
+  assert.ok(mapIndex > -1, "capability section renders the integrated map");
+  assert.ok(takeawayIndex > -1, "capability section keeps the research takeaway");
+  assert.ok(
+    mapIndex < takeawayIndex,
+    "the integrated map appears before narrative takeaway cards",
+  );
+  assert.equal(
+    maintenanceSource.includes(
+      "Maintenance capability references and validation questions",
+    ),
+    false,
+  );
+  assert.match(competitorMapSource, /selectedValidationCards\(rival\)/);
+  assert.match(
+    competitorMapSource,
+    /\$\{rival\.name\} maintenance evidence and validation questions/,
+  );
+  assert.match(competitorMapSource, /competitorValidationCards/);
+});
 test("Fidelity remains a public incumbent baseline with bounded reporting evidence", () => {
   const row = reportingComparison.find(
     (item) => item.name === "Fidelity (Wealthscape)",

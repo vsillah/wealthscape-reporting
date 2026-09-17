@@ -40,6 +40,8 @@ The reporting job-map milestone icons now anchor directly to the curve coordinat
 
 The Account Maintenance executive findings now read as research-backed takeaways instead of section labels. The leadership recommendation names a shared validation-and-exception pilot, and the section findings explain what the market, competitor, customer, outcome, job-map, recommendation and sourcing evidence implies before the reader opens each detailed section.
 
+The Account Maintenance capability-comparison section now starts with the integrated competitor positioning map instead of a static validation-card stack. Selecting a platform in the map, logo or dropdown updates a selected-platform validation card underneath the map, so Schwab, Altruist, Wealthscape and adjacent platforms each carry their own documented reference, validation question and strategic implication. The former generic full-width "Maintenance capability references and validation questions" block has been removed from the section.
+
 ## Score provenance
 
 Every rating is a management estimate, not a customer survey result. Nine pairs retain earlier local strategy ratings from `wealthscape-intelligence/src/WealthscapePrototype.jsx` at `6bbae9f`; the description is narrowed to reporting where needed:
@@ -101,6 +103,7 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - 16 September follow-up: actual human-QA walkthrough recorded at `http://127.0.0.1:5198/?qa=actual-humanqa-walkthrough#view=strategy&profileId=ria&strategyTrack=reporting` — the MP4 shows the exact route loading, executive finding expansion, jump into competitor research, competitor-map selection, evidence-tab interaction and job-map scroll. This supersedes still-frame MP4 captures for the human-QA handoff.
 - 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=jobmap-icons-on-line#view=strategy&profileId=ria&strategyTrack=reporting` — reporting job-map marker centers align with the curve coordinates with max measured delta 0.01px, no browser console errors, and phase clicks still update the selected state.
 - 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=maintenance-findings-brief#view=strategy&profileId=ria&strategyTrack=lifecycle` — account-maintenance executive findings include the revised market, customer, outcomes and recommendation takeaways; four drawers expanded; the detailed Outcomes section reuses the revised finding; no browser console errors or horizontal overflow at 1280px.
+- 16 September follow-up: in-app Browser QA at `http://127.0.0.1:5198/?qa=maintenance-capability-map-first#view=strategy&profileId=ria&strategyTrack=lifecycle` — account-maintenance capability comparison opens with the integrated competitor map; selecting Altruist, Wealthscape and Schwab updates the selected-platform validation card; the old static validation-card grid is absent; no browser console errors or horizontal overflow at 1280px.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 15 pass, 0 fail after adding the real-logo reporting capability map.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 15 pass, 0 fail after the reporting job-map visual parity update.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/reportingEvidence.test.js wealthscape-intelligence/src/reportingResearch.test.js` — 15 pass, 0 fail after removing static competitor-specific details from the default map state.
@@ -108,6 +111,8 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 48 pass, 0 fail after anchoring reporting job-map icons to the curve.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/reportingResearch.test.js` — 15 pass, 0 fail after revising account-maintenance executive findings.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 49 pass, 0 fail after revising account-maintenance executive findings.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/reportingResearch.test.js` — 16 pass, 0 fail after moving Account Maintenance capability comparison to map-first selected-platform validation.
+- 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 50 pass, 0 fail after moving Account Maintenance capability comparison to map-first selected-platform validation.
 - 16 September follow-up: `node --test wealthscape-intelligence/src/*.test.js` — 45 pass, 0 fail after adding the real-logo reporting capability map.
 - `git diff --check` — pass.
 - 16 September follow-up: `git diff --check` — pass.
@@ -128,6 +133,7 @@ The nine-vendor/four-capability explorer, evidence grid, reference cards, Fideli
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after removing static competitor-specific details from the default map state.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after anchoring reporting job-map icons to the curve.
 - 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after revising account-maintenance executive findings.
+- 16 September follow-up: `npm --prefix wealthscape-intelligence run build` — pass after rerunning with sandbox escalation for Vite's local `.vite-temp` write after Account Maintenance capability comparison map-first update.
 - Integrated Browser: `http://127.0.0.1:5182/#view=strategy&profileId=bd-home-office&strategyTrack=reporting`.
 - Integrated Browser: `http://127.0.0.1:5198/?qa=reporting-parity-local#view=strategy&profileId=ria&strategyTrack=reporting`.
 - Visual inspection at 1440×1000, 768×1024 and 390×844. Tablet/mobile document widths equal viewport widths. The map deliberately scrolls horizontally on small screens, with the region labelled accordingly.
@@ -213,6 +219,13 @@ Account-maintenance executive-findings evidence is in `/private/tmp/wealthscape-
 - `wealthscape-pr37-maintenance-findings-brief.mp4`
 - `maintenance-findings-summary.png`
 - `maintenance-outcomes-section-finding.png`
+- `browser-check.json`
+
+Account-maintenance capability-comparison map-first evidence is in `/private/tmp/wealthscape-pr37-maintenance-capability-map-first/`:
+
+- `wealthscape-pr37-maintenance-capability-map-first.mp4`
+- `01-map-first-default.png`
+- `02-selected-platform-validation.png`
 - `browser-check.json`
 
 Actual human-QA walkthrough evidence is in `/private/tmp/wealthscape-pr37-humanqa-walkthrough/`:
