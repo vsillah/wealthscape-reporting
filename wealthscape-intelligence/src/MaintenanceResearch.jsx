@@ -114,6 +114,7 @@ const recommendationMap = [
     score: "3.75",
     icon: GitBranch,
     outcomes: "1, 2, 3, 8, 9",
+    odiPosture: "Differentiated wedge",
     preferred: ["MC-101", "MC-102", "MC-104", "MC-103"],
     action: "Inspect validation workflow",
     panel: "evidence",
@@ -130,6 +131,7 @@ const recommendationMap = [
     score: "4.25",
     icon: Users,
     outcomes: "4, 5, 10, 11, 12, 15",
+    odiPosture: "Dominant-platform option to test",
     preferred: ["MC-101", "MC-104", "MC-106"],
     action: "Inspect household evidence",
     panel: "evidence",
@@ -146,6 +148,7 @@ const recommendationMap = [
     score: "3.10",
     icon: ShieldCheck,
     outcomes: "6, 13, 14",
+    odiPosture: "Selective differentiation",
     preferred: ["MC-103", "MC-106"],
     action: "Inspect review evidence",
     panel: "timeline",
@@ -162,6 +165,7 @@ const recommendationMap = [
     score: "2.90",
     icon: Database,
     outcomes: "7, 4, 8, 9",
+    odiPosture: "Targeted segment play",
     preferred: ["MC-104"],
     action: "Inspect conversion case",
     panel: "overview",
@@ -199,6 +203,9 @@ function RecommendationMap({ scoped, profile, onNavigate }) {
               </div>
               <span className="mr-outcome-ref">Outcomes {rec.outcomes}</span>
             </header>
+            <p className="mr-odi-posture">
+              <strong>ODI posture</strong> {rec.odiPosture}
+            </p>
             <p className="mr-ux">
               <strong>UX decision</strong> {rec.ux}
             </p>
@@ -507,10 +514,17 @@ export default function MaintenanceResearch({
               <>
                 <LifecycleResearch embedded view="positioning" />
                 <Evidence slide="15, 17, 25, 27" links={["schwab", "t3"]}>
-                  The interactive positioning map above retains the earlier
-                  Frames snapshot. Its capability axis is an assessment, not a
-                  survey measure. Revalidate scope before using it in a
-                  procurement or competitive claim.
+                  The interactive positioning map above retains the Account
+                  Maintenance Frames snapshot. X uses T3 2026 advisor
+                  satisfaction; Y uses assessed public maintenance capability.
+                  Scores are unchanged, documentation coverage is uneven, and
+                  the capability axis is an assessment, not a survey measure.
+                  Source assessment: Account Maintenance Frames D2; revised
+                  executive study, 18 Aug 2026, slides 15, 17 and 27. Public
+                  context checked 10 Sep 2026; no score refresh or primary
+                  interviews. Axos remains a qualitative reference, not an added
+                  chart point. Revalidate scope before using it in a procurement
+                  or competitive claim.
                 </Evidence>
               </>
             )}
@@ -606,11 +620,14 @@ export default function MaintenanceResearch({
                   snapshot and its midpoint of 3 on both axes; selected detail
                   scores retain the August 18 executive study, slide 18. Values
                   are directional synthesis inputs and are not recomputed; source
-                  tags separate sourced, derived, and inferred inputs. Survey
-                  importance and satisfaction, then use factor and cluster
-                  analysis to confirm needs-based segments and quadrant
-                  placement before treating the scores as ODI prioritization
-                  evidence.
+                  tags separate sourced, derived, and inferred inputs. The
+                  strategy read applies ODI opportunity logic, using importance
+                  plus unmet need, to these proxy scores and groups outcomes
+                  into proto-segments. A formal ODI
+                  study should survey importance and satisfaction, then use
+                  factor and cluster analysis to confirm needs-based segments,
+                  quadrant placement, and whether the strategy should be
+                  differentiated, dominant, disruptive, or narrowly targeted.
                 </Evidence>
               </>
             )}
@@ -632,12 +649,16 @@ export default function MaintenanceResearch({
                     ],
                   ]}
                 />
+                <LifecycleResearch embedded view="journey" />
                 <Evidence slide="6–10, 27">
                   This is a derived job sequence and assessed journey, not a
-                  completed ODI job map or needs-based segmentation study. The
-                  curve below illustrates friction; it does not measure
-                  confidence. The account-change job should remain stable while
-                  research tests which outcomes are most underserved by segment.
+                  completed ODI job map or needs-based segmentation study.
+                  Executive deck slides 6 and 10 provide directional forum
+                  evidence. Curve height and progress symbols are illustrative,
+                  not measured satisfaction, reported sentiment, or confidence.
+                  Positive moments describe the proposed experience. The
+                  account-change job should remain stable while research tests
+                  which outcomes are most underserved by segment.
                 </Evidence>
               </>
             )}
@@ -830,7 +851,6 @@ export default function MaintenanceResearch({
                 </div>
               </>
             )}
-            {section === 5 && <LifecycleResearch embedded view="journey" />}
           </section>
         );
       })}

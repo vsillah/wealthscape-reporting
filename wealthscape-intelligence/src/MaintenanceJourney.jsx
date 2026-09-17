@@ -35,11 +35,6 @@ export default function MaintenanceJourney() {
   };
   return (
     <div className="mj-journey">
-      <p className="am-note">
-        Executive deck, slides 6 and 10 · directional forum evidence. Curve
-        height and progress symbols are illustrative, not measured satisfaction
-        or reported sentiment. Positive moments describe proposed experience.
-      </p>
       <div className="mj-toolbar">
         <div className="mj-legend" aria-label="Illustrative experience legend">
           {Object.entries(experienceKinds).map(([kind, item]) => {

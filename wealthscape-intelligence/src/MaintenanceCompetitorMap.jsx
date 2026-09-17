@@ -76,7 +76,6 @@ export default function MaintenanceCompetitorMap() {
   };
   const rival = maintenanceCompetitors[selected];
   return <>
-    <p className="am-note">Account Maintenance Frames snapshot. X: T3 2026 advisor satisfaction. Y: assessed public maintenance capability. Scores are unchanged; documentation coverage is uneven and does not measure actual feature completeness.</p>
     <div className="lx-research-grid mc-competitive-grid">
       <div>
         <div className="mc-competitor-plot">
@@ -153,6 +152,5 @@ export default function MaintenanceCompetitorMap() {
     <div className="mc-competitor-source-strip" role="region" aria-label={`${rival.name} and survey sources`}>
       <ul className="mc-competitor-sources">{[rival.source,competitorSurvey].map(source=><li key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.title} ↗</a><span>{source.type} · {source.date}</span></li>)}</ul>
     </div>
-    <p className="am-note">Source assessment: Account Maintenance Frames D2; revised executive study, 18 Aug 2026, slides 15, 17 and 27. Public context checked 10 Sep 2026; no score refresh or primary interviews. Axos remains a qualitative reference, not an added chart point.</p>
   </>;
 }

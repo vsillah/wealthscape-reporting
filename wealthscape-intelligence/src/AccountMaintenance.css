@@ -1219,6 +1219,146 @@
   color: #49685b;
   font-size: 12px;
 }
+.mo-odi-synthesis {
+  border: 1px solid #d7e5df;
+  border-left: 4px solid #0b6b3a;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fbfdfc 0%, #f4faf7 100%);
+  margin-top: 18px;
+  padding: 18px;
+}
+.mo-odi-synthesis > header {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 14px;
+}
+.mo-odi-synthesis h3,
+.mo-odi-synthesis h4,
+.mo-odi-synthesis p {
+  margin: 0;
+}
+.mo-odi-synthesis h3 {
+  color: #142433;
+  font-size: clamp(19px, 2vw, 24px);
+  line-height: 1.18;
+}
+.mo-odi-synthesis header p {
+  color: #4d6070;
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 860px;
+}
+.mo-odi-counts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 16px;
+}
+.mo-odi-counts > div {
+  border: 1px solid #dce8e2;
+  border-radius: 8px;
+  background: #fff;
+  padding: 12px;
+}
+.mo-odi-counts strong {
+  display: block;
+  color: #0b5d2e;
+  font-size: 26px;
+  line-height: 1;
+}
+.mo-odi-counts span {
+  color: #536675;
+  display: block;
+  font-size: 12px;
+  font-weight: 750;
+  margin-top: 7px;
+}
+.mo-odi-segments {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+.mo-odi-segments article,
+.mo-odi-strategies article {
+  background: #fff;
+  border: 1px solid #dce8e2;
+  border-radius: 8px;
+  padding: 14px;
+}
+.mo-odi-segment-heading {
+  align-items: flex-start;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.mo-odi-segment-heading h4,
+.mo-odi-strategies h4 {
+  color: #142433;
+  font-size: 15px;
+  line-height: 1.25;
+}
+.mo-odi-segment-heading span {
+  background: #e8f5ee;
+  border-radius: 999px;
+  color: #0b5d2e;
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 850;
+  padding: 5px 8px;
+}
+.mo-odi-segments p,
+.mo-odi-strategies p {
+  color: #4f6374;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.mo-odi-outcome-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+}
+.mo-odi-outcome-chips span {
+  border: 1px solid #cfe0d8;
+  border-radius: 999px;
+  color: #0b5d2e;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 5px 7px;
+}
+.mo-odi-segments dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 11px;
+}
+.mo-odi-segments dl div {
+  border-top: 1px solid #e6eef0;
+  padding-top: 8px;
+}
+.mo-odi-segments dt {
+  color: #657685;
+  font-size: 11px;
+  font-weight: 750;
+}
+.mo-odi-segments dd {
+  color: #142433;
+  font-size: 14px;
+  font-weight: 850;
+  margin: 3px 0 0;
+}
+.mo-odi-implication {
+  color: #164c33 !important;
+  font-weight: 750;
+}
+.mo-odi-strategies {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
 .mr-sequence {
   display: grid;
   gap: 12px;
@@ -1341,6 +1481,25 @@
   font-size: 12px;
   font-weight: 700;
   color: #5b4fbe;
+}
+.mr-odi-posture {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid #d7e5df;
+  border-radius: 999px;
+  background: #f4faf7;
+  color: #164c33;
+  font-size: 12px;
+  line-height: 1.35;
+  margin: 14px 0 0;
+  padding: 6px 10px;
+}
+.mr-odi-posture strong {
+  color: #0b5d2e;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 .mr-recommendation .mr-ux {
   margin: 18px 0;
@@ -1609,6 +1768,11 @@
   .mr-outcome-ref {
     margin-left: 0;
     width: 100%;
+  }
+  .mr-odi-posture {
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
   }
   .mr-recommendation {
     padding: 16px;
@@ -1969,12 +2133,28 @@
   .mo-ranked-layout {
     grid-template-columns: 1fr;
   }
+  .mo-odi-segments,
+  .mo-odi-strategies {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .mr-comparison > article {
     grid-template-columns: 1fr;
     gap: 12px;
   }
 }
 @media (max-width: 480px) {
+  .mo-odi-counts,
+  .mo-odi-segments,
+  .mo-odi-strategies,
+  .mo-odi-segments dl {
+    grid-template-columns: 1fr;
+  }
+  .mo-odi-synthesis {
+    padding: 14px;
+  }
+  .mo-odi-segment-heading {
+    display: grid;
+  }
   .mo-ranked button {
     grid-template-columns: 20px minmax(0, 1fr) 42px;
   }
