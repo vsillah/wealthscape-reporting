@@ -314,6 +314,39 @@ const sourceReviewReceipts = [
   ["Promotion rule", "Low-confidence items remain validation questions instead of being rewritten as conclusions."],
 ];
 
+const sourceChallengeChecks = [
+  [
+    "Claim ledger",
+    "Every insight is stored as a claim with source links, source type, confidence inputs, section use and approval state.",
+    "Build now",
+  ],
+  [
+    "Citation check",
+    "Reject broken links, vague citations and claims that cannot be traced to the cited material.",
+    "Build now",
+  ],
+  [
+    "Source-fit check",
+    "Confirm the source can support the specific claim. Market reports can frame context; they cannot stand in for Fidelity telemetry.",
+    "Build now",
+  ],
+  [
+    "Convergence check",
+    "Flag claims carried by one weak source. Promote only when independent evidence points to the same signal.",
+    "Build now",
+  ],
+  [
+    "Boundary check",
+    "Label synthetic prototype behavior, derived synthesis, licensed research and approval-gated internal needs before they appear in strategy.",
+    "Build now",
+  ],
+  [
+    "Approval lock",
+    "Keep Fidelity telemetry and formal ODI survey work locked until executive, legal, compliance and data-owner approvals are attached.",
+    "Locked",
+  ],
+];
+
 const sourceAppendixNotes = [
   [
     "Market research",
@@ -491,40 +524,58 @@ const maintenanceNextSteps = [
 
 const maintenanceConfidencePlan = [
   [
-    "Confidence backlog service",
-    "Create a backend job that flags any section score below 50, or any confidence dimension below 50, and turns it into a prioritized evidence backlog with owner, source gap, due date and graduation criteria.",
-  ],
-  [
     "Internal telemetry connectors",
-    "Ingest request volume, NIGO/rejection reasons, repeat handling, owner handoffs, cycle time, CSA effort, escalation rate, correction cost and completion proof from service systems and case logs.",
+    "Ingest request volume, NIGO reasons, repeat handling, owner handoffs, cycle time, effort, escalations, correction cost and completion proof after approval.",
+    "Locked: executive data approval",
+    "locked",
   ],
   [
-    "Research evidence intake",
-    "Add structured intake for interview notes, observation logs, survey results, usability sessions and task diaries so primary research updates the same evidence ledger as market and operating data.",
+    "Formal ODI analytics module",
+    "Support desired-outcome statements, importance and satisfaction survey imports, factor analysis, cluster analysis and opportunity-map scoring after research approval.",
+    "Locked: research approval",
+    "locked",
   ],
   [
-    "ODI analytics module",
-    "Support desired-outcome statements, importance and satisfaction survey imports, factor analysis, cluster analysis and opportunity-map scoring as first-class data objects instead of static narrative.",
+    "Confidence backlog service",
+    "Flag any section score below 70, any dimension below 50, or any claim with weak traceability. Route each gap to an owner, source need and graduation rule.",
+    "Build now: public-safe",
+    "build",
   ],
   [
-    "Paid research provider layer",
-    "Build source connectors or licensed-upload workflows for Cerulli, Datos Insights, Aite-Novarica, Celent, Forrester, Gartner, Coalition Greenwich, J.D. Power, T3 and Kitces, with entitlements and reuse limits attached.",
-  ],
-  [
-    "Peer benchmark repository",
-    "Store RFI responses, demos, sandbox notes, client references, product documentation and implementation findings against Schwab, Pershing, LPL, Altruist, Apex, Axos, TradePMR and clearing-side peers.",
-  ],
-  [
-    "Prediction calibration loop",
-    "Compare recommendations against later pilot telemetry, adoption, support burden, control defects and cost outcomes. Use the result to recalibrate the confidence model over time.",
+    "Claim ledger",
+    "Version each claim, source, score input, model rule, challenge result and approval event so recommendations can be audited back to evidence.",
+    "Build now: public-safe",
+    "build",
   ],
   [
     "Evidence challenge agents",
-    "Run automated checks for citation reachability, claim-source fit, contradictions, source independence, recency, synthetic-versus-observed labels and required human approval before production release.",
+    "Run checks for citation reachability, claim-source fit, contradictions, source independence, recency, synthetic labels and required approval before publication.",
+    "Build now: public-safe",
+    "build",
   ],
   [
-    "Traceable decision ledger",
-    "Version every claim, source, score, model rule, agent challenge and approval event so a strategy recommendation can be audited back to the exact evidence that created it.",
+    "Peer benchmark repository",
+    "Store public documentation, demos, sandbox notes, RFI responses and implementation findings against Schwab, Pershing, LPL, Altruist, Apex, Axos, TradePMR and clearing-side peers.",
+    "Build next: public and licensed",
+    "next",
+  ],
+  [
+    "Paid research provider layer",
+    "Add licensed-upload workflows for Cerulli, Datos Insights, Aite-Novarica, Celent, Forrester, Gartner, Coalition Greenwich, J.D. Power, T3 and Kitces.",
+    "Build next: entitlement required",
+    "next",
+  ],
+  [
+    "Research evidence intake",
+    "Add structured intake for approved interview notes, observation logs, usability sessions and task diaries so primary research can update the same ledger.",
+    "Approval-gated input",
+    "next",
+  ],
+  [
+    "Prediction calibration loop",
+    "Compare recommendations against later pilot telemetry, adoption, support burden, control defects and cost outcomes. Use the result to recalibrate the model.",
+    "Post-pilot",
+    "future",
   ],
 ];
 
@@ -534,6 +585,7 @@ function SourceConfidenceSystem() {
     ["score", "Scoring model"],
     ["tiers", "Source tiers"],
     ["flow", "Governance path"],
+    ["challenge", "Challenge layer"],
     ["receipts", "Review receipts"],
     ["notes", "Section notes"],
   ];
@@ -627,6 +679,26 @@ function SourceConfidenceSystem() {
             </div>
           </div>
         )}
+        {activeSourceView === "challenge" && (
+          <div className="mr-source-challenge" aria-label="Evidence challenge layer">
+            <div className="mr-source-flow-title">
+              <ShieldCheck size={18} aria-hidden="true" />
+              <div>
+                <span className="am-eyebrow">Public-safe challenge layer</span>
+                <h4>Raise confidence without using Fidelity internal data</h4>
+              </div>
+            </div>
+            <div className="mr-source-challenge-grid">
+              {sourceChallengeChecks.map(([title, text, status]) => (
+                <article key={title} className={status === "Locked" ? "is-locked" : ""}>
+                  <span>{status}</span>
+                  <h5>{title}</h5>
+                  <p>{text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
         {activeSourceView === "receipts" && (
           <div className="mr-source-review">
             <div>
@@ -708,9 +780,13 @@ function AssumptionsAndNextSteps() {
         </div>
       </div>
       <div className="mr-guidance-grid">
-        {rows.map(([title, text], index) => (
-          <article key={title}>
+        {rows.map(([title, text, status, tone], index) => (
+          <article
+            key={title}
+            className={tone ? `mr-guidance-card-${tone}` : undefined}
+          >
             <span>{String(index + 1).padStart(2, "0")}</span>
+            {status && <em className="mr-guidance-status">{status}</em>}
             <h4>{title}</h4>
             <p>{text}</p>
           </article>
