@@ -9,6 +9,7 @@ const viewOptions = [
   ["claims", "Claim ledger"],
   ["challenge", "Challenge checks"],
   ["backlog", "Confidence lift"],
+  ["pipelines", "Backend pipelines"],
   ["locks", "Approval locks"],
   ["movement", "Score path"],
 ];
@@ -110,6 +111,36 @@ export default function StrategyEvidenceOperations({ defaultTrack = "maintenance
               <EvidenceStatus status={status} />
               <p>{text}</p>
               <strong>{lift}</strong>
+            </article>
+          ))}
+        </div>
+      )}
+
+      {activeView === "pipelines" && (
+        <div className="evidence-ops-pipelines" aria-label={`${track.label} backend confidence pipelines`}>
+          {track.pipelines.map((pipeline) => (
+            <article key={pipeline.id} className="evidence-ops-pipeline">
+              <div className="evidence-ops-pipeline-head">
+                <span>{pipeline.id}</span>
+                <EvidenceStatus status={pipeline.status} />
+              </div>
+              <h4>{pipeline.title}</h4>
+              <p>{pipeline.purpose}</p>
+              <dl>
+                <div>
+                  <dt>Ingest</dt>
+                  <dd>{pipeline.ingest}</dd>
+                </div>
+                <div>
+                  <dt>Produce</dt>
+                  <dd>{pipeline.produce}</dd>
+                </div>
+                <div>
+                  <dt>Gate</dt>
+                  <dd>{pipeline.gate}</dd>
+                </div>
+              </dl>
+              <strong>{pipeline.lift}</strong>
             </article>
           ))}
         </div>

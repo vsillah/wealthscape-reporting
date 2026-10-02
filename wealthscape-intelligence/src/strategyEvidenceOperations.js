@@ -85,6 +85,78 @@ export const strategyEvidenceTracks = {
       ["Licensed", "Add entitled market research uploads for reporting workflow, advisor technology and client reporting benchmarks.", "+5"],
       ["Locked", "Instrument Fidelity preparation time, review loops, report defects, usage, support volume and cost-to-serve.", "+12"],
     ],
+    pipelines: [
+      {
+        id: "RR-P01",
+        title: "Claim compiler",
+        status: "Build now",
+        purpose:
+          "Turn the existing reporting strategy into auditable claim records before any sentence can become client-ready guidance.",
+        ingest:
+          "Public source register, strategy packet notes, vendor documentation, section copy and recommendation text.",
+        produce:
+          "Claim IDs, source fingerprints, section mappings, confidence dimensions, unsupported-claim flags and review status.",
+        gate:
+          "Every executive-summary finding and recommendation has a claim ID, source class and challenge result.",
+        lift: "+5 traceability lift",
+      },
+      {
+        id: "RR-P02",
+        title: "Competitor teardown repository",
+        status: "Public-safe",
+        purpose:
+          "Replace broad vendor references with structured evidence about the reporting workflow capabilities peers actually describe.",
+        ingest:
+          "Addepar, Advyzon, Tamarac, Orion, Altruist, Black Diamond, Schwab, BNY and Fidelity public documentation.",
+        produce:
+          "Capability observations for generation, review, portal delivery, permissions, retention and evidence retrieval.",
+        gate:
+          "Parity statements require primary documentation or a teardown note; marketing pages remain context only.",
+        lift: "+6 comparator lift",
+      },
+      {
+        id: "RR-P03",
+        title: "Licensed research intake",
+        status: "Licensed",
+        purpose:
+          "Add paid research as an entitled backend source, not pasted narrative, so leadership can see provenance without exposing licensed content.",
+        ingest:
+          "Approved uploads from advisor-tech, reporting-workflow, satisfaction and client-communications research providers.",
+        produce:
+          "Abstracted signal records, license metadata, citation boundaries, date checks and source-tier scores.",
+        gate:
+          "Raw licensed material stays behind entitlement controls; extracted claims carry usage restrictions.",
+        lift: "+5 external-evidence lift",
+      },
+      {
+        id: "RR-P04",
+        title: "Reporting pilot telemetry connector",
+        status: "Locked",
+        purpose:
+          "Move the recommendation from directional to decision-grade by measuring the current and pilot reporting workflow.",
+        ingest:
+          "Preparation time, rework, reviewer decisions, blocked reports, delivery defects, support tickets, usage and cost-to-serve.",
+        produce:
+          "Baseline deltas, stop/scale thresholds, confidence recalibration and section-score updates.",
+        gate:
+          "Executive, data-owner, legal and compliance approval are required before any Fidelity telemetry is ingested.",
+        lift: "+12 approved-data lift",
+      },
+      {
+        id: "RR-P05",
+        title: "Control evidence ledger",
+        status: "Approval-gated",
+        purpose:
+          "Prove generated or assisted reporting can preserve reviewer accountability and source evidence before scale.",
+        ingest:
+          "Reviewer identity, approved output, rejected output, source bundle, model version, prompt metadata and retrieval event.",
+        produce:
+          "Control receipts that show which report was approved, delivered, retained and retrievable.",
+        gate:
+          "No generated narrative graduates without approved disclosure, retention and reviewer controls.",
+        lift: "+7 control-confidence lift",
+      },
+    ],
     locks: [
       ["Internal telemetry", "Requires executive, data-owner, legal and compliance approval before ingestion."],
       ["Production workflow evidence", "Requires approved pilot telemetry or production-equivalent workflow logs."],
@@ -185,6 +257,92 @@ export const strategyEvidenceTracks = {
       ["Approval-gated", "Intake approved interviews, observations, usability sessions and task diaries.", "+7"],
       ["Locked", "Ingest Fidelity request telemetry, NIGO reasons, handoffs, cycle time, effort, escalations and support cost.", "+15"],
       ["Locked", "Run formal desired-outcome survey with factor and cluster analysis.", "+12"],
+    ],
+    pipelines: [
+      {
+        id: "AM-P01",
+        title: "Maintenance claim compiler",
+        status: "Build now",
+        purpose:
+          "Convert every section finding, outcome, caveat and recommendation into auditable claim records.",
+        ingest:
+          "Market sources, custodian and clearing references, section copy, outcomes, recommendations and source attribution links.",
+        produce:
+          "Claim IDs, source class, section use, confidence dimensions, challenge results, approval status and score history.",
+        gate:
+          "Any claim below 70 or any dimension below 50 stays in the confidence backlog with an owner and graduation rule.",
+        lift: "+5 traceability lift",
+      },
+      {
+        id: "AM-P02",
+        title: "Custody and clearing benchmark repository",
+        status: "Public-safe",
+        purpose:
+          "Make peer evidence structured enough to support maintenance-specific comparisons without overstating market reports.",
+        ingest:
+          "Schwab, Pershing, LPL, Altruist, Apex, Axos, TradePMR, First Clearing, Wedbush and Fidelity public evidence.",
+        produce:
+          "Capability observations for validation, authority, status, evidence retention, exception handling and service recovery.",
+        gate:
+          "Benchmarks can frame operating pressure; they cannot become Fidelity ROI or feature-completeness proof.",
+        lift: "+6 peer-evidence lift",
+      },
+      {
+        id: "AM-P03",
+        title: "Research evidence intake",
+        status: "Approval-gated",
+        purpose:
+          "Let approved primary research raise customer proximity without exposing raw private notes in the public prototype.",
+        ingest:
+          "Approved interview summaries, workflow observations, usability sessions, task diaries and protocol metadata.",
+        produce:
+          "Redacted evidence records, persona updates, role-specific journey evidence and confidence-score recalculation.",
+        gate:
+          "Research approval, participant handling and redaction must be attached before evidence enters the ledger.",
+        lift: "+7 proximity lift",
+      },
+      {
+        id: "AM-P04",
+        title: "Maintenance telemetry connector",
+        status: "Locked",
+        purpose:
+          "Raise the largest-confidence gap by measuring the actual Fidelity request path behind account maintenance.",
+        ingest:
+          "Request volume, NIGO reasons, repeat handling, owner handoffs, cycle time, effort, escalations, completion proof and support cost.",
+        produce:
+          "Baseline measures, pilot deltas, ROI ranges, score recalibration and stop/scale decision evidence.",
+        gate:
+          "Executive, data-owner, legal and compliance approval are required before any Fidelity telemetry is ingested.",
+        lift: "+15 approved-data lift",
+      },
+      {
+        id: "AM-P05",
+        title: "Formal ODI analytics module",
+        status: "Locked",
+        purpose:
+          "Move the outcome map from directional synthesis to ODI-valid evidence when research approval exists.",
+        ingest:
+          "Stable desired-outcome statements, importance ratings, satisfaction ratings, respondent metadata and sample controls.",
+        produce:
+          "Opportunity scores, factor analysis, cluster analysis, segment definitions and strategy posture recommendations.",
+        gate:
+          "Outcome labels remain directional until the survey sample and statistical analysis are approved.",
+        lift: "+12 ODI-validation lift",
+      },
+      {
+        id: "AM-P06",
+        title: "Prediction calibration loop",
+        status: "Post-pilot",
+        purpose:
+          "Use actual pilot results to teach the scoring model which predictions were useful, overstated or missing.",
+        ingest:
+          "Pilot outcomes, adoption, support burden, defects, exception cost, reviewer decisions and leadership gate outcomes.",
+        produce:
+          "Model calibration notes, score adjustments, future-source requirements and reusable confidence rules.",
+        gate:
+          "Only measured pilot outcomes recalibrate the model; demo completion and subjective approval are logged separately.",
+        lift: "+8 calibration lift",
+      },
     ],
     locks: [
       ["Fidelity telemetry", "Highest ROI lift, but requires executive, legal, compliance and data-owner approval."],
