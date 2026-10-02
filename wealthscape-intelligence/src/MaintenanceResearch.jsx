@@ -198,19 +198,114 @@ function ConfidenceSourceLinks({ refs = [] }) {
     </div>
   );
 }
+
+const confidenceScoreBands = [
+  {
+    min: 80,
+    key: "strong",
+    label: "Strong",
+    range: "80-100",
+    width: 20,
+    read: "Ready to support a recommendation when the underlying dimensions are balanced and traceable.",
+  },
+  {
+    min: 65,
+    key: "directional",
+    label: "Directional",
+    range: "65-79",
+    width: 15,
+    read: "Good enough for strategy framing and prioritization, but not yet funding or implementation proof.",
+  },
+  {
+    min: 50,
+    key: "validate",
+    label: "Validate",
+    range: "50-64",
+    width: 15,
+    read: "Useful as a working hypothesis. The section needs stronger evidence before leaders should treat it as decision-grade.",
+  },
+  {
+    min: 0,
+    key: "unproven",
+    label: "Unproven",
+    range: "0-49",
+    width: 50,
+    read: "Keep it as an assumption or backlog item until source proximity, reputation, or convergence improves.",
+  },
+];
+
+function getConfidenceScoreBand(score) {
+  return (
+    confidenceScoreBands.find((band) => score >= band.min) ||
+    confidenceScoreBands[confidenceScoreBands.length - 1]
+  );
+}
+
 function SectionConfidence({ sectionId }) {
   const confidence = sectionConfidenceScores[sectionId];
   if (!confidence) {
     return null;
   }
+  const scoreBand = getConfidenceScoreBand(confidence.score);
+  const scorePosition = Math.max(0, Math.min(100, confidence.score));
+  const orderedScoreBands = confidenceScoreBands.slice().reverse();
   return (
     <details className="mr-section-confidence">
-      <summary aria-label={`Inspect evidence confidence breakdown: ${confidence.score} out of 100`}>
-        <span>Confidence</span>
-        <strong>{confidence.score}</strong>
+      <summary
+        aria-label={`Inspect evidence confidence breakdown: ${confidence.score} out of 100, ${scoreBand.label}. ${scoreBand.read}`}
+        title={`${confidence.score}/100 · ${scoreBand.label}: ${scoreBand.read}`}
+      >
+        <span>
+          Confidence
+          <em className={`mr-section-confidence-grade mr-confidence-grade-${scoreBand.key}`}>
+            {scoreBand.label}
+          </em>
+        </span>
+        <strong className={`mr-section-confidence-score mr-section-confidence-score-${scoreBand.key}`}>
+          {confidence.score}
+        </strong>
         <ChevronDown size={15} aria-hidden="true" />
       </summary>
       <div className="mr-section-confidence-panel">
+        <div className={`mr-confidence-read mr-confidence-read-${scoreBand.key}`}>
+          <div className="mr-confidence-read-copy">
+            <strong>{scoreBand.label}</strong>
+            <span>{confidence.score}/100 confidence</span>
+          </div>
+          <p>{scoreBand.read}</p>
+        </div>
+        <div
+          className="mr-confidence-scale"
+          aria-label={`Confidence score position: ${confidence.score} out of 100, ${scoreBand.label}`}
+        >
+          <div className="mr-confidence-scale-track" aria-hidden="true">
+            {orderedScoreBands.map((band) => (
+              <span
+                className={`mr-confidence-scale-segment mr-confidence-scale-segment-${band.key}`}
+                key={band.key}
+                style={{ flexBasis: `${band.width}%` }}
+              />
+            ))}
+            <span
+              className={`mr-confidence-marker mr-confidence-marker-${scoreBand.key}`}
+              style={{ left: `${scorePosition}%` }}
+            >
+              <strong>{confidence.score}</strong>
+            </span>
+          </div>
+          <div className="mr-confidence-scale-labels">
+            {orderedScoreBands.map((band) => (
+              <span
+                className={band.key === scoreBand.key ? "is-active" : undefined}
+                key={band.key}
+                style={{ flexBasis: `${band.width}%` }}
+              >
+                <strong>{band.label}</strong>
+                {band.range}
+              </span>
+            ))}
+          </div>
+        </div>
         <div className="mr-confidence-dimensions" aria-label="Confidence dimension breakdown">
           {confidence.dimensions.map(([label, value, why, refs = []]) => (
             <article key={label}>
