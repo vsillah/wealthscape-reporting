@@ -261,9 +261,17 @@ test("maintenance source confidence exposes evidence scoring and review gates", 
   assert.match(maintenanceSource, /Backend confidence/);
   assert.match(maintenanceSource, /Confidence backlog service/);
   assert.match(maintenanceSource, /Internal telemetry connectors/);
+  assert.match(maintenanceSource, /Locked: executive data approval/);
+  assert.match(maintenanceSource, /Formal ODI analytics module/);
+  assert.match(maintenanceSource, /Locked: research approval/);
+  assert.match(maintenanceSource, /Claim ledger/);
+  assert.match(maintenanceSource, /Build now: public-safe/);
   assert.match(maintenanceSource, /Paid research provider layer/);
   assert.match(maintenanceSource, /Prediction calibration loop/);
-  assert.match(maintenanceSource, /Traceable decision ledger/);
+  assert.match(maintenanceSource, /sourceChallengeChecks/);
+  assert.match(maintenanceSource, /Challenge layer/);
+  assert.match(maintenanceSource, /Raise confidence without using Fidelity internal data/);
+  assert.match(maintenanceSource, /Approval lock/);
   assert.doesNotMatch(maintenanceSource, /Treat any section score below 50, or any confidence dimension below 50, as a validation backlog before it is used for funding/);
   assert.match(maintenanceSource, /sourceAppendixNotes/);
   assert.match(maintenanceSource, /sectionConfidenceScores/);
@@ -332,6 +340,8 @@ test("maintenance source confidence exposes evidence scoring and review gates", 
   assert.match(accountMaintenanceCss, /\.mr-source-confidence/);
   assert.match(accountMaintenanceCss, /\.mr-source-tabs/);
   assert.match(accountMaintenanceCss, /\.mr-source-flow/);
+  assert.match(accountMaintenanceCss, /\.mr-source-challenge/);
+  assert.match(accountMaintenanceCss, /\.mr-source-challenge-grid/);
   assert.match(accountMaintenanceCss, /\.mr-source-notes/);
   assert.match(accountMaintenanceCss, /\.mr-source-link-details/);
   assert.match(accountMaintenanceCss, /\.mr-evidence-appendix-link/);
@@ -339,6 +349,8 @@ test("maintenance source confidence exposes evidence scoring and review gates", 
   assert.match(accountMaintenanceCss, /\.mr-confidence-dimensions/);
   assert.match(accountMaintenanceCss, /\.mr-confidence-trace-links/);
   assert.match(accountMaintenanceCss, /--mr-confidence-trigger-width/);
+  assert.match(accountMaintenanceCss, /\.mr-guidance-status/);
+  assert.match(accountMaintenanceCss, /\.mr-guidance-card-locked/);
   assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-sources/);
   assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-panel-head/);
   assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-rationale/);

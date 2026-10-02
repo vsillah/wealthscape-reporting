@@ -1721,7 +1721,8 @@
 }
 .mr-source-pillars h4,
 .mr-source-tier-list h5,
-.mr-source-flow-steps h5 {
+.mr-source-flow-steps h5,
+.mr-source-challenge-grid h5 {
   margin: 0;
   color: #1c2b3a;
   font-size: 14px;
@@ -1733,6 +1734,7 @@
 .mr-source-pillars p,
 .mr-source-tier-list p,
 .mr-source-flow-steps p,
+.mr-source-challenge-grid p,
 .mr-source-review dd {
   margin: 0;
   color: #526274;
@@ -1741,6 +1743,7 @@
 }
 .mr-source-ladder,
 .mr-source-flow,
+.mr-source-challenge,
 .mr-source-review {
   display: grid;
   gap: 12px;
@@ -1827,6 +1830,40 @@
   font-size: 11px;
   font-weight: 850;
 }
+.mr-source-challenge-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.mr-source-challenge-grid article {
+  display: grid;
+  gap: 7px;
+  align-content: start;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #dbe5e6;
+  border-radius: 10px;
+  background: #fff;
+}
+.mr-source-challenge-grid article > span {
+  justify-self: start;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #e8f5ee;
+  color: #0b5d2e;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mr-source-challenge-grid article.is-locked {
+  border-color: #e1d4b4;
+  background: #fffaf0;
+}
+.mr-source-challenge-grid article.is-locked > span {
+  background: #f7e7bf;
+  color: #6b4a00;
+}
 .mr-source-review {
   grid-template-columns: minmax(180px, 0.32fr) minmax(0, 1fr);
   background: linear-gradient(135deg, #f7faf9, #fbfafd);
@@ -1902,27 +1939,61 @@
   gap: 10px;
 }
 .mr-guidance-grid article {
+  display: grid;
+  gap: 7px;
+  align-content: start;
   min-width: 0;
   padding: 14px;
   border: 1px solid #dbe5e6;
   border-radius: 11px;
   background: #fbfdfc;
 }
+.mr-guidance-grid article.mr-guidance-card-locked {
+  border-color: #e1d4b4;
+  background: #fffaf0;
+}
+.mr-guidance-grid article.mr-guidance-card-next {
+  background: #f8fbff;
+}
+.mr-guidance-grid article.mr-guidance-card-future {
+  background: #f8f7fb;
+}
 .mr-guidance-grid article > span {
   display: inline-grid;
   place-items: center;
+  justify-self: start;
   min-width: 30px;
   height: 26px;
-  margin-bottom: 9px;
   border-radius: 999px;
   background: #e8f5ee;
   color: #0b5d2e;
   font-size: 11px;
   font-weight: 850;
 }
+.mr-guidance-status {
+  justify-self: start;
+  padding: 4px 8px;
+  border: 1px solid #cfe2d9;
+  border-radius: 999px;
+  background: #edf5f1;
+  color: #24513e;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.mr-guidance-card-locked .mr-guidance-status {
+  border-color: #e1d4b4;
+  background: #f7e7bf;
+  color: #6b4a00;
+}
 @media (max-width: 1000px) {
   .mr-source-pillars {
     grid-template-columns: 1fr;
+  }
+  .mr-source-challenge-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mr-source-flow-steps {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1970,6 +2041,7 @@
     grid-template-columns: 1fr;
   }
   .mr-source-notes,
+  .mr-source-challenge-grid,
   .mr-guidance-grid {
     grid-template-columns: 1fr;
   }
