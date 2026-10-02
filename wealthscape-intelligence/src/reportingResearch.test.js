@@ -221,15 +221,150 @@ test("maintenance executive findings connect research evidence to recommendation
     (match) => match[1],
   );
   assert.deepEqual(findingIds, sectionIds);
-  assert.match(findingsBlock[1], /servicing quality the investment question/);
-  assert.match(findingsBlock[1], /outcome landscape points to differentiation/);
-  assert.match(findingsBlock[1], /dominant-platform option/);
+  assert.match(findingsBlock[1], /before expanding automation/);
+  assert.match(findingsBlock[1], /Thirteen candidate outcomes show high importance and low satisfaction/);
+  assert.match(findingsBlock[1], /expand only if validation confirms the same unmet needs/);
+  assert.doesNotMatch(findingsBlock[1], /table stakes/);
+  assert.doesNotMatch(findingsBlock[1], /outcome landscape/);
+  assert.doesNotMatch(findingsBlock[1], /dominant-platform/);
+  assert.doesNotMatch(findingsBlock[1], /differentiated wedge/);
   assert.doesNotMatch(findingsBlock[1], /does not isolate account maintenance/);
   assert.doesNotMatch(findingsBlock[1], /but not that complex changes/);
   assert.doesNotMatch(findingsBlock[1], /formal ODI survey/);
   assert.doesNotMatch(findingsBlock[1], /service-associate and reviewer interviews/);
   assert.doesNotMatch(findingsBlock[1], /not a maintenance-specific ROI claim/);
   assert.doesNotMatch(findingsBlock[1], /They do not prove/);
+});
+test("maintenance source confidence exposes evidence scoring and review gates", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const summarySource = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  const summaryCss = readFileSync(
+    join(srcDir, "StrategyExecutiveSummary.css"),
+    "utf8",
+  );
+  assert.match(maintenanceSource, /label: "Source appendix"/);
+  assert.match(maintenanceSource, /label: "Assumptions & next steps"/);
+  assert.match(maintenanceSource, /SourceConfidenceSystem/);
+  assert.match(maintenanceSource, /AssumptionsAndNextSteps/);
+  assert.doesNotMatch(maintenanceSource, /className="mr-lead"/);
+  assert.match(maintenanceSource, /maintenanceConfidencePlan/);
+  assert.match(maintenanceSource, /Backend confidence/);
+  assert.match(maintenanceSource, /Confidence backlog service/);
+  assert.match(maintenanceSource, /Internal telemetry connectors/);
+  assert.match(maintenanceSource, /Paid research provider layer/);
+  assert.match(maintenanceSource, /Prediction calibration loop/);
+  assert.match(maintenanceSource, /Traceable decision ledger/);
+  assert.doesNotMatch(maintenanceSource, /Treat any section score below 50, or any confidence dimension below 50, as a validation backlog before it is used for funding/);
+  assert.match(maintenanceSource, /sourceAppendixNotes/);
+  assert.match(maintenanceSource, /sectionConfidenceScores/);
+  assert.match(maintenanceSource, /confidenceSourceRefs/);
+  assert.match(maintenanceSource, /SectionConfidence/);
+  assert.match(maintenanceSource, /ConfidenceSourceLinks/);
+  assert.match(maintenanceSource, /Confidence dimension breakdown/);
+  assert.match(maintenanceSource, /Customer proximity", 55/);
+  assert.match(maintenanceSource, /Source reputation", 82/);
+  assert.match(maintenanceSource, /Signal convergence", 78/);
+  assert.match(maintenanceSource, /scrollToMaintenanceTarget/);
+  assert.match(maintenanceSource, /investmentNewsCustody/);
+  assert.match(maintenanceSource, /target=\{external \? "_blank" : undefined\}/);
+  assert.doesNotMatch(maintenanceSource, /sectionConfidenceRules/);
+  assert.doesNotMatch(maintenanceSource, /Score rationale/);
+  assert.doesNotMatch(maintenanceSource, /Source selection/);
+  assert.doesNotMatch(maintenanceSource, /Resulting use/);
+  assert.doesNotMatch(maintenanceSource, /mr-confidence-routing/);
+  assert.doesNotMatch(maintenanceSource, /function ConfidenceRulesEngine/);
+  assert.doesNotMatch(maintenanceSource, /<details className="mr-confidence-rules"/);
+  assert.doesNotMatch(maintenanceSource, /"Dimension scoring"/);
+  assert.match(maintenanceSource, /Directional confidence/);
+  assert.match(maintenanceSource, /Customer proximity/);
+  assert.match(maintenanceSource, /Source reputation/);
+  assert.match(maintenanceSource, /Signal convergence/);
+  assert.match(maintenanceSource, /Evidence agent checks citation reachability/);
+  assert.match(maintenanceSource, /Human reviewer confirms the claim/);
+  assert.match(maintenanceSource, /Source attribution/);
+  assert.match(maintenanceSource, /View source links/);
+  assert.doesNotMatch(maintenanceSource, /href="#maintenance-research-6"/);
+  assert.doesNotMatch(maintenanceSource, /\{children && <p>\{children\}<\/p>\}/);
+  assert.match(summarySource, /Funding decisions need Fidelity request volume/);
+  assert.match(summarySource, /Each claim needs traceable sources before it becomes a recommendation/);
+  assert.match(summarySource, /Research is scored before it becomes strategy/);
+  assert.match(summarySource, /Approve a 90-day validation-and-exception pilot/);
+  assert.match(summarySource, /Leadership ask/);
+  assert.match(summarySource, /Why this is the right next move/);
+  assert.match(summarySource, /Pilot approval should depend on request quality and repeated handling/);
+  assert.doesNotMatch(summarySource, /<p>\{finding\[1\]\}<\/p>/);
+  assert.match(summarySource, /label: "Quality"/);
+  assert.match(summarySource, /label: "Ownership"/);
+  assert.match(summarySource, /label: "Discipline"/);
+  assert.match(summarySource, /findingGroups/);
+  assert.match(summarySource, /\["Observed signals", \[2\]\]/);
+  assert.match(summarySource, /\["Decision implications", \[1, 6\]\]/);
+  assert.match(summarySource, /\["Observed signals", \[3, 5\]\]/);
+  assert.match(summarySource, /\["Decision implications", \[0\]\]/);
+  assert.match(summarySource, /\["Observed signals", \[4\]\]/);
+  assert.match(summarySource, /\["Decision implications", \[7, 8, 9\]\]/);
+  assert.match(summarySource, /findingView, setFindingView/);
+  assert.match(summarySource, /findingView === "aligned" && reasonGroups\.map/);
+  assert.match(summarySource, /By recommendation/);
+  assert.match(summarySource, /By section/);
+  assert.match(summarySource, /<details className="strategy-executive-support-group"/);
+  assert.match(summarySource, /<summary>/);
+  assert.match(summarySource, /\{groupSections\.length\}/);
+  assert.match(summarySource, /strategy-executive-support-findings/);
+  assert.match(summarySource, /strategy-executive-section-findings/);
+  assert.match(summarySource, /Next analysis gate/);
+  assert.match(summarySource, /Review recommendation/);
+  assert.match(summarySource, /Check decision gates/);
+  assert.match(summarySource, /one bounded pilot, one baseline workstream, and one decision gate/);
+  assert.match(summarySource, /Inspect source engine/);
+  assert.doesNotMatch(summarySource, /strategy-executive-conclusion/);
+  assert.doesNotMatch(summarySource, /strategy-executive-decisions/);
+  assert.match(accountMaintenanceCss, /\.mr-source-confidence/);
+  assert.match(accountMaintenanceCss, /\.mr-source-tabs/);
+  assert.match(accountMaintenanceCss, /\.mr-source-flow/);
+  assert.match(accountMaintenanceCss, /\.mr-source-notes/);
+  assert.match(accountMaintenanceCss, /\.mr-source-link-details/);
+  assert.match(accountMaintenanceCss, /\.mr-evidence-appendix-link/);
+  assert.match(accountMaintenanceCss, /\.mr-section-confidence/);
+  assert.match(accountMaintenanceCss, /\.mr-confidence-dimensions/);
+  assert.match(accountMaintenanceCss, /\.mr-confidence-trace-links/);
+  assert.match(accountMaintenanceCss, /--mr-confidence-trigger-width/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-sources/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-panel-head/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-rationale/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-routing/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-rules/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-confidence-rule-grid/);
+  assert.doesNotMatch(accountMaintenanceCss, /max-height: min\(560px/);
+  assert.doesNotMatch(accountMaintenanceCss, /overflow: auto/);
+  assert.match(accountMaintenanceCss, /\.mr-guidance/);
+  assert.match(summaryCss, /\.strategy-executive-memo/);
+  assert.match(summaryCss, /\.strategy-executive-ask/);
+  assert.match(summaryCss, /\.strategy-executive-reasons/);
+  assert.match(summaryCss, /\.strategy-executive-view-toggle/);
+  assert.match(summaryCss, /\.strategy-executive-support-groups/);
+  assert.match(summaryCss, /\.strategy-executive-support-group/);
+  assert.match(summaryCss, /\.strategy-executive-support-group summary/);
+  assert.match(summaryCss, /\.strategy-executive-support-group\[open\]/);
+  assert.match(summaryCss, /\.strategy-executive-support-findings/);
+  assert.match(summaryCss, /\.strategy-executive-support-finding/);
+  assert.doesNotMatch(summaryCss, /\.strategy-executive-support-finding p/);
+  assert.match(summaryCss, /\.strategy-executive-next-gate/);
+  assert.match(summaryCss, /\.strategy-source-confidence/);
+  assert.doesNotMatch(summaryCss, /border-left: 4px solid #1a7a40/);
+  assert.doesNotMatch(summaryCss, /background: #0b5d2e/);
+  assert.doesNotMatch(summaryCss, /\.strategy-executive-conclusion/);
+  assert.doesNotMatch(summaryCss, /\.strategy-executive-decisions/);
 });
 test("maintenance strategy labels ODI outputs as directional until survey validation", () => {
   const maintenanceSource = readFileSync(
@@ -315,6 +450,124 @@ test("maintenance outcomes translate ODI placement into directional strategy pos
   assert.match(cssSource, /\.mo-odi-context/);
   assert.equal(cssSource.includes(".mo-odi-synthesis"), false);
   assert.match(cssSource, /\.mr-odi-posture/);
+});
+test("maintenance market research defaults to custody peers with a clearing lens", () => {
+  const maintenanceSource = readFileSync(
+    join(srcDir, "MaintenanceResearch.jsx"),
+    "utf8",
+  );
+  const accountMaintenanceCss = readFileSync(
+    join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  const visualIndex = maintenanceSource.indexOf("<MaintenanceMarketGrowthVisual />");
+  const appendixIndex = maintenanceSource.indexOf("sourceAppendixNotes");
+  const noteIndex = maintenanceSource.indexOf("like-for-like market-share");
+  assert.ok(visualIndex > -1, "market research renders the growth visual");
+  assert.ok(appendixIndex > -1, "source appendix notes retain market caveats");
+  assert.ok(noteIndex > -1, "market caveat is retained in the source appendix");
+  assert.ok(
+    appendixIndex < noteIndex,
+    "market caveat lives in the source appendix data",
+  );
+  assert.match(maintenanceSource, /custodianMarketPlayers/);
+  assert.match(maintenanceSource, /clearingMarketPlayers/);
+  assert.match(maintenanceSource, /marketPeerSets/);
+  assert.match(maintenanceSource, /custodyMarketSummaryStats/);
+  assert.match(maintenanceSource, /clearingMarketSummaryStats/);
+  assert.match(maintenanceSource, /marketLens, setMarketLens/);
+  assert.match(maintenanceSource, /useState\("map"\)/);
+  assert.match(maintenanceSource, /Custody peer view/);
+  assert.match(maintenanceSource, /Clearing peer view/);
+  assert.match(maintenanceSource, /RIA custody/);
+  assert.match(maintenanceSource, /Clearing firms/);
+  assert.match(maintenanceSource, /Compare Wealthscape's baseline with RIA custodians and challengers/);
+  assert.match(maintenanceSource, /Fidelity internal baseline/);
+  assert.match(maintenanceSource, /This is us: the internal benchmark/);
+  assert.match(maintenanceSource, /Wealthscape as the internal baseline beside Schwab/);
+  assert.match(maintenanceSource, /large-scale custody/);
+  assert.doesNotMatch(maintenanceSource, /Direct peer \/ incumbent/);
+  assert.doesNotMatch(maintenanceSource, /Compare Fidelity against RIA custodians and challengers/);
+  assert.doesNotMatch(maintenanceSource, /Schwab, Fidelity, Pershing and LPL/);
+  assert.doesNotMatch(maintenanceSource, /incumbent scale/);
+  assert.match(maintenanceSource, /Compare the clearing-side operating platforms/);
+  assert.match(maintenanceSource, /Market presentation/);
+  assert.match(maintenanceSource, /Bubble map/);
+  assert.match(maintenanceSource, /Leader list/);
+  assert.match(maintenanceSource, /marketLogoAssets/);
+  assert.match(maintenanceSource, /competitorBrandPath/);
+  assert.match(maintenanceSource, /mr-market-logo-badge/);
+  assert.match(maintenanceSource, /lpl\.svg/);
+  assert.match(maintenanceSource, /apex\.svg/);
+  assert.match(maintenanceSource, /axos-advisor-services\.svg/);
+  assert.match(maintenanceSource, /first-clearing\.png/);
+  assert.match(maintenanceSource, /wedbush\.svg/);
+  assert.match(maintenanceSource, /Charles Schwab Advisor Services/);
+  assert.match(maintenanceSource, /Fidelity Institutional/);
+  assert.match(maintenanceSource, /LPL Financial/);
+  assert.match(maintenanceSource, /BNY Pershing/);
+  assert.match(maintenanceSource, /Altruist/);
+  assert.match(maintenanceSource, /Apex Fintech Solutions/);
+  assert.match(maintenanceSource, /Axos Advisor Services/);
+  assert.match(maintenanceSource, /TradePMR \/ Robinhood/);
+  assert.match(maintenanceSource, /Fidelity \/ National Financial Services/);
+  assert.match(maintenanceSource, /First Clearing \/ Wells Fargo/);
+  assert.match(maintenanceSource, /Wedbush Securities/);
+  assert.match(maintenanceSource, /scale: 3370/);
+  assert.match(maintenanceSource, /scale: 17900/);
+  assert.match(maintenanceSource, /Big-four RIA custody share/);
+  assert.match(maintenanceSource, /Primary clearing frame/);
+  assert.match(maintenanceSource, /mr-market-bubble-chart/);
+  assert.match(maintenanceSource, /mr-market-bubble-point/);
+  assert.match(maintenanceSource, /mr-market-leader-list/);
+  assert.match(maintenanceSource, /setSelectedMarketItem/);
+  assert.match(maintenanceSource, /setMarketLens/);
+  assert.match(maintenanceSource, /const chartWidth = 760/);
+  assert.match(maintenanceSource, /const chartHeight = 380/);
+  assert.match(maintenanceSource, /plotCenterX/);
+  assert.match(maintenanceSource, /plotCenterY/);
+  assert.match(maintenanceSource, /clampToRange/);
+  assert.match(maintenanceSource, /chartPadding\.left \+ radius \+ 3/);
+  assert.match(maintenanceSource, /chartRight - badgeWidth - 5/);
+  assert.match(maintenanceSource, /textAnchor="middle"/);
+  assert.match(maintenanceSource, /xMin: 25/);
+  assert.match(maintenanceSource, /xMax: 3000/);
+  assert.match(maintenanceSource, /xMax: 18000/);
+  assert.doesNotMatch(maintenanceSource, /marketGrowthSignals/);
+  assert.doesNotMatch(maintenanceSource, /marketPositionRegions/);
+  assert.doesNotMatch(maintenanceSource, /Chart position:/);
+  assert.doesNotMatch(maintenanceSource, /Bubble size represents projected market size/);
+  assert.doesNotMatch(maintenanceSource, /Nascent validation|Growth wedge|Mature scale/);
+  assert.doesNotMatch(maintenanceSource, /Source roles/);
+  assert.doesNotMatch(maintenanceSource, /Market-report publishers/);
+  assert.doesNotMatch(maintenanceSource, /marketEvidenceChain|marketDecisionSignals/);
+  assert.doesNotMatch(maintenanceSource, /SS&C Technologies/);
+  assert.doesNotMatch(maintenanceSource, /Envestnet/);
+  assert.doesNotMatch(maintenanceSource, /Broadridge Financial/);
+  assert.doesNotMatch(maintenanceSource, /Avaloq/);
+  assert.doesNotMatch(maintenanceSource, /mappedRevenue/);
+  assert.doesNotMatch(maintenanceSource, /wealth-management-platform market/);
+  assert.match(maintenanceSource, /84%/);
+  assert.match(accountMaintenanceCss, /\.mr-market-visual/);
+  assert.match(accountMaintenanceCss, /\.mr-market-leader-layout/);
+  assert.match(accountMaintenanceCss, /\.mr-market-lens-switch/);
+  assert.match(accountMaintenanceCss, /\.mr-market-kpis/);
+  assert.match(accountMaintenanceCss, /\.mr-market-bubble-chart/);
+  assert.match(accountMaintenanceCss, /\.mr-market-chart-frame[\s\S]*pointer-events: none/);
+  assert.match(accountMaintenanceCss, /\.mr-market-bubble-point/);
+  assert.match(accountMaintenanceCss, /\.mr-market-bubble-point\.is-challenger/);
+  assert.match(accountMaintenanceCss, /\.mr-market-bubble-point\.is-clearing-core/);
+  assert.match(accountMaintenanceCss, /\.mr-market-bubble-point\.is-clearing-challenger/);
+  assert.match(accountMaintenanceCss, /\.mr-market-logo-badge/);
+  assert.match(accountMaintenanceCss, /\.mr-market-logo-badge\.is-dark/);
+  assert.match(accountMaintenanceCss, /\.mr-market-logo-badge\.is-compact/);
+  assert.match(accountMaintenanceCss, /\.mr-market-leader-row/);
+  assert.match(accountMaintenanceCss, /\.mr-market-drawer/);
+  assert.match(accountMaintenanceCss, /\.mr-market-summary/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-market-region/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-market-signal-buttons/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-market-side/);
+  assert.doesNotMatch(accountMaintenanceCss, /\.mr-market-range-bar/);
 });
 test("maintenance capability comparison leads with the integrated map and selected-platform validation", () => {
   const maintenanceSource = readFileSync(

@@ -1,15 +1,20 @@
-# Official competitor logo provenance
+# Competitor logo provenance
 
-Retrieved 10 September 2026 from official public pages/assets. Brand marks remain owned by their respective owners. Used only as identifiers in this comparison; no endorsement implied. No authentication or private material. All images are served locally.
+Retrieved 10 and 18 September 2026 from public pages/assets. Brand marks remain owned by their respective owners. Used only as identifiers in this comparison; no endorsement implied. No authentication or private material. All images are served locally.
 
 | Local asset | Official source | SHA-256 |
 | --- | --- | --- |
 | schwab.png | https://advisorservices.schwab.com/themes/custom/schwabcog/images/charles_schwab_logo_720x400.png | 9cf7733d963b79bf93bbd0b4619ec0ebd56688f82a472ff3f18c20ecff656636 |
+| lpl.svg | https://companieslogo.com/lpl-financial/logo; official brand page confirms logo downloads at https://www.lpl.com/news-media/asset-library.html | 2bd4ef6559d282ae54405c21d92458713b2bd3f6721edd180cbd8bafbf181b7a |
 | altruist.svg | https://altruist.com/ (inline svg.custom-logo) | b505afb1fe5e6bd60c9a4fe0d07ae6bd4fb9474b0c5826df363bdacf34c66fe8 |
+| apex.svg | https://apexfintechsolutions.com/_app/immutable/assets/APEX_LOGO_AFS_Stacked_RGB.Dj9VePQe.svg | 2b1f67b06881aeb2058004dd156b0f6517cfa305781545267f8c9081f5d9bf7a |
+| axos-advisor-services.svg | https://www.axosadvisorservices.com/axos-advantage/about-axos (header image source from Contentful) | ae5b82508c899d6c702dfd9bd7299324d3d4957961ad9a9ac8c8062b35f1e699 |
 | tradepmr.png | https://www.tradepmr.com/hubfs/TradePMR%20Logos/TradePMR_by_RH_Reverse.png | 20dadba2a3cfb66987ac7037bdb4cd85a942e0fc33168a7e42e066c34d5ca753 |
 | wealthscape.png | https://www.wealthscape.com/images/branding.png | 3e7175b247df6250adc62ab65d358ad564a3cb8f319c0ba7067de4f4e05536da |
 | sei.svg | https://www.seic.com/themes/custom/seic/images/seiclogob.svg | d4851f880fc120f2c2a7cb7200987c4cac7c935cf9e79b319dff1266f78aa58e |
 | pershing.svg | https://www.bny.com/pershing/us/en.html (inline header SVG) | 3d11ff9e4ca06953a5e18a36bcd4bfb1e9ea63d677c39e6e83d14ef56b53b084 |
+| first-clearing.png | https://fc.circles.studio/wp-content/uploads/2025/10/FC-Icon.png | ce26030c64307da1e3eaa5de7ccb9d08471202b80fb6e1a19e24bb95375ec33d |
+| wedbush.svg | https://www.wedbush.com/wp-content/themes/gate39media/img/WedbushLogo_RGB_Small_NoPadding_Blue.svg | aed128647c4151ed8744688e70715d1d686ac57f90b880da6d0913dcb340c48a |
 | goldman.png | https://www.goldmansachs.com/images/gs-wordmark-black.png | d0351a6acf2103d4ba8ccf8c281abf91afa67915a4f83a0a7820bd367bc8a806 |
 | addepar.png | https://addepar.com/assets/logo/addepar-logo-dark.png | e9d0ed53b08ac640d31a43de8a1f778610b54075a8b4dd150fac6110376ba446 |
 | advyzon.svg | https://www.advyzon.com/wp-content/uploads/2025/02/ADVZ_LOGO_NPB_Bl-Yl.svg | dd6698ad9852f7de78376fb5ada133d58e327bb9062a9ca4205f549fdfbe5293 |
@@ -22,3 +27,5 @@ SVG handling: retained static paths, viewBox and intrinsic proportions; removed 
 Schwab's official PNG has a 300px blue square centered in a 720px-wide white canvas. CSS scales the whole image uniformly and clips surrounding white margin only, rendering the complete blue mark at 44px. Other logos use contain sizing with no clipping. Light backing and a dark TradePMR backing preserve original colors; no recoloring filters or generated artwork.
 
 Reporting modernization adds Addepar, Advyzon, Envestnet, Orion, and SS&C Black Diamond marks for the reporting capability map. Envestnet is used for the Envestnet Tamarac comparison point because the current official Envestnet site exposes the parent lockup and Tamarac pages have moved under Envestnet. All added SVGs were checked for script, foreignObject, JavaScript URL, and external href references before use.
+
+Account maintenance market views add LPL, Apex, Axos Advisor Services, First Clearing, and Wedbush marks for the custody and clearing bubble maps. The LPL production asset was sourced from CompaniesLogo after LPL's official brand page confirmed public logo downloads but blocked direct scripted PNG retrieval.
