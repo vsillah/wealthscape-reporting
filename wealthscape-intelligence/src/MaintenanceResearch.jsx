@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { LifecycleResearch, outcomes } from "./LifecycleExperience";
 import MaintenanceOutcomes from "./MaintenanceOutcomes.jsx";
+import StrategyEvidenceOperations from "./StrategyEvidenceOperations.jsx";
 import { visibleCases } from "./AccountMaintenance";
 import { normalizeOutcomeSelection } from "./maintenanceOutcomeSolutions.js";
 
@@ -586,6 +587,7 @@ function SourceConfidenceSystem() {
     ["tiers", "Source tiers"],
     ["flow", "Governance path"],
     ["challenge", "Challenge layer"],
+    ["operations", "Ops ledger"],
     ["receipts", "Review receipts"],
     ["notes", "Section notes"],
   ];
@@ -698,6 +700,9 @@ function SourceConfidenceSystem() {
               ))}
             </div>
           </div>
+        )}
+        {activeSourceView === "operations" && (
+          <StrategyEvidenceOperations defaultTrack="maintenance" />
         )}
         {activeSourceView === "receipts" && (
           <div className="mr-source-review">

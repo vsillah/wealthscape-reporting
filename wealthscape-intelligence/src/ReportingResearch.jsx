@@ -51,6 +51,7 @@ import {
   ReportingCapabilityMap,
   ReportingJourney,
 } from "./ReportingVisuals.jsx";
+import StrategyEvidenceOperations from "./StrategyEvidenceOperations.jsx";
 
 const sections = [
   ["thesis", "Leadership decision", Lightbulb],
@@ -1163,6 +1164,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 Vendor documentation is not a product audit; interested-party
                 studies do not establish causal benefits.
               </p>
+              <StrategyEvidenceOperations defaultTrack="reporting" />
               <div className="rr-stack">
                 {Object.entries(reportingSources)
                   .filter(([key]) => key !== "packet")

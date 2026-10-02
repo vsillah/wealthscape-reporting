@@ -240,12 +240,28 @@ test("maintenance source confidence exposes evidence scoring and review gates", 
     join(srcDir, "MaintenanceResearch.jsx"),
     "utf8",
   );
+  const reportingResearchSource = readFileSync(
+    join(srcDir, "ReportingResearch.jsx"),
+    "utf8",
+  );
   const summarySource = readFileSync(
     join(srcDir, "StrategyExecutiveSummary.jsx"),
     "utf8",
   );
   const accountMaintenanceCss = readFileSync(
     join(srcDir, "AccountMaintenance.css"),
+    "utf8",
+  );
+  const evidenceOpsSource = readFileSync(
+    join(srcDir, "strategyEvidenceOperations.js"),
+    "utf8",
+  );
+  const evidenceOpsCss = readFileSync(
+    join(srcDir, "StrategyEvidenceOperations.css"),
+    "utf8",
+  );
+  const evidenceOpsComponent = readFileSync(
+    join(srcDir, "StrategyEvidenceOperations.jsx"),
     "utf8",
   );
   const summaryCss = readFileSync(
@@ -271,6 +287,12 @@ test("maintenance source confidence exposes evidence scoring and review gates", 
   assert.match(maintenanceSource, /sourceChallengeChecks/);
   assert.match(maintenanceSource, /Challenge layer/);
   assert.match(maintenanceSource, /Raise confidence without using Fidelity internal data/);
+  assert.match(maintenanceSource, /Ops ledger/);
+  assert.match(maintenanceSource, /StrategyEvidenceOperations defaultTrack="maintenance"/);
+  assert.match(maintenanceSource, /import StrategyEvidenceOperations/);
+  assert.match(reportingResearchSource, /StrategyEvidenceOperations defaultTrack="reporting"/);
+  assert.match(reportingResearchSource, /import StrategyEvidenceOperations/);
+  assert.match(reportingResearchSource, /Public-source register/);
   assert.match(maintenanceSource, /Approval lock/);
   assert.doesNotMatch(maintenanceSource, /Treat any section score below 50, or any confidence dimension below 50, as a validation backlog before it is used for funding/);
   assert.match(maintenanceSource, /sourceAppendixNotes/);
@@ -335,6 +357,25 @@ test("maintenance source confidence exposes evidence scoring and review gates", 
   assert.match(summarySource, /Check decision gates/);
   assert.match(summarySource, /one bounded pilot, one baseline workstream, and one decision gate/);
   assert.match(summarySource, /Inspect source engine/);
+  assert.match(evidenceOpsSource, /strategyEvidenceTracks/);
+  assert.match(evidenceOpsSource, /Reporting modernization/);
+  assert.match(evidenceOpsSource, /Account maintenance/);
+  assert.match(evidenceOpsSource, /modeled current floor/);
+  assert.match(evidenceOpsSource, /modeled section average/);
+  assert.match(evidenceOpsSource, /Approval-gated internal data/);
+  assert.match(evidenceOpsSource, /Formal ODI analytics/);
+  assert.match(evidenceOpsSource, /strategyEvidenceTrackOptions/);
+  assert.match(evidenceOpsComponent, /Operationalize source confidence across strategy tracks/);
+  assert.match(evidenceOpsComponent, /Claim ledger/);
+  assert.match(evidenceOpsComponent, /Challenge checks/);
+  assert.match(evidenceOpsComponent, /Confidence lift/);
+  assert.match(evidenceOpsComponent, /Approval locks/);
+  assert.match(evidenceOpsComponent, /Score path/);
+  assert.match(evidenceOpsCss, /\.evidence-ops/);
+  assert.match(evidenceOpsCss, /\.evidence-ops-track/);
+  assert.match(evidenceOpsCss, /\.evidence-ops-metrics/);
+  assert.match(evidenceOpsCss, /\.evidence-ops-score-path/);
+  assert.match(evidenceOpsCss, /@media \(max-width: 960px\)/);
   assert.doesNotMatch(summarySource, /strategy-executive-conclusion/);
   assert.doesNotMatch(summarySource, /strategy-executive-decisions/);
   assert.match(accountMaintenanceCss, /\.mr-source-confidence/);
