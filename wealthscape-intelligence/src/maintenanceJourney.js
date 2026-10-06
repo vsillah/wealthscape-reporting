@@ -154,7 +154,7 @@ export const journeyMilestones = [
       },
       {
         id: 8,
-        label: "Actions needing Fidelity to act",
+        label: "Actions needing service team to act",
         reason: "The responsible service owner should be explicit.",
       },
       {

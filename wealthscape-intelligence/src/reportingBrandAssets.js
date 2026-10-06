@@ -12,12 +12,6 @@ export const reportingBrandAssets = {
       "https://www.advyzon.com/wp-content/uploads/2025/02/ADVZ_LOGO_NPB_Bl-Yl.svg",
     page: "https://www.advyzon.com/",
   },
-  "Fidelity (Wealthscape)": {
-    file: "wealthscape.png",
-    width: 112,
-    source: "https://www.wealthscape.com/images/branding.png",
-    page: "https://www.wealthscape.com/",
-  },
   "Envestnet Tamarac": {
     file: "envestnet.svg",
     width: 104,

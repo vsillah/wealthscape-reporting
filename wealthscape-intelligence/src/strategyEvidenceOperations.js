@@ -68,13 +68,13 @@ export const strategyEvidenceTracks = {
         score: 44,
         sourceClass: "Approval-gated internal data",
         claim:
-          "The business case depends on Fidelity preparation time, rework rate, review burden, support cost and production usage.",
+          "The business case depends on baseline preparation time, rework rate, review burden, support cost and production usage.",
         challenge: "Locked until approved internal telemetry or a bounded pilot supplies the data.",
       },
     ],
     challengeResults: [
       ["Pass", "Public source reachability", "Vendor, regulatory and strategy-packet references can be traced from the source register."],
-      ["Warn", "Claim-source fit", "Vendor documentation supports capability existence, not product depth or Fidelity implementation readiness."],
+      ["Warn", "Claim-source fit", "Vendor documentation supports capability existence, not product depth or baseline implementation readiness."],
       ["Warn", "ODI discipline", "Outcome scores are management estimates and should stay capped until formal importance and satisfaction research is run."],
       ["Locked", "Operational baseline", "Preparation time, review burden, support cost and production adoption require approved internal data or pilot telemetry."],
     ],
@@ -83,7 +83,7 @@ export const strategyEvidenceTracks = {
       ["Build now", "Run challenge agents for broken links, unsupported claims, contradictions, source independence and recency.", "+4"],
       ["Public-safe", "Complete competitor product teardown notes for report generation, portal delivery, permissions and review evidence.", "+6"],
       ["Licensed", "Add entitled market research uploads for reporting workflow, advisor technology and client reporting benchmarks.", "+5"],
-      ["Locked", "Instrument Fidelity preparation time, review loops, report defects, usage, support volume and cost-to-serve.", "+12"],
+      ["Locked", "Instrument baseline preparation time, review loops, report defects, usage, support volume and cost-to-serve.", "+12"],
     ],
     pipelines: [
       {
@@ -107,7 +107,7 @@ export const strategyEvidenceTracks = {
         purpose:
           "Replace broad vendor references with structured evidence about the reporting workflow capabilities peers actually describe.",
         ingest:
-          "Addepar, Advyzon, Tamarac, Orion, Altruist, Black Diamond, Schwab, BNY and Fidelity public documentation.",
+          "Addepar, Advyzon, Tamarac, Orion, Altruist, Black Diamond, Schwab, BNY and baseline public documentation.",
         produce:
           "Capability observations for generation, review, portal delivery, permissions, retention and evidence retrieval.",
         gate:
@@ -139,7 +139,7 @@ export const strategyEvidenceTracks = {
         produce:
           "Baseline deltas, stop/scale thresholds, confidence recalibration and section-score updates.",
         gate:
-          "Executive, data-owner, legal and compliance approval are required before any Fidelity telemetry is ingested.",
+          "Executive, data-owner, legal and compliance approval are required before any approved internal telemetry is ingested.",
         lift: "+12 approved-data lift",
       },
       {
@@ -189,7 +189,7 @@ export const strategyEvidenceTracks = {
         sourceClass: "Public research and disclosures",
         claim:
           "Custody and clearing market signals support measuring request quality, repeated handling and ownership before expanding automation.",
-        challenge: "Keep as market context until Fidelity workflow telemetry is approved.",
+        challenge: "Keep as market context until baseline workflow telemetry is approved.",
       },
       {
         id: "AM-C02",
@@ -199,7 +199,7 @@ export const strategyEvidenceTracks = {
         sourceClass: "Primary vendor docs",
         claim:
           "Schwab and Altruist public documentation show adjacent guided workflows, notifications and retained records.",
-        challenge: "Vendor docs do not prove full feature completeness or Fidelity parity.",
+        challenge: "Vendor docs do not prove full feature completeness or baseline parity.",
       },
       {
         id: "AM-C03",
@@ -244,7 +244,7 @@ export const strategyEvidenceTracks = {
     ],
     challengeResults: [
       ["Pass", "Public source reachability", "Custodian, clearing, T3, Kitces and regulatory sources are traceable from the appendix."],
-      ["Warn", "Customer proximity", "Most current evidence is one step removed from Fidelity maintenance work."],
+      ["Warn", "Customer proximity", "Most current evidence is one step removed from baseline maintenance work."],
       ["Warn", "ODI discipline", "Current outcome placement is directional and should not be treated as a completed ODI study."],
       ["Locked", "Internal telemetry", "Request volume, NIGO reasons, repeat handling, cycle time, effort and cost require approval."],
       ["Locked", "Formal ODI study", "Survey, factor analysis and cluster analysis require research approval and participant access."],
@@ -255,7 +255,7 @@ export const strategyEvidenceTracks = {
       ["Public-safe", "Expand peer benchmark repository for Schwab, Pershing, LPL, Altruist, Apex, Axos and TradePMR.", "+6"],
       ["Licensed", "Add entitled custody, clearing and advisor-tech research where it answers a specific market or peer gap.", "+5"],
       ["Approval-gated", "Intake approved interviews, observations, usability sessions and task diaries.", "+7"],
-      ["Locked", "Ingest Fidelity request telemetry, NIGO reasons, handoffs, cycle time, effort, escalations and support cost.", "+15"],
+      ["Locked", "Ingest internal request telemetry, NIGO reasons, handoffs, cycle time, effort, escalations and support cost.", "+15"],
       ["Locked", "Run formal desired-outcome survey with factor and cluster analysis.", "+12"],
     ],
     pipelines: [
@@ -280,11 +280,11 @@ export const strategyEvidenceTracks = {
         purpose:
           "Make peer evidence structured enough to support maintenance-specific comparisons without overstating market reports.",
         ingest:
-          "Schwab, Pershing, LPL, Altruist, Apex, Axos, TradePMR, First Clearing, Wedbush and Fidelity public evidence.",
+          "Schwab, Pershing, LPL, Altruist, Apex, Axos, TradePMR, First Clearing, Wedbush and baseline public evidence.",
         produce:
           "Capability observations for validation, authority, status, evidence retention, exception handling and service recovery.",
         gate:
-          "Benchmarks can frame operating pressure; they cannot become Fidelity ROI or feature-completeness proof.",
+          "Benchmarks can frame operating pressure; they cannot become baseline ROI or feature-completeness proof.",
         lift: "+6 peer-evidence lift",
       },
       {
@@ -306,13 +306,13 @@ export const strategyEvidenceTracks = {
         title: "Maintenance telemetry connector",
         status: "Locked",
         purpose:
-          "Raise the largest-confidence gap by measuring the actual Fidelity request path behind account maintenance.",
+          "Raise the largest-confidence gap by measuring the actual internal request path behind account maintenance.",
         ingest:
           "Request volume, NIGO reasons, repeat handling, owner handoffs, cycle time, effort, escalations, completion proof and support cost.",
         produce:
           "Baseline measures, pilot deltas, ROI ranges, score recalibration and stop/scale decision evidence.",
         gate:
-          "Executive, data-owner, legal and compliance approval are required before any Fidelity telemetry is ingested.",
+          "Executive, data-owner, legal and compliance approval are required before any approved internal telemetry is ingested.",
         lift: "+15 approved-data lift",
       },
       {
@@ -345,7 +345,7 @@ export const strategyEvidenceTracks = {
       },
     ],
     locks: [
-      ["Fidelity telemetry", "Highest ROI lift, but requires executive, legal, compliance and data-owner approval."],
+      ["approved internal telemetry", "Highest ROI lift, but requires executive, legal, compliance and data-owner approval."],
       ["Primary workflow research", "Requires participant approval, privacy handling and a research protocol."],
       ["Formal ODI analytics", "Requires approved survey sample, data capture and statistical analysis before scores graduate."],
     ],

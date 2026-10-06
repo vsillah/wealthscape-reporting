@@ -15,7 +15,7 @@ const roles = {
     scope: "Cross-office exceptions and service dependencies",
     ids: ["MC-102", "MC-103", "MC-104", "MC-106"],
     heading: "Route by operating team",
-    lanes: ["Fidelity service", "Conversion operations", "Supervision"],
+    lanes: ["service operations", "Conversion operations", "Supervision"],
   },
   "bd-osj-principal": {
     title: "Supervisory account lifecycle",
@@ -50,7 +50,7 @@ export const initialMaintenance = [
     household: "Harbor household",
     change: "Standing instruction / bank link",
     accounts: ["Brokerage · DEMO-03"],
-    owner: "Fidelity service",
+    owner: "service operations",
     blocker: "Bank-link evidence incomplete",
     due: "Today",
     checks: [true, true, false],
@@ -348,8 +348,8 @@ export function MaintenanceStrategy({ onNavigate }) {
       <details>
         <summary>Research provenance and production controls</summary>
         <p>
-          Direction informed by the Wealthscape Market Research project, Account
-          Maintenance Frames, and Wealthscape Account Maintenance Executive
+          Direction informed by the Market Research project, Account
+          Maintenance Frames, and Account Maintenance Executive
           exports. The frames use adjacent-category research: maintenance
           opportunity scores are directional, with sourced, derived, and
           inferred inputs. They are not measured maintenance performance or a
@@ -772,7 +772,7 @@ export function AccountMaintenance({
                       {[
                         "Advisor team",
                         "Client service",
-                        "Fidelity service",
+                        "service operations",
                         "Conversion operations",
                         "Supervision",
                         "Branch operations",

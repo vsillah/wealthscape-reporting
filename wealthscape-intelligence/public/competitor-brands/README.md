@@ -10,7 +10,6 @@ Retrieved 10 and 18 September 2026 from public pages/assets. Brand marks remain 
 | apex.svg | https://apexfintechsolutions.com/_app/immutable/assets/APEX_LOGO_AFS_Stacked_RGB.Dj9VePQe.svg | 2b1f67b06881aeb2058004dd156b0f6517cfa305781545267f8c9081f5d9bf7a |
 | axos-advisor-services.svg | https://www.axosadvisorservices.com/axos-advantage/about-axos (header image source from Contentful) | ae5b82508c899d6c702dfd9bd7299324d3d4957961ad9a9ac8c8062b35f1e699 |
 | tradepmr.png | https://www.tradepmr.com/hubfs/TradePMR%20Logos/TradePMR_by_RH_Reverse.png | 20dadba2a3cfb66987ac7037bdb4cd85a942e0fc33168a7e42e066c34d5ca753 |
-| wealthscape.png | https://www.wealthscape.com/images/branding.png | 3e7175b247df6250adc62ab65d358ad564a3cb8f319c0ba7067de4f4e05536da |
 | sei.svg | https://www.seic.com/themes/custom/seic/images/seiclogob.svg | d4851f880fc120f2c2a7cb7200987c4cac7c935cf9e79b319dff1266f78aa58e |
 | pershing.svg | https://www.bny.com/pershing/us/en.html (inline header SVG) | 3d11ff9e4ca06953a5e18a36bcd4bfb1e9ea63d677c39e6e83d14ef56b53b084 |
 | first-clearing.png | https://fc.circles.studio/wp-content/uploads/2025/10/FC-Icon.png | ce26030c64307da1e3eaa5de7ccb9d08471202b80fb6e1a19e24bb95375ec33d |
@@ -22,7 +21,7 @@ Retrieved 10 and 18 September 2026 from public pages/assets. Brand marks remain 
 | orion.svg | https://orion.com/themes/custom/themekit/logo.svg | a9cf402da9a1027e7d4fdb62ec612662af998be7361ac708878b379b67a8d21c |
 | black-diamond.svg | https://www.sscblackdiamond.com/media/c10cghtm/logo.svg | bc97125eb443897e752955af3b46753ed0c882d0c689d31ab6d20ae5c74e66f1 |
 
-SVG handling: retained static paths, viewBox and intrinsic proportions; removed active/event/external references where present. Altruist's inline currentColor is resolved to dark ink for use as an image. Pershing uses the current official BNY Pershing header lockup; TradePMR uses its official by Robinhood reverse lockup. Wealthscape is the actual wordmark selected by CL_WS_LOGO_SRC in its public common-login script, not a Fidelity parent substitute.
+SVG handling: retained static paths, viewBox and intrinsic proportions; removed active/event/external references where present. Altruist's inline currentColor is resolved to dark ink for use as an image. Pershing uses the current official BNY Pershing header lockup; TradePMR uses its official by Robinhood reverse lockup.
 
 Schwab's official PNG has a 300px blue square centered in a 720px-wide white canvas. CSS scales the whole image uniformly and clips surrounding white margin only, rendering the complete blue mark at 44px. Other logos use contain sizing with no clipping. Light backing and a dark TradePMR backing preserve original colors; no recoloring filters or generated artwork.
 

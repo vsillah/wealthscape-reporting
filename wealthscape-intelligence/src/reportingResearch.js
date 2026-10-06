@@ -7,7 +7,7 @@ export const reportingSources = {
   ...reportingEvidenceSources,
   packet: {
     label: "Broker-dealer strategy packet · July 2026",
-    href: "https://github.com/vsillah/wealthscape-reporting/blob/main/docs/broker-dealer-strategy-expansion.md",
+    href: "#source-broker-dealer-strategy-packet",
   },
   addepar: {
     label: "Addepar · reporting workflows, June 2026",
@@ -36,23 +36,23 @@ export const reportingSources = {
     href: "https://www.advyzon.com/secure/",
     note: "Vendor page: secure document handling includes WORM, audit trails, retention policies, role-based permissions and reviewable workflows. Treat as adjacent control evidence unless report entitlements are confirmed.",
   },
-  fidelity: {
-    label: "Fidelity · Wealthscape Intelligence launch, September 2025",
-    href: "https://newsroom.fidelity.com/thought-leaders/fidelity-investments-launches-wealthscapesm-intelligence-and-introduces-new--fully-digital-onboardin/s/aaf9079d-0ecd-49b2-84f2-7e546a4fc693",
+  baselineLaunch: {
+    label: "baseline · Strategy Evidence launch, September 2025",
+    href: "#source-baseline-launch",
   },
-  fidelityOperations: {
-    label: "Fidelity · Wealthscape operations experience",
-    href: "https://clearingcustody.fidelity.com/solutions/technology/brokerage/operations",
+  baselineOperations: {
+    label: "baseline · baseline operations experience",
+    href: "#source-baseline-operations",
   },
-  fidelityInvestorExperience: {
-    label: "Fidelity · Wealthscape investor experience",
-    href: "https://clearingcustody.fidelity.com/solutions/technology/brokerage/investors",
-    note: "Fidelity describes investor access to documents, balances, activity, market data and account management; this supports client experience context more than custom report workflow proof.",
+  baselineInvestorExperience: {
+    label: "baseline · baseline investor experience",
+    href: "#source-baseline-investor-experience",
+    note: "baseline describes investor access to documents, balances, activity, market data and account management; this supports client experience context more than custom report workflow proof.",
   },
-  fidelityPortfolioQuickCheck: {
-    label: "Fidelity · Portfolio Quick Check",
-    href: "https://clearingcustody.fidelity.com/platforms/portfolio-quick-check",
-    note: "Fidelity describes customizable portfolio reports and saved custom report views. Public material does not establish batch generation or report-specific entitlement controls.",
+  baselinePortfolioQuickCheck: {
+    label: "baseline · Portfolio Quick Check",
+    href: "#source-baseline-portfolio-quick-check",
+    note: "baseline describes customizable portfolio reports and saved custom report views. Public material does not establish batch generation or report-specific entitlement controls.",
   },
   tamaracReports: {
     label: "Tamarac help · reporting overview",
@@ -188,21 +188,21 @@ export const reportingCompetitors = [
     action: "Inspect client portal",
   },
   {
-    name: "Fidelity",
-    focus: "Wealthscape reporting baseline",
+    name: "Baseline",
+    focus: "Reporting baseline",
     icon: "report",
     incumbent: true,
-    source: "fidelity",
-    additionalSource: "fidelityOperations",
+    source: "baselineLaunch",
+    additionalSource: "baselineOperations",
     additionalSources: [
-      "fidelityInvestorExperience",
-      "fidelityPortfolioQuickCheck",
+      "baselineInvestorExperience",
+      "baselinePortfolioQuickCheck",
     ],
     evidence:
-      "Fidelity describes centralized operational reports, configurable reporting, investor document access, and saved custom portfolio reports. Public material is thinner on batch generation and report-specific entitlements.",
+      "Public material describes centralized operational reports, configurable reporting, investor document access, and saved custom portfolio reports. Detail is thinner on batch generation and report-specific entitlements.",
     implication:
       "Start discovery with the incumbent reporting capability. Validate reuse before proposing another report workflow.",
-    gap: "This is a public Wealthscape baseline. The synthetic prototype does not establish production coverage, report delivery, batch scheduling, or report-specific permissions.",
+    gap: "This is a de-branded public baseline. The synthetic prototype does not establish production coverage, report delivery, batch scheduling, or report-specific permissions.",
     layer: "reports",
     sub: { reportTab: "build" },
     action: "Inspect prototype report assembly",
@@ -466,27 +466,27 @@ export const reportingComparison = [
     ],
   },
   {
-    name: "Fidelity (Wealthscape)",
+    name: "Baseline",
     cells: [
       capabilityCell(
         "strong",
         3,
-        "Fidelity public pages describe configurable reports and saved custom portfolio views, but public detail is thinner on a report-design studio.",
+        "Public baseline pages describe configurable reports and saved custom portfolio views, but public detail is thinner on a report-design studio.",
       ),
       capabilityCell(
         "open",
         3,
-        "Scheduled or batch report generation was not publicly substantiated in the retained Fidelity references.",
+        "Scheduled or batch report generation was not publicly substantiated in the retained public baseline references.",
       ),
       capabilityCell(
         "partial",
         3,
-        "Fidelity describes investor document access and eDelivery, but that is adjacent to custom report delivery rather than proof of generated report distribution.",
+        "Public baseline material describes investor document access and eDelivery, but that is adjacent to custom report delivery rather than proof of generated report distribution.",
       ),
       capabilityCell(
         "partial",
         3,
-        "Fidelity describes compliance and operations controls, but the retained public material does not establish report-specific access controls.",
+        "Public baseline material describes compliance and operations controls, but the retained public material does not establish report-specific access controls.",
       ),
     ],
   },
@@ -661,13 +661,13 @@ const reportingCapabilityMapMeta = {
     assumption:
       "Access-control support is adjacent rather than report-specific in the retained public material. Validate entitlements in a product teardown.",
   },
-  "Fidelity (Wealthscape)": {
+  "Baseline": {
     satisfactionProxy: 7.2,
-    label: "Wealthscape",
-    brandKey: "Wealthscape",
+    label: "Baseline",
+    brandKey: "Baseline",
     labelOffset: [-80, -32],
     position:
-      "Wealthscape has a credible configurable-reporting baseline, but the retained public material is thinner on scheduled generation, report delivery and report-specific access controls.",
+      "The baseline has a credible configurable-reporting position, but the retained public material is thinner on scheduled generation, report delivery and report-specific access controls.",
     assumption:
       "The 7.2 proxy retains the Kitces reporting rating cited in the evidence cards; internal product documentation may change the workflow-breadth score.",
   },

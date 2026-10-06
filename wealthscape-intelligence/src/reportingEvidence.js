@@ -29,7 +29,7 @@ export const reportingEvidenceSources = {
   broadridge: {
     label: "Broadridge / Forrester · public FINRA comment, 14 July 2025",
     href: "https://www.finra.org/sites/default/files/NoticeComment/Broadridge%20Comment%20Letter%20to%20FINRA%20-%2007-14-2025.pdf",
-    note: "Vendor-commissioned survey, n=5,007, November–December 2024; format analysis covers 17.9 million statements in March 2025. Interested-party evidence, not a Wealthscape result.",
+    note: "Vendor-commissioned survey, n=5,007, November–December 2024; format analysis covers 17.9 million statements in March 2025. Interested-party evidence, not a baseline result.",
   },
   secDelivery: {
     label: "SEC Investor Advocate · e-delivery preferences, May 2026",
@@ -166,7 +166,7 @@ export const reportingMarketEvidence = [
       "Kitces 2025 reports performance-reporting importance of 8.6 and adoption of 87.5%.",
     implicationTitle: "Competitive read",
     implication:
-      "Wealthscape can be disadvantaged if reporting remains merely available while peers make preparation, review, and delivery easier to complete.",
+      "Baseline can be disadvantaged if reporting remains merely available while peers make preparation, review, and delivery easier to complete.",
     sources: ["kitces"],
   },
   {
@@ -187,7 +187,7 @@ export const reportingMarketEvidence = [
     sources: ["kitces"],
   },
   {
-    title: "Wealthscape appears credible on ratings but under-penetrated in primary use.",
+    title: "Baseline appears credible on ratings but under-penetrated in primary use.",
     value: "7.2 / 7.0 / 7.73",
     metricLabel: "Kitces reporting / portal ratings and T3 custodial rating",
     icon: "layers",
@@ -197,7 +197,7 @@ export const reportingMarketEvidence = [
     context:
       "The ratings suggest a plausible starting base; the low primary-use shares make the competitive read less certain.",
     finding:
-      "Fidelity Institutional: reporting 7.2 versus platform group 7.1; portal 7.0 versus 7.0. T3 rates Wealthscape 7.73 versus custodial category 7.11. Primary reporting and portal shares are 1.2% and 0.6%.",
+      "Baseline custodian: reporting 7.2 versus platform group 7.1; portal 7.0 versus 7.0. T3 rates baseline 7.73 versus custodial category 7.11. Primary reporting and portal shares are 1.2% and 0.6%.",
     implicationTitle: "Competitive read",
     implication:
       "This looks less like a broken-product signal and more like a discoverability, workflow-fit, or adoption uncertainty; the public data does not prove advantage or disadvantage on its own.",

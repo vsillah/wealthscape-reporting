@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import WealthscapePrototype from './WealthscapePrototype'
+import LifecyclePrototype from './LifecyclePrototype'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <WealthscapePrototype />
+    <LifecyclePrototype />
   </StrictMode>,
 )

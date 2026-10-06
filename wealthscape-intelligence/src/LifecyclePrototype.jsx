@@ -55,9 +55,9 @@ const TOUR_STEPS = [
   {
     id: "intro",
     layer: "morning",
-    title: "Welcome to Wealthscape Lifecycle Intelligence",
+    title: "Welcome to Strategy Evidence Dashboard",
     component: "Reporting Module Tour",
-    description: "This guided tour covers the reporting output within Wealthscape Lifecycle Intelligence. Use the Lifecycle workspace for the connected maintenance-to-report flow. The original reporting demonstration remains available — built around five ODI-driven layers: Morning Brief, Report Builder, Integration Hub, Client Portal, and Analytics. Alerts surface from a single store, every alert carries a next-best-action, and a guided end-to-end scenario stitches the whole workflow together. This tour explains every component and the customer outcome it addresses.",
+    description: "This guided tour covers the reporting output within Strategy Evidence Dashboard. Use the Strategy workspace for the connected maintenance-to-report flow. The original reporting demonstration remains available — built around five ODI-driven layers: Morning Brief, Report Builder, Integration Hub, Client Portal, and Analytics. Alerts surface from a single store, every alert carries a next-best-action, and a guided end-to-end scenario stitches the whole workflow together. This tour explains every component and the customer outcome it addresses.",
     outcome: null,
     outcomeScore: null,
     position: "center",
@@ -68,10 +68,10 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Morning Brief Banner",
     component: "Layer 1 · AI Intelligence Surface",
-    description: "The highest-priority surface in the entire platform. Every morning, Wealthscape Lifecycle Intelligence surfaces a prioritized digest of what needs the advisor's attention before market open — drift alerts, tax windows, at-risk clients, and overdue reviews.",
+    description: "The highest-priority surface in the entire platform. Every morning, Strategy Evidence Dashboard surfaces a prioritized digest of what needs the advisor's attention before market open — drift alerts, tax windows, at-risk clients, and overdue reviews.",
     outcome: "Know what needs attention right now each morning",
     outcomeScore: "ODI #1 · Opportunity Score 14.6",
-    gap: "Wealthscape had no native morning digest. Advisors were logging into 12+ apps to reconstruct this view manually.",
+    gap: "baseline had no native morning digest. Advisors were logging into 12+ apps to reconstruct this view manually.",
     position: "bottom",
     spotlightId: "morning-brief-banner",
   },
@@ -83,7 +83,7 @@ const TOUR_STEPS = [
     description: "A scannable row of the four metrics that matter most each morning: Total AUA with MTD trend, active client count, average portfolio performance vs benchmark, and count of open AI-generated insights requiring action.",
     outcome: "Minimize time to assess firm-wide health at start of day",
     outcomeScore: "ODI #1 · Opportunity Score 14.6",
-    gap: "Previously scattered across multiple Wealthscape reports. No single-view summary existed at login.",
+    gap: "Previously scattered across multiple baseline reports. No single-view summary existed at login.",
     position: "bottom",
     spotlightId: "kpi-strip",
   },
@@ -95,7 +95,7 @@ const TOUR_STEPS = [
     description: "Each insight is AI-generated from custody data, ranked by urgency, and expandable to a one-click next-best-action. Types include allocation drift, tax-loss windows, at-risk client signals, and overdue reviews. Crucially, this feed and the bell notification center read from a single alert store — nothing lives in a silo. Acting here marks the alert read everywhere.",
     outcome: "Know which clients are affected by events BEFORE they call / Insight to execution in one motion",
     outcomeScore: "ODI #7 · Score 16.3 / ODI #13 · Score 16.6 (highest in entire map)",
-    gap: "Wealthscape had zero portfolio-level NBA capability (scored 1/10 vs Envestnet's 25M NBAs/day). Advisors were building manual watchlists in spreadsheets.",
+    gap: "baseline had zero portfolio-level NBA capability (scored 1/10 vs Envestnet's 25M NBAs/day). Advisors were building manual watchlists in spreadsheets.",
     position: "bottom",
     spotlightId: "insights-feed",
   },
@@ -107,7 +107,7 @@ const TOUR_STEPS = [
     description: "The bell is the firm's single source of truth for everything that needs attention. Every scattered signal — drift, tax windows, at-risk clients, stale data feeds, delivered reports — flows here with a severity, a source, and a next-best-action that deep-links the advisor to the exact screen and sub-tab where it's resolved. Click 'Build Rebalance Report' and you land on the Report Builder's Generate tab, already scoped to that client.",
     outcome: "Consolidate every signal into one prioritized queue / Route directly from alert to resolution",
     outcomeScore: "ODI #13 · Score 16.6 · Insight-to-execution loop",
-    gap: "Alerts in legacy Wealthscape were fragmented across modules with no shared inbox and no path from notification to action. Advisors triaged the same issue in three places.",
+    gap: "Alerts in legacy baseline were fragmented across modules with no shared inbox and no path from notification to action. Advisors triaged the same issue in three places.",
     position: "bottom",
     spotlightId: "alert-bell",
   },
@@ -119,7 +119,7 @@ const TOUR_STEPS = [
     description: "A live area chart showing total Assets Under Administration over the trailing 6 months, with percentage growth annotation. Gives the advisor an immediate read on book trajectory without pulling a separate report.",
     outcome: "Minimize time to monitor firm-level AUM trends",
     outcomeScore: "ODI #6.3 · Monitoring Step",
-    gap: "Real-time AUA was available in Wealthscape Analytics but required navigating to a separate module — not surfaced on the primary screen.",
+    gap: "Real-time AUA was available in baseline Analytics but required navigating to a separate module — not surfaced on the primary screen.",
     position: "bottom",
     spotlightId: "aua-chart",
   },
@@ -143,7 +143,7 @@ const TOUR_STEPS = [
     description: "A 3-step wizard that replaces manual report setup: choose a template (Quarterly, Annual, Ad-Hoc, Proposal), select clients from a searchable list, and toggle AI narrative generation. Collapsible on mobile. Previously, advisors spent an average of 2 hours scheduling, running, and reconciling reports before client meetings.",
     outcome: "Minimize manual steps to configure report parameters per client segment",
     outcomeScore: "ODI #5.1 · Execute Step · Score 17 (tied highest)",
-    gap: "Wealthscape native reporting was operationally oriented (AUA, billing, money movement). Client-facing performance reports required exporting to Excel and manually rebuilding with branding. Not scalable beyond ~30 clients.",
+    gap: "baseline native reporting was operationally oriented (AUA, billing, money movement). Client-facing performance reports required exporting to Excel and manually rebuilding with branding. Not scalable beyond ~30 clients.",
     position: "right",
     spotlightId: "report-config",
     deepLink: { reportTab: "build" },
@@ -153,10 +153,10 @@ const TOUR_STEPS = [
     layer: "reports",
     title: "AI Narrative Toggle",
     component: "Compliance-Resident Report Commentary",
-    description: "When enabled, Wealthscape Lifecycle Intelligence generates a plain-language client summary directly from custody data — performance drivers, risk context, and key actions. The generated block appears inline in the report preview with a 'Pending Compliance Review' flag, keeping it in the audit trail. Toggle tone between Formal, Conversational, and Concise.",
+    description: "When enabled, Strategy Evidence Dashboard generates a plain-language client summary directly from custody data — performance drivers, risk context, and key actions. The generated block appears inline in the report preview with a 'Pending Compliance Review' flag, keeping it in the audit trail. Toggle tone between Formal, Conversational, and Concise.",
     outcome: "Ensure AI-generated narrative summaries are accurate and compliance-safe",
     outcomeScore: "ODI #5.5 · Execute Step · Critical Gap",
-    gap: "41% of advisors are already using ChatGPT/Claude outside the platform to generate report narratives — a direct shadow-IT compliance risk. This brings that workflow inside Wealthscape with an auditable chain.",
+    gap: "41% of advisors are already using ChatGPT/Claude outside the platform to generate report narratives — a direct shadow-IT compliance risk. This brings that workflow inside baseline with an auditable chain.",
     position: "right",
     spotlightId: "ai-narrative",
     deepLink: { reportTab: "build" },
@@ -169,7 +169,7 @@ const TOUR_STEPS = [
     description: "A real-time rendered report preview that updates as configuration changes. Includes the advisor's firm branding (navy header, logo), AI narrative block, performance vs benchmark bar chart, asset allocation pie chart, and a drift alert inline. Export to PDF or Send to Client buttons are in-preview — no context switch required.",
     outcome: "Minimize time to generate a branded, client-ready performance report in one tool / Minimize number of separate tools required",
     outcomeScore: "ODI #5.1 · Score 17 / ODI #5.3 · Score 17",
-    gap: "Advyzon (highest-rated reporting tool per T3) was bundled into Wealthscape specifically because native reporting couldn't produce client-ready branded output. This prototype closes that gap natively.",
+    gap: "Advyzon (highest-rated reporting tool per T3) was bundled into baseline specifically because native reporting couldn't produce client-ready branded output. This prototype closes that gap natively.",
     position: "left",
     spotlightId: "report-preview",
     deepLink: { reportTab: "build" },
@@ -182,7 +182,7 @@ const TOUR_STEPS = [
     description: "When a client's allocation has drifted beyond threshold, the alert surfaces directly inside the generated report — not in a separate notification. The advisor sees it in context of the performance data, and the client sees it in the same document. Creates a natural conversation anchor for the review meeting.",
     outcome: "Detect drift and rebalancing triggers automatically / Minimize risk of sending a report with incorrect or incomplete data",
     outcomeScore: "ODI #8 · Score 15.8 / ODI #4.3 · Confirm Step",
-    gap: "Drift detection existed in Wealthscape Analytics, but was siloed from the reporting workflow. Advisors had to cross-reference two separate modules.",
+    gap: "Drift detection existed in baseline Analytics, but was siloed from the reporting workflow. Advisors had to cross-reference two separate modules.",
     position: "left",
     spotlightId: "drift-alert",
     deepLink: { reportTab: "build" },
@@ -218,7 +218,7 @@ const TOUR_STEPS = [
     layer: "integrations",
     title: "Integration Hub",
     component: "Layer · Third-Party Provider Connections",
-    description: "Where the data actually comes from. Custodians, CRMs, portfolio management, and financial planning tools connect here over OAuth, each with an explicit field-mapping table showing how the provider's raw fields map into Wealthscape's data model. Click a connected provider to inspect its mapping, sync frequency, and last-sync status — and connect new providers in a click. This is the supply chain that feeds every report and alert.",
+    description: "Where the data actually comes from. Custodians, CRMs, portfolio management, and financial planning tools connect here over OAuth, each with an explicit field-mapping table showing how the provider's raw fields map into the platform's data model. Click a connected provider to inspect its mapping, sync frequency, and last-sync status — and connect new providers in a click. This is the supply chain that feeds every report and alert.",
     outcome: "Consolidate the advisor's fragmented tool stack behind one data layer / Make data lineage transparent",
     outcomeScore: "ODI #5.3 · Score 17 · 12 apps/advisor (Kitces 2025)",
     gap: "The average advisor stitches together 12 disconnected apps with no shared field mapping. Stale or mismatched data was invisible until it corrupted a client report.",
@@ -230,10 +230,10 @@ const TOUR_STEPS = [
     layer: "portal",
     title: "Client Portal Header",
     component: "Layer 3 · Advisor-Branded Client Experience",
-    description: "The client-facing entry point — branded to the advisory firm, not to Fidelity. Displays the client name, total portfolio value, and YTD performance at a glance. This is the surface clients land on when they click 'View Portal' from an emailed report.",
+    description: "The client-facing entry point — branded to the advisory firm, not to baseline. Displays the client name, total portfolio value, and YTD performance at a glance. This is the surface clients land on when they click 'View Portal' from an emailed report.",
     outcome: "Ensure the client portal experience reflects the advisor's brand, not the custodian's",
     outcomeScore: "ODI #8.5 · Conclude Step · Critical Gap",
-    gap: "Wealthscape Investor (the existing client app) shows Fidelity branding prominently. Independent RIAs want their own brand to anchor the client relationship — a key differentiation vs custodian-owned competitors.",
+    gap: "baseline client app (the existing client app) shows baseline branding prominently. Independent RIAs want their own brand to anchor the client relationship — a key differentiation vs custodian-owned competitors.",
     position: "bottom",
     spotlightId: "portal-header",
   },
@@ -245,7 +245,7 @@ const TOUR_STEPS = [
     description: "Horizontally scrollable tabs covering Overview (portfolio snapshot + advisor message), Performance (interactive charts), Documents (secure vault with NEW badges), and Messages (advisor-client thread). Scrollable on mobile without clipping.",
     outcome: "Ensure clients can interact with reports in a digital portal vs static PDF / Ensure advisor is notified when client views a report",
     outcomeScore: "ODI #8.2 · Score 15 / ODI #8.4 · Score 13",
-    gap: "78% of clients now expect interactive portals (Schwab 2024 study). Wealthscape Investor had positions and balances but no advisor-communication surface and no interactive reporting.",
+    gap: "78% of clients now expect interactive portals (Schwab 2024 study). baseline client app had positions and balances but no advisor-communication surface and no interactive reporting.",
     position: "bottom",
     spotlightId: "portal-tabs",
   },
@@ -257,7 +257,7 @@ const TOUR_STEPS = [
     description: "A threaded message from the advisor appearing directly in the client's portfolio overview — not in a separate inbox. Includes a 'View Q2 Report' CTA that links directly to the relevant document, and a Reply button. Keeps the advisor's voice in the primary financial context rather than buried in email.",
     outcome: "Ensure clients can interact with reports and easily contact their advisor / Minimize effort to deliver reports through the right channels",
     outcomeScore: "ODI #8.1 · Score 13 / ODI #8.3 · Score 13",
-    gap: "Digital Sales Rooms (contextual advisor-client communication hubs) are the fastest-growing category in wealthtech (InvestSuite 2025). No equivalent existed in Wealthscape's client experience.",
+    gap: "Digital Sales Rooms (contextual advisor-client communication hubs) are the fastest-growing category in wealthtech (InvestSuite 2025). No equivalent existed in the platform's client experience.",
     position: "top",
     spotlightId: "advisor-message",
   },
@@ -278,10 +278,10 @@ const TOUR_STEPS = [
     layer: "morning",
     title: "Navigation & AI Status",
     component: "Shell · Persistent Sidebar with AI Indicator",
-    description: "The left sidebar provides persistent navigation across all five experience layers. The AI Active badge at the bottom signals that Wealthscape Lifecycle Intelligence is running background analysis on the advisor's book — normalizing the expectation that AI is always on, not an opt-in feature.",
+    description: "The left sidebar provides persistent navigation across all five experience layers. The AI Active badge at the bottom signals that Strategy Evidence Dashboard is running background analysis on the advisor's book — normalizing the expectation that AI is always on, not an opt-in feature.",
     outcome: "Minimize the number of apps required to complete a full advisory workflow",
     outcomeScore: "ODI #5.3 · Score 17 / Competitive: 12 apps/advisor (Kitces 2025)",
-    gap: "The average Wealthscape advisor uses 12 separate apps. This shell is designed to consolidate Morning Brief, Reporting, Client Portal, and Analytics into a single login surface — directly competing with Jump AI's 'workflow OS' positioning.",
+    gap: "The average baseline advisor uses 12 separate apps. This shell is designed to consolidate Morning Brief, Reporting, Client Portal, and Analytics into a single login surface — directly competing with Jump AI's 'workflow OS' positioning.",
     position: "right",
     spotlightId: "nav-sidebar",
   },
@@ -554,9 +554,9 @@ const ALERTS = [
   { id:4, type:"review", severity:"medium", client:"Eleanor Vasquez", source:"Compliance", time:"Yesterday", read:false,
     body:"Annual review is 61 days overdue. Regulatory threshold is 90 days.",
     action:{ label:"Open Client Portal", layer:"portal", portalTab:"overview" } },
-  { id:5, type:"integration", severity:"medium", client:"Fidelity Institutional", source:"Integration Hub", time:"6:30 AM", read:false,
+  { id:5, type:"integration", severity:"medium", client:"Baseline custodian", source:"Integration Hub", time:"6:30 AM", read:false,
     body:"INTL ETF price feed is 4h stale. Re-sync before generating client reports.",
-    action:{ label:"Resolve Integration", layer:"integrations", integrationId:"fidelity" } },
+    action:{ label:"Resolve Integration", layer:"integrations", integrationId:"internalCustodian" } },
   { id:6, type:"report", severity:"low", client:"Patel Wealth Group", source:"Report Engine", time:"Mon", read:true,
     body:"Q2 performance report generated and delivered to the client portal.",
     action:{ label:"View in Portal", layer:"portal", portalTab:"documents" } },
@@ -1392,7 +1392,7 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
                   <div style={{ width:36, height:36, borderRadius:"50%", background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:T.green, flexShrink:0 }}>JW</div>
                   <div style={{ flex:1 }}>
                     <div style={{ display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:4, marginBottom:6 }}>
-                      <div><div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>Jordan Williams, CFP®</div><div style={{ fontSize:11, color:T.slate }}>Your Advisor · Fidelity Institutional</div></div>
+                      <div><div style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>Jordan Williams, CFP®</div><div style={{ fontSize:11, color:T.slate }}>Your Advisor · Baseline custodian</div></div>
                       <span style={{ fontSize:11, color:T.slate }}>Jun 6</span>
                     </div>
                     <div style={{ fontSize:13, color:T.gray600, lineHeight:1.6, marginBottom:12 }}>Hi Sarah and Michael — your Q2 report is ready. Your portfolio is up 8.4% YTD vs the 6.2% benchmark. I've flagged a small rebalancing opportunity in US equity. Let's discuss July 15th.</div>
@@ -1452,7 +1452,7 @@ function ClientPortal({ bp, deepLink, profile, reportDelivered }) {
               <span style={{ fontSize:13, fontWeight:700, color:T.gray900 }}>Messages</span>
               <button style={{ background:T.greenLt, border:"none", borderRadius:7, padding:"6px 12px", fontSize:12, fontWeight:700, color:T.green, cursor:"pointer", minHeight:34 }}>+ New</button>
             </div>
-            {[{from:"Jordan Williams, CFP®",body:"Your Q2 report is ready for review. Great quarter overall...",date:"Jun 6",unread:true},{from:"Jordan Williams, CFP®",body:"Following up on our April call — confirming the rebalance...",date:"Apr 18",unread:false},{from:"Fidelity Institutional",body:"Your Q1 2025 report is now available in your document vault.",date:"Mar 12",unread:false}].map((msg,i)=>(
+            {[{from:"Jordan Williams, CFP®",body:"Your Q2 report is ready for review. Great quarter overall...",date:"Jun 6",unread:true},{from:"Jordan Williams, CFP®",body:"Following up on our April call — confirming the rebalance...",date:"Apr 18",unread:false},{from:"Baseline custodian",body:"Your Q1 2025 report is now available in your document vault.",date:"Mar 12",unread:false}].map((msg,i)=>(
               <div key={i} style={{ padding:"13px 16px", borderBottom:`1px solid ${T.gray100}`, display:"flex", gap:10, alignItems:"flex-start", background:msg.unread?`${T.greenLt}60`:T.white }}>
                 <div style={{ width:32, height:32, borderRadius:"50%", background:T.greenLt, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:T.green, flexShrink:0 }}>JW</div>
                 <div style={{ flex:1, minWidth:0 }}>
@@ -1484,11 +1484,11 @@ const STRAT_STATS = [
 
 const MARKET_SIGNALS = [
   { tag:"Tool Sprawl",        stat:"12 apps",  source:"Kitces 2025",            icon:Layers,         body:"The average advisor stitches together 12 disconnected apps with no shared field mapping. Stale or mismatched data stays invisible until it corrupts a client report." },
-  { tag:"NBA Capability Gap", stat:"1 / 10",   source:"vs Envestnet 25M/day",   icon:Zap,            body:"Wealthscape scored 1/10 on portfolio-level next-best-actions against Envestnet's 25M NBAs/day. Advisors rebuilt the logic by hand in spreadsheets." },
-  { tag:"Portal Expectation", stat:"78%",      source:"Schwab 2024",            icon:Users,          body:"78% of clients now expect an interactive portal, not a static PDF. Wealthscape Investor had balances but no advisor-communication surface." },
-  { tag:"Branded Output",     stat:"Advyzon",  source:"T3 Tech Survey",         icon:FileText,       body:"The highest-rated reporting tool was bundled into Wealthscape specifically because native reporting couldn't produce client-ready branded output." },
+  { tag:"NBA Capability Gap", stat:"1 / 10",   source:"vs Envestnet 25M/day",   icon:Zap,            body:"baseline scored 1/10 on portfolio-level next-best-actions against Envestnet's 25M NBAs/day. Advisors rebuilt the logic by hand in spreadsheets." },
+  { tag:"Portal Expectation", stat:"78%",      source:"Schwab 2024",            icon:Users,          body:"78% of clients now expect an interactive portal, not a static PDF. baseline client app had balances but no advisor-communication surface." },
+  { tag:"Branded Output",     stat:"Advyzon",  source:"T3 Tech Survey",         icon:FileText,       body:"The highest-rated reporting tool was bundled into baseline specifically because native reporting couldn't produce client-ready branded output." },
   { tag:"Shadow IT",          stat:"41%",      source:"Compliance exposure",    icon:AlertTriangle,  body:"41% of advisors already use ChatGPT/Claude outside the platform to write report narratives — an unaudited, off-platform compliance risk." },
-  { tag:"Digital Sales Rooms",stat:"#1 growth",source:"InvestSuite 2025",       icon:Mail,           body:"Contextual advisor-client communication hubs are the fastest-growing wealthtech category. No equivalent existed in Wealthscape's client experience." },
+  { tag:"Digital Sales Rooms",stat:"#1 growth",source:"InvestSuite 2025",       icon:Mail,           body:"Contextual advisor-client communication hubs are the fastest-growing wealthtech category. No equivalent existed in the platform's client experience." },
 ];
 
 const CUSTOMER_PAINS = [
@@ -1521,7 +1521,7 @@ const CUSTOMER_PAINS = [
     pain:"Report exports lack a visible validation trail for stale prices, missing corporate actions, and review evidence.",
   },
   {
-    metric:"Fidelity",
+    metric:"baseline",
     phase:"Conclude",
     job:"Conclude · Deliver and follow through",
     quote:"The client experience should feel like my advisory relationship, not just the custodian's portal.",
@@ -1642,26 +1642,26 @@ const BD_OSJ_MARKET_SIGNALS = [
 
 const BD_HYBRID_MARKET_SIGNALS = [
   { tag:"Hybrid Growth", stat:"RIA + BD", source:"Cerulli / Schwab", icon:Users, body:"Hybrid and independent affiliation channels keep growing as advisors seek flexibility, custody choice, and more control over the client experience." },
-  { tag:"Wealth Trends", stat:"2026", source:"Fidelity trends", icon:TrendingUp, body:"Fidelity's 2026 wealth-management trends point to AI, new asset classes, cybersecurity, M&A, and broader definitions of wealthy-investor success." },
+  { tag:"Wealth Trends", stat:"2026", source:"baseline trends", icon:TrendingUp, body:"the firm's 2026 wealth-management trends point to AI, new asset classes, cybersecurity, M&A, and broader definitions of wealthy-investor success." },
   { tag:"Mixed Book", stat:"Many rails", source:"Profile packet", icon:Layers, body:"Brokerage, advisory, annuity, insurance, planning, cash, suitability, and account-opening work often sit in separate systems even when the client sees one relationship." },
-  { tag:"Client Explanation", stat:"Approved", source:"FINRA / Fidelity AI", icon:FileText, body:"Client-ready narratives need to distinguish brokerage activity, advisory recommendations, product disclosures, and approved language without sending the team into manual rewrite mode." },
-  { tag:"Workflow Blocks", stat:"Visible", source:"Fidelity trends", icon:AlertTriangle, body:"Account, product, suitability, supervision, and missing-data blockers need to appear in the same place as the recommendation the advisor is trying to deliver." },
+  { tag:"Client Explanation", stat:"Approved", source:"FINRA / baseline AI", icon:FileText, body:"Client-ready narratives need to distinguish brokerage activity, advisory recommendations, product disclosures, and approved language without sending the team into manual rewrite mode." },
+  { tag:"Workflow Blocks", stat:"Visible", source:"baseline trends", icon:AlertTriangle, body:"Account, product, suitability, supervision, and missing-data blockers need to appear in the same place as the recommendation the advisor is trying to deliver." },
   { tag:"GenAI Governance", stat:"Rules apply", source:"FINRA GenAI", icon:Sparkles, body:"AI can help hybrid teams explain complex relationships, but the output must carry policy status, supervision context, retention evidence, and product constraints." },
 ];
 
 const BD_CAPABILITIES = [
-  { capability:"Advisor-branded reporting", fidelity:"The current prototype improves on legacy Wealthscape reporting, but it is still centered on the independent-RIA use case.", rating:"partial", competitor:"Addepar, Advyzon, and Envestnet reporting ecosystems support richer advisor-branded reporting and client-facing presentation workflows.", source:"Research packet", gap:"Needs broker-dealer role context, supervision state, and multi-affiliation reporting." },
-  { capability:"Enterprise supervision and evidence trail", fidelity:"Report-pipeline audit concepts exist in the RIA prototype, but supervisory queues are not represented.", rating:"partial", competitor:"Smarsh, Global Relay, and supervision/regtech workflows specialize in communications capture, review, retention, and evidence trails.", source:"FINRA / SIFMA", gap:"Needs integrated supervision workbench and retention/evidence status inside the daily platform." },
-  { capability:"AI governance and review", fidelity:"AI narrative compliance review is visible, but there is no approved-use policy status or enterprise review queue.", rating:"partial", competitor:"Enterprise AI governance programs pair approved-use controls with activity review and model-risk monitoring.", source:"FINRA GenAI / Fidelity AI", gap:"Needs policy-aware AI status, user activity visibility, and review routing." },
-  { capability:"Advisor productivity telemetry", fidelity:"The prototype shows book/client signals, not advisor adoption, support friction, or field productivity.", rating:"none", competitor:"Large wealth platforms and CRM/product analytics stacks track adoption, support, activity, and revenue impact together.", source:"Fidelity trends / Cerulli", gap:"Needs adoption, exception, support, and revenue context in one view." },
-  { capability:"Branch/OSJ exception triage", fidelity:"The current RIA prototype has no OSJ or branch-principal workflow.", rating:"none", competitor:"Broker-dealer supervision dashboards and branch workflow systems route exceptions by severity, aging, rep, and evidence status.", source:"FINRA supervision themes", gap:"Needs branch principal queue, coaching prompts, and escalation packets." },
-  { capability:"Hybrid brokerage/advisory client view", fidelity:"The current prototype assumes a single independent-RIA reporting relationship.", rating:"partial", competitor:"Integrated wealth platforms combine brokerage, advisory, planning, product, and account-opening context.", source:"Fidelity wealth trends", gap:"Needs relationship-level context plus product, suitability, and supervision blockers." },
+  { capability:"Advisor-branded reporting", baseline:"The current prototype improves on legacy baseline reporting, but it is still centered on the independent-RIA use case.", rating:"partial", competitor:"Addepar, Advyzon, and Envestnet reporting ecosystems support richer advisor-branded reporting and client-facing presentation workflows.", source:"Research packet", gap:"Needs broker-dealer role context, supervision state, and multi-affiliation reporting." },
+  { capability:"Enterprise supervision and evidence trail", baseline:"Report-pipeline audit concepts exist in the RIA prototype, but supervisory queues are not represented.", rating:"partial", competitor:"Smarsh, Global Relay, and supervision/regtech workflows specialize in communications capture, review, retention, and evidence trails.", source:"FINRA / SIFMA", gap:"Needs integrated supervision workbench and retention/evidence status inside the daily platform." },
+  { capability:"AI governance and review", baseline:"AI narrative compliance review is visible, but there is no approved-use policy status or enterprise review queue.", rating:"partial", competitor:"Enterprise AI governance programs pair approved-use controls with activity review and model-risk monitoring.", source:"FINRA GenAI / baseline AI", gap:"Needs policy-aware AI status, user activity visibility, and review routing." },
+  { capability:"Advisor productivity telemetry", baseline:"The prototype shows book/client signals, not advisor adoption, support friction, or field productivity.", rating:"none", competitor:"Large wealth platforms and CRM/product analytics stacks track adoption, support, activity, and revenue impact together.", source:"baseline trends / Cerulli", gap:"Needs adoption, exception, support, and revenue context in one view." },
+  { capability:"Branch/OSJ exception triage", baseline:"The current RIA prototype has no OSJ or branch-principal workflow.", rating:"none", competitor:"Broker-dealer supervision dashboards and branch workflow systems route exceptions by severity, aging, rep, and evidence status.", source:"FINRA supervision themes", gap:"Needs branch principal queue, coaching prompts, and escalation packets." },
+  { capability:"Hybrid brokerage/advisory client view", baseline:"The current prototype assumes a single independent-RIA reporting relationship.", rating:"partial", competitor:"Integrated wealth platforms combine brokerage, advisory, planning, product, and account-opening context.", source:"baseline wealth trends", gap:"Needs relationship-level context plus product, suitability, and supervision blockers." },
 ];
 
 const BD_BUILD_BUY = [
-  { gap:"Enterprise supervision and evidence trail", role:"context", maturity:"high", urgency:"high", call:"partner", outcomes:["BD-HO #1","BD-OSJ #5"], rationale:"Supervision and retention rails are mature and regulated. The differentiated move is to partner for rails and surface the evidence inside Wealthscape workflows." },
-  { gap:"AI governance and review", role:"core", maturity:"medium", urgency:"high", call:"wrap", outcomes:["BD-HO #2","BD-HA #5"], rationale:"AI governance cannot live outside the advisor workflow. Wealthscape should wrap enterprise controls with report, communications, and next-best-action review." },
-  { gap:"Advisor productivity telemetry", role:"core", maturity:"medium", urgency:"medium", call:"build", outcomes:["BD-HO #3","BD-HO #5"], rationale:"Fidelity can differentiate by connecting usage, support, exceptions, and clearing/custody context into one advisor-retention signal." },
+  { gap:"Enterprise supervision and evidence trail", role:"context", maturity:"high", urgency:"high", call:"partner", outcomes:["BD-HO #1","BD-OSJ #5"], rationale:"Supervision and retention rails are mature and regulated. The differentiated move is to partner for rails and surface the evidence inside baseline workflows." },
+  { gap:"AI governance and review", role:"core", maturity:"medium", urgency:"high", call:"wrap", outcomes:["BD-HO #2","BD-HA #5"], rationale:"AI governance cannot live outside the advisor workflow. baseline should wrap enterprise controls with report, communications, and next-best-action review." },
+  { gap:"Advisor productivity telemetry", role:"core", maturity:"medium", urgency:"medium", call:"build", outcomes:["BD-HO #3","BD-HO #5"], rationale:"baseline can differentiate by connecting usage, support, exceptions, and clearing/custody context into one advisor-retention signal." },
   { gap:"Branch/OSJ exception triage", role:"core", maturity:"medium", urgency:"high", call:"build", outcomes:["BD-OSJ #1","BD-OSJ #2"], rationale:"The branch-principal experience is a workflow differentiator and should feel native, not like a compliance-system embed." },
   { gap:"Hybrid brokerage/advisory client view", role:"core", maturity:"high", urgency:"high", call:"wrap", outcomes:["BD-HA #1","BD-HA #2"], rationale:"The data rails may exist across clearing, planning, and reporting systems. The value is the unified client and team experience on top." },
 ];
@@ -1978,7 +1978,7 @@ const STRATEGY_PROFILES = {
     eyebrow:"Independent advisor view",
     shell:{ initials:"JW", name:"Jordan Williams", role:"Senior Advisor" },
     heroTitle:"From research to a working prototype",
-    heroBody:"We studied the independent-RIA advisor's job, measured 11 high-opportunity outcomes against what Wealthscape delivers today, and mapped every gap to a shippable surface. This is the evidence trail behind every screen in this prototype.",
+    heroBody:"We studied the independent-RIA advisor's job, measured 11 high-opportunity outcomes against what baseline delivers today, and mapped every gap to a shippable surface. This is the evidence trail behind every screen in this prototype.",
     persona:{ initials:"JW", name:"Jordan Williams", role:"Senior Advisor · Independent RIA", details:[["Book","~$1.57B AUA"],["Households","134 active"],["Goal","Scale client reporting past 30 clients without losing the personal touch"]] },
     customerIntro:"Primary research with independent RIA advisors managing 30–150 client households — the persona embodied by Jordan Williams in this prototype.",
     jobIntro:"The advisor's core job — 'deliver a clear, timely account of how my clients' money is doing' — decomposed into the eight universal job steps. Each step is owned by a prototype layer.",
@@ -2698,7 +2698,7 @@ const ECONOMICS_SOURCES = [
   { key:"github-copilot", label:"GitHub Copilot plans and pricing", href:"https://github.com/features/copilot/plans", note:"Coding assistant and agent seat costs." },
   { key:"vercel-pricing", label:"Vercel pricing", href:"https://vercel.com/pricing", note:"Prototype hosting, previews, and deployment pricing." },
   { key:"figma-pricing", label:"Figma pricing", href:"https://www.figma.com/pricing/", note:"Design, prototyping, Dev Mode, and AI credit pricing." },
-  { key:"bd-packet", label:"Broker-dealer strategy expansion packet", href:"https://github.com/vsillah/wealthscape-reporting/blob/main/docs/broker-dealer-strategy-expansion.md", note:"Internal Wealthscape context reused for personas, ODI outcomes, recommendations, and source anchors." },
+  { key:"bd-packet", label:"Broker-dealer strategy expansion packet", href:"#source-broker-dealer-strategy-packet", note:"Baseline context reused for personas, ODI outcomes, recommendations, and source anchors." },
   { key:"open-brain", label:"Portfolio Open Brain local service contract", href:null, note:"Local Portfolio source defining sources, events, memories, proposals, links, privacy tiers, and governance boundaries." },
   { key:"open-brain-qa", label:"Portfolio Open Brain RAG retrieval QA packet", href:null, note:"Local Portfolio evidence that public-safe Open Brain RAG projection was not yet available, so repo and local documents remained the practical context source." },
 ];
@@ -2754,7 +2754,7 @@ const STACK_TIERS = [
 const EFFORT_TIERS = [
   { tier:"Sketch", duration:"4-8 hrs", scope:"Single workflow or executive concept", proof:"Static or lightly interactive view", decision:"Is this worth deeper discovery?" },
   { tier:"Narrated Prototype", duration:"2-4 days", scope:"Persona, job map, 2-3 core flows", proof:"Clickable prototype with sourced strategy notes", decision:"Which recommendation should be funded?" },
-  { tier:"Operating Prototype", duration:"1-2 weeks", scope:"Multiple roles, routed actions, QA pass, deployment", proof:"Working app surface like this Wealthscape build", decision:"What should enter product discovery or pilot planning?" },
+  { tier:"Operating Prototype", duration:"1-2 weeks", scope:"Multiple roles, routed actions, QA pass, deployment", proof:"Working app surface like this baseline build", decision:"What should enter product discovery or pilot planning?" },
   { tier:"Pilot-Ready MVP", duration:"4-8+ weeks", scope:"Real data contracts, auth, audit, instrumentation, support model", proof:"Enterprise controls, security review, analytics, runbook", decision:"Can this become an implementation program?" },
 ];
 
@@ -2791,14 +2791,14 @@ const TOOL_COSTS = [
 
 const BUILD_LEDGER = [
   { item:"PR #30 Build Case slice", measured:"246 additions / 3 deletions in 1 React file", time:"6m37s branch-to-commit", token:"Not exposed by repo or GitHub", note:"Measured from Git diff and reflog; excludes research, browser QA, PR creation, and human review." },
-  { item:"Research and benchmark pass", measured:"11 public source links + 3 local context packets", time:"~45-75 min analyst-equivalent", token:"Track next run", note:"Public wage/pricing sources were verified; internal context came from the existing Wealthscape packet and Portfolio/Open Brain docs." },
+  { item:"Research and benchmark pass", measured:"11 public source links + 3 local context packets", time:"~45-75 min analyst-equivalent", token:"Track next run", note:"Public wage/pricing sources were verified; baseline context came from the existing baseline packet and Portfolio/Open Brain docs." },
   { item:"Implementation and copy synthesis", measured:"New navigable report layer, cost model, source register, cross-links", time:"~2-4 hrs analyst-engineer equivalent", token:"Track next run", note:"Small code surface because the prototype shell, design tokens, navigation, and strategy architecture already existed." },
   { item:"Validation and handoff", measured:"Build, desktop/mobile Playwright smoke, PR preview, in-app browser handoff", time:"~30-60 min", token:"Track next run", note:"This is the governance work that makes the prototype sharable beyond a local demo." },
 ];
 
 const CONTEXT_REUSE = [
-  { source:"Wealthscape strategy packet", reused:"Personas, ODI outcomes, job maps, recommendations, source anchors", avoided:"6-12 hrs", evidence:"docs/broker-dealer-strategy-expansion.md" },
-  { source:"Existing React prototype shell", reused:"Navigation, design tokens, cards, responsive patterns, deployment config", avoided:"4-8 hrs", evidence:"wealthscape-intelligence/src/WealthscapePrototype.jsx" },
+  { source:"baseline strategy packet", reused:"Personas, ODI outcomes, job maps, recommendations, source anchors", avoided:"6-12 hrs", evidence:"docs/broker-dealer-strategy-expansion.md" },
+  { source:"Existing React prototype shell", reused:"Navigation, design tokens, cards, responsive patterns, deployment config", avoided:"4-8 hrs", evidence:"prototype shell source" },
   { source:"Portfolio / Open Brain architecture", reused:"Provenance vocabulary: sources, events, proposals, memories, privacy tiers", avoided:"2-4 hrs", evidence:"Portfolio docs/open-brain-local-service.md" },
   { source:"Vambah style and strategy corpus", reused:"Voice, framing, executive report tone, practical systems language", avoided:"1-2 hrs", evidence:"local personality corpus and project instructions" },
 ];
@@ -2861,7 +2861,7 @@ function BuildCaseLayer({ bp, onNavigate }) {
             </div>
             <div style={{ fontSize:isMobile?24:34, fontWeight:900, color:T.gray900, lineHeight:1.12, marginBottom:10 }}>Prototype delivery economics</div>
             <div style={{ fontSize:isMobile?13:15, color:T.gray600, lineHeight:1.65, maxWidth:740 }}>
-              The delivery model below supports Wealthscape Lifecycle Intelligence: the tiers, tools, effort bands, cost logic, and governance controls needed to introduce agentic prototyping without treating a prototype as the final product.
+              The delivery model below supports Strategy Evidence Dashboard: the tiers, tools, effort bands, cost logic, and governance controls needed to introduce agentic prototyping without treating a prototype as the final product.
             </div>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10 }}>
@@ -2937,7 +2937,7 @@ function BuildCaseLayer({ bp, onNavigate }) {
         </div>
       </StratSection>
 
-      <StratSection eyebrow="02 · Effort Bands" title="Four levels of prototype investment" intro="The right question is not whether AI replaces a delivery team. The right question is which decision needs evidence, and how much working fidelity is required before the next funding gate.">
+      <StratSection eyebrow="02 · Effort Bands" title="Four levels of prototype investment" intro="The right question is not whether AI replaces a delivery team. The right question is which decision needs evidence, and how much working detail is required before the next funding gate.">
         <div style={{ ...card, overflow:"hidden" }}>
           {EFFORT_TIERS.map((row,i)=>(
             <div key={row.tier} style={{ display:"grid", gridTemplateColumns:isMobile?"1fr":"0.75fr 0.7fr 1.15fr 1fr 1fr", gap:12, padding:isMobile?"14px 15px":"14px 18px", borderTop:i?`1px solid ${T.gray100}`:"none", alignItems:"start" }}>
@@ -3563,7 +3563,7 @@ function ReportCustomize({ bp, template, onPreview }) {
 
 // ─── Integration Hub ──────────────────────────────────────────────────────────
 const INTEGRATIONS = [
-  { id:"fidelity",     cat:"custodian", name:"Fidelity Institutional",  desc:"Primary custodian · Positions, transactions & pricing",   status:"connected", lastSync:"4 min ago",   fields:18 },
+  { id:"internalCustodian", cat:"custodian", name:"Baseline custodian",  desc:"Primary custodian · Positions, transactions & pricing",   status:"connected", lastSync:"4 min ago",   fields:18 },
   { id:"schwab",       cat:"custodian", name:"Schwab Advisor Services",  desc:"Secondary custodian · Positions & billing data",           status:"connected", lastSync:"11 min ago",  fields:14 },
   { id:"pershing",     cat:"custodian", name:"Pershing / BNY Mellon",    desc:"Alternative assets · Private equity & hedge fund feeds",   status:"available", lastSync:null,          fields:0  },
   { id:"ibkr",         cat:"custodian", name:"Interactive Brokers",       desc:"Margin accounts · Options, futures & international",       status:"available", lastSync:null,          fields:0  },
@@ -3578,7 +3578,7 @@ const INTEGRATIONS = [
   { id:"rightcapital", cat:"planning",  name:"RightCapital",              desc:"Tax planning, Roth conversion & estate modelling",         status:"available", lastSync:null,          fields:0  },
 ];
 const FIELD_MAPS = {
-  fidelity:    [
+  internalCustodian: [
     { src:"ACCT_VAL",      tgt:"portfolio.totalValue",    type:"Decimal" },
     { src:"POSITION_QTY",  tgt:"holdings.quantity",       type:"Decimal" },
     { src:"MKTVAL",        tgt:"holdings.marketValue",    type:"Decimal" },
@@ -3734,7 +3734,7 @@ function IntegrationHub({ bp, deepLink, profile }) {
               <div style={{ overflowX:"auto" }}>
                 <table style={{ width:"100%", borderCollapse:"collapse", fontSize:11 }}>
                   <thead><tr style={{ background:T.gray50 }}>
-                    {["Source Field","","Wealthscape Field","Type"].map(h=><th key={h} style={{ padding:"7px 10px", textAlign:"left", fontWeight:700, color:T.slate, borderBottom:`1px solid ${T.gray200}`, whiteSpace:"nowrap" }}>{h}</th>)}
+                    {["Source Field","","Baseline field","Type"].map(h=><th key={h} style={{ padding:"7px 10px", textAlign:"left", fontWeight:700, color:T.slate, borderBottom:`1px solid ${T.gray200}`, whiteSpace:"nowrap" }}>{h}</th>)}
                   </tr></thead>
                   <tbody>
                     {(FIELD_MAPS[selected]||[]).map((row,i)=>(
@@ -3792,7 +3792,7 @@ const SCENARIO_STEPS = [
     id: "complete",
     targetId: null,
     title: "Full Loop Complete",
-    instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Wealthscape Lifecycle Intelligence workflow.",
+    instruction: "Alert → Report → AI Narrative → Delivery → Portal. End-to-end in under 10 seconds. That's the Strategy Evidence Dashboard workflow.",
     isComplete: true,
   },
 ];
@@ -3975,7 +3975,7 @@ function EmailModal({ onSend, onClose, isMobile, template }) {
 }
 
 // ─── App Shell ─────────────────────────────────────────────────────────────────
-export default function WealthscapePrototype() {
+export default function LifecyclePrototype() {
   const bp = useBreakpoint();
   const { isMobile, isTablet, isDesktop } = bp;
 
@@ -4038,7 +4038,7 @@ export default function WealthscapePrototype() {
   }, [activeLayer]);
 
   useEffect(() => {
-    const id = "wealthscape-pulse-style";
+    const id = "prototype-pulse-style";
     if (!document.getElementById(id)) {
       const s = document.createElement("style");
       s.id = id;
@@ -4174,8 +4174,8 @@ export default function WealthscapePrototype() {
         <div style={{ display:"flex", alignItems:"center", gap:8 }}>
           <div style={{ width:26, height:26, borderRadius:7, background:T.green, display:"flex", alignItems:"center", justifyContent:"center" }}><BarChart2 size={14} color={T.white}/></div>
           <div>
-            <div style={{ fontSize:13, fontWeight:800, color:T.white, letterSpacing:"-0.01em" }}>Wealthscape</div>
-            <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Lifecycle Intelligence</div>
+            <div style={{ fontSize:13, fontWeight:800, color:T.white, letterSpacing:"-0.01em" }}>Strategy Dashboard</div>
+            <div style={{ fontSize:9, fontWeight:700, color:T.indigo, letterSpacing:"0.1em", textTransform:"uppercase" }}>Evidence workspace</div>
           </div>
         </div>
         {!isDesktop && <button aria-label="Close navigation" title="Close navigation" style={{ background:"transparent", border:"none", cursor:"pointer", padding:4, color:T.gray400 }} onClick={()=>setSidebarOpen(false)}><X size={18}/></button>}
@@ -4225,7 +4225,7 @@ export default function WealthscapePrototype() {
           <div style={{ display:"flex", alignItems:"center", gap:10 }}>
             {!isDesktop && <button aria-label="Open navigation" title="Open navigation" style={{ background:"transparent", border:"none", cursor:"pointer", padding:6, color:T.gray600, display:"flex", alignItems:"center" }} onClick={()=>setSidebarOpen(true)}><Menu size={20}/></button>}
             <div>
-              {isDesktop && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Wealthscape Lifecycle Intelligence</div>}
+              {isDesktop && <div style={{ fontSize:10, color:T.slate, letterSpacing:"0.06em", textTransform:"uppercase" }}>Strategy Evidence Dashboard</div>}
               <div style={{ fontSize:14, fontWeight:700, color:T.gray900 }}>{layerLabels[activeLayer]}</div>
             </div>
           </div>

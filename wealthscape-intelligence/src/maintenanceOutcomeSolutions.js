@@ -93,7 +93,7 @@ export const outcomeSolutions = [
     problem:
       "A request depends on service staff, but the next owner or required intervention is unclear.",
     ux: "Name the responsible team and keep its blocker and case history beside the work.",
-    demo: "Case ownership can be changed in this session. No request is submitted to Fidelity or another provider.",
+    demo: "Case ownership can be changed in this session. No request is submitted to baseline or another provider.",
     action: "Inspect service routing",
     kind: "case",
     panel: "overview",
