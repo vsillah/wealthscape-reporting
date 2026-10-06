@@ -4,8 +4,11 @@ import { readFileSync } from 'node:fs';
 import { competitorBrandAssets } from './competitorBrandAssets.js';
 import { maintenanceCompetitors } from './maintenanceCompetitors.js';
 
-test('all seven official logo mappings are small local passive assets with provenance', () => {
-  assert.deepEqual(Object.keys(competitorBrandAssets), maintenanceCompetitors.map(c=>c.name));
+test('external official logo mappings are small local passive assets with provenance', () => {
+  assert.deepEqual(
+    Object.keys(competitorBrandAssets),
+    maintenanceCompetitors.filter(c=>c.name !== 'Baseline').map(c=>c.name),
+  );
   for(const brand of Object.values(competitorBrandAssets)) {
     assert.match(brand.file,/^[a-z]+\.(png|svg)$/);
     const bytes=readFileSync(new URL(`../public/competitor-brands/${brand.file}`,import.meta.url));

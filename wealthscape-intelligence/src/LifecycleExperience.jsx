@@ -22,7 +22,7 @@ import {
 const stages = [
   ["Intake", "Advisor / service team"],
   ["Authority & signatures", "Client / authorized party"],
-  ["Exception routing", "Operations / Fidelity service"],
+  ["Exception routing", "Operations / service operations"],
   ["Human review", "Reviewer"],
   ["Ready account context", "Operations"],
   ["Report output", "Advisor"],
@@ -522,7 +522,7 @@ export const outcomes = [
   ["Beneficiary across a household", 2.06, 4.44, "Derived"],
   ["Detect stale data before an exam", 1.95, 4, "Sourced"],
   ["Re-servicing after acquisition", 2.06, 3.94, "Derived"],
-  ["Actions needing Fidelity to act", 2.66, 4.62, "Derived"],
+  ["Actions needing service team to act", 2.66, 4.62, "Derived"],
   ["Status without calling service", 2.34, 4.34, "Derived"],
   ["Right authority the first time", 2.62, 4.28, "Derived"],
   ["Paper required per change", 2.44, 4.6, "Sourced"],
@@ -1054,7 +1054,7 @@ export function LifecycleInvestment({ onNavigate }) {
           inventory. No internal volume data means no validated ROI.
         </p>
         <p>
-          Source: Wealthscape Market Research / Account Maintenance Executive,
+          Source: Market Research / Account Maintenance Executive,
           slides 19, 20, 23, 25 and 30. Kitces 2025, T3 2026, J.D. Power 2026,
           FINRA 3110/4311, SEA 17a-3(a)(17), and competitor/forum evidence
           require scope-specific validation. Regulatory proposals are not

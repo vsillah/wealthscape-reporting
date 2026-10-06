@@ -144,17 +144,21 @@ test("reporting capability map scores workflow breadth and uses real logos", () 
       point.assumption,
       /proxy|directional|evidence|documentation|validate|confirm|not prove/i,
     );
-    assert.ok(reportingBrandAssets[point.name], `${point.name}: logo asset`);
-    assert.ok(
-      existsSync(
-        join(
-          srcDir,
-          "../public/competitor-brands",
-          reportingBrandAssets[point.name].file,
+    if (point.name === "Baseline") {
+      assert.equal(reportingBrandAssets[point.name], undefined);
+    } else {
+      assert.ok(reportingBrandAssets[point.name], `${point.name}: logo asset`);
+      assert.ok(
+        existsSync(
+          join(
+            srcDir,
+            "../public/competitor-brands",
+            reportingBrandAssets[point.name].file,
+          ),
         ),
-      ),
-      `${point.name}: local logo file exists`,
-    );
+        `${point.name}: local logo file exists`,
+      );
+    }
   }
 });
 test("competitor capability map keeps confidence separate from chart axes", () => {
@@ -286,7 +290,7 @@ test("maintenance source confidence exposes evidence scoring and review gates", 
   assert.match(maintenanceSource, /Prediction calibration loop/);
   assert.match(maintenanceSource, /sourceChallengeChecks/);
   assert.match(maintenanceSource, /Challenge layer/);
-  assert.match(maintenanceSource, /Raise confidence without using Fidelity internal data/);
+  assert.match(maintenanceSource, /Raise confidence without using approved internal data/);
   assert.match(maintenanceSource, /Ops ledger/);
   assert.match(maintenanceSource, /StrategyEvidenceOperations defaultTrack="maintenance"/);
   assert.match(maintenanceSource, /import StrategyEvidenceOperations/);
@@ -339,7 +343,7 @@ test("maintenance source confidence exposes evidence scoring and review gates", 
   assert.match(maintenanceSource, /View source links/);
   assert.doesNotMatch(maintenanceSource, /href="#maintenance-research-6"/);
   assert.doesNotMatch(maintenanceSource, /\{children && <p>\{children\}<\/p>\}/);
-  assert.match(summarySource, /Funding decisions need Fidelity request volume/);
+  assert.match(summarySource, /Funding decisions need internal request volume/);
   assert.match(summarySource, /Each claim needs traceable sources before it becomes a recommendation/);
   assert.match(summarySource, /Research is scored before it becomes strategy/);
   assert.match(summarySource, /Approve a 90-day validation-and-exception pilot/);
@@ -570,14 +574,14 @@ test("maintenance market research defaults to custody peers with a clearing lens
   assert.match(maintenanceSource, /Clearing peer view/);
   assert.match(maintenanceSource, /RIA custody/);
   assert.match(maintenanceSource, /Clearing firms/);
-  assert.match(maintenanceSource, /Compare Wealthscape's baseline with RIA custodians and challengers/);
-  assert.match(maintenanceSource, /Fidelity internal baseline/);
-  assert.match(maintenanceSource, /This is us: the internal benchmark/);
-  assert.match(maintenanceSource, /Wealthscape as the internal baseline beside Schwab/);
+  assert.match(maintenanceSource, /Compare the baseline with RIA custodians and challengers/);
+  assert.match(maintenanceSource, /approved baseline/);
+  assert.match(maintenanceSource, /Use this as the baseline benchmark/);
+  assert.match(maintenanceSource, /de-branded baseline beside Schwab/);
   assert.match(maintenanceSource, /large-scale custody/);
   assert.doesNotMatch(maintenanceSource, /Direct peer \/ incumbent/);
-  assert.doesNotMatch(maintenanceSource, /Compare Fidelity against RIA custodians and challengers/);
-  assert.doesNotMatch(maintenanceSource, /Schwab, Fidelity, Pershing and LPL/);
+  assert.doesNotMatch(maintenanceSource, /Compare baseline against RIA custodians and challengers/);
+  assert.doesNotMatch(maintenanceSource, /Schwab, baseline, Pershing and LPL/);
   assert.doesNotMatch(maintenanceSource, /incumbent scale/);
   assert.match(maintenanceSource, /Compare the clearing-side operating platforms/);
   assert.match(maintenanceSource, /Market presentation/);
@@ -592,14 +596,14 @@ test("maintenance market research defaults to custody peers with a clearing lens
   assert.match(maintenanceSource, /first-clearing\.png/);
   assert.match(maintenanceSource, /wedbush\.svg/);
   assert.match(maintenanceSource, /Charles Schwab Advisor Services/);
-  assert.match(maintenanceSource, /Fidelity Institutional/);
+  assert.match(maintenanceSource, /Custody baseline/);
   assert.match(maintenanceSource, /LPL Financial/);
   assert.match(maintenanceSource, /BNY Pershing/);
   assert.match(maintenanceSource, /Altruist/);
   assert.match(maintenanceSource, /Apex Fintech Solutions/);
   assert.match(maintenanceSource, /Axos Advisor Services/);
   assert.match(maintenanceSource, /TradePMR \/ Robinhood/);
-  assert.match(maintenanceSource, /Fidelity \/ National Financial Services/);
+  assert.match(maintenanceSource, /Clearing baseline/);
   assert.match(maintenanceSource, /First Clearing \/ Wells Fargo/);
   assert.match(maintenanceSource, /Wedbush Securities/);
   assert.match(maintenanceSource, /scale: 3370/);
@@ -887,7 +891,7 @@ test("maintenance resolution milestones render as a sequenced roadmap", () => {
 });
 test("strategy profile selector explains role-scoped impact without displacing the executive summary", () => {
   const prototypeSource = readFileSync(
-    join(srcDir, "WealthscapePrototype.jsx"),
+    join(srcDir, "LifecyclePrototype.jsx"),
     "utf8",
   );
   const profileImpactCss = readFileSync(
@@ -903,9 +907,9 @@ test("strategy profile selector explains role-scoped impact without displacing t
   assert.match(profileImpactCss, /profile-impact-popover/);
   assert.match(profileImpactCss, /position: absolute/);
 });
-test("Fidelity remains a public incumbent baseline with bounded reporting evidence", () => {
+test("baseline remains a public incumbent baseline with bounded reporting evidence", () => {
   const row = reportingComparison.find(
-    (item) => item.name === "Fidelity (Wealthscape)",
+    (item) => item.name === "Baseline",
   );
   assert.deepEqual(
     row.cells.map((cell) => cell.level),
@@ -918,9 +922,11 @@ test("Fidelity remains a public incumbent baseline with bounded reporting eviden
     reference.additionalSource,
     ...reference.additionalSources,
   ]) {
-    assert.ok(
-      new URL(reportingSources[source].href).hostname.endsWith(".fidelity.com"),
+    const protectedBrandPattern = new RegExp(
+      ["fide", "lity", "wealth", "scape"].join("|"),
+      "i",
     );
+    assert.doesNotMatch(reportingSources[source].href, protectedBrandPattern);
   }
   assert.equal(reference.layer, "reports");
   assert.equal(reference.sub.reportTab, "build");
@@ -967,7 +973,7 @@ test("reporting outcomes carry parity fields for map detail inspection", () => {
 test("reporting outcome links carry selected outcome context into the prototype", () => {
   const researchSource = readFileSync(join(srcDir, "ReportingResearch.jsx"), "utf8");
   const prototypeSource = readFileSync(
-    join(srcDir, "WealthscapePrototype.jsx"),
+    join(srcDir, "LifecyclePrototype.jsx"),
     "utf8",
   );
   assert.match(researchSource, /strategyOutcomeId:\s*selected\.id/);

@@ -56,19 +56,19 @@ const summaries = {
       4: ["Thirteen candidate outcomes show high importance and low satisfaction.", "Thirteen of fifteen candidate outcomes sit in high-importance, low-satisfaction territory. The strongest proto-segments are exception control and household authority; no overserved cluster currently supports a stripped-down or low-cost disruptive strategy."],
       5: ["The account-change job should be tracked from request definition through confirmation.", "The job map treats the requested change as the stable unit of progress: define the change, locate account scope, prepare requirements, confirm authority, execute, monitor, modify and conclude. Each transition needs a named owner, visible missing evidence and proof that the account scope changed correctly."],
       0: ["Household authority should wait until request validation and recovery paths are proven.", "Household authority scores high, but multi-account changes amplify the same missing-information and exception problems. Shared request checks, recovery paths and completion evidence are the prerequisite to scaling account-change automation."],
-      9: ["Funding decisions need Fidelity request volume, rework, cost, and control data.", "Assumptions around demand, architecture, controls and ODI validity should be validated in a separate workstream before the recommendation is treated as implementation guidance."],
+      9: ["Funding decisions need internal request volume, rework, cost, and control data.", "Assumptions around demand, architecture, controls and ODI validity should be validated in a separate workstream before the recommendation is treated as implementation guidance."],
       7: ["Start with exception control, then expand only if validation confirms the same unmet needs.", "Start with exception control because it is the clearest underserved cluster. If formal ODI validation shows the same pattern across segments, expand the shared validation-and-exception layer into a broader servicing platform."],
       8: ["Build-or-buy decisions should compare identity, authority, validation, audit, and exception-service costs.", "Identity, authority, validation, audit and retention services determine whether to reuse, build, partner or acquire. The decision turns on integration cost, support ownership and the cost of operating exceptions."],
       6: ["Each claim needs traceable sources before it becomes a recommendation.", "The source engine weighs customer proximity, source reputation and corroborating signals. Claims that fail the challenge review stay as validation questions instead of becoming findings, recommendations or client-ready guidance."],
     },
     assumptions: [
-      ["Demand and servicing model", "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. Fidelity’s organizational complexity and handoffs may change the priority order."],
+      ["Demand and servicing model", "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. Internal organizational complexity and handoffs may change the priority order."],
       ["Systems, data and economics", "Confirm technology debt, account and party data constraints, authority records, reusable services, support burden and cost-to-integrate. Current evidence does not establish delivery effort or return on investment."],
       ["Controls and accountability", "Validate the compliance process and security architecture for permissions, authority, review and evidence retention. Name operating ownership for exceptions, support and policy changes."],
       ["ODI research validity", "Treat current scores as directional synthesis, not validated ODI measurement. Run a formal desired-outcome survey, then apply factor and cluster analysis to reveal needs-based segments before final prioritization."],
     ],
     steps: [
-      ["Establish an internal baseline", "Observe service associates, advisors and home-office reviewers. Measure assisted volume, incomplete submissions, rework and time to resolution by request type."],
+      ["Establish a baseline", "Observe service associates, advisors and home-office reviewers. Measure assisted volume, incomplete submissions, rework and time to resolution by request type."],
       ["Run ODI validation research", "Translate the candidate outcomes into stable, solution-neutral desired-outcome statements. Survey importance and satisfaction, then analyze segments before locking the opportunity map."],
       ["Assess the servicing architecture", "Map account identity, authority, validators and audit services with engineering and data owners. Compare reuse, build and partner costs against actual constraints."],
       ["Scope one accountable pilot", "Choose a bounded maintenance request and servicing population. Agree on operational ownership, escalation, compliance review and security requirements before connecting systems."],
@@ -106,7 +106,7 @@ const summaries = {
         {
           label: "Controls",
           sentence: "AI output needs trusted data, approval, and delivery controls.",
-          body: "Vendor claims are useful context, but Fidelity still needs to verify source data, entitlements, disclosures, and review evidence before report generation becomes operational.",
+          body: "Vendor claims are useful context, but the baseline still needs to verify source data, entitlements, disclosures, and review evidence before report generation becomes operational.",
           findingGroups: [
             ["Observed signals", ["market", "capabilities", "governance", "sources"]],
             ["Decision implications", ["sourcing"]],
@@ -128,7 +128,7 @@ const summaries = {
     findings: {
       thesis: ["The pilot should show whether reporting takes less preparation time without weakening review.", "Test assembly through delivery in one bounded workflow; broader funding should depend on measured effort reduction and retained review evidence."],
       market: ["Report generators still need reconciled data, reviewer approval, and controlled delivery.", "Vendors already advertise report drafting and delivery. Test whether their reports use reconciled data, receive the right review and reach the intended client; verify each claim before selecting a tool."],
-      capabilities: ["Test whether report data, access checks and approvals work together.", "A product feature list cannot prove that report values reconcile to their sources or that only authorized staff can approve them. Test those connections against Fidelity’s systems."],
+      capabilities: ["Test whether report data, access checks and approvals work together.", "A product feature list cannot prove that report values reconcile to their sources or that only authorized staff can approve them. Test those connections against the internal systems."],
       customer: ["Advisors, clients and reviewers need different things from the same report.", "Advisors need preparation efficiency, clients need understandable results and home office needs review evidence; validate the tradeoffs within a defined segment."],
       outcomes: ["Reports need household context, clear results, blocked-work status, owners, and completion proof.", "Unify context, Explain results, Unblock work, Route ownership and Prove completion; validate which failure creates the greatest burden before ranking investment."],
       job: ["A finished report file still needs approval, delivery and follow-up.", "Source preparation, review, delivery and follow-up determine completion; carry evidence and ownership through the whole path to address avoidable rework."],
@@ -136,10 +136,10 @@ const summaries = {
       sourcing: ["Tool selection should compare reconciliation, permissions, support, and integration cost.", "Reuse suitable data and control services; compare specialist partners on reconciliation, permissions, support burden and total cost-to-integrate."],
       governance: ["Client reports need checked sources and the required reviewer’s approval.", "Make applicable disclosures, review and retention part of the workflow design; compliance and security must confirm the controls before operational use."],
       measurement: ["Expand only after preparation time, rework, and audit retrieval improve.", "Track preparation time, rework and audit retrieval alongside support cost; agree success and stop thresholds before the pilot starts."],
-      sources: ["Fidelity-specific volume, cost, staffing, and system constraints still need to be measured.", "Public research and synthetic examples frame hypotheses; internal discovery must resolve applicability, feasibility and economics before final guidance."],
+      sources: ["firm-specific volume, cost, staffing, and system constraints still need to be measured.", "Public research and synthetic examples frame hypotheses; internal discovery must resolve applicability, feasibility and economics before final guidance."],
     },
     assumptions: [
-      ["Demand and operating model", "Validate reporting frequency, segment needs and the split of work among advisors, service teams and home office. Fidelity’s organizational complexity and servicing model may change the proposed workflow."],
+      ["Demand and operating model", "Validate reporting frequency, segment needs and the split of work among advisors, service teams and home office. Internal organizational complexity and servicing model may change the proposed workflow."],
       ["Data, architecture and cost", "Assess technology debt, data constraints, lineage, reconciliation and entitlement services. Validate cost-to-integrate and support burden before choosing an assembly or narrative solution."],
       ["Approval and release ownership", "Confirm the compliance process, security architecture and operating ownership for content review, delivery, retention and incidents. The proposed controls have not received internal approval."],
     ],

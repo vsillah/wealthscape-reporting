@@ -505,7 +505,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
                 >
                   <span className="am-eyebrow">
                     {vendor.incumbent
-                      ? "Incumbent Wealthscape baseline"
+                      ? "Incumbent baseline"
                       : "Vendor-described capability"}
                   </span>
                   <h3>
@@ -588,7 +588,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
               <p className="rr-intro">
                 The strategy packet adds a role-specific lens to reporting.
                 These are discovery gaps to validate against the current
-                Wealthscape stack.
+                baseline stack.
               </p>
               {strategy.capabilities.length ? (
                 <>
@@ -623,7 +623,7 @@ export default function ReportingResearch({ profile, onNavigate }) {
                     <h3>{selectedCapability.capability}</h3>
                     <div className="rr-grid">
                       <Detail title="Packet assessment">
-                        {selectedCapability.fidelity}
+                        {selectedCapability.baseline}
                       </Detail>
                       <Detail title="Reference direction">
                         {selectedCapability.competitor}

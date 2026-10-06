@@ -73,9 +73,9 @@ const sources = {
     "BNY Pershing · clearing and custody",
     "https://www.pershing.com/content/pershing/us/en/solutions/clearing-custody-and-settlement.html",
   ],
-  fidelityPrime: [
-    "Fidelity Prime · clearing and custody scale",
-    "https://prime.fidelity.com/",
+  baselineScaleReference: [
+    "Public clearing/custody scale source",
+    "#source-baseline-clearing-scale",
   ],
   firstClearing: [
     "Wells Fargo · First Clearing",
@@ -357,7 +357,7 @@ const sourceConfidencePillars = [
     label: "Source reputation",
     weight: "35%",
     signal: "Trusted enough to cite",
-    body: "Regulatory material, audited filings, Fidelity-approved research, primary vendor documentation, and reputable advisor-tech research receive higher weight than unsourced media or forum claims.",
+    body: "Regulatory material, audited filings, approved research, primary vendor documentation, and reputable advisor-tech research receive higher weight than unsourced media or forum claims.",
   },
   {
     label: "Signal convergence",
@@ -370,7 +370,7 @@ const sourceConfidencePillars = [
 const sourceTierRows = [
   [
     "Tier 1",
-    "Fidelity and customer evidence",
+    "Operating and customer evidence",
     "Telemetry, workflow observation, interviews, support cases, approved internal studies",
     "Can support pilot gates after business, legal, compliance and data-owner review.",
   ],
@@ -423,7 +423,7 @@ const sourceChallengeChecks = [
   ],
   [
     "Source-fit check",
-    "Confirm the source can support the specific claim. Market reports can frame context; they cannot stand in for Fidelity telemetry.",
+    "Confirm the source can support the specific claim. Market reports can frame context; they cannot stand in for approved internal telemetry.",
     "Build now",
   ],
   [
@@ -438,7 +438,7 @@ const sourceChallengeChecks = [
   ],
   [
     "Approval lock",
-    "Keep Fidelity telemetry and formal ODI survey work locked until executive, legal, compliance and data-owner approvals are attached.",
+    "Keep approved internal telemetry and formal ODI survey work locked until executive, legal, compliance and data-owner approvals are attached.",
     "Locked",
   ],
 ];
@@ -478,13 +478,13 @@ const sectionConfidenceScores = {
   1: {
     score: 70,
     tier: "Directional confidence",
-    summary: "Strong market context, but the maintenance-specific operating baseline still needs Fidelity telemetry.",
+    summary: "Strong market context, but the maintenance-specific operating baseline still needs approved internal telemetry.",
     dimensions: [
       ["Customer proximity", 55, "Advisor-tech surveys, custodian scale references, and market disclosures describe the environment; they are not direct maintenance workflow telemetry.", ["t3", "kitces", "investmentNewsCustody"]],
-      ["Source reputation", 82, "T3, Kitces, InvestmentNews, FINRA, and firm-published custody/clearing sources are reputable enough for directional framing.", ["t3", "kitces", "supervision", "fidelityPrime"]],
+      ["Source reputation", 82, "T3, Kitces, InvestmentNews, FINRA, and firm-published custody/clearing sources are reputable enough for directional framing.", ["t3", "kitces", "supervision", "baselineScaleReference"]],
       ["Signal convergence", 78, "Multiple sources point to service quality, integration pressure, and scale concentration as relevant market signals.", ["investmentNewsCustody", "investmentNewsChallengers", "apexFintech", "pershingClearing"]],
     ],
-    sources: ["t3", "kitces", "supervision", "investmentNewsCustody", "fidelityPrime", "pershingClearing"],
+    sources: ["t3", "kitces", "supervision", "investmentNewsCustody", "baselineScaleReference", "pershingClearing"],
   },
   2: {
     score: 60,
@@ -493,7 +493,7 @@ const sectionConfidenceScores = {
     dimensions: [
       ["Customer proximity", 42, "Vendor help and release material describe available workflows; they are one step removed from advisor behavior.", ["schwab", "altruist", "accountFrames"]],
       ["Source reputation", 76, "Primary vendor documentation and T3 survey context are credible, but not equivalent to measured product testing.", ["schwab", "altruist", "t3"]],
-      ["Signal convergence", 68, "Schwab, Altruist, Fidelity, and T3 signals converge around guided workflows, status, records, and service visibility.", ["schwab", "altruist", "t3", "accountFrames"]],
+      ["Signal convergence", 68, "Schwab, Altruist, the baseline, and T3 signals converge around guided workflows, status, records, and service visibility.", ["schwab", "altruist", "t3", "accountFrames"]],
     ],
     sources: ["schwab", "altruist", "t3", "accountFrames"],
   },
@@ -533,7 +533,7 @@ const sectionConfidenceScores = {
   0: {
     score: 58,
     tier: "Synthesis confidence",
-    summary: "The cross-section finding is consistent across the deck, but it depends on internal baselines before funding scale.",
+    summary: "The cross-section finding is consistent across the deck, but it depends on baselines before funding scale.",
     dimensions: [
       ["Customer proximity", 46, "The finding combines market, capability, customer, and outcome evidence rather than one measured operating dataset.", ["customerThemes", "outcomeSynthesis", "internalQuestions"]],
       ["Source reputation", 68, "The underlying sources are attributable and mostly reputable, with clear boundaries for inferred claims.", ["accountFrames", "t3", "kitces", "schwab"]],
@@ -546,7 +546,7 @@ const sectionConfidenceScores = {
     tier: "Validation confidence",
     summary: "The controls are the right approval questions, but the answers require internal owners and measured baselines.",
     dimensions: [
-      ["Customer proximity", 38, "The assumptions identify missing Fidelity-specific inputs rather than supplying those inputs.", ["internalQuestions", "executiveStudy"]],
+      ["Customer proximity", 38, "The assumptions identify missing firm-specific inputs rather than supplying those inputs.", ["internalQuestions", "executiveStudy"]],
       ["Source reputation", 66, "The assumptions are tied to the executive study and ODI method discipline, but need internal confirmation.", ["executiveStudy", "odiMethod"]],
       ["Signal convergence", 52, "The same gaps recur across sections: demand, architecture, controls, economics, and research validity.", ["strategyFindings", "recommendations", "roadmap"]],
     ],
@@ -579,7 +579,7 @@ const sectionConfidenceScores = {
 const maintenanceAssumptions = [
   [
     "Demand and servicing model",
-    "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. Fidelity's organizational complexity and handoffs may change the priority order.",
+    "Validate request volumes, failure points and differences across custody, clearing and assisted servicing. the firm's organizational complexity and handoffs may change the priority order.",
   ],
   [
     "Systems, data and economics",
@@ -597,7 +597,7 @@ const maintenanceAssumptions = [
 
 const maintenanceNextSteps = [
   [
-    "Establish an internal baseline",
+    "Establish a baseline",
     "Observe service associates, advisors and home-office reviewers. Measure assisted volume, incomplete submissions, rework and time to resolution by request type.",
   ],
   [
@@ -782,7 +782,7 @@ function SourceConfidenceSystem() {
               <ShieldCheck size={18} aria-hidden="true" />
               <div>
                 <span className="am-eyebrow">Public-safe challenge layer</span>
-                <h4>Raise confidence without using Fidelity internal data</h4>
+                <h4>Raise confidence without using approved internal data</h4>
               </div>
             </div>
             <div className="mr-source-challenge-grid">
@@ -900,14 +900,12 @@ const competitorBrandPath = (fileName) => `/competitor-brands/${fileName}`;
 
 const marketLogoAssets = {
   schwab: { file: "schwab.png", width: 34, height: 34, fit: "slice" },
-  fidelity: { file: "wealthscape.png", width: 76, height: 20 },
   lpl: { file: "lpl.svg", width: 76, height: 18 },
   pershing: { file: "pershing.svg", width: 76, height: 20 },
   altruist: { file: "altruist.svg", width: 70, height: 24 },
   apex: { file: "apex.svg", width: 74, height: 28 },
   tradepmr: { file: "tradepmr.png", width: 80, height: 25, treatment: "dark" },
   axos: { file: "axos-advisor-services.svg", width: 78, height: 21 },
-  nfs: { file: "wealthscape.png", width: 82, height: 22 },
   "pershing-clearing": { file: "pershing.svg", width: 80, height: 21 },
   "apex-clearing": { file: "apex.svg", width: 74, height: 28 },
   "axos-clearing": { file: "axos-advisor-services.svg", width: 78, height: 21 },
@@ -944,30 +942,30 @@ const custodianMarketPlayers = [
     labelAnchor: "end",
     proof:
       "InvestmentNews cites Cerulli figures placing Schwab at $3.37T of RIA assets and the largest RIA custodian position.",
-    read: "Largest Fidelity-like custody benchmark.",
+    read: "Largest custody benchmark.",
     detail:
       "Use Schwab as the scale benchmark for advisor custody, service workflows, account maintenance, status visibility and retained evidence.",
   },
   {
-    id: "fidelity",
+    id: "baseline",
     rank: 2,
-    name: "Fidelity Institutional",
-    chartLabel: "Fidelity",
+    name: "Custody baseline",
+    chartLabel: "Baseline",
     alwaysLabel: true,
     scale: 1500,
     scaleLabel: "$1.5T RIA custody",
     footprint: 21.7,
     momentum: 1.6,
-    posture: "Fidelity internal baseline",
+    posture: "approved baseline",
     segment: "core",
     labelDx: -4,
     labelDy: -50,
     labelAnchor: "end",
     proof:
-      "InvestmentNews lists Fidelity second in RIA custody assets at about $1.5T.",
+      "Public market reporting places the de-branded baseline near the top of the RIA custody asset set.",
     read: "Our custody-side baseline.",
     detail:
-      "This is us: the internal benchmark for where Wealthscape's servicing path matches, trails, or can differentiate within the custody experience.",
+      "Use this as the baseline benchmark for where the servicing path matches, trails, or can differentiate within the custody experience.",
   },
   {
     id: "lpl",
@@ -1089,31 +1087,31 @@ const custodianMarketPlayers = [
       "Axos Financial reports $47.8B of assets under custody and/or administration across Axos Clearing and Axos Advisor Services.",
     read: "Smaller custody provider with direct RIA relevance.",
     detail:
-      "Axos belongs in the challenger layer because it is closer to custody and clearing than generic advisor software, but its footprint remains far smaller than Schwab or Fidelity.",
+      "Axos belongs in the challenger layer because it is closer to custody and clearing than generic advisor software, but its footprint remains far smaller than the largest incumbent custodians.",
   },
 ];
 
 const clearingMarketPlayers = [
   {
-    id: "nfs",
+    id: "clearing-baseline",
     rank: 1,
-    name: "Fidelity / National Financial Services",
-    chartLabel: "Fidelity NFS",
+    name: "Clearing baseline",
+    chartLabel: "Baseline",
     alwaysLabel: true,
     scale: 17900,
-    scaleLabel: "$17.9T Fidelity AUA",
+    scaleLabel: "$17.9T AUA scale proxy",
     footprint: 52,
     momentum: 2.5,
-    posture: "Fidelity clearing and custody platform",
+    posture: "Clearing and custody baseline",
     segment: "clearing-core",
     labelDx: -68,
     labelDy: -16,
     labelAnchor: "end",
     proof:
-      "Fidelity reports $17.9T assets under administration; NFS is the affiliated clearing firm for Fidelity brokerage activity.",
-    read: "Internal clearing-side benchmark.",
+      "Public scale evidence indicates a large clearing and custody baseline; the de-branded point is retained as baseline context.",
+    read: "Clearing-side benchmark.",
     detail:
-      "This is the Fidelity-side clearing context: the strategy should account for how advisor servicing, brokerage accounts, forms, statements and account maintenance intersect with NFS operations.",
+      "This clearing-side context keeps advisor servicing, brokerage accounts, forms, statements and account maintenance connected to the operating baseline.",
   },
   {
     id: "pershing-clearing",
@@ -1247,7 +1245,7 @@ const custodyMarketSummaryStats = [
     eyebrow: "Market concentration",
     title: "Custody is highly concentrated around a few external peers and our baseline.",
     body:
-      "Schwab, Pershing and LPL remain the primary external custody comparison set; Fidelity stays in the view as the internal Wealthscape baseline.",
+      "Schwab, Pershing and LPL remain the primary external custody comparison set; the de-branded baseline stays in the view for context.",
     decision:
       "Benchmark the account-maintenance strategy against custody peers before comparing generic wealthtech vendors.",
   },
@@ -1290,11 +1288,11 @@ const clearingMarketSummaryStats = [
   {
     id: "clearing-core",
     label: "Primary clearing frame",
-    value: "NFS + Pershing",
+    value: "Internal + Pershing",
     eyebrow: "Clearing scale",
     title: "Clearing requires a second market lens beside custody.",
     body:
-      "Fidelity/NFS and BNY Pershing anchor the clearing-side comparison because they combine brokerage custody, settlement, account records and operating controls.",
+      "The clearing baseline and BNY Pershing anchor the clearing-side comparison because they combine brokerage custody, settlement, account records and operating controls.",
     decision:
       "Use this lens to pressure-test where account maintenance breaks because of clearing, settlement, statements, margin, account records or correspondent operations.",
   },
@@ -1337,9 +1335,9 @@ const marketPeerSets = {
   custody: {
     button: "RIA custody",
     eyebrow: "Custody peer view",
-    title: "Compare Wealthscape's baseline with RIA custodians and challengers",
+    title: "Compare the baseline with RIA custodians and challengers",
     description:
-      "The primary benchmark should be custody and clearing peers, not generic wealthtech vendors. The map keeps Wealthscape as the internal baseline beside Schwab, LPL and Pershing as external custody comparators while showing smaller challenger firms with stronger digital-growth signals.",
+      "The primary benchmark should be custody and clearing peers, not generic wealthtech vendors. The map keeps a de-branded baseline beside Schwab, LPL and Pershing as external custody comparators while showing smaller challenger firms with stronger digital-growth signals.",
     players: custodianMarketPlayers,
     stats: custodyMarketSummaryStats,
     axisX: "custody / administration scale →",
@@ -1356,7 +1354,7 @@ const marketPeerSets = {
       ["large-scale custody", 2100, 1.3, "middle"],
     ],
     summary:
-      "Use the custodian view to anchor Wealthscape as the internal baseline, then compare external peers and challengers for where digital custody is raising the bar on account opening, maintenance, APIs, status, and service recovery.",
+      "Use the custodian view to anchor the baseline, then compare external peers and challengers for where digital custody is raising the bar on account opening, maintenance, APIs, status, and service recovery.",
     estimates: [
       ["Big four", "~84% RIA custody"],
       ["RIA assets", "~$6.9T"],
@@ -1368,7 +1366,7 @@ const marketPeerSets = {
     eyebrow: "Clearing peer view",
     title: "Compare the clearing-side operating platforms",
     description:
-      "Fidelity also operates on the clearing side, so this view keeps the same chart treatment but changes the peer set to clearing, settlement, correspondent and digital custody infrastructure.",
+      "The baseline also needs a clearing-side view, so this treatment changes the peer set to clearing, settlement, correspondent and digital custody infrastructure.",
     players: clearingMarketPlayers,
     stats: clearingMarketSummaryStats,
     axisX: "clearing / administration scale →",
@@ -1388,7 +1386,7 @@ const marketPeerSets = {
       "Use the clearing view to identify where the maintenance experience depends on books and records, settlement, margin, statements, money movement, account data, and correspondent servicing rather than only front-end custody UX.",
     estimates: [
       ["Pershing", "$3.6T global client assets"],
-      ["Fidelity", "$17.9T AUA"],
+      ["Baseline", "$17.9T AUA proxy"],
       ["Challengers", "Apex · Axos · TradePMR · Wedbush"],
     ],
   },
@@ -2214,7 +2212,7 @@ export default function MaintenanceResearch({
                     "axos",
                     "robinhoodTradePmr",
                     "pershingClearing",
-                    "fidelityPrime",
+                    "baselineScaleReference",
                     "firstClearing",
                     "wedbush",
                     "kitces",
@@ -2570,7 +2568,7 @@ export default function MaintenanceResearch({
         );
       })}
       <p className="am-note mr-provenance">
-        Research origin: Claude Desktop · Wealthscape Market Research. Account
+        Research origin: Claude Desktop · Market Research. Account
         Maintenance Frames and the executive study (18 Aug 2026); the original
         executive deck is retained for version history. Public links open the
         publisher sources. This walkthrough summarizes the source artifacts; it

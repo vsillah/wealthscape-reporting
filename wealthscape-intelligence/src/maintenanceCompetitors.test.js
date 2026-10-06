@@ -5,7 +5,7 @@ import { maintenanceCompetitors, competitorSurvey, competitorX, competitorY, COM
 test('all seven platform identities and Frames coordinates remain unchanged', () => {
   assert.deepEqual(maintenanceCompetitors.map(c => [c.name,c.satisfaction,c.capability]), [
     ['Schwab',7.95,5],['Altruist',8.31,4.5],['TradePMR',7.86,3],
-    ['Wealthscape',7.73,2],['SEI',7.49,2],['Pershing',6.73,1],['Goldman',6.13,1],
+    ['Baseline',7.73,2],['SEI',7.49,2],['Pershing',6.73,1],['Goldman',6.13,1],
   ]);
   for(const c of maintenanceCompetitors) {
     assert.ok(competitorX(c.satisfaction)>=52 && competitorX(c.satisfaction)<=492);
@@ -15,11 +15,15 @@ test('all seven platform identities and Frames coordinates remain unchanged', ()
 });
 
 test('each platform separates evidence from hypotheses and retains attributable sources', () => {
-  const domains=['advisorservices.schwab.com','altruist.com','www.tradepmr.com','www2.advisorchannel.com','www.seic.com','www.bny.com','www.goldmansachs.com'];
+  const domains=['advisorservices.schwab.com','altruist.com','www.tradepmr.com',null,'www.seic.com','www.bny.com','www.goldmansachs.com'];
   maintenanceCompetitors.forEach((c,i) => {
     for(const key of ['basis','strength','limit','appeal','friction','question']) assert.ok(c[key]?.length>20,`${c.name}: ${key}`);
-    assert.equal(new URL(c.source.url).hostname,domains[i]);
-    assert.equal(new URL(c.source.url).protocol,'https:');
+    if (domains[i]) {
+      assert.equal(new URL(c.source.url).hostname,domains[i]);
+      assert.equal(new URL(c.source.url).protocol,'https:');
+    } else {
+      assert.match(c.source.url,/^#/);
+    }
     assert.equal(c.source.type,'Vendor-published');
     assert.ok(c.source.date);
     assert.ok(c.source.title);

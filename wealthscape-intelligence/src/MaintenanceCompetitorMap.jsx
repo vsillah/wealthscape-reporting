@@ -28,16 +28,16 @@ const competitorValidationCards = {
         "Compare the complete maintenance job, including exceptions and completion proof, rather than the presence of a digital form alone.",
     },
   ],
-  Wealthscape: [
+  "Baseline": [
     {
       icon: ClipboardCheck,
       title: "Service-center status and request history",
       reference:
-        "Fidelity documents actionable service queues, saved searches, status alerts, request histories, and entitlement-dependent visibility.",
+        "Public help material documents actionable service queues, saved searches, status alerts, request histories, and entitlement-dependent visibility.",
       validation:
         "Confirm whether the next owner, missing evidence, NIGO reason, and completion record are visible across custody and clearing workflows.",
       implication:
-        "The public help material makes Wealthscape a candidate for reuse validation; it does not yet prove the full maintenance job is coherent.",
+        "The public help material makes the baseline a candidate for reuse validation; it does not yet prove the full maintenance job is coherent.",
     },
   ],
 };
@@ -139,7 +139,7 @@ export default function MaintenanceCompetitorMap() {
             </a>
           </div>
           <div>
-            <small>Wealthscape · validation needed</small>
+            <small>Baseline · validation needed</small>
             <p>{validation}</p>
           </div>
           <div>
